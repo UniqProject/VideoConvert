@@ -80,13 +80,13 @@ namespace VideoConvert.Windows
 
         void CheckUpdateDoWork(object sender, DoWorkEventArgs e)
         {
-            const string serverPath = "http://www.jt-soft.de/MKV_Remux/";
-            const string serverPathTools = "http://www.jt-soft.de/MKV_Remux/tools/";
+            const string serverPath = "http://www.jt-soft.de/videoconvert/";
+            const string serverPathTools = "http://www.jt-soft.de/videoconvert/tools/";
 
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 WebClient downloader = new WebClient {UseDefaultCredentials = true};
-                string versionFile = downloader.DownloadString(new Uri("http://www.jt-soft.de/MKV_Remux/update.xml"));
+                string versionFile = downloader.DownloadString(new Uri("http://www.jt-soft.de/videoconvert/update.xml"));
 
                 XmlDocument verFile = new XmlDocument();
                 verFile.LoadXml(versionFile);
@@ -94,10 +94,10 @@ namespace VideoConvert.Windows
                 XmlAttribute verAttrib = verFile.CreateAttribute("version");
                 string tempPath = AppSettings.TempPath;
 
-                if (verFile.SelectSingleNode("/mkv_remux_updatefile") != null)      // small check if we have the right structure
+                if (verFile.SelectSingleNode("/videoconvert_updatefile") != null)      // small check if we have the right structure
                 {
                     Version verOnline;
-                    XmlNode appVersion = verFile.SelectSingleNode("//mkv_remux");
+                    XmlNode appVersion = verFile.SelectSingleNode("//videoconvert");
                     if (appVersion != null)
                     {
                         if (appVersion.Attributes != null)
@@ -117,7 +117,7 @@ namespace VideoConvert.Windows
                                                         });
                     }
 
-                    appVersion = verFile.SelectSingleNode("//mkv_remux_uac_updater");
+                    appVersion = verFile.SelectSingleNode("//uac_updater");
                     if (appVersion != null)
                     {
                         if (appVersion.Attributes != null)

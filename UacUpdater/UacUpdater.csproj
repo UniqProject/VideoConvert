@@ -84,7 +84,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpZipLib\src\ICSharpCode.SharpZLib.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\SharpZipLib\src\ICSharpCode.SharpZLib.csproj">
       <Project>{0E7413FF-EB9E-4714-ACF2-BE3A6A7B2FFD}</Project>
       <Name>ICSharpCode.SharpZLib</Name>
     </ProjectReference>

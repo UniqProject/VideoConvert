@@ -157,15 +157,28 @@ namespace VideoConvert.Windows
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 WebClient downloader = new WebClient {UseDefaultCredentials = true};
-                string versionFile = downloader.DownloadString(new Uri("http://www.jt-soft.de/MKV_Remux/update.xml"));
+                string versionFile = string.Empty;
+                try
+                {
+                    versionFile = downloader.DownloadString(new Uri("http://www.jt-soft.de/videoconvert/update.xml"));
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception);
+                }
+                if (string.IsNullOrEmpty(versionFile))
+                {
+                    e.Result = false;
+                    return;
+                }
 
                 XmlDocument verFile = new XmlDocument();
                 verFile.LoadXml(versionFile);
 
                 // small check if we have the right structure
-                if (verFile.SelectSingleNode("/mkv_remux_updatefile") != null)      
+                if (verFile.SelectSingleNode("/videoconvert_updatefile") != null)      
                 {
-                    XmlNode appVersion = verFile.SelectSingleNode("//mkv_remux");
+                    XmlNode appVersion = verFile.SelectSingleNode("//videoconvert");
                     if (appVersion != null)
                     {
                         if (appVersion.Attributes != null)
@@ -176,7 +189,7 @@ namespace VideoConvert.Windows
                             if (verOnline.CompareTo(AppSettings.GetAppVersion()) > 0)
                                 needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//mkv_remux_uac_updater");
+                            appVersion = verFile.SelectSingleNode("//uac_updater");
                             if (appVersion != null)
                                 if (appVersion.Attributes != null) 
                                     verAttrib = appVersion.Attributes["version"];

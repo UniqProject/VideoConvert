@@ -318,11 +318,11 @@
       <Project>{CD3CD636-D63E-4BD5-9FE9-2B63DA6F0616}</Project>
       <Name>WPF.Themes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BDInfo\BDInfo\BDInfo.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\BDInfo\BDInfo\BDInfo.csproj">
       <Project>{3209AF1D-4762-4960-9DE5-13E90E77EE96}</Project>
       <Name>BDInfo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CheckBoxTreeViewLibrary\CheckBoxTreeViewLibrary.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\CheckBoxTreeViewLibrary\CheckBoxTreeViewLibrary.csproj">
       <Project>{8762FBAD-B3B1-4ECF-97EF-AEB634BDD0AC}</Project>
       <Name>CheckBoxTreeViewLibrary</Name>
     </ProjectReference>
@@ -330,19 +330,19 @@
       <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
       <Name>Converters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DirectShowLib\src\DirectShowLib-2008.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\DirectShowLib\src\DirectShowLib-2008.csproj">
       <Project>{CE009BFA-5EF6-4153-B2A1-2FA79698A9AE}</Project>
       <Name>DirectShowLib-2008</Name>
     </ProjectReference>
-    <ProjectReference Include="..\log4net-1.2.11\src\log4net.vs2010.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\log4net-1.2.11\src\log4net.vs2010.csproj">
       <Project>{181FE707-E161-4722-9F38-6AAAB6FAA106}</Project>
       <Name>log4net.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ManagedWinapi\ManagedWinapi.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\ManagedWinapi\ManagedWinapi.csproj">
       <Project>{FBD3EC1E-47E2-4D2D-81C9-D6506125A09A}</Project>
       <Name>ManagedWinapi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpZipLib\src\ICSharpCode.SharpZLib.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\SharpZipLib\src\ICSharpCode.SharpZLib.csproj">
       <Project>{0E7413FF-EB9E-4714-ACF2-BE3A6A7B2FFD}</Project>
       <Name>ICSharpCode.SharpZLib</Name>
     </ProjectReference>
@@ -350,7 +350,7 @@
       <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
       <Name>UpdateCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WPFToolKit\Release\v1.6.0\ExtendedWPFToolkitSolution\Src\WPFToolkit.Extended\WPFToolkit.Extended.csproj">
+    <ProjectReference Include="..\..\VideoConvertLibraries\WPFToolKit\Release\v1.6.0\ExtendedWPFToolkitSolution\Src\WPFToolkit.Extended\WPFToolkit.Extended.csproj">
       <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
       <Name>WPFToolkit.Extended</Name>
     </ProjectReference>
@@ -510,7 +510,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" />
+      <UserProperties BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
@@ -518,13 +518,13 @@
 FINDSTR /C:"[assembly: AssemblyVersion(" %25ASMINFO%25 | sed.exe "s/\[assembly: AssemblyVersion(\"/SET CURRENT_VERSION=/g;s/\")\]//g;s/\.\*//g" &gt;SetCurrVer.cmd
 CALL SetCurrVer.cmd
 DEL  SetCurrVer.cmd
-echo %25CURRENT_VERSION%25&gt;D:\MKV_Remux.txt
+echo %25CURRENT_VERSION%25&gt;D:\VideoConvert.txt
 $(WinDir)\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe /t:updateuid "$(ProjectDir)$(ProjectFileName)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>cd $(SolutionDir)
-"$(ProjectDir)WriteChangelog" D:\MKV_Remux.txt "$(ProjectDir)CHANGELOG.de-DE" "$(TargetDir)CHANGELOG.de-DE"
-"$(ProjectDir)WriteChangelog" D:\MKV_Remux.txt "$(ProjectDir)CHANGELOG.en-US" "$(TargetDir)CHANGELOG.en-US"</PostBuildEvent>
+"$(ProjectDir)WriteChangelog" D:\VideoConvert.txt "$(ProjectDir)CHANGELOG.de-DE" "$(TargetDir)CHANGELOG.de-DE"
+"$(ProjectDir)WriteChangelog" D:\VideoConvert.txt "$(ProjectDir)CHANGELOG.en-US" "$(TargetDir)CHANGELOG.en-US"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
