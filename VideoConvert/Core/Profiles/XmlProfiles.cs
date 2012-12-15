@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 
 namespace VideoConvert.Core.Profiles
 {
-    [XmlRoot("MKV_Remux")]
+    [XmlRoot("VideoConvert")]
     public class XmlProfiles
     {
         [XmlArray("QuickSelectProfiles")]
