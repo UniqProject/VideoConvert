@@ -1,0 +1,48 @@
+﻿<!--
+ ============================================================================
+ VideoConvert - Fast Video & Audio Conversion Tool
+ Copyright © 2012 JT-Soft
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=============================================================================
+-->
+    
+<Application
+             x:Uid="Application_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:my="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=WPFToolkit.Extended"
+             xmlns:Converters="clr-namespace:Converters;assembly=Converters" xmlns:Core="clr-namespace:VideoConvert.Properties"
+             mc:Ignorable="d" x:Class="VideoConvert.App"
+             StartupUri="Windows\MainWindow.xaml" Startup="ApplicationStartup" 
+             DispatcherUnhandledException="ApplicationDispatcherUnhandledException">
+    <Application.Resources>
+        <Converters:StringLengthVisiblityConverter x:Uid="src:StringLengthVisiblityConverter_1" x:Key="StringLengthVisiblityConverter" />
+        <Converters:Int32ToBooleanConverter x:Uid="src:Int32ToBooleanConverter_1" x:Key="intConverter" />
+        <Converters:Int32ToVisibilityConverter x:Uid="src:Int32ToVisibilityConverter_1" x:Key="VisibilityConverter" />
+        <Converters:StringLengthToBooleanConverter x:Uid="src:StringLengthToBooleanConverter_1" x:Key="StringLengthToBooleanConverter" />
+        <Core:Settings x:Uid="properties:Settings_1" x:Key="Settings" />
+        <my:InverseBoolConverter x:Uid="my:InverseBoolConverter_1" x:Key="InverseBoolConverter" />
+        <my:ColorToSolidColorBrushConverter x:Uid="my:ColorToSolidColorBrushConverter_1" x:Key="ColorToSolidColorBrushConverter1" />
+        
+        <ResourceDictionary x:Key="StringRes" x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Uid="ResourceDictionary_2" Source="StringResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    <Converters:DateTimeConverter x:Uid="Converters:DateTimeConverter_1" x:Key="DateTimeConverter1" />
+  </Application.Resources>
+</Application>

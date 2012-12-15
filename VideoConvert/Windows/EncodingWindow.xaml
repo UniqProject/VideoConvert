@@ -1,0 +1,58 @@
+﻿<!--
+ ============================================================================
+ VideoConvert - Fast Video & Audio Conversion Tool
+ Copyright © 2012 JT-Soft
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=============================================================================
+-->
+
+<UserControl x:Uid="UserControl_1" x:Class="VideoConvert.Windows.EncodingWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="1000" Loaded="UserControlLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid x:Uid="Grid_1">
+        <Expander x:Uid="EncodingExpander" Header="Encoding..." Name="EncodingExpander" IsExpanded="True" Margin="0,0,0,35">
+            <Grid x:Uid="Grid_2">
+                <GroupBox x:Uid="EncLogGroup" Header="Log" Height="153" Margin="6,6,6,0" Name="EncLogGroup" VerticalAlignment="Top">
+                    <Grid x:Uid="Grid_3">
+                        <ListView x:Uid="LogView" Height="118" HorizontalAlignment="Left" Margin="6,6,0,0" Name="LogView" VerticalAlignment="Top" Width="962" ItemsSource="{Binding LogEntries}">
+                            <ListView.View>
+                                <GridView x:Uid="GridView_1" AllowsColumnReorder="False">
+                                    <GridViewColumn x:Uid="GridViewColumn_1" Header="Time" Width="150" DisplayMemberBinding="{Binding Path=EntryTime, Converter={StaticResource DateTimeConverter1}}" />
+                                    <GridViewColumn x:Uid="GridViewColumn_2" Header="Job" Width="200" DisplayMemberBinding="{Binding JobName}"/>
+                                    <GridViewColumn x:Uid="GridViewColumn_3" Header="Info" Width="580" DisplayMemberBinding="{Binding LogText}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </GroupBox>
+                <GroupBox x:Uid="ProgressGroup" Header="Progress" Height="132" Margin="6,159,6,0" Name="ProgressGroup" VerticalAlignment="Top">
+                    <Grid x:Uid="Grid_4">
+                        <Label x:Uid="JobStatus" Content="Job" Height="18" HorizontalAlignment="Left" Margin="6,6,0,0" Name="JobStatus" VerticalAlignment="Top" Padding="0" VerticalContentAlignment="Center" />
+                        <ProgressBar x:Uid="ActualProgress" Height="20" Margin="6,30,6,0" Name="ActualProgress" VerticalAlignment="Top" />
+                        <Label x:Uid="TotalStatus" Content="Total" Height="18" HorizontalAlignment="Left" Margin="6,56,0,0" Name="TotalStatus" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                        <ProgressBar x:Uid="TotalProgress" Height="20" Margin="6,80,6,0" Name="TotalProgress" VerticalAlignment="Top"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Expander>
+        <Button x:Uid="AbortBtn" Content="Cancel" Height="23" Margin="450,0,450,5" Name="AbortBtn" VerticalAlignment="Bottom" Click="AbortBtnClick" />
+        <CheckBox x:Uid="ShutDownAfterFinish" Content="Shutdown Windows after finish" Height="16" HorizontalAlignment="Right" Margin="0,0,18,8" Name="ShutDownAfterFinish" VerticalAlignment="Bottom" />
+    </Grid>
+</UserControl>

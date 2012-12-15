@@ -1,0 +1,298 @@
+﻿- [fix]     On multi-user machines updater should work correctly now.
+
+0.21.678.2025
+- [fix]     don't ignore BDInfo settings.
+- [change]  Changed streamselection window slightly.
+- [new]     Selecting Audio/Subtitle streams in streamselection window shows now additional settings.
+            Audio streams:    Make stream default -     only MKV/WebM. Stream will be played by default, regardless
+                                                        of stream order.
+            Subtitle streams: Only forced captions -    The resulting subtitle contains only forced captions, ie.
+                                                        dialogs in foreign languages etc.
+                              Render into video -       The subtitle will be written into video at encoding time.
+                              Make stream default -     only MKV. Stream will be showed by default, regardless
+                                                        of stream order.
+            The settings are per stream valid.
+
+0.20.675.1257
+- [fix]     Fix a bug which resulted in not being able to update the updater-tool sometimes.
+
+0.20.675.1221
+- [fix]     Fix video resizing. Videos were scaled with wrong aspect ratio sometimes.
+
+0.20.674.1339
+- [fix]     Fix Updater crash on importing new Profiles.
+
+0.20.674.1252
+- [fix]     Setting the target resolution to 0 disables video resizing.
+- [fix]     Detection of Encoder versions should now run without crashes.
+- [update]  Using the latest MediaInfo library.
+
+0.20.654.1059
+- [fix]     Better match target filesize, when use streamcopy on HD-Audio streams.
+- [fix]     Match target picture size with profile setting.
+- [fix]     Fix some bugs.
+
+0.19.604.1151
+- [new]     Added support for VP8 video.
+- [new]     Added support for WebM output. Using VP8 for video and OGG for audio.
+- [change]  Added ability to update the profiles using updater.
+
+0.18.598.2147
+- [new]     Added support for AAC-Audio. You must download the NeroAacEnc package from the following link
+            and extract "NeroAacEnc.exe" to the encoder directory set in the settings dialog and klick 
+            reload button. The link is: http://www.nero.com/eng/downloads-nerodigital-nero-aac-codec.php
+- [fix]     On the stream selection dialog, show only profiles which use installed encoders.
+
+0.18.598.1439
+- [fix]     Deinterlace video stream only if profile has the deinterlacing flag set to true.
+- [fix]     Subtitle support for MPEG4 output removed, because muxing was aborted with subtitles
+
+0.18.598.1248
+- [new]     Added support for MPEG4 (.mp4) output.
+- [fix]     Fixed a possible crash on removing completed jobs.
+
+0.18.598.0054
+- [fix]     Fixed an App crash after changing the language.
+
+0.18.598.0040
+- [fix]     Fixed some display glitches in Settings window under Windows XP
+- [update]  Updated translations
+
+0.18.598.0028
+- [fix]     The options "Remove completed jobs from list" and "Remove temporary files after finish"
+            should now work again.
+- [fix]     Now every temporary file should be deleted after encoding.
+- [update]  Updated MediaInfo library to version 0.7.59
+
+0.18.597.2223
+- [change]  Changed the update process. We are now fully Windows Vista/7 compatible.
+
+0.18.596.0128
+- [fix]     After changing a Profile the x264 encoder could not be started because of an misplaced
+            line break in the commandline.
+- [change]  Default encoder-path changed to "%ProgramData%\JT-Soft\MKV Remux\codecs"
+
+0.18.594.1234
+- [fix]     Last Update had broken the Streamselection dialog - only 3d video streams were shown,
+            this version fixes this problem.
+- [change]  Changed the way how profiles are handled internally, this should speed up loading and updating
+            the profiles.
+- [change]  Changed the location where profiles are stored. The new location is "%ProgramData%\JT-Soft\MKV Remux".
+            You can either copy your profiles.xml from application folder to the new location, or use the import 
+            Button on Profiles tab in the Settings dialog.
+
+0.18.591.0142
+- [new]     Added support for 3D Matroska output - Only SBS (Side by Side) supported by now
+- [change]  Disabled extraction of subtitles for 3D-Blu-Ray sources, as eac3to, which is used for
+            the extraction, is not able to process such subtitles
+- [fix]     Fixed Matroska Header stripping/compression
+- [fix]     DTS-ES audio streams will be demuxed to .dts files instead of converting to FLAC
+- [fix]     Fullsize videos shouldn't be cropped now
+
+0.17.565.2351
+- [new]     Added support for MP3 Audio output (experimental)
+
+0.16.564.1148
+- [change]  To set the correct java path now, you have to select "java.exe" in the subfolder "bin" of the 
+            java installation. Please check the appropriate setting.
+- [new]     Added support for Ogg Audio output (experimental)
+- [fix]     Fixed some display glitches in Settings window
+- [fix]     Fixed AviSynth video resizing, especially for DVD output
+- [fix]     Updated translations
+
+0.15.550.0002
+- [fix]     updated translations
+
+0.15.549.1304
+- [change]  SoX wird nicht mehr benötigt, audio verarbeitung erfolgt nun auch mit Hilfe von AviSynth.
+- [new]     Multilanguage support hinzugefügt.
+- [fix]     Wenn die Benutzung von AviSynth-MT aktiviert ist, wird es auch nur bei CPU-Lastigen
+            Scripts eingesetzt. Behebt das Problem von ruckelnden Videos.
+
+0.13.528.1616
+- [fix]     Das kopieren der DVD Titel ins Temporäre Verzeichnis funktioniert wieder korrekt.
+
+0.13.528.1606
+- [fix]     Crash beim Aufrufen der Einstellungen unter Windows XP behoben.
+- [fix]     Crash beim Aufrufen des Stream-Auswahl Dialoges unter Windows XP behoben.
+
+0.13.496.1008
+- [fix]     Matroska Ausgabe mit Untertiteln funktioniert wieder korrekt.
+
+0.13.493.1359
+- [new]     High-Quality Deinterlacing hinzugefügt.
+- [fix]     Interlaced-Videos werden wieder korrekt behandelt.
+
+0.13.493.1143
+- [new]     Option hinzugefügt, welche die Benutzung von AviSynth-MT ermöglicht
+
+0.13.492.2244
+- [fix]     Pfadangaben mit Leerzeichen wurden beim Encoding zu MPEG2/DVD nicht berücksichtigt.
+
+0.13.492.1057
+- [new]     Das zuletzt ausgewählte Profil im Streamauswahl Dialog wird jetzt gespeichert.
+- [fix]     Für die DVD Bildratenkonvertierung wurde im AviSynth Script das erforderliche Plugin nicht geladen
+- [update]  2 Ausgabeprofile für DVD hinzugefügt: Zielgrösse 4,7GB und 8,5GB
+
+0.13.491.1541
+- [fix]     Updatefunktion gefixed
+
+0.13.488.1918
+- [new]     Schaltfläche zum zurücksetzen der Einstellungen hinzugefügt, zu finden im Einstellungsdialog
+
+0.13.487.2101
+- [change]  Das Theming der Fenster wurde geändert.
+- [fix]     Crash beim Verarbeiten von Videos, die nicht mit standard Bildrate kodiert wurden, behoben.
+
+0.13.487.1656
+- [fix]     Im Streamauswahl Dialog wird nun der Hauptzweig der Streams mit ausgewählt, falls dies noch nicht der 
+            Fall war
+- [new]     Es kann nun ausgewählt werden, ob die Fenster Hardwarebeschleunigt dargestellt werden sollen.
+
+0.13.486.2320
+- [change]  Alle Encoder Einstellungen sind nun Profilbasiert.
+- [change]  Interface überarbeitet.
+- [change]  Update-funktion verbessert.
+- [change]  Als MPEG-2 Encoder für DVD Ausgabe wird nun HCenc anstelle ffmpeg verwendet.
+- [new]     DVD Ausgabe unterstützt nun auch Untertitel.
+- [fix]     Mehrere Fehler bei der Behandlung sowohl Audio als auch Video Streams behoben.
+
+
+0.9.428.1214
+- [fix]     Progressive Videos wurden manchmal fälschlicherweise als Interlaced behandelt, dies wurde behoben.
+
+0.9.415.0012
+- [change]  Wechsel auf .NET 4
+- [change]  Ab sofort wird für Videokodierung AviSynth vorausgesetzt, kodierung ohne AviSynth ist
+            nicht mehr möglich.
+            http://sourceforge.net/projects/avisynth2/files/AviSynth%202.5/AviSynth%202.5.8/Avisynth_258.exe/download
+- [change]  Einstellungen für den Ausgabe- und Temp-Pfad befinden sich nun im Einstellungen Dialog.
+- [new]     Als Quellformat wird nun WebM und Ogg-Theora zusätzlich unterstützt.
+- [fix]     Bei einer frischen installation werden nun die codecs korrekt heruntergeladen.
+- [fix]     AviSynth Input Filter "FFMpegSource2" wurde nicht korrekt aktualisiert, dies wurde behoben.
+- [fix]     DVD-Ausgabe funktionierte nicht mehr aufgrund einiger Änderungen im LibAV Encoder, dies wurde behoben.
+- [fix]     Maximale Video-Bitrate für DVD-Ausgabe begrenzt.
+- [fix]     Das Abbrechen eines Kodiervorganges sollte nun korrekt abgebrochen werden können.
+
+0.8.376.1300
+- [update]  MediaInfo Bibliothek auf Version 0.7.52 aktualisiert
+- [update]  BDInfo Bibliothek auf Version 0.5.8 aktualisiert
+- [new]     Ab Sofort stehen wahlweise eac3to oder tsMuxeR als Demuxer für HD-Material zur Verfügung.
+- [change]  Einstellungen für Zielgrössen von TV-Shows sind nun gesplittet nach 1080p/i und 720p.
+- [change]  x264 benutzt als Ausgabeformat nicht mehr MKV.
+- [fix]     MKV Ausgabe sollte wieder korrekt funktionieren.
+- [fix]     Bei Vollbild Videos sollte nicht mehr der Untere Rand abgeschnitten werden.
+- [fix]     x264: Parameter, die Blu-Ray Kompatibilität dienen, sollten nicht mehr beim Kodieren in 
+            andere Ausgabeformate benutzt werden.
+- [fix]     Alle Ausgabedateien werden nun mit korrekter Framerate dargestellt
+
+0.7.346.1449
+- [new]     Encoding Optionen lassen sich jetzt getrennt für 1080p/i, 720p und SD Videos festlegen.
+- [new]     Möglichkeit zum Deinterlacen der Videos hinzugefügt.
+- [fix]     Darstellung der Videolaufzeit bei Blu-Ray und DVD Titelauswahl wird korrekt angezeigt.
+
+0.6.345.1721
+- [fix]     In der Blu-Ray Titelauswahl werden nun korrekt alle Titel angezeigt
+
+0.6.344.2350
+- [new]     Fortschrittsanzeige für das Dumpen der DVD-Titel hinzugefügt
+- [new]     Ausgabegrösse für TV-Serien (Videos bis 60min länge) lässt sich nun getrennt festlegen.
+- [new]     Ausgabegrösse lässt sich für HD und SD Videos getrennt festlegen.
+- [new]     Ausgabegrösse für überlange Videos lässt sich nun festlegen.
+- [fix]     Ein Workaround für MKVMERGE wurde entfernt, da der Fehler behoben wurde.
+- [fix]     Mehrere Fehler behoben, die eine erolgreiche Verarbeitung von DVDs als Quelle verhinderten.
+- [fix]     Beschneiden der schwarzen Ränder bei Video streams sollte nun korrekt funktionieren
+- [change]  Demuxen wird nun auch übersprungen, wenn einmal abgeschlossen.
+
+0.5.557.320
+- [new]     Möglichkeit hinzugefügt, schwarze Ränder beim Video währed des kodiervorgangs wegzuschneiden.
+- [new]     Wenn Kodiervorgang abgebrochen wurde, kann dieser wieder fortgesetzt werden, wichtig hierbei
+            ist, denselben Job-Namen zu benutzen.
+- [fix]     Einige Bugfixes
+
+0.5.495.299
+- [new]     Einige Konfigurationsmöglichkeiten sind hinzugekommen, siehe Konfigurationsdialog.
+- [change]  Beim demuxen der Streams aus Einzel-Datei Quellen wird der Fortschrittsbalken aktualisiert.
+- [change]  AviSynth ist jetzt Standard-Quelle für Video encoder, anstatt der LibAV-Bibliothek.
+- [change]  Das Tool Aften wird nicht mehr benötigt.
+- [change]  Videostreams von Blu-Ray/AVCHD/DVD Quellen werden vor dem Kodieren in eine Matroska Datei
+            gepackt, um kompatibilität zwischen den Encodern zu gewährleisten.
+- [change]  Anzahl der Dateizugriffe durch MediaInfo Bibliothek reduziert.
+- [fix]     Das Abbrechen der Videokodierung, im Falle einer 2-Pass Kodierung, funktioniert nun korrekt.
+- [fix]     Temporäre Dateien von x264 werden korrekt gelöscht.
+- [fix]     Videos, die mit Hilfe von x264 kodiert wurden, sind fälschlicherweise mit Variabler
+            Bildrate kodiert worden, dies wurde jetzt berichtigt.
+- [fix]     Arbeitsverzeichnis der Encoder geändert, alle Dateien der Encoder sollten nun im korrekten
+            Verzeichnis landen.
+- [fix]     Wenn die Sprachdateien beschädigt oder nicht vorhanden sind, sollte das Programm nicht mehr
+            abstürzen.
+- [fix]     Die Fortschrittsbalken für den Gesamtfortschritt zeigt diesen nun korrekt an.
+
+0.5.426.290
+- [fix] DVD-Ausgabe unterstützt jetzt Dateinamen korrekt, die nicht dem ANSI-Zeichensatz entsprechen.
+
+0.5.416.290
+- [fix] Problem beseitigt, das zu einem Absturz führen konnte, wenn kein Video stream ausgewählt war.
+- [fix] DVD-Ausgabe: Bessere behandlung von Audio und Video Streams
+- [change] Updateverhalten geändert
+- [neu] Wenn im Einstellungsdialog die Option "Debug" gesetzt ist, werden viel mehr Informationen geloggt.
+
+0.5.350.285
+- [neu] Wenn Ausgabeformat bestimmte Audiostreams nicht unterstützt, werden diese als AC3 kodiert.
+- [neu] Einbindung von AviSynth zum Verarbeitung der Videostreams, falls installiert (nur DVD)
+- [neu] Mehrsprachenunterstützung hinzugefügt
+- [fix] Einige Abstürze behoben
+- [fix] Einige Fehler bei der Behandlung der Audiostreams behoben.
+
+0.5.156.2213
+- [fix] DVD Ausgabe für Jobs, die Sonderzeichen enthielten, funktionierte nicht.
+- [fix] Audiostreams, deren Samplingrate nicht 44.1 oder 48 kHz ist, wurden nicht korrekt kodiert.
+- [neu] x264: neue Parameter hinzugefügt
+- [neu] x264 unterstützt jetzt 2-Pass Encoding
+
+0.5.141.2222
+- DVD Ausgabe enthält jetzt Kapitel, wenn bei der Quelle welche ausgewählt werden.
+- Fehler behoben, bei dem unter Umständen nur ein Teil des Films bearbeitet wurde 
+  (Betroffen waren manche Blu-Ray Discs)
+
+0.5.130.1826
+- tsMuxeR wird anstelle von eac3to zum demuxen der Blu-Ray Disks benutzt
+- DVD Ausgabe optimiert, Audio sollte nicht mehr asynchron zum Video laufen
+- Das Abbrechen der Aufgaben sollte nun viel schneller stattfinden.
+- Ein paar Schönheitskorrekturen :)
+
+0.5.98.1259
+- [experimentell] DVD Ausgabe hinzugefügt
+
+0.5.61.0033
+- [fix] Bei DVD-Quellen führten ausgewählte Untertitel zum Absturz
+- [fix] Zufällige Abstürze sollten nicht mehr auftreten
+
+0.5.59.2326
+- [fix] Abgebrochene Jobs sollten nach einem Neustart des Encoding Prozesses wieder korrekt
+        verarbeitet werden.
+- [fix] Matroska Ausgabe erzeugt nun Untertitel-Streams, die Synchron zum Video laufen.
+- [fix] Matroska Ausgabe verdoppelte immer die Audio-Streams
+
+0.5.56.1246
+- Matroska Ausgabe sollte von nun an keine Dateien erzeugen, dessen audio und untertitel streams 
+  nicht synchron zum Video Stream laufen.
+- Updatefunktion für codecs eingebaut. damit diese funktioniert, müssen im Einstellungsfenster
+  die Anwendungsversionen neu eingelesen werden. Wenn dies geschehen ist, werden die Codecs ab
+  dem nächsten Programmstart auf updates hin überprüft.
+
+0.5.52.0322
+- Noch mehr Schönheitskorrekturen :)
+
+0.5.50.0317
+- Ein paar Schönheitskorrekturen :)
+
+0.5.48.0302
+- TS, M2TS, Blu-Ray und AVCHD Ausgabe lässt sich nun vollständig konfigurieren
+- TS, M2TS, Blu-Ray und AVCHD Ausgabe unterstützt nun MP3 Audio-Streams sowie UTF-8 Untertitel.
+
+0.5.35.1933
+- Nach dem Update wird jetzt der Changelog angezeigt.
+
+0.5.32.1852
+- Erstes Changelog :)

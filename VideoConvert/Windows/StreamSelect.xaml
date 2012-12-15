@@ -1,0 +1,169 @@
+﻿<!--
+ ============================================================================
+ VideoConvert - Fast Video & Audio Conversion Tool
+ Copyright © 2012 JT-Soft
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=============================================================================
+-->
+    
+<Window x:Uid="StreamSelectWindow" x:Class="VideoConvert.Windows.StreamSelect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cbt="clr-namespace:CheckBoxTreeViewLibrary;assembly=CheckBoxTreeViewLibrary"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Select streams" Height="496" Width="1024" WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Name="StreamSelectWindow" Loaded="WindowLoaded" Background="{DynamicResource WindowBackgroundBrush}">
+    <Window.Resources>
+        <Style x:Uid="Style_1" x:Key="TreeViewItemFocusVisual">
+            <Setter x:Uid="Setter_1" Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate x:Uid="ControlTemplate_1">
+                        <Rectangle x:Uid="Rectangle_1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <PathGeometry x:Uid="PathGeometry_1" x:Key="TreeArrow" Figures="M0,0 L0,6 L6,0 z"/>
+        <Style x:Uid="Style_2" x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+            <Setter x:Uid="Setter_2" Property="Focusable" Value="False"/>
+            <Setter x:Uid="Setter_3" Property="Width" Value="16"/>
+            <Setter x:Uid="Setter_4" Property="Height" Value="16"/>
+            <Setter x:Uid="Setter_5" Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Uid="ControlTemplate_2" TargetType="{x:Type ToggleButton}">
+                        <Border x:Uid="Border_1" Background="Transparent" Height="16" Padding="5,5,5,5" Width="16">
+                            <Path x:Uid="ExpandPath" x:Name="ExpandPath" Data="{StaticResource TreeArrow}" Fill="Transparent" Stroke="#FF989898">
+                                <Path.RenderTransform>
+                                    <RotateTransform x:Uid="RotateTransform_1" Angle="135" CenterY="3" CenterX="3"/>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger x:Uid="Trigger_1" Property="IsMouseOver" Value="True">
+                                <Setter x:Uid="Setter_6" Property="Stroke" TargetName="ExpandPath" Value="#FF1BBBFA"/>
+                                <Setter x:Uid="Setter_7" Property="Fill" TargetName="ExpandPath" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger x:Uid="Trigger_2" Property="IsChecked" Value="True">
+                                <Setter x:Uid="Setter_8" Property="RenderTransform" TargetName="ExpandPath">
+                                    <Setter.Value>
+                                        <RotateTransform x:Uid="RotateTransform_2" Angle="180" CenterY="3" CenterX="3"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter x:Uid="Setter_9" Property="Fill" TargetName="ExpandPath" Value="#FF595959"/>
+                                <Setter x:Uid="Setter_10" Property="Stroke" TargetName="ExpandPath" Value="#FF262626"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid x:Uid="Grid_1">
+        <Image x:Uid="AppVersionLabelBG" Height="50" Margin="-10,7,-10,0" Name="AppVersionLabelBG" Source="/VideoConvert;component/Resources/blue-bar.png" Stretch="Fill" VerticalAlignment="Top" />
+        <Label x:Uid="TitleLabel" Content="{Binding Path=Title, ElementName=StreamSelectWindow}" Height="64" Name="TitleLabel" VerticalAlignment="Top" Margin="100,0,0,0" Foreground="White" VerticalContentAlignment="Center" Padding="0,0,0,0" FontFamily="Segoe UI" FontSize="18" FontStyle="Italic" FontWeight="Bold"></Label>
+        <Image x:Uid="image1" Height="64" HorizontalAlignment="Left" Margin="12,0,0,0" Name="image1" Stretch="Uniform" VerticalAlignment="Top" Source="/VideoConvert;component/Resources/Videos-1-icon.png"/>
+        <Label x:Uid="FileTitleLabel" Content="Title:" Height="18" HorizontalAlignment="Left" Margin="12,80,0,0" Name="FileTitleLabel" VerticalAlignment="Top" Padding="0" VerticalContentAlignment="Center" />
+        <xctk:WatermarkTextBox x:Uid="FileTitle" Height="23" Margin="63,78,229,0" Name="FileTitle" VerticalAlignment="Top" Watermark="Bitte Titel eingeben" />
+        <GroupBox x:Uid="FileInfoGroup" Header="Stream Info" Margin="12,0,229,12" Name="FileInfoGroup" Height="268" VerticalAlignment="Bottom">
+            <Grid x:Uid="Grid_2">
+                <cbt:CheckBoxTreeView x:Uid="TitleInfo" Name="TitleInfo" ItemsSource="{Binding}" HorizontalAlignment="Left" Width="749" SelectedItemChanged="TitleInfoSelectedItemChanged">
+                    <cbt:CheckBoxTreeView.ItemContainerStyle>
+                        <Style x:Uid="Style_3" TargetType="{x:Type cbt:CheckBoxTreeViewItem}">
+                            <EventSetter x:Uid="EventSetter_1" Event="Checked" Handler="CheckItemChanged" />
+                            <EventSetter x:Uid="EventSetter_2" Event="Unchecked" Handler="CheckItemChanged" />
+                            <Setter x:Uid="Setter_11" Property="Background" Value="Transparent"/>
+                            <Setter x:Uid="Setter_12" Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                            <Setter x:Uid="Setter_13" Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                            <Setter x:Uid="Setter_14" Property="Padding" Value="1,0,0,0"/>
+                            <Setter x:Uid="Setter_15" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                            <Setter x:Uid="Setter_16" Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+                            <Setter x:Uid="Setter_17" Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            <Setter x:Uid="Setter_18" Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}"/>
+                            <Setter x:Uid="Setter_19" Property="ItemsSource" Value="{Binding Children}" />
+                            <Setter x:Uid="Setter_20" Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate x:Uid="ControlTemplate_3" TargetType="{x:Type cbt:CheckBoxTreeViewItem}">
+                                        <Grid x:Uid="Grid_3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition x:Uid="ColumnDefinition_1" MinWidth="15" Width="Auto"/>
+                                                <!--<ColumnDefinition Width="Auto"/>-->
+                                                <ColumnDefinition x:Uid="ColumnDefinition_2" Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition x:Uid="RowDefinition_1" Height="Auto" MinHeight="15"/>
+                                                <RowDefinition x:Uid="RowDefinition_2"/>
+                                            </Grid.RowDefinitions>
+                                            <ToggleButton x:Uid="Expander" x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ExpandCollapseToggleStyle}"/>
+                                            <Border x:Uid="Bd" x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="1" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                                <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal">
+                                                    <CheckBox x:Uid="PART_CheckedCheckBox" Margin="0,2,4,0" x:Name="PART_CheckedCheckBox" IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                    <ContentPresenter x:Uid="PART_Header" x:Name="PART_Header" Content="{Binding Name, Mode=TwoWay}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Focusable="False" />
+                                                </StackPanel>
+                                            </Border>
+                                            <ItemsPresenter x:Uid="ItemsHost" x:Name="ItemsHost" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger x:Uid="Trigger_3" Property="IsExpanded" Value="false">
+                                                <Setter x:Uid="Setter_21" Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
+                                            </Trigger>
+                                            <Trigger x:Uid="Trigger_4" Property="HasItems" Value="false">
+                                                <Setter x:Uid="Setter_22" Property="Visibility" TargetName="Expander" Value="Hidden"/>
+                                            </Trigger>
+                                            <Trigger x:Uid="Trigger_5" Property="IsSelected" Value="true">
+                                                <Setter x:Uid="Setter_23" Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                                <Setter x:Uid="Setter_24" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                                            </Trigger>
+                                            <MultiTrigger x:Uid="MultiTrigger_1">
+                                                <MultiTrigger.Conditions>
+                                                    <Condition x:Uid="Condition_1" Property="IsSelected" Value="true"/>
+                                                    <Condition x:Uid="Condition_2" Property="IsSelectionActive" Value="false"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter x:Uid="Setter_25" Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                                <Setter x:Uid="Setter_26" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                                            </MultiTrigger>
+                                            <Trigger x:Uid="Trigger_6" Property="IsEnabled" Value="false">
+                                                <Setter x:Uid="Setter_27" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </cbt:CheckBoxTreeView.ItemContainerStyle>
+                </cbt:CheckBoxTreeView>
+            </Grid>
+        </GroupBox>
+        <Button x:Uid="OKButton" Content="OK" Height="23" HorizontalAlignment="Right" Margin="0,78,119,0" Name="OKButton" VerticalAlignment="Top" Width="95" Click="OkButtonClick" />
+        <Button x:Uid="CancelButton" Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="0,78,12,0" Name="CancelButton" VerticalAlignment="Top" Width="95" IsCancel="True" />
+        <Label x:Uid="EncodingProfileLabel" Content="Encoding profile:" Height="18" HorizontalAlignment="Left" Margin="12,114,0,0" Name="EncodingProfileLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <ComboBox x:Uid="EncodingProfile" DisplayMemberPath="Name" SelectedValuePath="Name" Height="21" HorizontalContentAlignment="Center" ItemsSource="{Binding}" Margin="118,113,229,0" Name="EncodingProfile" Padding="5,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label x:Uid="SelectedTitleLabel" Content="Select Title:" Height="18" HorizontalAlignment="Left" Margin="12,151,0,0" Name="SelectedTitleLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <ComboBox x:Uid="SelectedTitle" DisplayMemberPath="Name" Height="21" HorizontalContentAlignment="Center" ItemsSource="{Binding}" Margin="118,148,229,0" Name="SelectedTitle" Padding="5,0" SelectedValuePath="Name" VerticalAlignment="Top" VerticalContentAlignment="Center" SelectionChanged="SelectedTitleSelectionChanged" />
+        <GroupBox x:Uid="SubtitleOptionGroup" Header="Subtitle settings" Height="124" Margin="0,0,12,12" Name="SubtitleOptionGroup" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="211">
+            <Grid x:Uid="Grid_4">
+                <CheckBox x:Uid="KeepOnlyForcedCaptions" Content="Keep only forced captions" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="KeepOnlyForcedCaptions" VerticalAlignment="Top" Checked="KeepOnlyForcedCaptionsChecked" Unchecked="KeepOnlyForcedCaptionsChecked" />
+                <CheckBox x:Uid="HardsubIntovideo" Content="Render into video" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="HardSubIntoVideo" VerticalAlignment="Top" Checked="HardSubIntoVideoChecked" Unchecked="HardSubIntoVideoChecked" />
+                <Label x:Uid="SubMkvOptionsLabel" Content="MKV-only options" Height="20" HorizontalAlignment="Left" Margin="8,50,0,0" Name="SubMkvOptionsLabel" VerticalAlignment="Top" Padding="0" VerticalContentAlignment="Center" />
+                <CheckBox x:Uid="SubMKVDefault" Content="Make stream default" Height="16" HorizontalAlignment="Left" Margin="6,74,0,0" Name="SubMKVDefault" VerticalAlignment="Top" Checked="SubMKVDefaultChecked" Unchecked="SubMKVDefaultChecked" />
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Uid="AudioOptionGroup" Header="Audio settings" Margin="0,177,12,142" Name="AudioOptionGroup" HorizontalAlignment="Right" Width="211">
+            <Grid x:Uid="Grid_5">
+                <Label x:Uid="AudioMkvOptionsLabel" Content="MKV/WebM-only options" Height="20" HorizontalAlignment="Left" Margin="6,6,0,0" Name="AudioMkvOptionsLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <CheckBox x:Uid="AudioMKVDefault" Content="Make stream default" Height="16" HorizontalAlignment="Left" Margin="6,29,0,0" Name="AudioMKVDefault" VerticalAlignment="Top" Checked="AudioMKVDefaultChecked" Unchecked="AudioMKVDefaultChecked" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

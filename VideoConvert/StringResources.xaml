@@ -1,0 +1,104 @@
+﻿<!--
+ ============================================================================
+ VideoConvert - Fast Video & Audio Conversion Tool
+ Copyright © 2012 JT-Soft
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=============================================================================
+-->
+
+<ResourceDictionary 
+  x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- String resource that can be localized -->
+    <system:String x:Uid="bdsup2sub_convert_subtitles_status"   x:Key="bdsup2sub_convert_subtitles_status">Converting subtitles</system:String>
+    <system:String x:Uid="bdsup2sub_convert_subtitle_load"      x:Key="bdsup2sub_convert_subtitle_load">Read caption {0}</system:String>
+    <system:String x:Uid="bdsup2sub_convert_subtitle_process"   x:Key="bdsup2sub_convert_subtitle_process">Processing caption {0:0} of {1:0} @ {2:0}%</system:String>
+    <system:String x:Uid="bdsup2sub_convert_subtitle_create"    x:Key="bdsup2sub_convert_subtitle_create">Creating DVD subtitles</system:String>
+    <system:String x:Uid="dvdauthor_muxing_status"              x:Key="dvdauthor_muxing_status">Creating DVD folder structure</system:String>
+    <system:String x:Uid="eac3to_demuxing_status"               x:Key="eac3to_demuxing_status">Demuxing streams</system:String>
+    <system:String x:Uid="eac3to_demuxing_progress"             x:Key="eac3to_demuxing_progress">Demuxing streams from "{0}" @ {1:0}%</system:String>
+    <system:String x:Uid="eac3to_analyze"                       x:Key="eac3to_analyze">Analyzing "{0}" @ {1:0}%</system:String>
+    <system:String x:Uid="ffmpeg_demuxing_status"               x:Key="ffmpeg_demuxing_status">Demuxing streams</system:String>
+    <system:String x:Uid="ffmpeg_demuxing_progress"             x:Key="ffmpeg_demuxing_progress">Demuxing streams from "{0}" @ {1:0}%</system:String>
+    <system:String x:Uid="ffmpeg_encoding_audio_status"         x:Key="ffmpeg_encoding_audio_status">Encoding audio stream</system:String>
+    <system:String x:Uid="ffmpeg_encoding_audio_progress"       x:Key="ffmpeg_encoding_audio_progress">Encoding audio stream - elapsed time: {0:T}; ETA: {1:T}</system:String>
+    <system:String x:Uid="ffmpeg_get_croprect_status"           x:Key="ffmpeg_get_croprect_status">Searching for Crop rect</system:String>
+    <system:String x:Uid="ffmsindex_indexing_status"            x:Key="ffmsindex_indexing_status">Indexing streams</system:String>
+    <system:String x:Uid="ffmsindex_indexing_progress"          x:Key="ffmsindex_indexing_progress">Indexing streams @ {0}%</system:String>
+    <system:String x:Uid="hcenc_encoding_status"                x:Key="hcenc_encoding_status">Encoding videostream into DVD format</system:String>
+    <system:String x:Uid="hcenc_encoding_progress"              x:Key="hcenc_encoding_progress">Encoding videostream: Frame {0:0} @ {1:0.00} fps; {2} @ {3:0}%;  elapsed: {4:T}; ETA: {5:T}</system:String>
+    <system:String x:Uid="mjpeg_muxing_status"                  x:Key="mjpeg_muxing_status">Premuxing DVD content</system:String>
+    <system:String x:Uid="mkvmerge_muxing_status"               x:Key="mkvmerge_muxing_status">Muxing streams into Matroska container</system:String>
+    <system:String x:Uid="mkvmerge_chapter_format_long_time"    x:Key="mkvmerge_chapter_format_long_time">CHAPTER{0:000}={1:s}</system:String>
+    <system:String x:Uid="mkvmerge_chapter_format_long_name"    x:Key="mkvmerge_chapter_format_long_name">CHAPTER{0:000}NAME=Chapter {0:g}</system:String>
+    <system:String x:Uid="mkvmerge_chapter_format_short_time"   x:Key="mkvmerge_chapter_format_short_time">CHAPTER{0:00}={1:s}</system:String>
+    <system:String x:Uid="mkvmerge_chapter_format_short_name"   x:Key="mkvmerge_chapter_format_short_name">CHAPTER{0:00}NAME=Chapter {0:g}</system:String>
+    <system:String x:Uid="mkvmerge_muxing_progress"             x:Key="mkvmerge_muxing_progress">Muxing output file "{0}" @ {1:g}%</system:String>
+    <system:String x:Uid="mplayer_dump_status"                  x:Key="mplayer_dump_status">Dumping DVD title</system:String>
+    <system:String x:Uid="mplayer_dump_progress"                x:Key="mplayer_dump_progress">Dumping DVD title: "{0:g}" from disc "{1}" @ {2:g}%</system:String>
+    <system:String x:Uid="spumux_muxing_status"                 x:Key="spumux_muxing_status">Muxing subtitles</system:String>
+    <system:String x:Uid="tsmuxer_muxing_status"                x:Key="tsmuxer_muxing_status">Muxing streams into MPEG TS container</system:String>
+    <system:String x:Uid="tsmuxer_muxing_progress"              x:Key="tsmuxer_muxing_progress">Muxing output file "{0}" @ {1:g}%</system:String>
+    <system:String x:Uid="tsmuxer_videoformat_not_supported"    x:Key="tsmuxer_videoformat_not_supported">Video format not supported by tsMuxeR, skipping</system:String>
+    <system:String x:Uid="tsmuxer_audioformat_not_supported"    x:Key="tsmuxer_audioformat_not_supported">Audio format not supported by tsMuxeR, skipping</system:String>
+    <system:String x:Uid="tsmuxer_subtitleformat_not_supported" x:Key="tsmuxer_subtitleformat_not_supported">Subtitle format not supported by tsMuxeR, skipping</system:String>
+    <system:String x:Uid="x264_pass"                            x:Key="x264_pass">pass</system:String>
+    <system:String x:Uid="x264_encoding_status"                 x:Key="x264_encoding_status">Encoding videostream</system:String>
+    <system:String x:Uid="x264_encoding_progress"               x:Key="x264_encoding_progress">Encoding frame {0:g} of {1:g} @ {2:0.00} fps;{6} Bitrate {3:0.0} kbit/s; elapsed: {5:T}; ETA: {4:T}</system:String>
+    <system:String x:Uid="fileworker_move_file"                 x:Key="fileworker_move_file">Move file</system:String>
+    <system:String x:Uid="fileworker_copy_file"                 x:Key="fileworker_copy_file">Copy file</system:String>
+    <system:String x:Uid="fileworker_copy_progress"             x:Key="fileworker_copy_progress">Copy file "{0}"; {1:g}KB of {2:g}KB copied; ETA: {3:0} sec</system:String>
+    <system:String x:Uid="update_done"                          x:Key="update_done">Program was updated, please check your settings</system:String>
+    <system:String x:Uid="update_available"                     x:Key="update_available">An update is available. Please click here to install the update</system:String>
+    <system:String x:Uid="profile_input_prompt"                 x:Key="profile_input_prompt">Please name the new profile</system:String>
+    <system:String x:Uid="streamselect_single_file_general"     x:Key="streamselect_single_file_general">{0} / {1} / Length: {2}</system:String>
+    <system:String x:Uid="streamselect_single_file_audio"       x:Key="streamselect_single_file_audio">{0:g} Channels ({1}) / {2:g}Hz / {3:g} bit / {4:g} kbit/s</system:String>
+    <system:String x:Uid="streamselect_single_file_video"       x:Key="streamselect_single_file_video">{0:d}x{1:d} {2} / Profile: {3} / {4:0.000}fps</system:String>
+    <system:String x:Uid="streamselect_chapters"                x:Key="streamselect_chapters">Chapters</system:String>
+    <system:String x:Uid="streamselect_video"                   x:Key="streamselect_video">Video</system:String>
+    <system:String x:Uid="streamselect_audio"                   x:Key="streamselect_audio">Audio</system:String>
+    <system:String x:Uid="streamselect_subtitles"               x:Key="streamselect_subtitles">Subtitles</system:String>
+    <system:String x:Uid="streamselect_bd_general"              x:Key="streamselect_bd_general">Title: {0:g} ({1}), Length: {2}</system:String>
+    <system:String x:Uid="streamselect_dvd_general"             x:Key="streamselect_dvd_general">Title: {0:g}, Length: {1}</system:String>
+    <system:String x:Uid="streamselect_dvd_audio"               x:Key="streamselect_dvd_audio">Track {0:g} ({1:g}), {2} ({3} - {4}), {5} {6:g} Channels {7:g} Hz, {8}</system:String>
+    <system:String x:Uid="streamselect_dvd_subtitle"            x:Key="streamselect_dvd_subtitle">Track {0:g} ({1:g}), {2} ({3} - {4})</system:String>
+    <system:String x:Uid="update_error_encpath"                 x:Key="update_error_encpath">Please select encoder path first!</system:String>
+    <system:String x:Uid="update_downloading_status"            x:Key="update_downloading_status">Downloading {0} version {1}...</system:String>
+    <system:String x:Uid="update_downloading_progress"          x:Key="update_downloading_progress">Downloading {0} version {1} @ {2:0}%</system:String>
+    <system:String x:Uid="update_unzipping"                     x:Key="update_unzipping">Unzipping...</system:String>
+    <system:String x:Uid="update_import_profiles"               x:Key="update_import_profiles">Importing profiles...</system:String>
+    <system:String x:Uid="update_reload_versions"               x:Key="update_reload_versions">Reload tool versions</system:String>
+    <system:String x:Uid="update_finished"                      x:Key="update_finished">Finished!</system:String>
+    <system:String x:Uid="update_restart_needed"                x:Key="update_restart_needed">An update was downloaded, but can be applied only after application restart. Click OK to restart application and apply this update.</system:String>
+    <system:String x:Uid="oggenc_encoding_audio_status"         x:Key="oggenc_encoding_audio_status">Encoding audio stream</system:String>
+    <system:String x:Uid="oggenc_encoding_audio_progress"       x:Key="oggenc_encoding_audio_progress">Encoding audio stream - elapsed time: {0:T}; ETA: {1:T}</system:String>
+    <system:String x:Uid="lame_encoding_audio_status"           x:Key="lame_encoding_audio_status">Encoding audio stream</system:String>
+    <system:String x:Uid="lame_encoding_audio_progress"         x:Key="lame_encoding_audio_progress">Encoding audio stream - elapsed time: {0:T}; ETA: {1:T}</system:String>
+    <system:String x:Uid="check_versions"                       x:Key="check_versions">Reloading versions</system:String>
+    <system:String x:Uid="mp4box_muxing_status"                 x:Key="mp4box_muxing_status">Muxing streams into MP4 container</system:String>
+    <system:String x:Uid="mp4box_muxing_progress"               x:Key="mp4box_muxing_progress">Muxing output file "{0}" @ {1:g}%</system:String>
+    <system:String x:Uid="mp4box_chapter_format"                x:Key="mp4box_chapter_format">Chapter {0:g}</system:String>
+    <system:String x:Uid="mp4box_import_format"                 x:Key="mp4box_import_format">Importing {0} @ {1:g}%</system:String>
+    <system:String x:Uid="vp8_pass"                             x:Key="vp8_pass">pass</system:String>
+    <system:String x:Uid="vp8_encoding_status"                  x:Key="vp8_encoding_status">Encoding videostream</system:String>
+    <system:String x:Uid="vp8_encoding_progress"                x:Key="vp8_encoding_progress">Encoding frame {0:g} of {1:g} @ {2:0.00} fps;{5} elapsed: {4:T}; ETA: {3:T}</system:String>
+    <system:String x:Uid="mkvmerge_muxing_webm_status"          x:Key="mkvmerge_muxing_webm_status">Muxing streams into WebM container</system:String>
+    <system:String x:Uid="theora_pass"                          x:Key="theora_pass">pass</system:String>
+    <system:String x:Uid="theora_encoding_status"               x:Key="theora_encoding_status">Encoding videostream</system:String>
+    <system:String x:Uid="theora_encoding_progress"             x:Key="theora_encoding_progress">Encoding videostream - {2} elapsed: {0:T}; ETA: {1:T}</system:String>
+</ResourceDictionary>

@@ -1,0 +1,51 @@
+﻿<!--
+ ============================================================================
+ VideoConvert - Fast Video & Audio Conversion Tool
+ Copyright © 2012 JT-Soft
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=============================================================================
+-->
+
+<UserControl x:Uid="UserControl_1" x:Class="VideoConvert.Windows.ToolUpdaterWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="1000" Loaded="UserControlLoaded">
+    <Grid x:Uid="Grid_1">
+        <Expander x:Uid="ToolUpdaterExpander" Header="Encoder Update" Margin="0,0,0,34" Name="ToolUpdaterExpander" IsExpanded="True" VerticalContentAlignment="Top">
+            <Grid x:Uid="Grid_2">
+                <ListView x:Uid="ToolVersionsList" Height="148" Margin="6,6,6,0" Name="ToolVersionsList" VerticalAlignment="Top" ItemsSource="{Binding ToolCollection}">
+                    <ListView.View>
+                        <GridView x:Uid="GridView_1" AllowsColumnReorder="False" RenderOptions.ClearTypeHint="Auto">
+                            <GridViewColumn x:Uid="GridViewColumn_1" Header="Encoder" Width="250" DisplayMemberBinding="{Binding ToolName}"/>
+                            <GridViewColumn x:Uid="GridViewColumn_2" Header="local version" Width="332" DisplayMemberBinding="{Binding LocalVersion}" />
+                            <GridViewColumn x:Uid="GridViewColumn_3" Header="server version" Width="352" DisplayMemberBinding="{Binding ServerVersion}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Label x:Uid="StatusText" Content="Status" Height="18" HorizontalAlignment="Left" Margin="6,162,0,0" Name="StatusText" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label x:Uid="ProgressText" Content="Progress" Height="18" HorizontalAlignment="Left" Margin="6,186,0,0" Name="ProgressText" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <ProgressBar x:Uid="StatusBar" Height="23" Margin="6,210,6,0" Name="StatusBar" VerticalAlignment="Top" />
+                
+            </Grid>
+        </Expander>
+        <Button x:Uid="UpdateButton" Content="Update" Margin="323,0,517,5" Name="UpdateButton" Height="23" VerticalAlignment="Bottom" Click="UpdateButtonClick" IsEnabled="{Binding ElementName=ToolVersionsList, Path=HasItems}" />
+        <Button x:Uid="CloseButton" Content="Close" Margin="497,0,343,5" Name="CloseButton" Height="23" VerticalAlignment="Bottom" Click="CloseButtonClick" />
+    </Grid>
+</UserControl>

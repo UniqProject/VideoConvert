@@ -1,0 +1,536 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FE3FCACA-E23A-433A-895F-308CD5723C9D}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VideoConvert</RootNamespace>
+    <AssemblyName>VideoConvert</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <UICulture>en-US</UICulture>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20621.0</ExpressionBlendVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>VideoConvert.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Videos-Library.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Core\AudioInfo.cs" />
+    <Compile Include="Core\CommandLine\eac3toCommandLineGenerator.cs" />
+    <Compile Include="Core\CommandLine\ffmpegCommandLineGenerator.cs" />
+    <Compile Include="Core\CommandLine\hcencCommandLineGenerator.cs" />
+    <Compile Include="Core\CommandLine\VP8CommandLineGenerator.cs" />
+    <Compile Include="Core\EncodeInfo.cs" />
+    <Compile Include="Core\Encoder\AviSynthGenerator.cs" />
+    <Compile Include="Core\Encoder\BDSup2SubTool.cs" />
+    <Compile Include="Core\Encoder\BePipe.cs" />
+    <Compile Include="Core\Encoder\DVDAuthor.cs" />
+    <Compile Include="Core\Encoder\Eac3To.cs" />
+    <Compile Include="Core\Encoder\FFMpeg.cs" />
+    <Compile Include="Core\Encoder\FfmsIndex.cs" />
+    <Compile Include="Core\Encoder\hcEnc.cs" />
+    <Compile Include="Core\Encoder\Lame.cs" />
+    <Compile Include="Core\Encoder\LsDvd.cs" />
+    <Compile Include="Core\Encoder\MJpeg.cs" />
+    <Compile Include="Core\Encoder\MkvMerge.cs" />
+    <Compile Include="Core\Encoder\MP4Box.cs" />
+    <Compile Include="Core\Encoder\MPlayer.cs" />
+    <Compile Include="Core\Encoder\NeroAACEnc.cs" />
+    <Compile Include="Core\Encoder\OggEnc.cs" />
+    <Compile Include="Core\Encoder\SpuMux.cs" />
+    <Compile Include="Core\Encoder\TsMuxeR.cs" />
+    <Compile Include="Core\Encoder\VpxEnc.cs" />
+    <Compile Include="Core\Encoder\X264.cs" />
+    <Compile Include="Core\EncodingStep.cs" />
+    <Compile Include="Core\Helpers\AudioHelper.cs" />
+    <Compile Include="Core\Helpers\DAR.cs" />
+    <Compile Include="Core\Helpers\DirSecurity.cs" />
+    <Compile Include="Core\Helpers\FileWorker.cs" />
+    <Compile Include="Core\Helpers\InputBox.xaml.cs">
+      <DependentUpon>InputBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Helpers\LanguageHelper.cs" />
+    <Compile Include="Core\Helpers\LogEntry.cs" />
+    <Compile Include="Core\Helpers\SizeModificator.cs" />
+    <Compile Include="Core\Helpers\StreamFormat.cs" />
+    <Compile Include="Core\Helpers\SupportedLanguage.cs" />
+    <Compile Include="Core\Helpers\TargetSize.cs" />
+    <Compile Include="Core\Helpers\TreeNode.cs" />
+    <Compile Include="Core\AppSettings.cs" />
+    <Compile Include="Core\Helpers\VideoHelper.cs" />
+    <Compile Include="Core\Helpers\XMLValueParser.cs" />
+    <Compile Include="Core\InputType.cs" />
+    <Compile Include="Core\Media\MediaInfoContainer.cs" />
+    <Compile Include="Core\Media\MediaInfoDLL.cs" />
+    <Compile Include="Core\Media\MediaInfoList.cs" />
+    <Compile Include="Core\NativeMethods.cs" />
+    <Compile Include="Core\OutputType.cs" />
+    <Compile Include="Core\Processing.cs" />
+    <Compile Include="Core\Profiles\AACProfile.cs" />
+    <Compile Include="Core\Profiles\AC3Profile.cs" />
+    <Compile Include="Core\Profiles\hcEncProfile.cs" />
+    <Compile Include="Core\Profiles\MP3Profile.cs" />
+    <Compile Include="Core\Profiles\OggProfile.cs" />
+    <Compile Include="Core\Profiles\ProfileHandler.cs" />
+    <Compile Include="Core\Profiles\EncoderProfile.cs" />
+    <Compile Include="Core\Profiles\ProfileType.cs" />
+    <Compile Include="Core\Profiles\QuickSelectProfile.cs" />
+    <Compile Include="Core\Profiles\StereoEncoding.cs" />
+    <Compile Include="Core\Profiles\StreamCopyProfile.cs" />
+    <Compile Include="Core\Profiles\VP8Profile.cs" />
+    <Compile Include="Core\Profiles\x264Profile.cs" />
+    <Compile Include="Core\CommandLine\x264CommandLineGenerator.cs" />
+    <Compile Include="Core\Profiles\XmlProfiles.cs" />
+    <Compile Include="Core\StereoVideoInfo.cs" />
+    <Compile Include="Core\SubtitleInfo.cs" />
+    <Compile Include="Core\Subtitles\BDNExport.cs" />
+    <Compile Include="Core\Subtitles\PNGImage.cs" />
+    <Compile Include="Core\Subtitles\SRTReader.cs" />
+    <Compile Include="Core\Subtitles\SSAReader.cs" />
+    <Compile Include="Core\Subtitles\SubCaption.cs" />
+    <Compile Include="Core\Subtitles\SubtitleStyle.cs" />
+    <Compile Include="Core\Subtitles\TextSubtitle.cs" />
+    <Compile Include="Core\VideoFormat.cs" />
+    <Compile Include="Core\VideoInfo.cs" />
+    <Compile Include="Core\Video\x264\x264Device.cs" />
+    <Compile Include="Core\Video\x264\X264Preset.cs" />
+    <Compile Include="Core\Video\x264\x264Settings.cs" />
+    <Compile Include="Settings1.cs" />
+    <Compile Include="Windows\StreamSelect.xaml.cs">
+      <DependentUpon>StreamSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ToolUpdaterWindow.xaml.cs">
+      <DependentUpon>ToolUpdaterWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\EncodingWindow.xaml.cs">
+      <DependentUpon>EncodingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Windows\ChangelogViewer.xaml.cs">
+      <DependentUpon>ChangelogViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\x264AdvancedSettings.xaml.cs">
+      <DependentUpon>x264AdvancedSettings.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Core\Helpers\InputBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StringResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\StreamSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ToolUpdaterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\EncodingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ChangelogViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Windows\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\x264AdvancedSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <Content Include="AvsPlugins\audio\ChannelDownMix.avsi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\FFMS2.avsi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\H264StereoSource.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\msvcp100.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\msvcr100.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\QTGMC-3.32.avsi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="app.manifest" />
+    <None Include="CHANGELOG.en-US">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="CHANGELOG.de-DE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Translation\translate.csv" />
+    <LocBamlCsv Include="Translation\Translate.de-DE.csv">
+      <Culture>de-DE</Culture>
+    </LocBamlCsv>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Videos-Library.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\wpfthemes\WPF.Themes\WPF.Themes.csproj">
+      <Project>{CD3CD636-D63E-4BD5-9FE9-2B63DA6F0616}</Project>
+      <Name>WPF.Themes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BDInfo\BDInfo\BDInfo.csproj">
+      <Project>{3209AF1D-4762-4960-9DE5-13E90E77EE96}</Project>
+      <Name>BDInfo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CheckBoxTreeViewLibrary\CheckBoxTreeViewLibrary.csproj">
+      <Project>{8762FBAD-B3B1-4ECF-97EF-AEB634BDD0AC}</Project>
+      <Name>CheckBoxTreeViewLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Converters\Converters.csproj">
+      <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
+      <Name>Converters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DirectShowLib\src\DirectShowLib-2008.csproj">
+      <Project>{CE009BFA-5EF6-4153-B2A1-2FA79698A9AE}</Project>
+      <Name>DirectShowLib-2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\log4net-1.2.11\src\log4net.vs2010.csproj">
+      <Project>{181FE707-E161-4722-9F38-6AAAB6FAA106}</Project>
+      <Name>log4net.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ManagedWinapi\ManagedWinapi.csproj">
+      <Project>{FBD3EC1E-47E2-4D2D-81C9-D6506125A09A}</Project>
+      <Name>ManagedWinapi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpZipLib\src\ICSharpCode.SharpZLib.csproj">
+      <Project>{0E7413FF-EB9E-4714-ACF2-BE3A6A7B2FFD}</Project>
+      <Name>ICSharpCode.SharpZLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UpdateCore\UpdateCore.csproj">
+      <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
+      <Name>UpdateCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WPFToolKit\Release\v1.6.0\ExtendedWPFToolkitSolution\Src\WPFToolkit.Extended\WPFToolkit.Extended.csproj">
+      <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
+      <Name>WPFToolkit.Extended</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\BLURAY-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\btn_donate_LG.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DVD-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Videos-1-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Videos-Library-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\x264_fire.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AvsPlugins\AddGrainC.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\BassAudio.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_aac.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_ape.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_cda.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_flac.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_mpc.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_spx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_tta.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_wma.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\bass_wv.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\BePipe.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\NicAudio.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\audio\soxfilter.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\AVSInfo.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\AVSInfo.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\dfttest.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\EEDI2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\eedi3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\ffms2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\ffmsindex.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\FFT3DFilter.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\mt_masktools-25.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\mt_masktools-26.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\mvtools2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\nnedi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\nnedi2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\nnedi3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\RemoveGrainSSE2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\RepairSSE2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\SSE2Tools.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\SupCore.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\SupTitle.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\TDeint.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\VerticalCleanerSSE2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\yadif.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Build\LocBaml.exe" />
+    <None Include="Build\LocBamlCsv.target.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Build\MergeLocBamlCsv.exe" />
+    <None Include="Build\StripLocBamlCsv.exe" />
+    <Content Include="MediaInfo.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="profiles.xml" />
+    <Resource Include="Resources\blue-bar.png" />
+    <Content Include="WriteChangeLog.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>set ASMINFO="$(ProjectDir)\Properties\AssemblyInfo.cs"
+FINDSTR /C:"[assembly: AssemblyVersion(" %25ASMINFO%25 | sed.exe "s/\[assembly: AssemblyVersion(\"/SET CURRENT_VERSION=/g;s/\")\]//g;s/\.\*//g" &gt;SetCurrVer.cmd
+CALL SetCurrVer.cmd
+DEL  SetCurrVer.cmd
+echo %25CURRENT_VERSION%25&gt;D:\MKV_Remux.txt
+$(WinDir)\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe /t:updateuid "$(ProjectDir)$(ProjectFileName)"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>cd $(SolutionDir)
+"$(ProjectDir)WriteChangelog" D:\MKV_Remux.txt "$(ProjectDir)CHANGELOG.de-DE" "$(TargetDir)CHANGELOG.de-DE"
+"$(ProjectDir)WriteChangelog" D:\MKV_Remux.txt "$(ProjectDir)CHANGELOG.en-US" "$(TargetDir)CHANGELOG.en-US"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

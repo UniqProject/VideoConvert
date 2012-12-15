@@ -1,0 +1,32 @@
+﻿<!--
+============================================================================
+VideoConvert - Fast Video & Audio Conversion Tool
+Copyright © 2012 JT-Soft
+    
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=============================================================================
+-->
+    <Window x:Uid="Window_1" x:Class="VideoConvert.Core.Helpers.InputBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="InputBox" Height="123" Width="479" WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackgroundBrush}">
+    <Grid x:Uid="Grid_1">
+        <Button x:Uid="OkButton" Content="OK" Height="23" HorizontalAlignment="Right" Margin="0,12,12,0" Name="OkButton" VerticalAlignment="Top" Width="75" Click="OkButtonClick" IsDefault="True" />
+        <Button x:Uid="CancelButton" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,12,12" Name="CancelButton" Width="75" Height="23" VerticalAlignment="Bottom" IsCancel="True" />
+        <Label x:Uid="LabelPrompt" Content="lblPrompt" Height="21" HorizontalAlignment="Left" Margin="12,13,0,0" Name="LabelPrompt" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <TextBox x:Uid="TextResult" Height="23" HorizontalAlignment="Left" Margin="12,49,0,0" Name="TextResult" VerticalAlignment="Top" Width="342" />
+    </Grid>
+</Window>
