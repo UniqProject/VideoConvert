@@ -249,7 +249,7 @@ namespace VideoConvert.Core.Encoder
                     decoder.PriorityClass = AppSettings.GetProcessPriority();
                     decoder.BeginErrorReadLine();
 
-                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream, 65536,
+                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream, 1024 * 1024,
                                                   (src, dst, exc) =>
                                                   {
                                                       src.Close();
