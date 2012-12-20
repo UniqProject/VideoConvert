@@ -485,6 +485,9 @@
     <Content Include="AvsPlugins\VerticalCleanerSSE2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="AvsPlugins\VSFilter.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="AvsPlugins\yadif.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

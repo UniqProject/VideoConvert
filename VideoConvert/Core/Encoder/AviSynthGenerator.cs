@@ -87,8 +87,19 @@ namespace VideoConvert.Core.Encoder
 
             if (!string.IsNullOrEmpty(subtitleFile) && File.Exists(subtitleFile))
             {
-                sb.AppendFormat(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
-                                Path.Combine(AppSettings.AppPath, "AvsPlugins", "SupTitle.dll"));
+                switch (Path.GetExtension(subtitleFile))
+                {
+                    case "sup":
+                        sb.AppendFormat(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
+                                        Path.Combine(AppSettings.AppPath, "AvsPlugins", "SupTitle.dll"));
+                        break;
+                    case "ass":
+                    case "ssa":
+                    case "srt":
+                        sb.AppendFormat(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
+                                        Path.Combine(AppSettings.AppPath, "AvsPlugins", "VSFilter.dll"));
+                        break;
+                }
                 sb.AppendLine();
             }
 
@@ -137,8 +148,19 @@ namespace VideoConvert.Core.Encoder
 
             if (!string.IsNullOrEmpty(subtitleFile) && File.Exists(subtitleFile))
             {
-                sb.AppendFormat(AppSettings.CInfo, "SupTitle(\"{0}\", forcedOnly={1})", subtitleFile,
-                                subtitleOnlyForced ? "true" : "false");
+                switch (Path.GetExtension(subtitleFile))
+                {
+                    case "sup":
+                        sb.AppendFormat(AppSettings.CInfo, "SupTitle(\"{0}\", forcedOnly={1})", subtitleFile,
+                                                        subtitleOnlyForced ? "true" : "false");
+                        break;
+                    case "ass":
+                    case "ssa":
+                    case "srt":
+                        sb.AppendFormat(AppSettings.CInfo, "TextSub(\"{0}\")", subtitleFile);
+                        break;
+                }
+                
                 sb.AppendLine();
             }
 
