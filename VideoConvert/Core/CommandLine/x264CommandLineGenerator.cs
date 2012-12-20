@@ -921,7 +921,13 @@ namespace VideoConvert.Core.CommandLine
                     sb.AppendFormat("--output \"{0}\" ", outFile);
 
                 if (!String.IsNullOrEmpty(inFile))
-                    sb.AppendFormat("\"{0}\" ", inFile);
+                {
+                    if (String.CompareOrdinal(inFile, "-") == 0)
+                        sb.Append("--demuxer y4m - ");
+                    else
+                        sb.AppendFormat("\"{0}\" ", inFile);
+                }
+                    
                 #endregion
             }
             return sb.ToString();

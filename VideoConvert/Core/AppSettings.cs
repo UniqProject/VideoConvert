@@ -169,6 +169,27 @@ namespace VideoConvert.Core
             }
         }
 
+        public static string Lastx26464Ver
+        {
+            get
+            {
+                return Properties.Settings.Default.Lastx264_64Ver;
+            }
+
+            set
+            {
+                Properties.Settings.Default.Lastx264_64Ver = value;
+            }
+        }
+
+        public static bool X26464Installed
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Lastx26464Ver);
+            }
+        }
+
         public static bool X264WithLavf
         {
             get
@@ -682,6 +703,18 @@ namespace VideoConvert.Core
             set
             {
                 Properties.Settings.Default.UseDebug = value;
+            }
+        }
+
+        public static bool Use64BitEncoders
+        {
+            get
+            {
+                return Properties.Settings.Default.Use64bitEncoders;
+            }
+            set
+            {
+                Properties.Settings.Default.Use64bitEncoders = value;
             }
         }
 

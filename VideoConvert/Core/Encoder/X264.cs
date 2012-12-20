@@ -39,6 +39,7 @@ namespace VideoConvert.Core.Encoder
 
         private EncodeInfo _jobInfo;
         private const string Executable = "x264.exe";
+        private const string Executable64 = "x264_64.exe";
 
         long _frameCount;
         private BackgroundWorker _bw;
@@ -55,16 +56,18 @@ namespace VideoConvert.Core.Encoder
             _jobInfo = job;
         }
 
-        public string GetVersionInfo()
+        public string GetVersionInfo(bool use64Bit)
         {
-            return GetVersionInfo(AppSettings.ToolsPath);
+            return GetVersionInfo(AppSettings.ToolsPath, use64Bit);
         }
 
-        public string GetVersionInfo(string encPath)
+        public string GetVersionInfo(string encPath, bool use64Bit)
         {
             string verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
+
+            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
             using (Process encoder = new Process())
             {
@@ -108,69 +111,9 @@ namespace VideoConvert.Core.Encoder
             // Debug info
             if (Log.IsDebugEnabled)
             {
+                if (use64Bit)
+                    Log.Debug("Selected 64 bit encoder");
                 Log.DebugFormat("x264 \"{0:s}\" found", verInfo);
-            }
-
-            return verInfo;
-        }
-
-        public Features GetFeatures()
-        {
-            Features verInfo = new Features {HasAvs = false, HasGpac = false, HasLavf = false};
-
-            string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
-
-            using (Process encoder = new Process())
-            {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable, "--help")
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
-                encoder.StartInfo = parameter;
-
-                bool started;
-                try
-                {
-                    started = encoder.Start();
-                }
-                catch (Exception ex)
-                {
-                    started = false;
-                    Log.ErrorFormat("x264 encoder exception: {0}", ex);
-                }
-
-                if (started)
-                {
-                    string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*lavf support \((\w.+)\) or.*\((\w.+)\).*$", RegexOptions.Singleline);
-                    Match result = regObj.Match(output);
-                    if (result.Success)
-                    {
-                        verInfo.HasLavf = result.Groups[1].Value == "yes";
-                    }
-
-                    Regex regObj1 = new Regex(@"^.*or Avisynth if compiled with support \((\w+)\).*$",
-                                              RegexOptions.Singleline);
-                    Match result1 = regObj1.Match(output);
-                    if (result1.Success)
-                    {
-                        verInfo.HasAvs = result1.Groups[1].Value == "yes";
-                    }
-
-                    Regex regObj2 = new Regex(@"^.*MP4 if compiled with GPAC support \((\w+)\).*$",
-                                              RegexOptions.Singleline);
-                    Match result2 = regObj2.Match(output);
-                    if (result.Success)
-                    {
-                        verInfo.HasGpac = result2.Groups[1].Value == "yes";
-                    }
-
-                    if (!encoder.HasExited)
-                        encoder.Kill();
-                }
-
             }
 
             return verInfo;
@@ -188,6 +131,10 @@ namespace VideoConvert.Core.Encoder
             DateTime startTime = DateTime.Now;
             TimeSpan remaining = new TimeSpan(0, 0, 0);
             // end progress
+
+            bool use64BitEncoder = AppSettings.Use64BitEncoders &&
+                                   AppSettings.X26464Installed &&
+                                   Environment.Is64BitOperatingSystem;
 
             X264Profile encProfile = (X264Profile)_jobInfo.VideoProfile;
 
@@ -217,6 +164,8 @@ namespace VideoConvert.Core.Encoder
                 pass = string.Format(" {1} {0:0}; ", _jobInfo.StreamId, passStr);
             }
 
+            _frameCount = _jobInfo.VideoStream.FrameCount;
+
             _bw.ReportProgress(-10, status + pass.Replace("; ", string.Empty));
             _bw.ReportProgress(0, status);
 
@@ -230,10 +179,12 @@ namespace VideoConvert.Core.Encoder
                                                                 _jobInfo.EncodingProfile.StereoType,
                                                                 false,
                                                                 _jobInfo.VideoStream.PicSize,
-                                                                inputFile,
+
+                                                                // check if we use 64 bit version
+                                                                use64BitEncoder ? "-" : inputFile,
                                                                 outFile);
 
-            string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
+            string localExecutable = Path.Combine(AppSettings.ToolsPath, use64BitEncoder ? Executable64 : Executable);
 
             Regex frameInformation = new Regex(@"^\D?([\d]+).*frames: ([\d\.]+) fps, ([\d\.]+).*$",
                                                RegexOptions.Singleline | RegexOptions.Multiline);
@@ -249,7 +200,8 @@ namespace VideoConvert.Core.Encoder
                                                      Arguments = argument,
                                                      CreateNoWindow = true,
                                                      UseShellExecute = false,
-                                                     RedirectStandardError = true
+                                                     RedirectStandardError = true,
+                                                     RedirectStandardInput = use64BitEncoder
                                                  };
                 encoder.StartInfo = parameter;
 
@@ -262,9 +214,8 @@ namespace VideoConvert.Core.Encoder
                                                      Match result = frameInformation.Match(line);
                                                      Match result2 = fullFrameInformation.Match(line);
 
-                                                     // ReSharper disable AccessToModifiedClosure
                                                      TimeSpan eta = DateTime.Now.Subtract(startTime);
-                                                     // ReSharper restore AccessToModifiedClosure
+                                                     
                                                      long current;
                                                      long framesRemaining;
                                                      long secRemaining = 0;
@@ -356,6 +307,8 @@ namespace VideoConvert.Core.Encoder
                 Log.InfoFormat("start parameter: x264 {0:s}", argument);
 
                 bool started;
+                bool decStarted = false;
+                Process decoder = new Process();
                 try
                 {
                     started = encoder.Start();
@@ -367,21 +320,66 @@ namespace VideoConvert.Core.Encoder
                     _jobInfo.ExitCode = -1;
                 }
 
+
+                if (use64BitEncoder)
+                {
+                    decoder = FfMpeg.GenerateDecodeProcess(inputFile);
+                    try
+                    {
+                        decStarted = decoder.Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        decStarted = false;
+                        Log.ErrorFormat("avconv exception: {0}", ex);
+                        _jobInfo.ExitCode = -1;
+                    }    
+                }
+
                 startTime = DateTime.Now;
 
-                if (started)
+                if ((started && !use64BitEncoder) || (started && decStarted))
                 {
                     encoder.PriorityClass = AppSettings.GetProcessPriority();
                     encoder.BeginErrorReadLine();
                     
+                    if (decStarted)
+                    {
+                        decoder.PriorityClass = AppSettings.GetProcessPriority();
+                        decoder.BeginErrorReadLine();
+
+                        Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream, 1024 * 1024 /* 1MB */,
+                                                  (src, dst, exc) =>
+                                                  {
+                                                      src.Close();
+                                                      dst.Close();
+
+                                                      if (exc == null) return;
+
+                                                      Log.Debug(exc.Message);
+                                                      Log.Debug(exc.StackTrace);
+                                                  });
+                    }
+
                     while (!encoder.HasExited)
                     {
                         if (_bw.CancellationPending)
+                        {
                             encoder.Kill();
+
+                            if (decStarted)
+                                decoder.Kill();
+                        }
                         Thread.Sleep(200);
                     }
+                    encoder.WaitForExit();
                     encoder.CancelErrorRead();
 
+                    if (decStarted)
+                    {
+                        decoder.WaitForExit();
+                        decoder.CancelErrorRead();
+                    }
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                 }

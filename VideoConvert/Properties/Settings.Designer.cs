@@ -646,5 +646,29 @@ namespace VideoConvert.Properties {
                 this["LastProfilesVer"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Lastx264_64Ver {
+            get {
+                return ((string)(this["Lastx264_64Ver"]));
+            }
+            set {
+                this["Lastx264_64Ver"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Use64bitEncoders {
+            get {
+                return ((bool)(this["Use64bitEncoders"]));
+            }
+            set {
+                this["Use64bitEncoders"] = value;
+            }
+        }
     }
 }

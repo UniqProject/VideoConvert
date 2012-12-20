@@ -191,6 +191,24 @@ namespace VideoConvert.Windows
                                                         });
                     }
 
+                    appVersion = verFile.SelectSingleNode("//x264_64");
+                    if (appVersion != null)
+                    {
+                        if (appVersion.Attributes != null)
+                            verAttrib = appVersion.Attributes["version"];
+                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0)
+                            _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "x264 (64 bit)",
+                                LocalVersion = AppSettings.Lastx26464Ver,
+                                ServerVersion = verAttrib.Value,
+                                FileName = Path.Combine(tempPath, appVersion.InnerText),
+                                DownloadUri = serverPathTools + appVersion.InnerText,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+                    }
+
                     appVersion = verFile.SelectSingleNode("//ffmpeg");
                     if (appVersion != null)
                     {

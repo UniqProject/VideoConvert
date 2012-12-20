@@ -555,11 +555,10 @@ namespace VideoConvert.Core
                 javaPath = AppSettings.JavaInstallPath;
 
             X264 x264Enc = new X264();
-            X264.Features feat = x264Enc.GetFeatures();
-            AppSettings.X264WithAVS = feat.HasAvs;
-            AppSettings.X264WithGpac = feat.HasGpac;
-            AppSettings.X264WithLavf = feat.HasLavf;
-            AppSettings.Lastx264Ver = x264Enc.GetVersionInfo(encPath);
+            AppSettings.Lastx264Ver = x264Enc.GetVersionInfo(encPath,false);
+
+            if (Environment.Is64BitOperatingSystem)
+                AppSettings.Lastx26464Ver = x264Enc.GetVersionInfo(encPath, true);
 
             FfMpeg ffmpeg = new FfMpeg();
             AppSettings.LastffmpegVer = ffmpeg.GetVersionInfo(encPath);
