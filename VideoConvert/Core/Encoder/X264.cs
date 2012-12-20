@@ -44,13 +44,6 @@ namespace VideoConvert.Core.Encoder
         long _frameCount;
         private BackgroundWorker _bw;
 
-        public struct Features
-        {
-            public bool HasGpac;
-            public bool HasLavf;
-            public bool HasAvs;
-        }
-
         public void SetJob(EncodeInfo job)
         {
             _jobInfo = job;
