@@ -60,12 +60,12 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
 
                 encoder.StartInfo = parameter;
 
@@ -87,24 +87,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("DVDAuthor \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -224,11 +217,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
 
 
                 string outFile = !string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.TempOutput : _jobInfo.OutputFile;
@@ -240,9 +233,7 @@ namespace VideoConvert.Core.Encoder
                 {
                     string line = outputEvent.Data;
                     if (!string.IsNullOrEmpty(line))
-                    {
                         Log.InfoFormat("dvdauthor: {0:s}", line);
-                    }
                 };
 
                 Log.InfoFormat("dvdauthor: {0:s}", parameter.Arguments);
@@ -279,8 +270,11 @@ namespace VideoConvert.Core.Encoder
                     {
                         if (_bw.CancellationPending)
                             encoder.Kill();
+
                         Thread.Sleep(200);
                     }
+
+                    encoder.WaitForExit(10000);
                     encoder.CancelErrorRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;

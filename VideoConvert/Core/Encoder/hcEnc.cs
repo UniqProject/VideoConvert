@@ -68,11 +68,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     UseShellExecute = true,
-                                                     WindowStyle = ProcessWindowStyle.Minimized,
-                                                     Arguments = "-noini -wait 5"
-                                                 };
+                    {
+                        UseShellExecute = true,
+                        WindowStyle = ProcessWindowStyle.Minimized,
+                        Arguments = "-noini -wait 5"
+                    };
 
                 encoder.StartInfo = parameter;
 
@@ -95,24 +95,17 @@ namespace VideoConvert.Core.Encoder
                     Regex regObj = new Regex(@"^.*HCenc ([\d\.]*?)$", RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(mainWin.Title);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("HCenc \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -137,7 +130,9 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo encoderParameter = new ProcessStartInfo(localExecutable)
-                                                        {WorkingDirectory = AppSettings.DemuxLocation};
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation
+                    };
 
                 float sourceAspect = (float)Math.Round(_jobInfo.VideoStream.AspectRatio, 3);
 
@@ -263,8 +258,9 @@ namespace VideoConvert.Core.Encoder
                         }
                     }
                     
-                    encoder.WaitForExit();
+                    encoder.WaitForExit(10000);
                     _jobInfo.ExitCode = encoder.ExitCode;
+
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                     if (_jobInfo.ExitCode == 0)
                     {
@@ -297,9 +293,8 @@ namespace VideoConvert.Core.Encoder
             int targetWidth = _jobInfo.VideoStream.AspectRatio >= 1.4f ? 1024 : 720;
 
             if (_jobInfo.Input == InputType.InputDvd)
-            {
-                _jobInfo.VideoStream.Width = (int)Math.Round(_jobInfo.VideoStream.Height * _jobInfo.VideoStream.AspectRatio, 0);
-            }
+                _jobInfo.VideoStream.Width =
+                    (int) Math.Round(_jobInfo.VideoStream.Height*_jobInfo.VideoStream.AspectRatio, 0);
 
             if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
             {

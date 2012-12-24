@@ -7,11 +7,6 @@ namespace VideoConvert.Core.Helpers
     
     public class DirSecurity
     {
-        public DirSecurity()
-        {
-            
-        }
-
         public static DirectorySecurity CreateDirSecurity (SecurityClass securityClass)
         {
             DirectorySecurity security = new DirectorySecurity();
@@ -24,25 +19,25 @@ namespace VideoConvert.Core.Helpers
                 {
                     security.SetOwner(identity);
                     FileSystemAccessRule accessRule = new FileSystemAccessRule(identity,
-                                                                               FileSystemRights.FullControl,
-                                                                               InheritanceFlags.ObjectInherit |
-                                                                               InheritanceFlags.ContainerInherit,
-                                                                               PropagationFlags.None,
-                                                                               AccessControlType.Allow);
+                                                              FileSystemRights.FullControl,
+                                                              InheritanceFlags.ObjectInherit |
+                                                              InheritanceFlags.ContainerInherit,
+                                                              PropagationFlags.None,
+                                                              AccessControlType.Allow);
                     security.SetAccessRule(accessRule);
                 }
             }
 
             if (securityClass == SecurityClass.Everybody)
             {
-                SecurityIdentifier everybodyIdentity = new SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+                SecurityIdentifier everybodyIdentity = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
 
                 FileSystemAccessRule accessRule = new FileSystemAccessRule(everybodyIdentity,
-                                                                           FileSystemRights.FullControl,
-                                                                           InheritanceFlags.ObjectInherit |
-                                                                           InheritanceFlags.ContainerInherit,
-                                                                           PropagationFlags.None,
-                                                                           AccessControlType.Allow);
+                                                          FileSystemRights.FullControl,
+                                                          InheritanceFlags.ObjectInherit |
+                                                          InheritanceFlags.ContainerInherit,
+                                                          PropagationFlags.None,
+                                                          AccessControlType.Allow);
                 security.AddAccessRule(accessRule);
             }
 

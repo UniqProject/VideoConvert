@@ -69,12 +69,10 @@ namespace VideoConvert.Core.Subtitles
                         List<String> formatAttribs = styles[1].Split(new[] {","}, StringSplitOptions.None).ToList();
                         List<String> formatValues = styles[2].Split(new[] {","}, StringSplitOptions.None).ToList();
                         
-                        ColorConverter conv = new ColorConverter();
                         for (int index = 0; index <= formatAttribs.Count - 1; index++)
                         {
                             string formatAttrib = formatAttribs[index].Trim();
                             string formatValue = formatValues[index].Trim();
-                            object fromString;
 
                             switch (formatAttrib)
                             {
@@ -226,12 +224,12 @@ namespace VideoConvert.Core.Subtitles
                                                        string.Empty, RegexOptions.Multiline);
 
                             SubCaption caption = new SubCaption
-                                                     {
-                                                         StartTime = startTime,
-                                                         EndTime = endTime,
-                                                         Text = text,
-                                                         Alignment = alignment
-                                                     };
+                                                {
+                                                    StartTime = startTime,
+                                                    EndTime = endTime,
+                                                    Text = text,
+                                                    Alignment = alignment
+                                                };
                             result.Captions.Add(caption);
 
                         }

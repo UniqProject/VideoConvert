@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -43,11 +44,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
 
                 encoder.StartInfo = parameter;
 
@@ -68,10 +69,9 @@ namespace VideoConvert.Core.Encoder
                     Regex regObj = new Regex(@".*VP8 Encoder (v[-.\w\d]*)", RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value.Trim();
-                    }
 
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
                         encoder.Kill();
                 }
@@ -79,9 +79,7 @@ namespace VideoConvert.Core.Encoder
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("VpxEnc \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -118,16 +116,12 @@ namespace VideoConvert.Core.Encoder
 
             int targetBitrate = 0;
             if (_jobInfo.EncodingProfile.TargetFileSize > 0)
-            {
                 targetBitrate = Processing.CalculateVideoBitrate(_jobInfo);
-            }
 
             int encodeMode = encProfile.EncodingMode;
             string pass = string.Empty;
             if (encodeMode == 1)
-            {
                 pass = string.Format(" {1} {0:0}; ", _jobInfo.StreamId, passStr);
-            }
 
             _bw.ReportProgress(-10, status + pass.Replace("; ", string.Empty));
             _bw.ReportProgress(0, status);
@@ -152,67 +146,67 @@ namespace VideoConvert.Core.Encoder
                            decoder = FfMpeg.GenerateDecodeProcess(inputFile))
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     Arguments = argument,
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true,
-                                                     RedirectStandardInput = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = argument,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true
+                    };
                 encoder.StartInfo = parameter;
 
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                                                 {
-                                                     string line = outputEvent.Data;
+                    {
+                        string line = outputEvent.Data;
 
-                                                     if (string.IsNullOrEmpty(line)) return;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                                                     Match result = frameInformation.Match(line);
+                        Match result = frameInformation.Match(line);
 
-                                                     // ReSharper disable AccessToModifiedClosure
-                                                     TimeSpan eta = DateTime.Now.Subtract(startTime);
-                                                     // ReSharper restore AccessToModifiedClosure
-                                                     long secRemaining = 0;
+                        // ReSharper disable AccessToModifiedClosure
+                        TimeSpan eta = DateTime.Now.Subtract(startTime);
+                        // ReSharper restore AccessToModifiedClosure
+                        long secRemaining = 0;
 
-                                                     if (result.Success)
-                                                     {
-                                                         long current;
-                                                         Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
-                                                                        AppSettings.CInfo, out current);
-                                                         long framesRemaining = _frameCount - current;
-                                                         float fps = 0f;
-                                                         if (eta.Seconds != 0)
-                                                         {
-                                                             //Frames per Second
-                                                             double codingFPS = Math.Round(current/eta.TotalSeconds, 2);
+                        if (result.Success)
+                        {
+                            long current;
+                            Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
+                                           AppSettings.CInfo, out current);
+                            long framesRemaining = _frameCount - current;
+                            float fps = 0f;
+                            if (eta.Seconds != 0)
+                            {
+                                //Frames per Second
+                                double codingFPS = Math.Round(current/eta.TotalSeconds, 2);
 
-                                                             if (codingFPS > 1)
-                                                             {
-                                                                 secRemaining = framesRemaining/(int) codingFPS;
-                                                                 fps = (float) codingFPS;
-                                                             }
-                                                             else
-                                                                 secRemaining = 0;
-                                                         }
+                                if (codingFPS > 1)
+                                {
+                                    secRemaining = framesRemaining/(int) codingFPS;
+                                    fps = (float) codingFPS;
+                                }
+                                else
+                                    secRemaining = 0;
+                            }
 
-                                                         if (secRemaining > 0)
-                                                             remaining = new TimeSpan(0, 0, (int) secRemaining);
+                            if (secRemaining > 0)
+                                remaining = new TimeSpan(0, 0, (int) secRemaining);
 
-                                                         DateTime ticks = new DateTime(eta.Ticks);
+                            DateTime ticks = new DateTime(eta.Ticks);
 
-                                                         string progress = string.Format(progressFormat,
-                                                                                         current, _frameCount,
-                                                                                         fps,
-                                                                                         remaining, ticks, pass);
-                                                         _bw.ReportProgress((int) (((float) current/_frameCount)*100),
-                                                                            progress);
-                                                     }
-                                                     else
-                                                     {
-                                                         Log.InfoFormat("vpxenc: {0:s}", line);
-                                                     }
-                                                 };
+                            string progress = string.Format(progressFormat,
+                                                            current, _frameCount,
+                                                            fps,
+                                                            remaining, ticks, pass);
+                            _bw.ReportProgress((int) (((float) current/_frameCount)*100),
+                                               progress);
+                        }
+                        else
+                        {
+                            Log.InfoFormat("vpxenc: {0:s}", line);
+                        }
+                    };
 
                 Log.InfoFormat("start parameter: vpxenc {0:s}", argument);
 
@@ -228,6 +222,10 @@ namespace VideoConvert.Core.Encoder
                     Log.ErrorFormat("vpxenc exception: {0}", ex);
                     _jobInfo.ExitCode = -1;
                 }
+
+                NamedPipeServerStream decodePipe = new NamedPipeServerStream(AppSettings.DecodeNamedPipeName,
+                                                                             PipeDirection.In, 1,
+                                                                             PipeTransmissionMode.Byte, PipeOptions.None);
 
                 try
                 {
@@ -249,17 +247,20 @@ namespace VideoConvert.Core.Encoder
                     decoder.PriorityClass = AppSettings.GetProcessPriority();
                     decoder.BeginErrorReadLine();
 
-                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream, 1024 * 1024,
-                                                  (src, dst, exc) =>
-                                                  {
-                                                      src.Close();
-                                                      dst.Close();
-
-                                                      if (exc == null) return;
-
-                                                      Log.Debug(exc.Message);
-                                                      Log.Debug(exc.StackTrace);
-                                                  });
+                    Thread pipeReadThread = new Thread(() =>
+                        {
+                            try
+                            {
+                                ReadThreadStart(decodePipe, encoder);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error(ex);
+                            }
+                        });
+                    pipeReadThread.Start();
+                    pipeReadThread.Priority = ThreadPriority.BelowNormal;
+                    encoder.Exited += (o, args) => pipeReadThread.Abort();
 
                     while (!encoder.HasExited)
                     {
@@ -271,9 +272,30 @@ namespace VideoConvert.Core.Encoder
                         Thread.Sleep(200);
                     }
 
-                    encoder.WaitForExit();
+                    encoder.WaitForExit(10000);
                     encoder.CancelErrorRead();
-                    decoder.WaitForExit();
+
+                    if (decodePipe.IsConnected)
+                        try
+                        {
+                            decodePipe.Disconnect();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex);
+                        }
+
+                    try
+                    {
+                        decodePipe.Close();
+                        decodePipe.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex);
+                    }
+
+                    decoder.WaitForExit(10000);
                     decoder.CancelErrorRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;
@@ -305,6 +327,20 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
             e.Result = _jobInfo;
+        }
+
+        private void ReadThreadStart(NamedPipeServerStream decodePipe, Process encoder)
+        {
+            const int bufSize = 1024 * 1024;
+            byte[] buffer = new byte[bufSize];
+
+            decodePipe.WaitForConnection();
+            while (decodePipe.IsConnected && !encoder.HasExited)
+            {
+                int readCnt = decodePipe.Read(buffer, 0, bufSize);
+                encoder.StandardInput.BaseStream.Write(buffer, 0, readCnt);
+            }
+            encoder.StandardInput.BaseStream.Close();
         }
 
         private void GenerateAviSynthScript(Size resizeTo)

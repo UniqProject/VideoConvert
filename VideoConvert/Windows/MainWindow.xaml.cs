@@ -271,7 +271,7 @@ namespace VideoConvert.Windows
                             if (appVersion != null)
                                 if (appVersion.Attributes != null) 
                                     verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMJPEGtoolsVer) != 0)
+                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMJPEGToolsVer) != 0)
                                 needUpdate = true;
 
                             appVersion = verFile.SelectSingleNode("//dvdauthor");

@@ -57,10 +57,9 @@ namespace VideoConvert.Core.Encoder
                                         Path.Combine(AppSettings.AppPath, "AvsPlugins", "ffms2.dll")));
 
             if (changeFps || (videoInfo.Interlaced && AppSettings.UseHQDeinterlace))
-            {
                 sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
                                             Path.Combine(AppSettings.AppPath, "AvsPlugins", "mvtools2.dll")));
-            }
+
             if (videoInfo.Interlaced && AppSettings.UseHQDeinterlace)
             {
                 sb.AppendLine(AppSettings.LastAviSynthVer.StartsWith("2.5")
@@ -80,10 +79,8 @@ namespace VideoConvert.Core.Encoder
             }
 
             if (useStereo)
-            {
                 sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
                                             Path.Combine(AppSettings.AppPath, "AvsPlugins", "H264StereoSource.dll")));
-            }
 
             if (!string.IsNullOrEmpty(subtitleFile) && File.Exists(subtitleFile))
             {
@@ -124,16 +121,12 @@ namespace VideoConvert.Core.Encoder
             }
 
             if (videoInfo.FrameRateEnumerator > 0 && videoInfo.FrameRateDenominator > 0)
-            {
                 sb.AppendLine(string.Format(AppSettings.CInfo,
                                             "FFVideoSource(\"{0:s}\",fpsnum={1:0},fpsden={2:0},threads=1)",
                                             videoInfo.TempFile, videoInfo.FrameRateEnumerator,
                                             videoInfo.FrameRateDenominator));
-            }
             else
-            {
                 sb.AppendLine(string.Format(AppSettings.CInfo, "FFVideoSource(\"{0:s}\",threads=1)", videoInfo.TempFile));
-            }
 
             string stereoVar = string.Empty;
 
@@ -317,13 +310,10 @@ namespace VideoConvert.Core.Encoder
                     else if (isDvdResolution)
                     {
                         calculatedHeight = resizeTo.Height;
-                        calculatedWidth = (int)(calculatedHeight * videoInfo.AspectRatio);
+                        calculatedWidth = (int) (calculatedHeight*videoInfo.AspectRatio);
                     }
                     else
-                    {
                         calculatedHeight = resizeTo.Height;
-                        //calculatedWidth = (int)(calculatedHeight * videoInfo.AspectRatio * mod);
-                    }
 
                     int temp;
                     Math.DivRem(calculatedWidth, 2, out temp);
@@ -365,29 +355,24 @@ namespace VideoConvert.Core.Encoder
             }
 
             if ((calculatedHeight != videoInfo.Height) || (calculatedWidth != videoInfo.Width) ||
-                    ((stereoEncoding == StereoEncoding.HalfSideBySideLeft) || (stereoEncoding == StereoEncoding.HalfSideBySideRight)) 
-                    && useStereo)
-            {
+                ((stereoEncoding == StereoEncoding.HalfSideBySideLeft) ||
+                 (stereoEncoding == StereoEncoding.HalfSideBySideRight))
+                && useStereo)
                 sb.AppendLine(string.Format(AppSettings.CInfo, "Lanczos4Resize({0:g},{1:g})",
-                                                            calculatedWidth,
-                                                            calculatedHeight));
-            }
+                                            calculatedWidth,
+                                            calculatedHeight));
 
             if (addBorders)
-            {
                 sb.AppendLine(string.Format(AppSettings.CInfo, "AddBorders({0:g},{1:g},{2:g},{3:g})",
-                                                        borderLeft,
-                                                        borderTop,
-                                                        borderRight,
-                                                        borderBottom));
-            }
+                                            borderLeft,
+                                            borderTop,
+                                            borderRight,
+                                            borderBottom));
 
             if (videoInfo.Interlaced)
             {
                 if (AppSettings.UseHQDeinterlace)
-                {
                     sb.AppendLine("QTGMC(Preset=\"Slower\")");
-                }
                 else
                 {
                     sb.AppendLine("SeparateFields()");
@@ -464,9 +449,8 @@ namespace VideoConvert.Core.Encoder
 
             Random rand = new Random();
             for (int i = 0; i < 5; i++)
-            {
-                randomList.Add(rand.Next((int)Math.Round(streamLength * targetFps, 0)));
-            }
+                randomList.Add(rand.Next((int) Math.Round(streamLength*targetFps, 0)));
+
             randomList.Sort();
 
             frameCount = 0;
@@ -502,9 +486,7 @@ namespace VideoConvert.Core.Encoder
 
             string avsFile = Processing.CreateTempFile(extension);
             using (StreamWriter sw = new StreamWriter(avsFile))
-            {
                 sw.WriteLine(script);
-            }
 
             return avsFile;
         }

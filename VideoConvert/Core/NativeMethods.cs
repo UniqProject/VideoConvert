@@ -13,7 +13,9 @@
  EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
  WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 \***************************************************************************/
-
+// ReSharper disable InconsistentNaming
+// ReSharper disable RedundantBaseQualifier
+// ReSharper disable UnusedMember.Local
 #region Using directives
 
 using System;
@@ -192,7 +194,9 @@ namespace VideoConvert.Core
     /// The structure indicates whether a token has elevated privileges.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
+
     internal struct TOKEN_ELEVATION
+
     {
         public Int32 TokenIsElevated;
     }
@@ -227,7 +231,9 @@ namespace VideoConvert.Core
 
         protected override bool ReleaseHandle()
         {
+
             return CloseHandle(base.handle);
+
         }
     }
 
@@ -396,3 +402,6 @@ namespace VideoConvert.Core
         public static extern IntPtr GetSidSubAuthority(IntPtr pSid, UInt32 nSubAuthority);
     }
 }
+// ReSharper restore UnusedMember.Local
+// ReSharper restore RedundantBaseQualifier
+// ReSharper restore InconsistentNaming

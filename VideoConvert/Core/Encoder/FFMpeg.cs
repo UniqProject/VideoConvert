@@ -61,11 +61,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
                 encoder.StartInfo = parameter;
 
                 bool started;
@@ -86,24 +86,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("avconv \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -168,37 +161,35 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     Arguments = sb.ToString(),
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = sb.ToString(),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
                 encoder.StartInfo = parameter;
 
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match result = regObj.Match(line);
-                    if (result.Success)
                     {
-                        double secDemux;
-                        Double.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out secDemux);
-                        int progress = (int)Math.Floor(secDemux / _jobInfo.VideoStream.Length * 100d);
+                        string line = outputEvent.Data;
 
-                        string progressStr = string.Format(progressFormat, Path.GetFileName(_jobInfo.InputFile),
-                                                           progress);
-                        _bw.ReportProgress(progress, progressStr);
-                    }
-                    else
-                    {
-                        Log.InfoFormat("avconv: {0:s}", line);
-                    }
-                };
+                        if (string.IsNullOrEmpty(line)) return;
+
+                        Match result = regObj.Match(line);
+                        if (result.Success)
+                        {
+                            double secDemux;
+                            Double.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out secDemux);
+                            int progress = (int) Math.Floor(secDemux/_jobInfo.VideoStream.Length*100d);
+
+                            string progressStr = string.Format(progressFormat, Path.GetFileName(_jobInfo.InputFile),
+                                                               progress);
+                            _bw.ReportProgress(progress, progressStr);
+                        }
+                        else
+                            Log.InfoFormat("avconv: {0:s}", line);
+                    };
 
                 Log.InfoFormat("avconv {0:s}", parameter.Arguments);
 
@@ -228,7 +219,8 @@ namespace VideoConvert.Core.Encoder
                         Thread.Sleep(200);
 
                     }
-                    encoder.WaitForExit();
+
+                    encoder.WaitForExit(10000);
                     encoder.CancelErrorRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;
@@ -310,9 +302,7 @@ namespace VideoConvert.Core.Encoder
                     outChannels = item.ChannelCount > 6 ? 6 : item.ChannelCount;
                     outSampleRate = item.SampleRate;
                     if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd && outSampleRate != 48000)
-                    {
                         outSampleRate = 48000;
-                    }
                     break;
             }
             string inputFile = AviSynthGenerator.GenerateAudioScript(item.TempFile, item.Format, item.FormatProfile,
@@ -331,68 +321,66 @@ namespace VideoConvert.Core.Encoder
                            decoder = BePipe.GenerateProcess(inputFile))
             {
                 ProcessStartInfo encoderParameter = new ProcessStartInfo(localExecutable)
-                                                        {
-                                                            WorkingDirectory = AppSettings.DemuxLocation,
-                                                            Arguments =
-                                                                FfmpegCommandLineGenerator.GenerateAC3EncodeLine(
-                                                                    _jobInfo,
-                                                                    item,
-                                                                    "-",
-                                                                    outFile),
-                                                            CreateNoWindow = true,
-                                                            UseShellExecute = false,
-                                                            RedirectStandardError = true,
-                                                            RedirectStandardInput = true
-                                                        };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments =
+                            FfmpegCommandLineGenerator.GenerateAC3EncodeLine(
+                                _jobInfo,
+                                item,
+                                "-",
+                                outFile),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true
+                    };
                 encoder.StartInfo = encoderParameter;
 
                 AudioInfo localItem = item;
                 DateTime time = startTime;
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match result = regObj.Match(line);
-                    if (result.Success)
                     {
-                        int progress = -1;
-                        float procTime;
-                        Single.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out procTime);
+                        string line = outputEvent.Data;
 
-                        if (procTime > 0f)
-                            progress = (int)Math.Round(procTime / localItem.Length * 100, 0);
+                        if (string.IsNullOrEmpty(line)) return;
 
-                        TimeSpan eta = DateTime.Now.Subtract(time);
-                        double timeRemaining = localItem.Length - procTime;
-                        long secRemaining = 0;
-
-                        if (eta.Seconds != 0)
+                        Match result = regObj.Match(line);
+                        if (result.Success)
                         {
-                            double speed = Math.Round(procTime / eta.TotalSeconds, 2);
+                            int progress = -1;
+                            float procTime;
+                            Single.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out procTime);
 
-                            if (speed > 1)
-                                secRemaining = (long)Math.Round(timeRemaining / speed, 0);
-                            else
+                            if (procTime > 0f)
+                                progress = (int) Math.Round(procTime/localItem.Length*100, 0);
+
+                            TimeSpan eta = DateTime.Now.Subtract(time);
+                            double timeRemaining = localItem.Length - procTime;
+                            long secRemaining = 0;
+
+                            if (eta.Seconds != 0)
+                            {
+                                double speed = Math.Round(procTime/eta.TotalSeconds, 2);
+
+                                if (speed > 1)
+                                    secRemaining = (long) Math.Round(timeRemaining/speed, 0);
+                                else
+                                    secRemaining = 0;
+                            }
+
+                            if (secRemaining < 0)
                                 secRemaining = 0;
+
+                            TimeSpan remaining = new TimeSpan(0, 0, (int) secRemaining);
+
+                            DateTime ticks1 = new DateTime(eta.Ticks);
+
+                            string encProgress = string.Format(encProgressFmt, ticks1, remaining);
+                            _bw.ReportProgress(progress, encProgress);
                         }
-
-                        if (secRemaining < 0)
-                            secRemaining = 0;
-
-                        TimeSpan remaining = new TimeSpan(0, 0, (int)secRemaining);
-
-                        DateTime ticks1 = new DateTime(eta.Ticks);
-
-                        string encProgress = string.Format(encProgressFmt, ticks1, remaining);
-                        _bw.ReportProgress(progress, encProgress);
-                    }
-                    else
-                    {
-                        Log.InfoFormat("avconv: {0:s}", line);
-                    }
-                };
+                        else
+                            Log.InfoFormat("avconv: {0:s}", line);
+                    };
 
                 Log.InfoFormat("avconv {0:s}", encoderParameter.Arguments);
 
@@ -426,7 +414,8 @@ namespace VideoConvert.Core.Encoder
                     encoder.BeginErrorReadLine();
                     decoder.PriorityClass = AppSettings.GetProcessPriority();
 
-                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream, 32768,
+                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream,
+                                                  32768,
                                                   (src, dst, exc) =>
                                                       {
                                                           src.Close();
@@ -447,9 +436,10 @@ namespace VideoConvert.Core.Encoder
                         }
                         Thread.Sleep(200);
                     }
-                    encoder.WaitForExit();
+
+                    encoder.WaitForExit(10000);
                     encoder.CancelErrorRead();
-                    decoder.WaitForExit();
+                    decoder.WaitForExit(10000);
 
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
@@ -493,60 +483,63 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo encoderParameter = new ProcessStartInfo(localExecutable)
-                                                        {
-                                                            WorkingDirectory = AppSettings.DemuxLocation,
-                                                            Arguments = string.Format(AppSettings.CInfo,
-                                                                                      " -threads {0:g} -i \"{1:s}\" -vf cropdetect -vcodec rawvideo -an -sn -f matroska -y NUL",
-                                                                                      Environment.ProcessorCount + 1,
-                                                                                      inputFile),
-                                                            CreateNoWindow = true,
-                                                            UseShellExecute = false,
-                                                            RedirectStandardError = true
-                                                        };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = string.Format(AppSettings.CInfo,
+                                                  " -threads {0:g} -i \"{1:s}\" -vf cropdetect -vcodec rawvideo -an -sn -f matroska -y NUL",
+                                                  Environment.ProcessorCount + 1,
+                                                  inputFile),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
                 encoder.StartInfo = encoderParameter;
 
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match cropResult = cropReg.Match(line);
-                    Match frameResult = frameReg.Match(line);
-                    if (cropResult.Success)
                     {
-                        Point loc = new Point();
-                        int tempVal;
+                        string line = outputEvent.Data;
 
-                        Int32.TryParse(cropResult.Groups[3].Value, NumberStyles.Number, AppSettings.CInfo, out tempVal);
-                        loc.X = tempVal;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                        Int32.TryParse(cropResult.Groups[4].Value, NumberStyles.Number, AppSettings.CInfo, out tempVal);
-                        loc.Y = tempVal;
+                        Match cropResult = cropReg.Match(line);
+                        Match frameResult = frameReg.Match(line);
+                        if (cropResult.Success)
+                        {
+                            Point loc = new Point();
+                            int tempVal;
 
-                        _jobInfo.VideoStream.CropRect.Location = loc;
+                            Int32.TryParse(cropResult.Groups[3].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out tempVal);
+                            loc.X = tempVal;
 
-                        Int32.TryParse(cropResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out tempVal);
-                        _jobInfo.VideoStream.CropRect.Width = tempVal;
+                            Int32.TryParse(cropResult.Groups[4].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out tempVal);
+                            loc.Y = tempVal;
 
-                        Int32.TryParse(cropResult.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out tempVal);
-                        _jobInfo.VideoStream.CropRect.Height = tempVal;
+                            _jobInfo.VideoStream.CropRect.Location = loc;
 
-                    }
-                    else if (frameResult.Success)
-                    {
-                        int tempVal;
+                            Int32.TryParse(cropResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out tempVal);
+                            _jobInfo.VideoStream.CropRect.Width = tempVal;
 
-                        Int32.TryParse(frameResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out tempVal);
-                        int progress = (int)Math.Round((float)tempVal / frames * 100, 0);
+                            Int32.TryParse(cropResult.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out tempVal);
+                            _jobInfo.VideoStream.CropRect.Height = tempVal;
 
-                        _bw.ReportProgress(progress, status);
-                    }
-                    else
-                    {
-                        Log.InfoFormat("avconv: {0:s}", line);
-                    }
-                };
+                        }
+                        else if (frameResult.Success)
+                        {
+                            int tempVal;
+
+                            Int32.TryParse(frameResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out tempVal);
+                            int progress = (int) Math.Round((float) tempVal/frames*100, 0);
+
+                            _bw.ReportProgress(progress, status);
+                        }
+                        else
+                            Log.InfoFormat("avconv: {0:s}", line);
+                    };
 
                 Log.InfoFormat("avconv {0:s}", encoderParameter.Arguments);
 
@@ -577,7 +570,7 @@ namespace VideoConvert.Core.Encoder
                             encoder.Kill();
                         Thread.Sleep(200);
                     }
-                    encoder.WaitForExit();
+                    encoder.WaitForExit(10000);
                     encoder.CancelErrorRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;
@@ -619,29 +612,30 @@ namespace VideoConvert.Core.Encoder
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
 
             ProcessStartInfo info = new ProcessStartInfo
-            {
-                FileName = localExecutable,
-                Arguments =
-                    String.Format(AppSettings.CInfo, "-i \"{0}\" -f yuv4mpegpipe -",
-                                  scriptName),
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false
-            };
+                {
+                    FileName = localExecutable,
+                    Arguments =
+                        String.Format(AppSettings.CInfo, "-i \"{0}\" -f yuv4mpegpipe -y \"{1}\"",
+                                      scriptName, AppSettings.DecodeNamedPipeFullName),
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                };
             Process ffmpeg = new Process { StartInfo = info };
 
             ffmpeg.ErrorDataReceived += (sender, args) =>
-                                            {
-                                                string line = args.Data;
-                                                if (string.IsNullOrEmpty(line)) return;
+                {
+                    string line = args.Data;
+                    if (string.IsNullOrEmpty(line)) return;
 
-                                                Regex frameReg = new Regex(@"^.*frame=\s*(\d*).*$", RegexOptions.Singleline | RegexOptions.Multiline);
-                                                Match frameResult = frameReg.Match(line);
-                                                if (!frameResult.Success)
-                                                    Log.Info(line);
+                    Regex frameReg = new Regex(@"^.*frame=\s*(\d*).*$", RegexOptions.Singleline | RegexOptions.Multiline);
+                    Match frameResult = frameReg.Match(line);
+                    if (!frameResult.Success)
+                        Log.Info(line);
 
-                                            };
+                };
+
             Log.Info("ffmpeg decoding process created!");
             Log.Info("params: avconv " + ffmpeg.StartInfo.Arguments);
 

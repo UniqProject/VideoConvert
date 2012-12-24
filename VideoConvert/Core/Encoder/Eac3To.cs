@@ -57,11 +57,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
 
                 encoder.StartInfo = parameter;
 
@@ -83,20 +83,16 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("eac3to v{0:s} found", verInfo);
-            }
 
             return verInfo;
         }
@@ -122,14 +118,14 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     Arguments =
-                                                         Eac3ToCommandLineGenerator.GenerateDemuxLine(ref _jobInfo),
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments =
+                            Eac3ToCommandLineGenerator.GenerateDemuxLine(ref _jobInfo),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
 
                 encoder.StartInfo = parameter;
 
@@ -160,9 +156,7 @@ namespace VideoConvert.Core.Encoder
                         _bw.ReportProgress(0, status);
                     }
                     else
-                    {
                         Log.InfoFormat("eac3to: {0:s}", line);
-                    }
                 };
 
                 Log.InfoFormat("eac3to {0:s}", parameter.Arguments);
@@ -187,14 +181,14 @@ namespace VideoConvert.Core.Encoder
                     while (!encoder.HasExited)
                     {
                         if (_bw.CancellationPending)
-                        {
                             encoder.Kill();
-                        }
+
                         Thread.Sleep(200);
                     }
 
-                    Thread.Sleep(500);
+                    encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
+
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                 }
@@ -216,9 +210,7 @@ namespace VideoConvert.Core.Encoder
         private void GetStreamInfo()
         {
             if (_jobInfo.Input == InputType.InputDvd)
-            {
                 _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream);
-            }
             else
             {
                 MediaInfoContainer container = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
@@ -233,10 +225,9 @@ namespace VideoConvert.Core.Encoder
                 aStream = AudioHelper.GetStreamInfo(aStream);
                 _jobInfo.AudioStreams[i] = aStream;
             }
+
             foreach (SubtitleInfo sStream in _jobInfo.SubtitleStreams)
-            {
                 sStream.StreamSize = Processing.GetFileSize(sStream.TempFile);
-            }
         }
     }
 }

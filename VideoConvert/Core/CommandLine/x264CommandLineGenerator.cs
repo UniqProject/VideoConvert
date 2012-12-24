@@ -923,7 +923,7 @@ namespace VideoConvert.Core.CommandLine
                 if (!String.IsNullOrEmpty(inFile))
                 {
                     if (String.CompareOrdinal(inFile, "-") == 0)
-                        sb.Append("--demuxer y4m - ");
+                        sb.AppendFormat("--demuxer y4m - ");
                     else
                         sb.AppendFormat("\"{0}\" ", inFile);
                 }
@@ -1142,12 +1142,7 @@ namespace VideoConvert.Core.CommandLine
 
         private static bool GetAud(X264Profile inProfile, X264Device device)
         {
-            bool aud = inProfile.UseAccessUnitDelimiters;
-
-            if (device.BluRay && inProfile.UseAccessUnitDelimiters == false)
-            {
-                aud = true;
-            }
+            bool aud = inProfile.UseAccessUnitDelimiters || device.BluRay && inProfile.UseAccessUnitDelimiters == false;
 
             return aud;
         }

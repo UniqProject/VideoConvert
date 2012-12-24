@@ -1,4 +1,8 @@
-﻿- [fix]     On multi-user machines updater should work correctly now.
+﻿- [change]  Project name changed to VideoConvert.
+- [new]     Support for 64bit encoders added. Currently only x264 64bit encoder available.
+
+0.21.691.0048
+- [fix]     On multi-user machines updater should work correctly now.
 
 0.21.678.2025
 - [fix]     don't ignore BDInfo settings.

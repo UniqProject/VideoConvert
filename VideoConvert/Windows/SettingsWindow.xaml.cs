@@ -29,6 +29,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Media;
 using VideoConvert.Core;
 using VideoConvert.Core.Helpers;
@@ -36,6 +37,12 @@ using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
 using VideoConvert.Core.Video.x264;
 using Xceed.Wpf.Toolkit;
+using CheckBox = System.Windows.Controls.CheckBox;
+using ComboBox = System.Windows.Controls.ComboBox;
+using GroupBox = System.Windows.Controls.GroupBox;
+using RadioButton = System.Windows.Controls.RadioButton;
+using TabControl = System.Windows.Controls.TabControl;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace VideoConvert.Windows
 {
@@ -103,7 +110,7 @@ namespace VideoConvert.Windows
             #endregion
 
             List<X264Device> x264DeviceList = X264Device.CreateDeviceList();
-            x264TuneDevice.ItemsSource = x264DeviceList;
+            X264TuneDevice.ItemsSource = x264DeviceList;
 
             foreach (FontFamily item in Fonts.SystemFontFamilies)
             {
@@ -454,7 +461,7 @@ namespace VideoConvert.Windows
         {
             string result = string.Empty;
 
-            System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
             if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 result = folderBrowser.SelectedPath;
 
@@ -465,7 +472,7 @@ namespace VideoConvert.Windows
         {
             string result = string.Empty;
 
-            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            OpenFileDialog fileDialog = new OpenFileDialog();
             if (!string.IsNullOrEmpty(file))
             {
                 fileDialog.Filter = string.Format("{0}|{0}", file);
@@ -692,17 +699,17 @@ namespace VideoConvert.Windows
             _selectedVideoProfile = VideoProfileSelect.SelectedItem as X264Profile;
             if (_selectedVideoProfile == null) return;
 
-            x264EncodingMode.SelectedIndex = ((X264Profile)_selectedVideoProfile).EncodingMode;
+            X264EncodingMode.SelectedIndex = ((X264Profile)_selectedVideoProfile).EncodingMode;
 
-            x264Quantizer.Value = ((X264Profile)_selectedVideoProfile).QuantizerSetting;
-            x264Quality.Value = ((X264Profile)_selectedVideoProfile).QualitySetting;
+            X264Quantizer.Value = ((X264Profile)_selectedVideoProfile).QuantizerSetting;
+            X264Quality.Value = ((X264Profile)_selectedVideoProfile).QualitySetting;
 
-            x264VBRSetting.Value = ((X264Profile)_selectedVideoProfile).VBRSetting;
-            x264Tuning.SelectedIndex = ((X264Profile)_selectedVideoProfile).Tuning;
-            x264AVCProfile.SelectedIndex = ((X264Profile)_selectedVideoProfile).AVCProfile;
-            x264AVCPreset.SelectedIndex = ((X264Profile)_selectedVideoProfile).Preset;
-            x264AVCLevel.SelectedIndex = ((X264Profile)_selectedVideoProfile).AVCLevel;
-            x264TuneDevice.SelectedIndex = ((X264Profile)_selectedVideoProfile).TuneDevice;
+            X264VBRSetting.Value = ((X264Profile)_selectedVideoProfile).VBRSetting;
+            X264Tuning.SelectedIndex = ((X264Profile)_selectedVideoProfile).Tuning;
+            X264AVCProfile.SelectedIndex = ((X264Profile)_selectedVideoProfile).AVCProfile;
+            X264AVCPreset.SelectedIndex = ((X264Profile)_selectedVideoProfile).Preset;
+            X264AVCLevel.SelectedIndex = ((X264Profile)_selectedVideoProfile).AVCLevel;
+            X264TuneDevice.SelectedIndex = ((X264Profile)_selectedVideoProfile).TuneDevice;
         }
 
         private void NewVideoProfileButtonClick(object sender, RoutedEventArgs e)
@@ -757,20 +764,20 @@ namespace VideoConvert.Windows
             switch (VideoEncoder.SelectedIndex)
             {
                 case 3:
-                    ((HcEncProfile) _selectedVideoProfile).Bitrate = hcEncBitrate.Value.GetValueOrDefault();
-                    ((HcEncProfile) _selectedVideoProfile).Profile = hcEncProfile.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).DCPrecision = hcEncDCPrecision.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).Interlacing = hcEncInterlacing.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).FieldOrder = hcEncInterlaceFieldOrder.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).ChromaDownsampling = hcEncChromaDownsampling.SelectedIndex;
-                    ((HcEncProfile)_selectedVideoProfile).ClosedGops = hcEncClosedGOP.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).SceneChange = hcEncSceneChange.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).AutoGOP = hcEncAutoGOP.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).GopLength = hcEncGopLength.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).BFrames = hcEncBFrames.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).LuminanceGain = hcEncLumGain.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).AQ = hcEncAQ.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).SMP = hcEncSMP.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).Bitrate = HcEncBitrate.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).Profile = HcEncProfile.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).DCPrecision = HcEncDCPrecision.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).Interlacing = HcEncInterlacing.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).FieldOrder = HcEncInterlaceFieldOrder.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).ChromaDownsampling = HcEncChromaDownsampling.SelectedIndex;
+                    ((HcEncProfile)_selectedVideoProfile).ClosedGops = HcEncClosedGOP.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).SceneChange = HcEncSceneChange.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).AutoGOP = HcEncAutoGOP.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).GopLength = HcEncGopLength.Value.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).BFrames = HcEncBFrames.Value.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).LuminanceGain = HcEncLumGain.Value.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).AQ = HcEncAQ.Value.GetValueOrDefault();
+                    ((HcEncProfile)_selectedVideoProfile).SMP = HcEncSMP.IsChecked.GetValueOrDefault();
                     ((HcEncProfile)_selectedVideoProfile).VBVCheck = hcEncVBVCheck.IsChecked.GetValueOrDefault();
                     ((HcEncProfile) _selectedVideoProfile).Matrix = hcEncBuiltinMatrix.SelectedIndex;
                     ((HcEncProfile) _selectedVideoProfile).IntraVLC = hcEncIntraVLC.SelectedIndex;
@@ -850,16 +857,16 @@ namespace VideoConvert.Windows
         {
             if (_selectedVideoProfile == null) return;
 
-            ((X264Profile)_selectedVideoProfile).Tuning = x264Tuning.SelectedIndex;
+            ((X264Profile)_selectedVideoProfile).Tuning = X264Tuning.SelectedIndex;
         }
 
         private void X264TuneDeviceSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_selectedVideoProfile == null) return;
 
-            _actualDevice = (X264Device)x264TuneDevice.SelectedItem;
+            _actualDevice = (X264Device)X264TuneDevice.SelectedItem;
 
-            ((X264Profile)_selectedVideoProfile).TuneDevice = x264TuneDevice.SelectedIndex;
+            ((X264Profile)_selectedVideoProfile).TuneDevice = X264TuneDevice.SelectedIndex;
             if (_actualDevice.BFrames > -1 && ((X264Profile)_selectedVideoProfile).NumBFrames > _actualDevice.BFrames)
                 ((X264Profile) _selectedVideoProfile).NumBFrames = _actualDevice.BFrames;
 
@@ -877,13 +884,13 @@ namespace VideoConvert.Windows
             if (_actualDevice.Level > -1 && ((X264Profile)_selectedVideoProfile).AVCLevel > _actualDevice.Level)
             {
                 ((X264Profile)_selectedVideoProfile).AVCLevel = _actualDevice.Level;
-                x264AVCLevel.SelectedIndex = _actualDevice.Level;
+                X264AVCLevel.SelectedIndex = _actualDevice.Level;
             }
 
             if (_actualDevice.Profile > -1 && ((X264Profile)_selectedVideoProfile).AVCProfile > _actualDevice.Profile)
             {
                 ((X264Profile)_selectedVideoProfile).AVCProfile = _actualDevice.Profile;
-                x264AVCProfile.SelectedIndex = _actualDevice.Profile;
+                X264AVCProfile.SelectedIndex = _actualDevice.Profile;
             }
 
             if (_actualDevice.ReferenceFrames > -1 && ((X264Profile)_selectedVideoProfile).NumRefFrames > _actualDevice.ReferenceFrames)
@@ -928,18 +935,18 @@ namespace VideoConvert.Windows
 
             if (_actualDevice != null)
             {
-                if (_actualDevice.Profile > -1 && x264AVCProfile.SelectedIndex <= _actualDevice.Profile)
+                if (_actualDevice.Profile > -1 && X264AVCProfile.SelectedIndex <= _actualDevice.Profile)
                 {
-                    ((X264Profile)_selectedVideoProfile).AVCProfile = x264AVCProfile.SelectedIndex;
+                    ((X264Profile)_selectedVideoProfile).AVCProfile = X264AVCProfile.SelectedIndex;
                 }
                 else
                 {
-                    ((X264Profile)_selectedVideoProfile).AVCProfile = x264AVCProfile.SelectedIndex;
+                    ((X264Profile)_selectedVideoProfile).AVCProfile = X264AVCProfile.SelectedIndex;
                 }
             }
             else
             {
-                ((X264Profile)_selectedVideoProfile).AVCProfile = x264AVCProfile.SelectedIndex;
+                ((X264Profile)_selectedVideoProfile).AVCProfile = X264AVCProfile.SelectedIndex;
             }
             switch (((X264Profile) _selectedVideoProfile).AVCProfile)
             {
@@ -964,16 +971,16 @@ namespace VideoConvert.Windows
 
             if (_actualDevice != null)
             {
-                if (_actualDevice.Level > -1 && x264AVCLevel.SelectedIndex <= _actualDevice.Level)
+                if (_actualDevice.Level > -1 && X264AVCLevel.SelectedIndex <= _actualDevice.Level)
                 {
-                    ((X264Profile)_selectedVideoProfile).AVCLevel = x264AVCLevel.SelectedIndex;
+                    ((X264Profile)_selectedVideoProfile).AVCLevel = X264AVCLevel.SelectedIndex;
                 }
                 else
-                    x264AVCLevel.SelectedIndex = _actualDevice.Level;
+                    X264AVCLevel.SelectedIndex = _actualDevice.Level;
             }
             else
             {
-                ((X264Profile)_selectedVideoProfile).AVCLevel = x264AVCLevel.SelectedIndex;
+                ((X264Profile)_selectedVideoProfile).AVCLevel = X264AVCLevel.SelectedIndex;
             }
         }
 
@@ -981,34 +988,34 @@ namespace VideoConvert.Windows
         {
             if (_selectedVideoProfile == null) return;
 
-            ((X264Profile)_selectedVideoProfile).Preset = x264AVCPreset.SelectedIndex;
+            ((X264Profile)_selectedVideoProfile).Preset = X264AVCPreset.SelectedIndex;
         }
 
         private void X264EncodingModeSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (IsLoaded)
             {
-                x264VBREncodingDescLabel.Visibility = x264EncodingMode.SelectedIndex == 1 ||
-                                                      x264EncodingMode.SelectedIndex == 4
+                X264VBREncodingDescLabel.Visibility = X264EncodingMode.SelectedIndex == 1 ||
+                                                      X264EncodingMode.SelectedIndex == 4
                                                           ? Visibility.Collapsed
                                                           : Visibility.Visible;
-                x264QuantizerLabel.Visibility = x264EncodingMode.SelectedIndex == 1
+                X264QuantizerLabel.Visibility = X264EncodingMode.SelectedIndex == 1
                                                     ? Visibility.Visible
                                                     : Visibility.Collapsed;
-                x264QualityLabel.Visibility = x264EncodingMode.SelectedIndex == 4
+                X264QualityLabel.Visibility = X264EncodingMode.SelectedIndex == 4
                                                   ? Visibility.Visible
                                                   : Visibility.Collapsed;
             }
             else
             {
-                x264VBREncodingDescLabel.Visibility = Visibility.Collapsed;
-                x264QuantizerLabel.Visibility = Visibility.Collapsed;
-                x264QualityLabel.Visibility = Visibility.Collapsed;
+                X264VBREncodingDescLabel.Visibility = Visibility.Collapsed;
+                X264QuantizerLabel.Visibility = Visibility.Collapsed;
+                X264QualityLabel.Visibility = Visibility.Collapsed;
             }
 
             if (_selectedVideoProfile == null) return;
 
-            ((X264Profile)_selectedVideoProfile).EncodingMode = x264EncodingMode.SelectedIndex;
+            ((X264Profile)_selectedVideoProfile).EncodingMode = X264EncodingMode.SelectedIndex;
         }
 
         private void X264QualityValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -1017,11 +1024,11 @@ namespace VideoConvert.Windows
 
             string source = ((IntegerUpDown)sender).Name;
             if (String.CompareOrdinal(source, "x264Quantizer") == 0)
-                ((X264Profile)_selectedVideoProfile).QuantizerSetting = x264Quantizer.Value.GetValueOrDefault();
+                ((X264Profile)_selectedVideoProfile).QuantizerSetting = X264Quantizer.Value.GetValueOrDefault();
             else if (String.CompareOrdinal(source, "x264Quality") == 0)
-                ((X264Profile)_selectedVideoProfile).QualitySetting = x264Quality.Value.GetValueOrDefault();
+                ((X264Profile)_selectedVideoProfile).QualitySetting = X264Quality.Value.GetValueOrDefault();
             else if (String.CompareOrdinal(source, "x264VBRSetting") == 0)
-                ((X264Profile)_selectedVideoProfile).VBRSetting = x264VBRSetting.Value.GetValueOrDefault();
+                ((X264Profile)_selectedVideoProfile).VBRSetting = X264VBRSetting.Value.GetValueOrDefault();
         }
         #endregion
 
@@ -1293,21 +1300,21 @@ namespace VideoConvert.Windows
 
             if (_selectedVideoProfile == null || _selectedVideoProfile.Type != ProfileType.HcEnc) return;
 
-            hcEncBitrate.Value = ((HcEncProfile)_selectedVideoProfile).Bitrate;
+            HcEncBitrate.Value = ((HcEncProfile)_selectedVideoProfile).Bitrate;
 
-            hcEncProfile.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Profile;
-            hcEncDCPrecision.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).DCPrecision;
-            hcEncInterlacing.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Interlacing;
-            hcEncInterlaceFieldOrder.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).FieldOrder;
-            hcEncChromaDownsampling.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).ChromaDownsampling;
-            hcEncClosedGOP.IsChecked = ((HcEncProfile)_selectedVideoProfile).ClosedGops;
-            hcEncSceneChange.IsChecked = ((HcEncProfile)_selectedVideoProfile).SceneChange;
-            hcEncAutoGOP.IsChecked = ((HcEncProfile)_selectedVideoProfile).AutoGOP;
-            hcEncGopLength.Value = ((HcEncProfile)_selectedVideoProfile).GopLength;
-            hcEncBFrames.Value = ((HcEncProfile)_selectedVideoProfile).BFrames;
-            hcEncLumGain.Value = ((HcEncProfile)_selectedVideoProfile).LuminanceGain;
-            hcEncAQ.Value = ((HcEncProfile)_selectedVideoProfile).AQ;
-            hcEncSMP.IsChecked = ((HcEncProfile)_selectedVideoProfile).SMP;
+            HcEncProfile.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Profile;
+            HcEncDCPrecision.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).DCPrecision;
+            HcEncInterlacing.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Interlacing;
+            HcEncInterlaceFieldOrder.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).FieldOrder;
+            HcEncChromaDownsampling.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).ChromaDownsampling;
+            HcEncClosedGOP.IsChecked = ((HcEncProfile)_selectedVideoProfile).ClosedGops;
+            HcEncSceneChange.IsChecked = ((HcEncProfile)_selectedVideoProfile).SceneChange;
+            HcEncAutoGOP.IsChecked = ((HcEncProfile)_selectedVideoProfile).AutoGOP;
+            HcEncGopLength.Value = ((HcEncProfile)_selectedVideoProfile).GopLength;
+            HcEncBFrames.Value = ((HcEncProfile)_selectedVideoProfile).BFrames;
+            HcEncLumGain.Value = ((HcEncProfile)_selectedVideoProfile).LuminanceGain;
+            HcEncAQ.Value = ((HcEncProfile)_selectedVideoProfile).AQ;
+            HcEncSMP.IsChecked = ((HcEncProfile)_selectedVideoProfile).SMP;
             hcEncVBVCheck.IsChecked = ((HcEncProfile)_selectedVideoProfile).VBVCheck;
             hcEncBuiltinMatrix.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Matrix;
             hcEncIntraVLC.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).IntraVLC;

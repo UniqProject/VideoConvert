@@ -60,12 +60,12 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true,
-                                                     Arguments = Defaultparams + " -V"
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        Arguments = Defaultparams + " -V"
+                    };
                 encoder.StartInfo = parameter;
 
                 bool started;
@@ -83,27 +83,21 @@ namespace VideoConvert.Core.Encoder
                 {
                     string output = encoder.StandardOutput.ReadToEnd();
                     Regex regObj = new Regex(@"^mkvmerge v([\d\.]+ \(.*\)).*built.*$",
-                                             RegexOptions.Singleline | RegexOptions.Multiline);
+                                           RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
+
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("mkvmerge \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -132,21 +126,13 @@ namespace VideoConvert.Core.Encoder
 
             string tempExt = Path.GetExtension(_jobInfo.VideoStream.TempFile);
             if (_jobInfo.VideoStream.IsRawStream)
-            {
                 vidStream = 0;
-            }
             else if ((_jobInfo.Input == InputType.InputAvi) && (!_jobInfo.VideoStream.Encoded))
-            {
                 vidStream = 0;
-            }
             else if ((_jobInfo.VideoStream.Encoded) || (tempExt == ".mkv") || (tempExt == ".mp4"))
-            {
                 vidStream = 0;
-            }
             else
-            {
                 vidStream = _jobInfo.VideoStream.StreamId;
-            }
 
             string streamOrder = string.Format(" --track-order 0:{0:g}", vidStream);
 
@@ -161,16 +147,12 @@ namespace VideoConvert.Core.Encoder
             if (_jobInfo.VideoStream.IsRawStream)
             {
                 if (_jobInfo.VideoStream.FrameRateEnumerator == 0)
-                {
                     fpsStr = string.Format("--default-duration {1:g}:{0:0.000}fps", fps, vidStream);
-                }
                 else
-                {
                     fpsStr = string.Format("--default-duration {0:g}:{1:g}/{2:g}fps",
                                            vidStream,
                                            _jobInfo.VideoStream.FrameRateEnumerator,
                                            _jobInfo.VideoStream.FrameRateDenominator);
-                }
             }
 
             int stereoMode;
@@ -224,16 +206,12 @@ namespace VideoConvert.Core.Encoder
                 string delayString = string.Empty;
 
                 if (item.Delay != 0)
-                {
                     delayString = string.Format(AppSettings.CInfo, "--sync 0:{0:#}", item.Delay);
-                }
 
                 int itemStream = 0;
 
                 if (Path.GetExtension(item.TempFile) == ".mkv")
-                {
                     itemStream = 1;
-                }
 
                 sb.AppendFormat(AppSettings.CInfo,
                                 "--language {0:g}:{1:s} {2:s} --default-track {0:g}:{3:s} --forced-track {0:g}:no -D -a {0:g} ",
@@ -279,19 +257,12 @@ namespace VideoConvert.Core.Encoder
                         subId = item.Id;
                     }
                     else
-                    {
                         subId = 0;
-                    }
 
                     string delayString = string.Empty;
 
-                    if (subFile != _jobInfo.InputFile)
-                    {
-                        if (item.Delay != 0 && item.Delay != int.MinValue)
-                        {
-                            delayString = string.Format(AppSettings.CInfo, "--sync {0:g}:{1:g}", subId, item.Delay);
-                        }
-                    }
+                    if (subFile != _jobInfo.InputFile && (item.Delay != 0 && item.Delay != int.MinValue))
+                        delayString = string.Format(AppSettings.CInfo, "--sync {0:g}:{1:g}", subId, item.Delay);
 
                     sb.AppendFormat(AppSettings.CInfo,
                                     "--language {0:g}:{1:s} {2:s} --default-track {0:g}:{3:s} --forced-track {0:g}:no -s {0:g} ",
@@ -371,37 +342,34 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     Arguments = sb.ToString(),
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = sb.ToString(),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
 
                 encoder.StartInfo = parameter;
 
                 encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match result = regObj.Match(line);
-                    if (result.Success)
                     {
-                        int progress;
-                        Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
-                        string progressStatus = string.Format(progressFormat,
-                                                              Path.GetFileName(_jobInfo.OutputFile),
-                                                              progress);
-                        _bw.ReportProgress(progress, progressStatus);
+                        string line = outputEvent.Data;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                    }
-                    else
-                    {
-                        Log.InfoFormat("mkvmerge: {0:s}", line);
-                    }
-                };
+                        Match result = regObj.Match(line);
+                        if (result.Success)
+                        {
+                            int progress;
+                            Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
+                            string progressStatus = string.Format(progressFormat,
+                                                                  Path.GetFileName(_jobInfo.OutputFile),
+                                                                  progress);
+                            _bw.ReportProgress(progress, progressStatus);
+                        }
+                        else
+                            Log.InfoFormat("mkvmerge: {0:s}", line);
+                    };
 
                 Log.InfoFormat("mkvmerge {0:s}", parameter.Arguments);
 
@@ -428,6 +396,7 @@ namespace VideoConvert.Core.Encoder
                             encoder.Kill();
                         Thread.Sleep(200);
                     }
+                    encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;

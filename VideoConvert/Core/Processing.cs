@@ -445,15 +445,17 @@ namespace VideoConvert.Core
         private static int CalculateMaxRatex264(X264Profile x264Prof, OutputType outType)
         {
             int[] baseLineBitrates = new[]
-                                         {
-                                             64, 192, 384, 786, 2000, 4000, 4000, 10000, 14000, 20000, 20000, 50000, 50000,
-                                             135000, 240000, -1
-                                         };
+                {
+                    64, 192, 384, 786, 2000, 4000, 4000, 10000, 14000, 20000, 20000, 50000, 50000,
+                    135000, 240000, -1
+                };
+
             int[] highBitrates = new[]
-                                     {
-                                         80, 240, 480, 960, 2500, 5000, 5000, 12500, 17500, 25000, 25000, 62500, 62500,
-                                         168750, 300000, -1
-                                     };
+                {
+                    80, 240, 480, 960, 2500, 5000, 5000, 12500, 17500, 25000, 25000, 62500, 62500,
+                    168750, 300000, -1
+                };
+
             const int maxBlurayBitrate = 40000;
 
             if (outType == OutputType.OutputBluRay)
@@ -579,7 +581,7 @@ namespace VideoConvert.Core
             AppSettings.LastTSMuxerVer = tsmuxer.GetVersionInfo(encPath);
 
             MJpeg mjpeg = new MJpeg();
-            AppSettings.LastMJPEGtoolsVer = mjpeg.GetVersionInfo(encPath);
+            AppSettings.LastMJPEGToolsVer = mjpeg.GetVersionInfo(encPath);
 
             DvdAuthor dvdauthor = new DvdAuthor();
             AppSettings.LastDVDAuthorVer = dvdauthor.GetVersionInfo(encPath);
@@ -689,13 +691,10 @@ namespace VideoConvert.Core
             AsyncOperation asyncOp = AsyncOperationManager.CreateOperation(null);
 
             Action<Exception> done = e =>
-                                         {
-                                             if (completed != null)
-                                                 asyncOp.Post(delegate
-                                                                  {
-                                                                      completed(source, destination, e);
-                                                                  }, null);
-                                         };
+                {
+                    if (completed != null)
+                        asyncOp.Post(delegate { completed(source, destination, e); }, null);
+                };
 
             AsyncCallback[] rc = { null };
             rc[0] = readResult =>

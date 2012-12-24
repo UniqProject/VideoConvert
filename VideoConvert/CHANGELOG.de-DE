@@ -1,4 +1,8 @@
-﻿- [fix]     Updater in Multi-User Umgebungen sollte von nun an korrekt funktionieren.
+﻿- [change]  Projektname zu VideoConvert geändert.
+- [new]     Unterstützung für 64bit Encoder hinzugefügt. Vorerst nur x264 in der 64bit Version verfügbar.
+
+0.21.691.0048
+- [fix]     Updater in Multi-User Umgebungen sollte von nun an korrekt funktionieren.
 
 0.21.678.2025
 - [fix]     BDInfo Einstellungen werden nicht mehr ignoriert.

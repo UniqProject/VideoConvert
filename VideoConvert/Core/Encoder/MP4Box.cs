@@ -58,13 +58,13 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     Arguments = "-version",
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = "-version",
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
                 encoder.StartInfo = parameter;
 
                 bool started;
@@ -85,24 +85,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("mp4box \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -126,21 +119,13 @@ namespace VideoConvert.Core.Encoder
 
             string tempExt = Path.GetExtension(_jobInfo.VideoStream.TempFile);
             if (_jobInfo.VideoStream.IsRawStream)
-            {
                 vidStream = 0;
-            }
             else if ((_jobInfo.Input == InputType.InputAvi) && (!_jobInfo.VideoStream.Encoded))
-            {
                 vidStream = 0;
-            }
             else if ((_jobInfo.VideoStream.Encoded) || (tempExt == ".mp4"))
-            {
                 vidStream = 0;
-            }
             else
-            {
                 vidStream = _jobInfo.VideoStream.StreamId;
-            }
 
             string outFile = !string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.TempOutput : _jobInfo.OutputFile;
 
@@ -149,15 +134,11 @@ namespace VideoConvert.Core.Encoder
             if (_jobInfo.VideoStream.IsRawStream)
             {
                 if (_jobInfo.VideoStream.FrameRateEnumerator == 0)
-                {
                     fpsStr = string.Format(":fps={0:0.000}", fps);
-                }
                 else
-                {
                     fpsStr = string.Format(":fps={0:g}/{1:g}",
                                            _jobInfo.VideoStream.FrameRateEnumerator,
                                            _jobInfo.VideoStream.FrameRateDenominator);
-                }
             }
 
             sb.AppendFormat(AppSettings.CInfo,
@@ -174,9 +155,7 @@ namespace VideoConvert.Core.Encoder
                 string delayString = string.Empty;
 
                 if (item.Delay != 0)
-                {
                     delayString = string.Format(AppSettings.CInfo, ":delay={0:#}", item.Delay);
-                }
 
                 sb.AppendFormat(AppSettings.CInfo,
                                 "-add \"{0}#audio:lang={1:s}{2:s}\" -keep-sys ",
@@ -361,46 +340,46 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                {
-                    WorkingDirectory = AppSettings.DemuxLocation,
-                    Arguments = sb.ToString(),
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true
-                };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = sb.ToString(),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
 
                 encoder.StartInfo = parameter;
 
                 encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-                    if (string.IsNullOrEmpty(line)) return;
+                    {
+                        string line = outputEvent.Data;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                    Match progressResult = progressReg.Match(line);
-                    Match importResult = importingReg.Match(line);
-                    if (progressResult.Success)
-                    {
-                        int progress;
-                        Int32.TryParse(progressResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
-                        string progressStatus = string.Format(progressFormat,
-                                                              Path.GetFileName(_jobInfo.OutputFile),
-                                                              progress);
-                        _bw.ReportProgress(progress, progressStatus);
-                    }
-                    else if (importResult.Success)
-                    {
-                        int progress;
-                        Int32.TryParse(importResult.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
-                        string progressStatus = string.Format(importFormat,
-                                                              importResult.Groups[1].Value,
-                                                              progress);
-                        _bw.ReportProgress(0, progressStatus);
-                    }
-                    else
-                    {
-                        Log.InfoFormat("mp4box: {0:s}", line);
-                    }
-                };
+                        Match progressResult = progressReg.Match(line);
+                        Match importResult = importingReg.Match(line);
+                        if (progressResult.Success)
+                        {
+                            int progress;
+                            Int32.TryParse(progressResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out progress);
+                            string progressStatus = string.Format(progressFormat,
+                                                                  Path.GetFileName(_jobInfo.OutputFile),
+                                                                  progress);
+                            _bw.ReportProgress(progress, progressStatus);
+                        }
+                        else if (importResult.Success)
+                        {
+                            int progress;
+                            Int32.TryParse(importResult.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
+                                           out progress);
+                            string progressStatus = string.Format(importFormat,
+                                                                  importResult.Groups[1].Value,
+                                                                  progress);
+                            _bw.ReportProgress(0, progressStatus);
+                        }
+                        else
+                            Log.InfoFormat("mp4box: {0:s}", line);
+                    };
 
                 Log.InfoFormat("mp4box {0:s}", parameter.Arguments);
 
@@ -428,7 +407,7 @@ namespace VideoConvert.Core.Encoder
                         Thread.Sleep(200);
                     }
 
-                    Thread.Sleep(200);
+                    encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;

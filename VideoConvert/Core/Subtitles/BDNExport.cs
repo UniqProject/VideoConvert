@@ -101,7 +101,6 @@ namespace VideoConvert.Core.Subtitles
 
         public static string CreateBDNTimeStamp(TimeSpan inTime, float fps)
         {
-            string result = string.Empty;
             int roundedFps = (int) Math.Ceiling(fps);
             int num, denom;
             Processing.GetFPSNumDenom(fps, out num, out denom);
@@ -116,8 +115,7 @@ namespace VideoConvert.Core.Subtitles
             
             DateTime date = new DateTime().Add(outTime);
 
-            result = date.ToString("HH:mm:ss:ff", AppSettings.CInfo);
-            return result;
+            return date.ToString("HH:mm:ss:ff", AppSettings.CInfo);
         }
     }
 }

@@ -154,13 +154,13 @@ namespace VideoConvert
             layout.ActivateOptions();
 
             FileAppender file = new FileAppender
-                                    {
-                                        Layout = layout,
-                                        AppendToFile = true,
-                                        Encoding = new UTF8Encoding(),
-                                        File = logFile,
-                                        ImmediateFlush = true
-                                    };
+                {
+                    Layout = layout,
+                    AppendToFile = true,
+                    Encoding = new UTF8Encoding(),
+                    File = logFile,
+                    ImmediateFlush = true
+                };
             file.AddFilter(filter);
 
             file.ActivateOptions();

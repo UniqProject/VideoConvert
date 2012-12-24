@@ -25,16 +25,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:my="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=WPFToolkit.Extended"
-             xmlns:Converters="clr-namespace:Converters;assembly=Converters" xmlns:Core="clr-namespace:VideoConvert.Properties"
+             xmlns:converters="clr-namespace:Converters;assembly=Converters" xmlns:core="clr-namespace:VideoConvert.Properties"
              mc:Ignorable="d" x:Class="VideoConvert.App"
              StartupUri="Windows\MainWindow.xaml" Startup="ApplicationStartup" 
              DispatcherUnhandledException="ApplicationDispatcherUnhandledException">
     <Application.Resources>
-        <Converters:StringLengthVisiblityConverter x:Uid="src:StringLengthVisiblityConverter_1" x:Key="StringLengthVisiblityConverter" />
-        <Converters:Int32ToBooleanConverter x:Uid="src:Int32ToBooleanConverter_1" x:Key="intConverter" />
-        <Converters:Int32ToVisibilityConverter x:Uid="src:Int32ToVisibilityConverter_1" x:Key="VisibilityConverter" />
-        <Converters:StringLengthToBooleanConverter x:Uid="src:StringLengthToBooleanConverter_1" x:Key="StringLengthToBooleanConverter" />
-        <Core:Settings x:Uid="properties:Settings_1" x:Key="Settings" />
+        <converters:StringLengthVisiblityConverter x:Uid="src:StringLengthVisiblityConverter_1" x:Key="StringLengthVisiblityConverter" />
+        <converters:Int32ToBooleanConverter x:Uid="src:Int32ToBooleanConverter_1" x:Key="IntConverter" />
+        <converters:Int32ToVisibilityConverter x:Uid="src:Int32ToVisibilityConverter_1" x:Key="VisibilityConverter" />
+        <converters:StringLengthToBooleanConverter x:Uid="src:StringLengthToBooleanConverter_1" x:Key="StringLengthToBooleanConverter" />
+        <core:Settings x:Uid="properties:Settings_1" x:Key="Settings" />
         <my:InverseBoolConverter x:Uid="my:InverseBoolConverter_1" x:Key="InverseBoolConverter" />
         <my:ColorToSolidColorBrushConverter x:Uid="my:ColorToSolidColorBrushConverter_1" x:Key="ColorToSolidColorBrushConverter1" />
         
@@ -43,6 +43,6 @@
                 <ResourceDictionary x:Uid="ResourceDictionary_2" Source="StringResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    <Converters:DateTimeConverter x:Uid="Converters:DateTimeConverter_1" x:Key="DateTimeConverter1" />
+    <converters:DateTimeConverter x:Uid="Converters:DateTimeConverter_1" x:Key="DateTimeConverter1" />
   </Application.Resources>
 </Application>

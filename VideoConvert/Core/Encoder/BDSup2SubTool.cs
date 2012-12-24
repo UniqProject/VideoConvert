@@ -61,13 +61,13 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(javaPath)
-                                                 {
-                                                     Arguments = string.Format("-jar \"{0}\" /?", localExecutable),
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        Arguments = string.Format("-jar \"{0}\" /?", localExecutable),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = false,
+                        RedirectStandardOutput = true
+                    };
                 
                 encoder.StartInfo = parameter;
 
@@ -89,21 +89,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("BDSup2Sub \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -172,13 +168,13 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(javaExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true,
-                                                     Arguments = sb.ToString()
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        Arguments = sb.ToString()
+                    };
 
 
                 encoder.StartInfo = parameter;
@@ -210,18 +206,16 @@ namespace VideoConvert.Core.Encoder
                         Int32.TryParse(resultDecodeFrames.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
                                        out maxFrames);
 
-                        int progress = (int)Math.Round(actFrame / (double)maxFrames * 100d, 0);
+                        int progress = (int) Math.Round(actFrame/(double) maxFrames*100d, 0);
 
                         if (!String.IsNullOrEmpty(subtitleProcess))
                         {
                             status = string.Format(subtitleProcess, actFrame, maxFrames, progress);
                             _bw.ReportProgress(progress, status);
-                        }                        
+                        }
                     }
                     else
-                    {
                         Log.InfoFormat("BDSup2Sub: {0:s}", line);
-                    }
                 };
 
                 Log.InfoFormat("BDSup2Sub: {0:s}", parameter.Arguments);
@@ -246,9 +240,8 @@ namespace VideoConvert.Core.Encoder
                     while (!encoder.HasExited)
                     {
                         if (_bw.CancellationPending)
-                        {
                             encoder.Kill();
-                        }
+
                         Thread.Sleep(200);
                     }
                     _jobInfo.ExitCode = encoder.ExitCode;

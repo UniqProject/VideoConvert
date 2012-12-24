@@ -32,15 +32,15 @@ namespace VideoConvert.Core.Encoder
             string localExecutable = Path.Combine(AppSettings.AppPath, "AvsPlugins", "audio", Executable);
 
             ProcessStartInfo info = new ProcessStartInfo
-                                        {
-                                            FileName = localExecutable,
-                                            Arguments =
-                                                String.Format(AppSettings.CInfo, "--script \"Import(^{0}^)\"",
-                                                              scriptName),
-                                            CreateNoWindow = true,
-                                            RedirectStandardOutput = true,
-                                            UseShellExecute = false
-                                        };
+                {
+                    FileName = localExecutable,
+                    Arguments =
+                        String.Format(AppSettings.CInfo, "--script \"Import(^{0}^)\"",
+                                      scriptName),
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
             Process bePipe = new Process {StartInfo = info};
             return bePipe;
         }

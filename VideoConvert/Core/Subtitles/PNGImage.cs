@@ -83,7 +83,7 @@ namespace VideoConvert.Core.Subtitles
             if (imgSize.IsEmpty) return new ImageHolder();
             stringFormat.SetMeasurableCharacterRanges(new[] { new CharacterRange(0, 1) });
 
-            RectangleF whiteSpace = new RectangleF(0f, 0f, 0f, 0f);
+            RectangleF whiteSpace;
 
             using (Image img = new Bitmap((int)imgSize.Width, (int)imgSize.Height, PixelFormat.Format32bppArgb))
             {
@@ -120,7 +120,7 @@ namespace VideoConvert.Core.Subtitles
                     using (GraphicsPath singleWord = new GraphicsPath(),
                         singleWordShadow = new GraphicsPath())
                     {
-                        string lWord = word;
+                        string lWord;
                         FontStyle fontStyle = GetStyleFont(word, out lWord, styleFontStyle);
                         if (string.IsNullOrEmpty(lWord)) continue;
 
@@ -155,7 +155,6 @@ namespace VideoConvert.Core.Subtitles
                     g.InterpolationMode = InterpolationMode.High;
                     
                     Brush primBrush = new SolidBrush(style.PrimaryColor);
-                    Brush secBrush = new SolidBrush(style.SecondaryColor);
                     Brush shadowBrush = new SolidBrush(Color.FromArgb(64, style.BackColor));
 
                     Pen outPen = new Pen(style.OutlineColor) {Alignment = PenAlignment.Outset};
@@ -187,10 +186,10 @@ namespace VideoConvert.Core.Subtitles
             return result;
         }
 
-        private static bool _boldStyle = false;
-        private static bool _italicStyle = false;
-        private static bool _underlineStyle = false;
-        private static bool _strikeStyle = false;
+        private static bool _boldStyle;
+        private static bool _italicStyle;
+        private static bool _underlineStyle;
+        private static bool _strikeStyle;
 
         private static FontStyle GetStyleFont(string word, out string lWord, FontStyle fontStyle)
         {

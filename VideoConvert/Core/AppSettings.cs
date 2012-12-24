@@ -31,6 +31,16 @@ namespace VideoConvert.Core
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(AppSettings));
 
+        public static string DecodeNamedPipeName
+        {
+            get { return string.Format("{0}_decodePipe", GetProductName()); }
+        }
+
+        public static string DecodeNamedPipeFullName
+        {
+            get { return string.Format(@"\\.\pipe\{0}", DecodeNamedPipeName); }
+        }
+
         public static bool UseAviSynthMT
         {
             get
@@ -452,7 +462,7 @@ namespace VideoConvert.Core
             }
         }
 
-        public static string LastMJPEGtoolsVer
+        public static string LastMJPEGToolsVer
         {
             get
             {
@@ -469,7 +479,7 @@ namespace VideoConvert.Core
         {
             get
             {
-                return !string.IsNullOrEmpty(LastMJPEGtoolsVer);
+                return !string.IsNullOrEmpty(LastMJPEGToolsVer);
             }
         }
 

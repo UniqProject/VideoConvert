@@ -40,13 +40,13 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     Arguments = string.Format("-x -Ox \"{0}\"", path),
-                                                     RedirectStandardOutput = true,
-                                                     UseShellExecute = false,
-                                                     CreateNoWindow = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments = string.Format("-x -Ox \"{0}\"", path),
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
                 encoder.StartInfo = parameter;
 
                 Log.InfoFormat("lsdvd: {0:s}", parameter.Arguments);
@@ -65,12 +65,11 @@ namespace VideoConvert.Core.Encoder
                 if (processStarted)
                 {
                     while (!encoder.HasExited)
-                    {
                         output += encoder.StandardOutput.ReadLine() + "\n";
-                    }
 
                     output += encoder.StandardOutput.ReadToEnd();
                 }
+                encoder.WaitForExit(10000);
             }
 
             output = output.Replace("Pan&Scan", "Pan&amp;Scan").Replace("P&S", "P&amp;S");
@@ -92,11 +91,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable, "-V")
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardError = true
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
 
                 encoder.StartInfo = parameter;
 
@@ -118,24 +117,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("lsdvd \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }

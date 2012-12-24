@@ -56,12 +56,12 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
                 encoder.StartInfo = parameter;
 
                 bool started;
@@ -82,24 +82,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("mplayer \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -121,7 +114,6 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(0, status);
 
             Regex regObj = new Regex(@"^dump: .*\(~([\d\.]+?)%\)$", RegexOptions.Singleline | RegexOptions.Multiline);
-
 
             using (Process encoder = new Process())
             {
@@ -158,35 +150,36 @@ namespace VideoConvert.Core.Encoder
                 string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
 
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     Arguments = argument,
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        Arguments = argument,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
 
                 encoder.StartInfo = parameter;
 
                 encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match result = regObj.Match(line);
-                    if (result.Success)
                     {
-                        float tempProgress;
-                        Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out tempProgress);
-                        int progress = (int)Math.Round(tempProgress, 0);
+                        string line = outputEvent.Data;
 
-                        string progressStr = string.Format(progressFormat, _jobInfo.TrackId, _jobInfo.InputFile,
-                                                           progress);
-                        _bw.ReportProgress(progress, progressStr);
-                    }
-                    else
-                        Log.InfoFormat("mplayer: {0:s}", line);
-                };
+                        if (string.IsNullOrEmpty(line)) return;
+
+                        Match result = regObj.Match(line);
+                        if (result.Success)
+                        {
+                            float tempProgress;
+                            Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                                            out tempProgress);
+                            int progress = (int) Math.Round(tempProgress, 0);
+
+                            string progressStr = string.Format(progressFormat, _jobInfo.TrackId, _jobInfo.InputFile,
+                                                               progress);
+                            _bw.ReportProgress(progress, progressStr);
+                        }
+                        else
+                            Log.InfoFormat("mplayer: {0:s}", line);
+                    };
 
                 Log.InfoFormat("mplayer {0:s}", argument);
 
@@ -215,9 +208,9 @@ namespace VideoConvert.Core.Encoder
                             encoder.Kill();
                         Thread.Sleep(200);
                     }
+                    encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
 
-                    encoder.WaitForExit();
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                 }

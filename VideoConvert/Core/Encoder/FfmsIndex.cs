@@ -79,21 +79,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = "installed, no version info";
-                    }
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("ffmsindex \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -116,34 +112,32 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     WorkingDirectory = AppSettings.DemuxLocation,
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true,
-                                                     Arguments =
-                                                         string.Format("-f -t 0 \"{0}\"", _jobInfo.VideoStream.TempFile)
-                                                 };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        Arguments =
+                            string.Format("-f -t 0 \"{0}\"", _jobInfo.VideoStream.TempFile)
+                    };
                 encoder.StartInfo = parameter;
 
                 encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                                                  {
-                                                      string line = outputEvent.Data;
-                                                      if (string.IsNullOrEmpty(line)) return;
+                    {
+                        string line = outputEvent.Data;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                                                      Match result = regObj.Match(line);
-                                                      if (result.Success)
-                                                      {
-                                                          string progress = string.Format(progressFmt,
-                                                                                          result.Groups[1].Value);
-                                                          _bw.ReportProgress(Convert.ToInt32(result.Groups[1].Value),
-                                                                             progress);
-                                                      }
-                                                      else
-                                                      {
-                                                          Log.InfoFormat("ffmsindex: {0:s}", line);
-                                                      }
-                                                  };
+                        Match result = regObj.Match(line);
+                        if (result.Success)
+                        {
+                            string progress = string.Format(progressFmt,
+                                                            result.Groups[1].Value);
+                            _bw.ReportProgress(Convert.ToInt32(result.Groups[1].Value),
+                                               progress);
+                        }
+                        else
+                            Log.InfoFormat("ffmsindex: {0:s}", line);
+                    };
 
                 Log.InfoFormat("ffmsindex {0:s}", parameter.Arguments);
 
@@ -167,11 +161,11 @@ namespace VideoConvert.Core.Encoder
                     while (!encoder.HasExited)
                     {
                         if (_bw.CancellationPending)
-                        {
                             encoder.Kill();
-                        }
                         Thread.Sleep(200);
                     }
+
+                    encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;
@@ -179,9 +173,7 @@ namespace VideoConvert.Core.Encoder
                 }
 
                 if (_jobInfo.ExitCode == 0)
-                {
                     _jobInfo.FfIndexFile = _jobInfo.VideoStream.TempFile + ".ffindex";
-                }
             }
 
             _bw.ReportProgress(100);

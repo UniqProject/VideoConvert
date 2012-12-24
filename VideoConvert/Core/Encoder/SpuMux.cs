@@ -55,11 +55,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
+                    };
 
 
                 encoder.StartInfo = parameter;
@@ -82,21 +82,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("spumux \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -121,17 +117,17 @@ namespace VideoConvert.Core.Encoder
                 using (Process encoder = new Process())
                 {
                     ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                     {
-                                                         WorkingDirectory = AppSettings.DemuxLocation,
-                                                         CreateNoWindow = true,
-                                                         UseShellExecute = false,
-                                                         RedirectStandardError = true,
-                                                         RedirectStandardOutput = true,
-                                                         RedirectStandardInput = true,
-                                                         Arguments =
-                                                             string.Format("-s{0:0} \"{1}\"", _jobInfo.StreamId,
-                                                                           sub.TempFile)
-                                                     };
+                        {
+                            WorkingDirectory = AppSettings.DemuxLocation,
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            RedirectStandardError = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardInput = true,
+                            Arguments =
+                                string.Format("-s{0:0} \"{1}\"", _jobInfo.StreamId,
+                                              sub.TempFile)
+                        };
 
 
 
@@ -181,9 +177,7 @@ namespace VideoConvert.Core.Encoder
                         while (!encoder.HasExited)
                         {
                             if (_bw.CancellationPending)
-                            {
                                 encoder.Kill();
-                            }
 
                             if ((readOut = encoder.StandardOutput.BaseStream.Read(bufferOut, 0, bufferOut.Length)) > 0)
                                 writeStream.Write(bufferOut, 0, readOut);
@@ -206,11 +200,11 @@ namespace VideoConvert.Core.Encoder
                             }
                         }
 
-                        if (!encoder.StandardOutput.EndOfStream)
-                        {
-                            if ((readOut = encoder.StandardOutput.BaseStream.Read(bufferOut, 0, bufferOut.Length)) > 0)
-                                writeStream.Write(bufferOut, 0, readOut);
-                        }
+                        if (!encoder.StandardOutput.EndOfStream &&
+                            (readOut = encoder.StandardOutput.BaseStream.Read(bufferOut, 0, bufferOut.Length)) > 0)
+                            writeStream.Write(bufferOut, 0, readOut);
+
+                        encoder.WaitForExit(10000);
                         encoder.CancelErrorRead();
 
                         _jobInfo.ExitCode = encoder.ExitCode;

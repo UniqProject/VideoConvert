@@ -59,11 +59,11 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                {
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardError = true
-                };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
                 encoder.StartInfo = parameter;
 
                 bool started;
@@ -84,24 +84,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value.Trim();
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("Lame \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -193,15 +186,15 @@ namespace VideoConvert.Core.Encoder
                            decoder = BePipe.GenerateProcess(inputFile))
             {
                 ProcessStartInfo encoderParameter = new ProcessStartInfo(localExecutable)
-                {
-                    WorkingDirectory = AppSettings.DemuxLocation,
-                    Arguments =
-                        sb.ToString(),
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true
-                };
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation,
+                        Arguments =
+                            sb.ToString(),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true
+                    };
                 encoder.StartInfo = encoderParameter;
 
                 decoder.StartInfo.RedirectStandardError = true;
@@ -209,58 +202,56 @@ namespace VideoConvert.Core.Encoder
                 DateTime time = startTime;
 
                 decoder.ErrorDataReceived += (o, args) =>
-                {
-                    string line = args.Data;
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match result = pipeObj.Match(line);
-                    if (result.Success)
                     {
-                        float temp;
+                        string line = args.Data;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                        string tempProgress = result.Groups[1].Value.Replace(",", ".");
-
-                        Single.TryParse(tempProgress, NumberStyles.Number,
-                                        AppSettings.CInfo, out temp);
-                        int progress = (int)Math.Floor(temp);
-                        float progressRemaining = 100 - temp;
-
-                        TimeSpan eta = DateTime.Now.Subtract(time);
-                        long secRemaining = 0;
-                        if (eta.Seconds != 0)
+                        Match result = pipeObj.Match(line);
+                        if (result.Success)
                         {
-                            double speed = Math.Round(temp / eta.TotalSeconds, 6);
+                            float temp;
 
-                            if (speed > 0)
-                                secRemaining =
-                                    (long)Math.Round(progressRemaining / speed, 0);
-                            else
+                            string tempProgress = result.Groups[1].Value.Replace(",", ".");
+
+                            Single.TryParse(tempProgress, NumberStyles.Number,
+                                            AppSettings.CInfo, out temp);
+                            int progress = (int) Math.Floor(temp);
+                            float progressRemaining = 100 - temp;
+
+                            TimeSpan eta = DateTime.Now.Subtract(time);
+                            long secRemaining = 0;
+                            if (eta.Seconds != 0)
+                            {
+                                double speed = Math.Round(temp/eta.TotalSeconds, 6);
+
+                                if (speed > 0)
+                                    secRemaining =
+                                        (long) Math.Round(progressRemaining/speed, 0);
+                                else
+                                    secRemaining = 0;
+                            }
+                            if (secRemaining < 0)
                                 secRemaining = 0;
+
+                            TimeSpan remaining = new TimeSpan(0, 0, (int) secRemaining);
+                            DateTime ticks1 = new DateTime(eta.Ticks);
+
+                            string encProgress = string.Format(encProgressFmt, ticks1,
+                                                               remaining);
+                            _bw.ReportProgress(progress, encProgress);
                         }
-                        if (secRemaining < 0)
-                            secRemaining = 0;
-
-                        TimeSpan remaining = new TimeSpan(0, 0, (int)secRemaining);
-                        DateTime ticks1 = new DateTime(eta.Ticks);
-
-                        string encProgress = string.Format(encProgressFmt, ticks1,
-                                                           remaining);
-                        _bw.ReportProgress(progress, encProgress);
-                    }
-                    else
-                    {
-                        Log.InfoFormat("bepipe: {0:s}", line);
-                    }
-                };
+                        else
+                            Log.InfoFormat("bepipe: {0:s}", line);
+                    };
 
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
+                    {
+                        string line = outputEvent.Data;
 
-                    if (string.IsNullOrEmpty(line)) return;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                    Log.InfoFormat("lame: {0:s}", line);
-                };
+                        Log.InfoFormat("lame: {0:s}", line);
+                    };
 
                 Log.InfoFormat("lame {0:s}", encoderParameter.Arguments);
 
@@ -295,7 +286,8 @@ namespace VideoConvert.Core.Encoder
                     decoder.PriorityClass = AppSettings.GetProcessPriority();
                     decoder.BeginErrorReadLine();
 
-                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream, 32768,
+                    Processing.CopyStreamToStream(decoder.StandardOutput.BaseStream, encoder.StandardInput.BaseStream,
+                                                  32768,
                                                   (src, dst, exc) =>
                                                       {
                                                           src.Close();
@@ -316,9 +308,9 @@ namespace VideoConvert.Core.Encoder
                         }
                         Thread.Sleep(200);
                     }
-                    encoder.WaitForExit();
+                    encoder.WaitForExit(10000);
                     encoder.CancelErrorRead();
-                    decoder.WaitForExit();
+                    decoder.WaitForExit(10000);
                     decoder.CancelErrorRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;

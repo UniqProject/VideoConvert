@@ -60,12 +60,12 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {
-                                                     CreateNoWindow = true,
-                                                     UseShellExecute = false,
-                                                     RedirectStandardOutput = true,
-                                                     Arguments = _defaultparams + " -V"
-                                                 };
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        Arguments = _defaultparams + " -V"
+                    };
                 encoder.StartInfo = parameter;
 
                 bool started;
@@ -86,24 +86,17 @@ namespace VideoConvert.Core.Encoder
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
-                    {
                         verInfo = result.Groups[1].Value;
-                    }
-                }
-                if (started)
-                {
+
+                    encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
-                    {
                         encoder.Kill();
-                    }
                 }
             }
 
             // Debug info
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("tsMuxeR \"{0:s}\" found", verInfo);
-            }
 
             return verInfo;
         }
@@ -124,7 +117,9 @@ namespace VideoConvert.Core.Encoder
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                                                 {WorkingDirectory = AppSettings.DemuxLocation};
+                    {
+                        WorkingDirectory = AppSettings.DemuxLocation
+                    };
 
                 string metaFile = GenerateCommandLine();
 
@@ -140,29 +135,30 @@ namespace VideoConvert.Core.Encoder
                 encoder.StartInfo = parameter;
 
                 encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-                    if (string.IsNullOrEmpty(line)) return;
-                    
-                    Match result = regObj.Match(line);
-                    if (result.Success)
                     {
-                        float tempProgress;
-                        Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out tempProgress);
+                        string line = outputEvent.Data;
+                        if (string.IsNullOrEmpty(line)) return;
 
-                        int progress = Convert.ToInt32(Math.Ceiling(tempProgress));
+                        Match result = regObj.Match(line);
+                        if (result.Success)
+                        {
+                            float tempProgress;
+                            Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                                            out tempProgress);
 
-                        string progressStr = string.Format(progressFormat,
-                                                            _jobInfo.OutputFile,
-                                                            progress);
-                        _bw.ReportProgress(progress, progressStr);
+                            int progress = Convert.ToInt32(Math.Ceiling(tempProgress));
 
-                    }
-                    else
-                    {
-                        Log.InfoFormat("tsMuxeR: {0:s}", line);
-                    }
-                };
+                            string progressStr = string.Format(progressFormat,
+                                                               _jobInfo.OutputFile,
+                                                               progress);
+                            _bw.ReportProgress(progress, progressStr);
+
+                        }
+                        else
+                        {
+                            Log.InfoFormat("tsMuxeR: {0:s}", line);
+                        }
+                    };
 
                 Log.InfoFormat("tsMuxeR: {0:s}", parameter.Arguments);
 
@@ -189,6 +185,7 @@ namespace VideoConvert.Core.Encoder
                             encoder.Kill();
                         Thread.Sleep(200);
                     }
+                    encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;
@@ -228,8 +225,6 @@ namespace VideoConvert.Core.Encoder
                 meta.Append("--new-audio-pes ");
 
             meta.Append("--vbr ");
-
-
 
             switch (_jobInfo.EncodingProfile.OutFormat)
             {
@@ -395,9 +390,7 @@ namespace VideoConvert.Core.Encoder
                 string delayString = string.Empty;
 
                 if (item.Delay != 0)
-                {
                     delayString = string.Format(AppSettings.CInfo, "timeshift={0:#}ms,", item.Delay);
-                }
 
                 inFile = item.TempFile;
 
@@ -437,14 +430,11 @@ namespace VideoConvert.Core.Encoder
 
                 string delayString = string.Empty;
                 if (item.Delay != int.MinValue)
-                {
                     delayString = string.Format(AppSettings.CInfo, "timeshift={0:#}ms,", item.Delay);
-                }
 
                 if (codec == "S_TEXT/UTF8")
-                {
                     meta.AppendFormat(AppSettings.CInfo,
-                                      "{0:s}, {1:s},{2:s}font-name=\"{3:s}\",font-size={4:#},font-color={5:s},bottom-offset={6:g},"+
+                                      "{0:s}, {1:s},{2:s}font-name=\"{3:s}\",font-size={4:#},font-color={5:s},bottom-offset={6:g}," +
                                       "font-border={7:g},text-align=center,video-width={8:g},video-height={9:g},fps={10:#.###}, track={11:g}, lang={12:s}",
                                       codec,
                                       tempFile,
@@ -462,9 +452,7 @@ namespace VideoConvert.Core.Encoder
                                       _jobInfo.VideoStream.FPS,
                                       subId,
                                       itemlang);
-                }
                 else
-                {
                     meta.AppendFormat(AppSettings.CInfo,
                                       "{0:s}, {1:s},{2:s}bottom-offset={3:g},font-border={4:g},text-align=center,video-width={5:g}," +
                                       "video-height={6:g},fps={7:#.###}, track={8:g}, lang={9:s}",
@@ -478,16 +466,13 @@ namespace VideoConvert.Core.Encoder
                                       _jobInfo.VideoStream.FPS,
                                       subId,
                                       itemlang);
-                }
 
-                    meta.AppendLine();
+                meta.AppendLine();
             }
 
             string metaFile = Processing.CreateTempFile("meta");
             using (StreamWriter sw = new StreamWriter(metaFile))
-            {
                 sw.WriteLine(meta.ToString());
-            }
 
             Log.InfoFormat("tsMuxeR Meta: \r\n{0:s}", meta);
 

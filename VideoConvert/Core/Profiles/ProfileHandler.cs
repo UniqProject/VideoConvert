@@ -66,7 +66,7 @@ namespace VideoConvert.Core.Profiles
                     Directory.CreateDirectory(dir, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
                 }
                 XmlDeclaration decl = _profilesFile.CreateXmlDeclaration("1.0", "UTF-8", "yes");
-                XmlElement xn = _profilesFile.CreateElement("MKV_Remux");
+                XmlElement xn = _profilesFile.CreateElement("VideoConvert");
                 _profilesFile.AppendChild(decl);
                 _profilesFile.AppendChild(xn);
 
@@ -275,22 +275,22 @@ namespace VideoConvert.Core.Profiles
                 ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AACProfile>().ToList();
 
             XmlProfiles profiles = new XmlProfiles
-                                       {
-                                           AC3Profiles =
-                                               ac3Profiles,
-                                           HcEncProfiles =
-                                               hcEncProfiles,
-                                           MP3Profiles =
-                                               mp3Profiles,
-                                           OggProfiles =
-                                               oggProfiles,
-                                           QuickSelectProfiles =
-                                               quickSelectProfiles,
-                                           X264Profiles =
-                                               x264Profiles,
-                                           AACProfiles = aacProfiles,
-                                           VP8Profiles = vp8Profiles,
-                                       };
+                {
+                    AC3Profiles =
+                        ac3Profiles,
+                    HcEncProfiles =
+                        hcEncProfiles,
+                    MP3Profiles =
+                        mp3Profiles,
+                    OggProfiles =
+                        oggProfiles,
+                    QuickSelectProfiles =
+                        quickSelectProfiles,
+                    X264Profiles =
+                        x264Profiles,
+                    AACProfiles = aacProfiles,
+                    VP8Profiles = vp8Profiles,
+                };
             XmlSerializer serializer = new XmlSerializer(typeof(XmlProfiles));
             using (FileStream writer = new FileStream(_profFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
             {

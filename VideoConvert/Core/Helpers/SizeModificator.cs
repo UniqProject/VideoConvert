@@ -41,15 +41,15 @@ namespace VideoConvert.Core.Helpers
         public static List<SizeModificator> GenerateList()
         {
             List<SizeModificator> modList = new List<SizeModificator>
-                                                {
-                                                    new SizeModificator(0, "byte", 1),
-                                                    new SizeModificator(1, "KB", 1000),
-                                                    new SizeModificator(2, "KiB", 1024),
-                                                    new SizeModificator(3, "MB", 1000000),
-                                                    new SizeModificator(4, "MiB", 1048576),
-                                                    new SizeModificator(5, "GB", 1000000000),
-                                                    new SizeModificator(6, "GiB", 1073741824)
-                                                };
+                {
+                    new SizeModificator(0, "byte", 1),
+                    new SizeModificator(1, "KB", 1000),
+                    new SizeModificator(2, "KiB", 1024),
+                    new SizeModificator(3, "MB", 1000000),
+                    new SizeModificator(4, "MiB", 1048576),
+                    new SizeModificator(5, "GB", 1000000000),
+                    new SizeModificator(6, "GiB", 1073741824)
+                };
 
             return modList;
         }
