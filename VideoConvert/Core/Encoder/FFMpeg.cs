@@ -121,6 +121,8 @@ namespace VideoConvert.Core.Encoder
 
             sb.AppendFormat("-i \"{0}\" ", inputFile);
 
+            bool hasStreams = false;
+
             for (int i = 0; i < _jobInfo.AudioStreams.Count; i++)
             {
                 AudioInfo item = _jobInfo.AudioStreams[i];
@@ -150,6 +152,8 @@ namespace VideoConvert.Core.Encoder
 
                 sb.AppendFormat("-map 0:a:{0:0} -vn -c:a {1} -y \"{2}\" ", item.StreamKindId, acodec, item.TempFile);
 
+                hasStreams = true;
+
                 _jobInfo.AudioStreams[i] = item;
             }
             
@@ -158,79 +162,84 @@ namespace VideoConvert.Core.Encoder
             Regex regObj = new Regex(@"^size=\s+?(\d+)[\w\s]+?time=([\d\.]+).+$",
                                      RegexOptions.Singleline | RegexOptions.Multiline);
 
-            using (Process encoder = new Process())
+            if (hasStreams)
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                    {
-                        WorkingDirectory = AppSettings.DemuxLocation,
-                        Arguments = sb.ToString(),
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardError = true
-                    };
-                encoder.StartInfo = parameter;
-
-                encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = regObj.Match(line);
-                        if (result.Success)
+                using (Process encoder = new Process())
+                {
+                    ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
                         {
-                            double secDemux;
-                            Double.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out secDemux);
-                            int progress = (int) Math.Floor(secDemux/_jobInfo.VideoStream.Length*100d);
+                            WorkingDirectory = AppSettings.DemuxLocation,
+                            Arguments = sb.ToString(),
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            RedirectStandardError = true
+                        };
+                    encoder.StartInfo = parameter;
 
-                            string progressStr = string.Format(progressFormat, Path.GetFileName(_jobInfo.InputFile),
-                                                               progress);
-                            _bw.ReportProgress(progress, progressStr);
-                        }
-                        else
-                            Log.InfoFormat("avconv: {0:s}", line);
-                    };
+                    encoder.ErrorDataReceived += (outputSender, outputEvent) =>
+                        {
+                            string line = outputEvent.Data;
 
-                Log.InfoFormat("avconv {0:s}", parameter.Arguments);
+                            if (string.IsNullOrEmpty(line)) return;
 
-                bool started;
-                try
-                {
-                    started = encoder.Start();
-                }
-                catch (Exception ex)
-                {
-                    started = false;
-                    Log.ErrorFormat("avconv exception: {0}", ex);
-                    _jobInfo.ExitCode = -1;
-                }
+                            Match result = regObj.Match(line);
+                            if (result.Success)
+                            {
+                                double secDemux;
+                                Double.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
+                                                out secDemux);
+                                int progress = (int) Math.Floor(secDemux/_jobInfo.VideoStream.Length*100d);
 
-                if (started)
-                {
-                    encoder.PriorityClass = AppSettings.GetProcessPriority();
-                    encoder.BeginErrorReadLine();
+                                string progressStr = string.Format(progressFormat, Path.GetFileName(_jobInfo.InputFile),
+                                                                   progress);
+                                _bw.ReportProgress(progress, progressStr);
+                            }
+                            else
+                                Log.InfoFormat("avconv: {0:s}", line);
+                        };
 
-                    _bw.ReportProgress(-1, status);
+                    Log.InfoFormat("avconv {0:s}", parameter.Arguments);
 
-                    while (!encoder.HasExited)
+                    bool started;
+                    try
                     {
-                        if (_bw.CancellationPending)
-                            encoder.Kill();
-                        Thread.Sleep(200);
-
+                        started = encoder.Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        started = false;
+                        Log.ErrorFormat("avconv exception: {0}", ex);
+                        _jobInfo.ExitCode = -1;
                     }
 
-                    encoder.WaitForExit(10000);
-                    encoder.CancelErrorRead();
+                    if (started)
+                    {
+                        encoder.PriorityClass = AppSettings.GetProcessPriority();
+                        encoder.BeginErrorReadLine();
 
-                    _jobInfo.ExitCode = encoder.ExitCode;
+                        _bw.ReportProgress(-1, status);
 
-                    if (_jobInfo.ExitCode == 0)
-                        _jobInfo.VideoStream.TempFile = inputFile;
+                        while (!encoder.HasExited)
+                        {
+                            if (_bw.CancellationPending)
+                                encoder.Kill();
+                            Thread.Sleep(200);
+                        }
 
-                    Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
+                        encoder.WaitForExit(10000);
+                        encoder.CancelErrorRead();
+
+                        _jobInfo.ExitCode = encoder.ExitCode;
+
+                        if (_jobInfo.ExitCode == 0)
+                            _jobInfo.VideoStream.TempFile = inputFile;
+
+                        Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
+                    }
                 }
             }
+            else
+                _jobInfo.ExitCode = 0;
 
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
