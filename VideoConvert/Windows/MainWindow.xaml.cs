@@ -176,6 +176,9 @@ namespace VideoConvert.Windows
 
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && needCheck)
             {
+                Processing.GetUpdaterVersion();
+                Processing.GetAviSynthPluginsVer();
+
                 WebClient downloader = new WebClient {UseDefaultCredentials = true};
                 string versionFile = string.Empty;
                 try

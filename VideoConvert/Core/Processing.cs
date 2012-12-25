@@ -634,21 +634,15 @@ namespace VideoConvert.Core
             File.Delete(avsFile);
             #endregion
 
-            #region AvsPlugins Version
+            GetAviSynthPluginsVer();
+            GetUpdaterVersion();
 
-            string verFile = Path.Combine(AppSettings.AvsPluginsPath, "version");
-            if (File.Exists(verFile))
-            {
-                using (StreamReader str = new StreamReader(verFile))
-                {
-                    AppSettings.LastAviSynthPluginsVer = str.ReadLine();
-                }
-            }
+            AppSettings.UpdateVersions = false;
+            AppSettings.SaveSettings();
+        }
 
-            #endregion
-
-            #region Get Updater Version
-
+        public static void GetUpdaterVersion()
+        {
             try
             {
                 FileVersionInfo updaterVer =
@@ -658,14 +652,20 @@ namespace VideoConvert.Core
             catch (Exception e)
             {
                 Log.Error("unable to get updater version", e);
-                AppSettings.UpdaterVersion = new Version(0,0,0,0);
+                AppSettings.UpdaterVersion = new Version(0, 0, 0, 0);
             }
-            
+        }
 
-            #endregion
-
-            AppSettings.UpdateVersions = false;
-            AppSettings.SaveSettings();
+        public static void GetAviSynthPluginsVer()
+        {
+            string verFile = Path.Combine(AppSettings.AvsPluginsPath, "version");
+            if (File.Exists(verFile))
+            {
+                using (StreamReader str = new StreamReader(verFile))
+                {
+                    AppSettings.LastAviSynthPluginsVer = str.ReadLine();
+                }
+            }
         }
 
         public static string GetResourceString(string key)
