@@ -649,6 +649,8 @@ namespace VideoConvert.Windows
 
         void UpdaterRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            AppSettings.LastUpdateRun = DateTime.Now;
+
             if (_mainAppUpdate)
             {
                 string msg = Processing.GetResourceString("update_restart_needed");

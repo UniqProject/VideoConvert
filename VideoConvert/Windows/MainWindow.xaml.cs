@@ -91,9 +91,9 @@ namespace VideoConvert.Windows
                     ChangelogViewer changeLog = new ChangelogViewer {Owner = this};
                     changeLog.ShowDialog();
                     string msg = Processing.GetResourceString("update_done");
-                    Xceed.Wpf.Toolkit.MessageBox.Show(msg, 
+                    Xceed.Wpf.Toolkit.MessageBox.Show(msg,
                                                       "Update",
-                                                      MessageBoxButton.OK, 
+                                                      MessageBoxButton.OK,
                                                       MessageBoxImage.Information);
                     reloadVersions = true;
                 }
@@ -102,39 +102,39 @@ namespace VideoConvert.Windows
             if (reloadVersions)
             {
                 BackgroundWorker reloadV = new BackgroundWorker
-                                               {
-                                                   WorkerReportsProgress = true, 
-                                                   WorkerSupportsCancellation = false
-                                               };
+                    {
+                        WorkerReportsProgress = true,
+                        WorkerSupportsCancellation = false
+                    };
 
                 reloadV.RunWorkerCompleted += (o, args) => RunUpdateWorker();
                 reloadV.DoWork += (o, args) =>
-                                      {
-                                          BackgroundWorker bw = (BackgroundWorker) o;
-                                          bw.ReportProgress(-5);
-                                          Processing.GetAppVersions();
-                                          bw.ReportProgress(-6);
-                                          
-                                      };
+                    {
+                        BackgroundWorker bw = (BackgroundWorker) o;
+                        bw.ReportProgress(-5);
+                        Processing.GetAppVersions();
+                        bw.ReportProgress(-6);
+
+                    };
                 reloadV.ProgressChanged += (o, args) =>
-                                               {
-                                                   switch (args.ProgressPercentage)
-                                                   {
-                                                       case -5:
-                                                           string msg = Processing.GetResourceString("check_versions");
+                    {
+                        switch (args.ProgressPercentage)
+                        {
+                            case -5:
+                                string msg = Processing.GetResourceString("check_versions");
 
-                                                           StatusItem.Text = msg;
-                                                           StatusItem.FontWeight = FontWeights.Bold;
-                                                           StatusItemHeader.Background = Brushes.Yellow;
-                                                           break;
+                                StatusItem.Text = msg;
+                                StatusItem.FontWeight = FontWeights.Bold;
+                                StatusItemHeader.Background = Brushes.Yellow;
+                                break;
 
-                                                       case -6:
-                                                           StatusItem.Text = string.Empty;
-                                                           StatusItem.FontWeight = FontWeights.Normal;
-                                                           StatusItemHeader.Background = Brushes.Transparent;
-                                                           break;
-                                                   }
-                                               };
+                            case -6:
+                                StatusItem.Text = string.Empty;
+                                StatusItem.FontWeight = FontWeights.Normal;
+                                StatusItemHeader.Background = Brushes.Transparent;
+                                break;
+                        }
+                    };
                 reloadV.RunWorkerAsync();
             }
             else
@@ -144,7 +144,10 @@ namespace VideoConvert.Windows
         public void RunUpdateWorker()
         {
             BackgroundWorker checkUpdate = new BackgroundWorker
-                                               {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+                {
+                    WorkerReportsProgress = true,
+                    WorkerSupportsCancellation = true
+                };
             checkUpdate.RunWorkerCompleted += CheckUpdateRunWorkerCompleted;
             checkUpdate.DoWork += CheckUpdateDoWork;
             checkUpdate.RunWorkerAsync();
@@ -154,7 +157,24 @@ namespace VideoConvert.Windows
         {
             bool needUpdate = false;
 
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            bool needCheck = false;
+
+            switch (AppSettings.UpdateFrequency)
+            {
+                case 0:
+                    needCheck = true;
+                    break;
+                case 1:
+                    if (AppSettings.LastUpdateRun.AddDays(1) > DateTime.Now)
+                        needCheck = true;
+                    break;
+                case 2:
+                    if (AppSettings.LastUpdateRun.AddDays(7) > DateTime.Now)
+                        needCheck = true;
+                    break;
+            }
+
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && needCheck)
             {
                 WebClient downloader = new WebClient {UseDefaultCredentials = true};
                 string versionFile = string.Empty;
@@ -327,6 +347,9 @@ namespace VideoConvert.Windows
                 }
             }
 
+            if (!needUpdate)
+                AppSettings.LastUpdateRun = DateTime.Now;
+
             e.Result = needUpdate;
         }
 
@@ -340,13 +363,13 @@ namespace VideoConvert.Windows
             StatusItem.FontWeight = FontWeights.Bold;
             StatusItemHeader.Background = Brushes.Green;
             StatusItemLink.Click += (s, ev) =>
-                                        {
-                                            if (ViewControl.Children.Count != 0) return;
+                {
+                    if (ViewControl.Children.Count != 0) return;
 
-                                            StatusItemHeader.Visibility = Visibility.Collapsed;
-                                            ToolUpdaterWindow updater = new ToolUpdaterWindow();
-                                            ViewControl.Children.Add(updater);
-                                        };
+                    StatusItemHeader.Visibility = Visibility.Collapsed;
+                    ToolUpdaterWindow updater = new ToolUpdaterWindow();
+                    ViewControl.Children.Add(updater);
+                };
         }
 
         private void EncodeBtnClick(object sender, RoutedEventArgs e)
@@ -383,18 +406,14 @@ namespace VideoConvert.Windows
                                             {DereferenceLinks = false, Multiselect = true, ValidateNames = true};
             if (fileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             foreach (string fileName in fileDialog.FileNames)
-            {
                 CreateJob(fileName);
-            }
         }
 
         private void AddFolderClick(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
             if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
                 CreateJob(folderBrowser.SelectedPath);
-            }
         }
 
         private void CreateJob(string fileName)
