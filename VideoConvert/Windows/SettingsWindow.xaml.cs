@@ -364,6 +364,7 @@ namespace VideoConvert.Windows
             }
 
             ExplicitSettingsUpdate();
+            Log.Error("saved");
             AppSettings.SaveSettings();
             DialogResult = true;
         }
@@ -458,6 +459,8 @@ namespace VideoConvert.Windows
             AppSettings.TSMuxeRSubtitleFont = (FontFamily)tsMuxeRFontSwitcher.SelectedItem;
             AppSettings.TSMuxeRSubtitleColor = tsMuxeRFontColorPicker.SelectedColor;
             AppSettings.UseLanguage = LanguageSelect.SelectedValue as string;
+            AppSettings.ProcessPriority = ProcessPriority.SelectedIndex;
+            AppSettings.UpdateFrequency = AutoUpdateFrequency.SelectedIndex;
         }
 
         /// <summary>

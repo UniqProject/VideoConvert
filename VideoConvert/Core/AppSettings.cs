@@ -44,21 +44,25 @@ namespace VideoConvert.Core
         public static bool UseAviSynthMT
         {
             get { return Properties.Settings.Default.UseAviSynthMT; }
+            set { Properties.Settings.Default.UseAviSynthMT = value; }
         }
 
         public static bool UseHQDeinterlace
         {
             get { return Properties.Settings.Default.UseHQDeinterlace; }
+            set { Properties.Settings.Default.UseHQDeinterlace = value; }
         }
 
         public static bool EnableSSIF
         {
             get { return Properties.Settings.Default.EnableSSIF; }
+            set { Properties.Settings.Default.EnableSSIF = value; }
         }
 
         public static bool FilterLoopingPlaylists
         {
             get { return Properties.Settings.Default.FilterLoopingPlaylists; }
+            set { Properties.Settings.Default.FilterLoopingPlaylists = value; }
         }
 
         public static bool FilterShortPlaylists
@@ -371,17 +375,19 @@ namespace VideoConvert.Core
 
         public static bool DeleteCompletedJobs
         {
-            get { return Properties.Settings.Default.DeleteCompletedJobs; }
+            get { return Properties.Settings.Default.DeleteCompletedJobs;}
         }
 
         public static int ProcessPriority
         {
             get { return Properties.Settings.Default.ProcessPriority; }
+            set { Properties.Settings.Default.ProcessPriority = value; }
         }
 
         public static bool DeleteTemporaryFiles
         {
             get { return Properties.Settings.Default.DeleteTemporaryFiles; }
+            set { Properties.Settings.Default.DeleteTemporaryFiles = value; }
         }
 
         public static bool UseDebug

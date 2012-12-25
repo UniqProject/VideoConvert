@@ -1,6 +1,4 @@
-﻿// ReSharper disable CheckNamespace
-namespace VideoConvert.Properties {
-
+﻿namespace VideoConvert {
     
     
     // Diese Klasse ermöglicht die Behandlung bestimmter Ereignisse der Einstellungsklasse:
@@ -28,4 +26,3 @@ namespace VideoConvert.Properties {
         }
     }
 }
-// ReSharper restore CheckNamespace
