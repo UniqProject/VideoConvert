@@ -404,7 +404,6 @@ VideoConvert.g.en-US.resources:settingswindow.baml,Window_1:System.Windows.Frame
 VideoConvert.g.en-US.resources:settingswindow.baml,Window_1:System.Windows.Controls.Control.FontFamily,Font,True,True,,Verdana
 VideoConvert.g.en-US.resources:settingswindow.baml,Window_1:System.Windows.UIElement.SnapsToDevicePixels,None,False,True,,True
 VideoConvert.g.en-US.resources:settingswindow.baml,Window_1:System.Windows.Window.WindowStyle,None,True,False,,SingleBorderWindow
-VideoConvert.g.en-US.resources:settingswindow.baml,properties:Settings_1:VideoConvert.Properties.Settings.$Content,None,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,MainGrid:System.Windows.FrameworkElement.Width,None,False,True,,790
 VideoConvert.g.en-US.resources:settingswindow.baml,SettingsTabControl:System.Windows.Controls.TabControl.$Content,None,False,True,,#GeneralTab;#EncoderTab;#PathSettingsTab;#FormatProfilesTab;#VideoProfilesTab;#AudioProfilesTab;#tsMuxeRTab;
 VideoConvert.g.en-US.resources:settingswindow.baml,SettingsTabControl:System.Windows.FrameworkElement.Height,None,False,True,,667
@@ -451,6 +450,8 @@ VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortValue:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortValue:System.Windows.FrameworkElement.Margin,None,False,True,,"0,47,436,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortValue:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortValue:System.Windows.FrameworkElement.Width,None,False,True,,55
+VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortValue:System.Windows.Controls.Control.HorizontalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortValue:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortSecLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortSecLabel:System.Windows.Controls.ContentControl.Content,Label,True,True,,sec
 VideoConvert.g.en-US.resources:settingswindow.baml,FilterShortSecLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
@@ -503,6 +504,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_3:System.Windows
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_3:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Higher
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_4:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_4:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Normal
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_4:System.Windows.Controls.ListBoxItem.IsSelected,None,False,True,,False
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_5:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_5:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Lower
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_6:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
@@ -600,6 +602,14 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_218:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_218:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Daily
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_219:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_219:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Weekly
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"17,356,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Control.Padding,None,False,True,,0
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.ContentControl.ContentStringFormat,Label,True,True,,Last update: {0:dd/MM/yyyy HH:mm:ss}
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderTab:System.Windows.Controls.TabItem.$Content,Text,True,True,,#Grid_3;
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderTab:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoder
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderPathGroup:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_4;
@@ -3230,7 +3240,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ResetSettings:System.Windows.
 VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:VideoConvert.Windows.MainWindow.$Content,None,True,True,,#MainGrid;
 VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Window.Title,Title,True,True,,VideoConvert
 VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Window.WindowStartupLocation,None,False,True,,CenterScreen
-VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Window.ResizeMode,None,False,True,,NoResize
+VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Window.ResizeMode,None,False,True,,CanMinimize
 VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Controls.Control.FontFamily,Font,True,True,,Verdana
 VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Window.Icon,None,False,True,,/VideoConvert\;component/Videos-Library.ico
 VideoConvert.g.en-US.resources:mainwindow.baml,MainForm:System.Windows.Window.WindowStyle,None,True,False,,SingleBorderWindow
