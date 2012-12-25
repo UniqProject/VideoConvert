@@ -37,6 +37,7 @@ using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
 using VideoConvert.Core.Video.x264;
 using Xceed.Wpf.Toolkit;
+using log4net;
 using CheckBox = System.Windows.Controls.CheckBox;
 using ComboBox = System.Windows.Controls.ComboBox;
 using GroupBox = System.Windows.Controls.GroupBox;
@@ -51,6 +52,8 @@ namespace VideoConvert.Windows
     /// </summary>
     public partial class SettingsWindow
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SettingsWindow));
+
         private string _encPath;
         private string _javaPath;
         private ProfilesHandler _profiles = new ProfilesHandler();
@@ -102,21 +105,40 @@ namespace VideoConvert.Windows
                 MediaInfoVer.Content = miVer;
                 mi.Close();
             }
-// ReSharper disable EmptyGeneralCatchClause
-            catch (Exception)
-// ReSharper restore EmptyGeneralCatchClause
+            catch (Exception ex)
             {
+                Log.Error(ex);
             }
             #endregion
 
             List<X264Device> x264DeviceList = X264Device.CreateDeviceList();
             X264TuneDevice.ItemsSource = x264DeviceList;
 
-            foreach (FontFamily item in Fonts.SystemFontFamilies)
-            {
-                tsMuxeRFontSwitcher.Items.Add(item);
-            }
-            tsMuxeRFontSwitcher.SelectedItem = AppSettings.TSMuxeRSubtitleFont;
+            // load available fonts in the background, to decrease window load times
+            BackgroundWorker fontLoader = new BackgroundWorker
+                {
+                    WorkerReportsProgress = true,
+                    WorkerSupportsCancellation = true
+                };
+
+            fontLoader.DoWork += (bwSender, args) =>
+                {
+                    BackgroundWorker bw = (BackgroundWorker) bwSender;
+                    foreach (FontFamily item in Fonts.SystemFontFamilies)
+                    {
+                        bw.ReportProgress(-1, item);
+                    }
+                };
+            fontLoader.ProgressChanged += (o, args) =>
+                {
+                    FontFamily font = (FontFamily) args.UserState;
+                    tsMuxeRFontSwitcher.Items.Add(font);
+                };
+            fontLoader.RunWorkerCompleted +=
+                (o, args) => { tsMuxeRFontSwitcher.SelectedItem = AppSettings.TSMuxeRSubtitleFont; };
+
+            fontLoader.RunWorkerAsync();
+            
             tsMuxeRFontColorPicker.SelectedColor = AppSettings.TSMuxeRSubtitleColor;
 
             ReloadQuickProfileList();
