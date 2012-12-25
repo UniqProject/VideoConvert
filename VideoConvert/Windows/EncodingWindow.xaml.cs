@@ -62,17 +62,17 @@ namespace VideoConvert.Windows
             InitializeComponent();
             Application.Current.Exit += CurrentExit;
             _logEntries.CollectionChanged += (sender, args) =>
-                                                 {
-                                                     try
-                                                     {
-                                                         LogView.ScrollIntoView(_logEntries[_logEntries.Count - 1]);
-                                                     }
-                                                     catch (Exception ex)
-                                                     {
-                                                         Log.Error("Encoding Log error", ex);
-                                                     }
-                                                     
-                                                 };
+                {
+                    try
+                    {
+                        LogView.ScrollIntoView(_logEntries[_logEntries.Count - 1]);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Encoding Log error", ex);
+                    }
+
+                };
         }
 
         void CurrentExit(object sender, ExitEventArgs e)
@@ -125,34 +125,27 @@ namespace VideoConvert.Windows
                 TaskBar.ProgressValue = TotalProgress.Value / TotalProgress.Maximum;
             }
             else if (e.ProgressPercentage >= -1)
-            {
                 ActualProgress.IsIndeterminate = true;
-            }
             else
             {
                 LogEntry entry = new LogEntry
-                                     {
-                                         EntryTime = DateTime.Now,
-                                         JobName = JobList[_actualJob].JobName,
-                                         LogText = (string) e.UserState
-                                     };
+                    {
+                        EntryTime = DateTime.Now,
+                        JobName = JobList[_actualJob].JobName,
+                        LogText = (string) e.UserState
+                    };
 
                 _logEntries.Add(entry);
-
             }
             if (e.ProgressPercentage >= -1)
-            {
                 JobStatus.Content = e.UserState;
-            }
         }
 
         void EncodeCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if ((JobList[_actualJob].NextStep != EncodingStep.MoveOutFile) &&
                 (JobList[_actualJob].NextStep != EncodingStep.CopyTempFile))
-            {
-                JobList[_actualJob] = (EncodeInfo)e.Result;
-            }
+                JobList[_actualJob] = (EncodeInfo) e.Result;
 
             _actualProcessStep++;
 
@@ -237,7 +230,6 @@ namespace VideoConvert.Windows
                     CloseWindow();
                 }
                 else if (job.NextStep != EncodingStep.Done)
-                {
                     try
                     {
                         Log.Info("Run background worker");
@@ -248,14 +240,12 @@ namespace VideoConvert.Windows
                         _worker.RunWorkerCompleted += EncodeCompleted;
                         _worker.RunWorkerAsync();
                     }
-// ReSharper disable EmptyGeneralCatchClause
-                    catch { }
-// ReSharper restore EmptyGeneralCatchClause
-                }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex);
+                    }
                 else
-                {
                     StartEncode();
-                }
             } // ActualJob < JobList.Count
             else
             {
@@ -273,21 +263,19 @@ namespace VideoConvert.Windows
                 System.Diagnostics.Process.Start("shutdown", "/s /t 10");
             }
             else
-            {
                 Log.Info("Closing Encoding dialog");
-            }
 
             if (AppSettings.DeleteCompletedJobs)
             {
                 Log.Info("Remove Completed Jobs");
                 List<EncodeInfo> completed = JobList.Where(encodeInfo => encodeInfo.NextStep == EncodingStep.Done).ToList();
+
                 foreach (EncodeInfo encodeInfo in completed)
-                {
                     JobList.Remove(encodeInfo);
-                }
             }
 
             if (Parent != null) ((Grid) Parent).Children.Remove(this);
+
             TaskBar.ProgressState = TaskbarItemProgressState.None;
         }
 
@@ -301,10 +289,6 @@ namespace VideoConvert.Windows
                     continue;
 
                 FileAttributes fi = new FileInfo(tempFile).Attributes;
-
-                if (fi == FileAttributes.Directory)
-                {
-                }
 
                 try
                 {
@@ -570,26 +554,23 @@ namespace VideoConvert.Windows
                     // and if there are actually some audio streams
                     //
                     // then the next step is to encode the audio streams
-                    if ((job.AudioProfile.Type != ProfileType.Copy || 
-                        (job.AudioProfile.Type == ProfileType.Copy && job.EncodingProfile.OutFormat == OutputType.OutputDvd)) &&
+                    if ((job.AudioProfile.Type != ProfileType.Copy ||
+                         (job.AudioProfile.Type == ProfileType.Copy &&
+                          job.EncodingProfile.OutFormat == OutputType.OutputDvd)) &&
                         job.AudioStreams.Count > 0)
                     {
                         job.NextStep = EncodingStep.EncodeAudio;
                         job.StreamId = 0;
                     }
                     else
-                    {
                         GetSubOrVideoStep(job);
-                    }
                     break;
 
                 case EncodingStep.EncodeAudio:
                     if (job.AudioStreams.Count - 1 > job.StreamId)
                         job.StreamId++;
                     else
-                    {
                         GetSubOrVideoStep(job);
-                    }
                     break;
 
                 case EncodingStep.ProcessSubtitle:
@@ -598,18 +579,14 @@ namespace VideoConvert.Windows
                         AppSettings.JavaInstalled)
                         job.StreamId++;
                     else
-                    {
                         GetSubOrVideoStep(job);
-                    }
                     break;
 
                 case EncodingStep.IndexVideo:
                     if (job.EncodingProfile.AutoCropResize &&
                         !job.EncodingProfile.KeepInputResolution &&
                         job.EncodingProfile.OutFormat != OutputType.OutputDvd)
-                    {
                         job.NextStep = EncodingStep.GetCropRect;
-                    }
                     else
                     {
                         job.NextStep = EncodingStep.EncodeVideo;
