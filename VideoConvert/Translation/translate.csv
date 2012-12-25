@@ -489,7 +489,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriorityLabel:System.W
 VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.Controls.ComboBox.$Content,ComboBox,True,True,,#ComboBoxItem_1;#ComboBoxItem_2;#ComboBoxItem_3;#ComboBoxItem_4;#ComboBoxItem_5;#ComboBoxItem_6;
 VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.FrameworkElement.Margin,None,False,True,,"126,133,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.FrameworkElement.Margin,None,False,True,,"169,133,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.FrameworkElement.Width,None,False,True,,200
 VideoConvert.g.en-US.resources:settingswindow.baml,ProcessPriority:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -518,7 +518,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,LanguageLabel:System.Windows.
 VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.Controls.ComboBox.$Content,ComboBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.FrameworkElement.Margin,None,False,True,,"126,158,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.FrameworkElement.Margin,None,False,True,,"169,158,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.FrameworkElement.Width,None,False,True,,200
 VideoConvert.g.en-US.resources:settingswindow.baml,LanguageSelect:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -531,17 +531,30 @@ VideoConvert.g.en-US.resources:settingswindow.baml,UseHardwareRendering:System.W
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHardwareRendering:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHardwareRendering:System.Windows.FrameworkElement.Margin,None,False,True,,"16,283,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHardwareRendering:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.Controls.CheckBox.$Content,CheckBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Use 64 bit encoders
+VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.Height,None,False,True,,16
+VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.Margin,None,False,True,,"16,241,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_43;
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,AviSynth Options
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.FrameworkElement.Height,None,False,True,,145
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.FrameworkElement.Margin,None,False,True,,"16,0,0,23"
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.FrameworkElement.Width,None,False,True,,762
 VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.Controls.CheckBox.$Content,CheckBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Generate multi-threaded (MT) AviSynth scripts
 VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.FrameworkElement.Height,None,False,True,,16
 VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.FrameworkElement.Margin,None,False,True,,"16,343,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.FrameworkElement.Margin,None,False,True,,"7,6,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseAviSynthMT:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.Controls.TextBlock.$Content,Text,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.Controls.TextBlock.Text,Text,True,True,,Warning! Activate only if you have AviSynth-MT installed!
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.FrameworkElement.Height,None,False,True,,32
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.FrameworkElement.Margin,None,False,True,,"36,365,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.FrameworkElement.Margin,None,False,True,,"27,28,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.Controls.TextBlock.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,WarningAviSynthMT:System.Windows.Controls.TextBlock.Foreground,None,False,True,,\#FFFF0000
@@ -552,25 +565,41 @@ VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Use high-quality deinterlacing
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.Height,None,False,True,,16
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.Margin,None,False,True,,"16,423,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.Margin,None,False,True,,"7,50,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.$Content,Text,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.FontWeight,None,True,True,,Bold
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.Foreground,None,False,True,,\#FFFF0000
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.Height,None,False,True,,32
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.Margin,None,False,True,,"36,445,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.Margin,None,False,True,,"27,72,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.MaxWidth,None,False,True,,700
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.Text,Text,True,True,,"Warning! This deinterlacer is very slow, using AviSynth-MT is recommended!"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.TextWrapping,None,False,True,,WrapWithOverflow
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
-VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.Controls.CheckBox.$Content,CheckBox,True,True,,
-VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Use 64 bit encoders
-VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.Height,None,False,True,,16
-VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.Margin,None,False,True,,"16,241,0,0"
-VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.Label.$Content,Label,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.ContentControl.Content,Label,True,True,,Autoupdate frequency:
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.Height,None,False,True,,21
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.Margin,None,False,True,,"16,320,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.Control.Padding,None,False,True,,0
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.Controls.ComboBox.$Content,ComboBox,True,True,,#ComboBoxItem_217;#ComboBoxItem_218;#ComboBoxItem_219;
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Height,None,False,True,,21
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Margin,None,False,True,,"169,320,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Width,None,False,True,,200
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.Controls.Control.HorizontalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_217:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_217:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,At start
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_218:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_218:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Daily
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_219:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_219:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,Weekly
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderTab:System.Windows.Controls.TabItem.$Content,Text,True,True,,#Grid_3;
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderTab:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoder
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderPathGroup:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_4;
