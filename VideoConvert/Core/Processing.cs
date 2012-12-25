@@ -617,7 +617,7 @@ namespace VideoConvert.Core
             string avsFile = AviSynthGenerator.GenerateTestFile();
 
             int result = graphBuilder.RenderFile(avsFile, null);
-
+            
             Log.DebugFormat("RenderFile Result: {0}", result);
 
             if (result < 0)
