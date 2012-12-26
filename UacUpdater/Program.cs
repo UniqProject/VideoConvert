@@ -12,8 +12,16 @@ namespace UacUpdater
         [STAThread]
         static void Main()
         {
-            string[] parameters = Environment.GetCommandLineArgs();
-            if (parameters.Count() < 3) return;
+            string[] parameters = null;
+            try
+            {
+                parameters = Environment.GetCommandLineArgs();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            if (parameters == null || parameters.Count() < 3) return;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -96,6 +96,7 @@
             this.OverallProgress.Location = new System.Drawing.Point(16, 235);
             this.OverallProgress.Name = "OverallProgress";
             this.OverallProgress.Size = new System.Drawing.Size(665, 23);
+            this.OverallProgress.Step = 1;
             this.OverallProgress.TabIndex = 4;
             // 
             // ProgressLabel

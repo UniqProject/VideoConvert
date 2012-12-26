@@ -16,7 +16,6 @@ namespace UacUpdater
         private readonly string _updateFile;
         private readonly string _mainAppFile;
         private readonly List<PackageInfo> _updateList;
-        private bool _error;
 
         public UpdaterForm()
         {
@@ -24,8 +23,14 @@ namespace UacUpdater
             string[] parameters = Environment.GetCommandLineArgs();
             if (parameters.Count() >= 3)
             {
-                _updateFile = parameters[1];
-                _mainAppFile = parameters[2];
+                _updateFile = parameters.GetValue(1) as string;
+                _mainAppFile = parameters.GetValue(2) as string;
+
+                if (_updateFile == null || _mainAppFile == null)
+                {
+                    Close();
+                    return;
+                }
 
                 _updateList = new List<PackageInfo>();
 
@@ -35,7 +40,6 @@ namespace UacUpdater
                 }
                 catch (Exception ex)
                 {
-                    _error = true;
                     Log.AppendText("Malformed update file:");
                     Log.AppendText(Environment.NewLine);
                     Log.AppendText(File.ReadAllText(_updateFile));
@@ -44,28 +48,29 @@ namespace UacUpdater
                 {
                     UpdateTimer.Enabled = true;
                 }
-                
+
             }
             else
+            {
                 Close();
+            }
         }
 
         private void UpdateTimerTick(object sender, EventArgs e)
         {
             UpdateTimer.Enabled = false;
 
-            if (_updateList.Count > 0)
-            {
-                OverallProgress.Maximum = _updateList.Count;
+            if (_updateList.Count <= 0) return;
 
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += BwDoWork;
-                bw.WorkerSupportsCancellation = false;
-                bw.WorkerReportsProgress = true;
-                bw.ProgressChanged += BwProgressChanged;
-                bw.RunWorkerCompleted += BwRunWorkerCompleted;
-                bw.RunWorkerAsync();
-            }
+            OverallProgress.Maximum = _updateList.Count;
+
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += BwDoWork;
+            bw.WorkerSupportsCancellation = false;
+            bw.WorkerReportsProgress = true;
+            bw.ProgressChanged += BwProgressChanged;
+            bw.RunWorkerCompleted += BwRunWorkerCompleted;
+            bw.RunWorkerAsync();
         }
 
         void BwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
