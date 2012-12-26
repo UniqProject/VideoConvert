@@ -1,4 +1,10 @@
-﻿- [change]  Projektname zu VideoConvert geändert.
+﻿- [fix]     Wenn der Java-Pfad nicht gesetzt ist, sollten die davon abhängigen Tools nicht mehr bei jedem 
+            update check zum download angeboten werden.
+- [fix]     64 bit Encoder sollten auf einem 32 bit System nicht mehr zum download angeboten werden.
+- [fix]     Problem behoben, durch welches nicht alle Einstellungen gespeichert wurden.
+
+0.21.712.1132
+- [change]  Projektname zu VideoConvert geändert.
 - [new]     Unterstützung für 64bit Encoder hinzugefügt. Vorerst nur x264 in der 64bit Version verfügbar.
 
 0.21.691.0048

@@ -1,4 +1,9 @@
-﻿- [change]  Project name changed to VideoConvert.
+﻿- [fix]     Should not offer updates for any java-based encoders, if java path is not set.
+- [fix]     Should not offer updates for 64 bit encoders on 32 bit systems.
+- [fix]     Fixed a problem, where not all settings were saved.
+
+0.21.712.1132
+- [change]  Project name changed to VideoConvert.
 - [new]     Support for 64bit encoders added. Currently only x264 64bit encoder available.
 
 0.21.691.0048
