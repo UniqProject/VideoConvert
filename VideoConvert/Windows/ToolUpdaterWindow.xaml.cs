@@ -196,17 +196,18 @@ namespace VideoConvert.Windows
                     {
                         if (appVersion.Attributes != null)
                             verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0)
+                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0 &&
+                            Environment.Is64BitOperatingSystem)
                             _tempToolCollection.Add(new ToolVersions
-                            {
-                                ToolName = "x264 (64 bit)",
-                                LocalVersion = AppSettings.Lastx26464Ver,
-                                ServerVersion = verAttrib.Value,
-                                FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                DownloadUri = serverPathTools + appVersion.InnerText,
-                                DownloadType = AppType.Encoder,
-                                Destination = AppSettings.ToolsPath
-                            });
+                                {
+                                    ToolName = "x264 (64 bit)",
+                                    LocalVersion = AppSettings.Lastx26464Ver,
+                                    ServerVersion = verAttrib.Value,
+                                    FileName = Path.Combine(tempPath, appVersion.InnerText),
+                                    DownloadUri = serverPathTools + appVersion.InnerText,
+                                    DownloadType = AppType.Encoder,
+                                    Destination = AppSettings.ToolsPath
+                                });
                     }
 
                     appVersion = verFile.SelectSingleNode("//ffmpeg");

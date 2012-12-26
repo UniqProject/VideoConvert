@@ -245,7 +245,8 @@ namespace VideoConvert.Windows
                             if (appVersion != null)
                                 if (appVersion.Attributes != null)
                                     verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0)
+                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0 &&
+                                Environment.Is64BitOperatingSystem)
                                 needUpdate = true;
 
                             appVersion = verFile.SelectSingleNode("//ffmpeg");
