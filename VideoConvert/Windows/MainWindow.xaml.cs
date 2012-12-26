@@ -344,7 +344,8 @@ namespace VideoConvert.Windows
                             if (appVersion != null)
                                 if (appVersion.Attributes != null) 
                                     verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastBDSup2SubVer) != 0)
+                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastBDSup2SubVer) != 0 &&
+                                AppSettings.JavaInstalled)
                                 needUpdate = true;
                         }
                     }

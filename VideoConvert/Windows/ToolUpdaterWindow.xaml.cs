@@ -449,17 +449,18 @@ namespace VideoConvert.Windows
                     {
                         if (appVersion.Attributes != null) 
                             verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastBDSup2SubVer) != 0)
+                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastBDSup2SubVer) != 0 &&
+                            AppSettings.JavaInstalled)
                             _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "bdsup2sub",
-                                                            LocalVersion = AppSettings.LastBDSup2SubVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
+                                {
+                                    ToolName = "bdsup2sub",
+                                    LocalVersion = AppSettings.LastBDSup2SubVer,
+                                    ServerVersion = verAttrib.Value,
+                                    FileName = Path.Combine(tempPath, appVersion.InnerText),
+                                    DownloadUri = serverPathTools + appVersion.InnerText,
+                                    DownloadType = AppType.Encoder,
+                                    Destination = AppSettings.ToolsPath
+                                });
                     }
                 }
             }
