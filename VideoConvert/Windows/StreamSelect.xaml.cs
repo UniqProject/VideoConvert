@@ -34,6 +34,7 @@ using VideoConvert.Core.Encoder;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
+using log4net;
 
 namespace VideoConvert.Windows
 {
@@ -42,6 +43,8 @@ namespace VideoConvert.Windows
     /// </summary>
     public partial class StreamSelect
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(StreamSelect));
+
         ProfilesHandler _profiles;
 
         public EncodeInfo JobInfo { get; set; }
@@ -178,16 +181,16 @@ namespace VideoConvert.Windows
             string shortFileName = mi.General.FileName + "." + mi.General.FileExtension;
 
             string treeRoot = string.Format(fileTitleFormat, shortFileName, containerFormat, duration);
-            
+
             TreeNode root = new TreeNode
-                                        {
-                                            ID = _treeNodeID++,
-                                            Name = treeRoot,
-                                            Data = JobInfo.InputFile,
-                                            IsChecked = true,
-                                            IsExpanded = true,
-                                            Children = new List<TreeNode>()
-                                        };
+                {
+                    ID = _treeNodeID++,
+                    Name = treeRoot,
+                    Data = JobInfo.InputFile,
+                    IsChecked = true,
+                    IsExpanded = true,
+                    Children = new List<TreeNode>()
+                };
             _tree.Add(root);
 
             TreeNode chaptersTree = CreateNode(root, strChapters, null);
@@ -220,13 +223,9 @@ namespace VideoConvert.Windows
 
                 VideoInfo vid = new VideoInfo();
                 if (JobInfo.Input == InputType.InputAvi)
-                {
                     vid.StreamId = 0;
-                }
                 else
-                {
                     vid.StreamId = videoPid == 0 ? streamIndex : videoPid;
-                }
                 vid.FPS = clip.FrameRate;
                 vid.PicSize = clip.VideoSize;
                 vid.Interlaced = clip.ScanType == "Interlaced";
@@ -264,33 +263,29 @@ namespace VideoConvert.Windows
                                                         streamIndex);
 
                 if (JobInfo.Input == InputType.InputAvi)
-                {
                     audioPid += 1;
-                }
                 else
-                {
                     audioPid = audioPid == 0 ? streamIndex : audioPid;
-                }
 
                 AudioInfo aud = new AudioInfo
-                                    {
-                                        Id = audioPid,
-                                        Format = audioCodecShort,
-                                        FormatProfile = audio.FormatProfile,
-                                        StreamId = streamIndex,
-                                        LangCode = audioLangCode,
-                                        OriginalId = audioPid,
-                                        StreamKindId = audioStreamKindID,
-                                        Delay = audio.Delay,
-                                        Bitrate = audio.BitRate,
-                                        SampleRate = audio.SamplingRate,
-                                        ChannelCount = audio.Channels,
-                                        BitDepth = audio.BitDepth,
-                                        ShortLang = audio.LanguageIso6391,
-                                        StreamSize = audio.StreamSize,
-                                        Length = mi.General.DurationTime.TimeOfDay.TotalSeconds,
-                                        IsHdStream = audio.CompressionMode == "Lossless"
-                                    };
+                    {
+                        Id = audioPid,
+                        Format = audioCodecShort,
+                        FormatProfile = audio.FormatProfile,
+                        StreamId = streamIndex,
+                        LangCode = audioLangCode,
+                        OriginalId = audioPid,
+                        StreamKindId = audioStreamKindID,
+                        Delay = audio.Delay,
+                        Bitrate = audio.BitRate,
+                        SampleRate = audio.SamplingRate,
+                        ChannelCount = audio.Channels,
+                        BitDepth = audio.BitDepth,
+                        ShortLang = audio.LanguageIso6391,
+                        StreamSize = audio.StreamSize,
+                        Length = mi.General.DurationTime.TimeOfDay.TotalSeconds,
+                        IsHdStream = audio.CompressionMode == "Lossless"
+                    };
 
                 CreateNode(audioTree, audioStreamTitle, aud);
             }
@@ -310,15 +305,15 @@ namespace VideoConvert.Windows
                                                       subLangCode, subLanguage, streamIndex);
 
                 SubtitleInfo subInfo = new SubtitleInfo
-                                           {
-                                               Id = sub.ID,
-                                               StreamId = streamIndex,
-                                               LangCode = subLangCode,
-                                               Format = subCodecShort,
-                                               StreamKindId = subStreamKindID,
-                                               Delay = sub.Delay,
-                                               StreamSize = sub.StreamSize
-                                           };
+                    {
+                        Id = sub.ID,
+                        StreamId = streamIndex,
+                        LangCode = subLangCode,
+                        Format = subCodecShort,
+                        StreamKindId = subStreamKindID,
+                        Delay = sub.Delay,
+                        StreamSize = sub.StreamSize
+                    };
 
                 CreateNode(subTree, subStreamTitle, subInfo);
             }
@@ -335,15 +330,15 @@ namespace VideoConvert.Windows
                 string subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
                                                       subLangCode, subLanguage, streamIndex);
                 SubtitleInfo subInfo = new SubtitleInfo
-                                           {
-                                               Id = sub.ID,
-                                               StreamId = streamIndex,
-                                               LangCode = subLangCode,
-                                               Format = subCodecShort,
-                                               StreamKindId = subStreamKindID,
-                                               Delay = 0,
-                                               StreamSize = sub.StreamSize
-                                           };
+                    {
+                        Id = sub.ID,
+                        StreamId = streamIndex,
+                        LangCode = subLangCode,
+                        Format = subCodecShort,
+                        StreamKindId = subStreamKindID,
+                        Delay = 0,
+                        StreamSize = sub.StreamSize
+                    };
 
                 CreateNode(subTree, subStreamTitle, subInfo);
             }
@@ -388,23 +383,23 @@ namespace VideoConvert.Windows
                                                 duration.ToString("H:mm:ss.fff"));
 
                 Dictionary<string, object> treeData = new Dictionary<string, object>
-                                                          {
-                                                              {
-                                                                  "Name",
-                                                                  Path.Combine(_bdInfo.DirectoryPLAYLIST.FullName,
-                                                                               item.Name)
-                                                                  },
-                                                              {"PlaylistIndex", playlistIndex}
-                                                          };
+                    {
+                        {
+                            "Name",
+                            Path.Combine(_bdInfo.DirectoryPLAYLIST.FullName,
+                                         item.Name)
+                        },
+                        {"PlaylistIndex", playlistIndex}
+                    };
 
                 TreeNode root = new TreeNode
-                                    {
-                                        ID = _treeNodeID++,
-                                        Name = treeRoot,
-                                        Data = treeData,
-                                        Children = new List<TreeNode>(),
-                                        IsChecked = true,
-                                    };
+                    {
+                        ID = _treeNodeID++,
+                        Name = treeRoot,
+                        Data = treeData,
+                        Children = new List<TreeNode>(),
+                        IsChecked = true,
+                    };
                 root.IsExpanded = root.IsChecked;
                 _tree.Add(root);
 
@@ -460,31 +455,29 @@ namespace VideoConvert.Windows
                         case TSStreamType.VC1_VIDEO:
                             {
                                 VideoInfo vid = new VideoInfo
-                                                    {
-                                                        StreamId = streamIndex,
-                                                        TrackId = playlistIndex,
-                                                        FPS = (float) clip.FrameRateEnumerator/clip.FrameRateDenominator,
-                                                        PicSize = (VideoFormat) clip.VideoFormat,
-                                                        Interlaced = clip.IsInterlaced,
-                                                        Format = clip.CodecShortName,
-                                                        DemuxStreamId = clip.PID,
-                                                        FrameCount = 0,
-                                                        Encoded = false,
-                                                        IsRawStream = false,
-                                                        StreamSize = 0,
-                                                        Length = item.TotalLength,
-                                                        FrameRateEnumerator = clip.FrameRateEnumerator,
-                                                        FrameRateDenominator = clip.FrameRateDenominator,
-                                                        Height = clip.Height
-                                                    };
+                                    {
+                                        StreamId = streamIndex,
+                                        TrackId = playlistIndex,
+                                        FPS = (float) clip.FrameRateEnumerator/clip.FrameRateDenominator,
+                                        PicSize = (VideoFormat) clip.VideoFormat,
+                                        Interlaced = clip.IsInterlaced,
+                                        Format = clip.CodecShortName,
+                                        DemuxStreamId = clip.PID,
+                                        FrameCount = 0,
+                                        Encoded = false,
+                                        IsRawStream = false,
+                                        StreamSize = 0,
+                                        Length = item.TotalLength,
+                                        FrameRateEnumerator = clip.FrameRateEnumerator,
+                                        FrameRateDenominator = clip.FrameRateDenominator,
+                                        Height = clip.Height
+                                    };
 
                                 Int32.TryParse(item.Name.Substring(0, item.Name.LastIndexOf('.')), NumberStyles.Number,
                                                AppSettings.CInfo, out vid.DemuxPlayList);
 
                                 foreach (TSStreamClip streamClip in item.StreamClips)
-                                {
                                     vid.DemuxStreamNames.Add(streamClip.StreamFile.FileInfo.FullName);
-                                }
 
                                 float mod;
                                 switch (clip.AspectRatio)
@@ -504,7 +497,11 @@ namespace VideoConvert.Windows
                             break;
                         case TSStreamType.MVC_VIDEO:
                             {
-                                StereoVideoInfo vid = new StereoVideoInfo {RightStreamId = streamIndex, LeftStreamId = leftVideoStreamID};
+                                StereoVideoInfo vid = new StereoVideoInfo
+                                    {
+                                        RightStreamId = streamIndex,
+                                        LeftStreamId = leftVideoStreamID
+                                    };
                                 CreateNode(videoTree, videoStreamFormat, vid);
                             }
                             break;
@@ -524,25 +521,25 @@ namespace VideoConvert.Windows
                                                              audioLanguage, audioDesc, streamIndex);
 
                     AudioInfo aud = new AudioInfo
-                                        {
-                                            Format = audioCodecShort,
-                                            FormatProfile = string.Empty,
-                                            Id = streamIndex,
-                                            StreamId = streamIndex,
-                                            LangCode = audioLangCode,
-                                            TempFile = string.Empty,
-                                            OriginalId = streamIndex,
-                                            Delay = 0,
-                                            Bitrate = audio.BitRate,
-                                            DemuxStreamId = audio.PID,
-                                            SampleRate = audio.SampleRate,
-                                            ChannelCount = audio.ChannelCount + audio.LFE,
-                                            BitDepth = audio.BitDepth,
-                                            ShortLang = audio.LanguageCode,
-                                            StreamSize = 0,
-                                            Length = item.TotalLength,
-                                            IsHdStream = audio.CoreStream != null
-                                        };
+                        {
+                            Format = audioCodecShort,
+                            FormatProfile = string.Empty,
+                            Id = streamIndex,
+                            StreamId = streamIndex,
+                            LangCode = audioLangCode,
+                            TempFile = string.Empty,
+                            OriginalId = streamIndex,
+                            Delay = 0,
+                            Bitrate = audio.BitRate,
+                            DemuxStreamId = audio.PID,
+                            SampleRate = audio.SampleRate,
+                            ChannelCount = audio.ChannelCount + audio.LFE,
+                            BitDepth = audio.BitDepth,
+                            ShortLang = audio.LanguageCode,
+                            StreamSize = 0,
+                            Length = item.TotalLength,
+                            IsHdStream = audio.CoreStream != null
+                        };
 
                     CreateNode(audioTree, audioStreamFormat, aud);
                 }
@@ -559,16 +556,16 @@ namespace VideoConvert.Windows
                                                            streamIndex, subDesc);
 
                     SubtitleInfo subInfo = new SubtitleInfo
-                                               {
-                                                   Id = streamIndex,
-                                                   StreamId = streamIndex,
-                                                   TempFile = string.Empty,
-                                                   LangCode = subLangCode,
-                                                   Format = subCodecShort,
-                                                   Delay = 0,
-                                                   DemuxStreamId = sub.PID,
-                                                   StreamSize = 0
-                                               };
+                        {
+                            Id = streamIndex,
+                            StreamId = streamIndex,
+                            TempFile = string.Empty,
+                            LangCode = subLangCode,
+                            Format = subCodecShort,
+                            Delay = 0,
+                            DemuxStreamId = sub.PID,
+                            StreamSize = 0
+                        };
 
                     CreateNode(subTree, subStreamFormat, subInfo);
                 }
@@ -585,15 +582,15 @@ namespace VideoConvert.Windows
                                                            streamIndex, subDesc);
 
                     SubtitleInfo subInfo = new SubtitleInfo
-                                               {
-                                                   Id = streamIndex,
-                                                   StreamId = streamIndex,
-                                                   TempFile = string.Empty,
-                                                   LangCode = subLangCode,
-                                                   Format = subCodecShort,
-                                                   DemuxStreamId = sub.PID,
-                                                   StreamSize = 0
-                                               };
+                        {
+                            Id = streamIndex,
+                            StreamId = streamIndex,
+                            TempFile = string.Empty,
+                            LangCode = subLangCode,
+                            Format = subCodecShort,
+                            DemuxStreamId = sub.PID,
+                            StreamSize = 0
+                        };
 
                     CreateNode(subTree, subStreamFormat, subInfo);
                 }
@@ -609,16 +606,8 @@ namespace VideoConvert.Windows
 
             int playlistIndex = 1;
 
-            foreach (TSPlaylistFile item in _bdInfo.PlaylistFiles.Values)
+            foreach (int clipLength in from item in _bdInfo.PlaylistFiles.Values where item.IsValid select (int)Math.Truncate(item.TotalLength))
             {
-                if (item.HasLoops)
-                {
-                    playlistIndex++;
-                    continue;
-                }
-
-                int clipLength = (int)Math.Truncate(item.TotalLength);
-
                 if (clipLength > longest)
                 {
                     longest = clipLength;
@@ -659,12 +648,6 @@ namespace VideoConvert.Windows
 
             int longest = Convert.ToInt32(longestTrack.InnerText);
 
-// ReSharper disable TooWideLocalVariableScope
-// ReSharper disable RedundantAssignment
-            XmlNode tempNode = dvdInfo.CreateElement("empty");
-// ReSharper restore RedundantAssignment
-// ReSharper restore TooWideLocalVariableScope
-
             foreach (XmlNode track in tracks)
             {
                 int videoId = 0;
@@ -677,7 +660,7 @@ namespace VideoConvert.Windows
                 int vtsID = 0;
                 float lengthTemp = 0;
 
-                tempNode = track.SelectSingleNode("ix");
+                XmlNode tempNode = track.SelectSingleNode("ix");
                 if (tempNode != null) 
                     videoId = Convert.ToInt32(tempNode.InnerText);
 
@@ -734,13 +717,13 @@ namespace VideoConvert.Windows
                                                           {{"Name", JobInfo.InputFile}, {"TrackID", videoId}};
 
                 TreeNode root = new TreeNode
-                                    {
-                                        ID = _treeNodeID++,
-                                        Name = treeRoot,
-                                        Data = treeData,
-                                        Children = new List<TreeNode>(),
-                                        IsChecked = true,
-                                    };
+                    {
+                        ID = _treeNodeID++,
+                        Name = treeRoot,
+                        Data = treeData,
+                        Children = new List<TreeNode>(),
+                        IsChecked = true,
+                    };
                 root.IsExpanded = root.IsChecked;
                 _tree.Add(root);
 
@@ -776,22 +759,22 @@ namespace VideoConvert.Windows
                                                    letterboxed);
 
                 VideoInfo vid = new VideoInfo
-                                    {
-                                        VtsId = vtsID,
-                                        TrackId = videoId,
-                                        StreamId = 1,
-                                        FPS = fps,
-                                        Interlaced = true,
-                                        Format = "MPEG-2",
-                                        FrameCount = 0,
-                                        Width = width,
-                                        Height = height,
-                                        Encoded = false,
-                                        IsRawStream = false,
-                                        DemuxStreamNames = new List<string>(),
-                                        StreamSize = 0,
-                                        Length = lengthTemp
-                                    };
+                    {
+                        VtsId = vtsID,
+                        TrackId = videoId,
+                        StreamId = 1,
+                        FPS = fps,
+                        Interlaced = true,
+                        Format = "MPEG-2",
+                        FrameCount = 0,
+                        Width = width,
+                        Height = height,
+                        Encoded = false,
+                        IsRawStream = false,
+                        DemuxStreamNames = new List<string>(),
+                        StreamSize = 0,
+                        Length = lengthTemp
+                    };
 
                 if (aspect != "4/3")
                     Single.TryParse(aspect, NumberStyles.Number, AppSettings.CInfo, out vid.AspectRatio);
@@ -860,73 +843,73 @@ namespace VideoConvert.Windows
                                                            content, format, channels, frequency, quantization);
 
                         AudioInfo aud = new AudioInfo
-                                            {
-                                                Format = format,
-                                                FormatProfile = string.Empty,
-                                                Id = audioID,
-                                                StreamId = streamID,
-                                                LangCode = langCode,
-                                                TempFile = string.Empty,
-                                                OriginalId = audioID,
-                                                Delay = 0,
-                                                Bitrate = 0,
-                                                SampleRate = frequency,
-                                                ChannelCount = channels,
-                                                ShortLang = langCode,
-                                                StreamSize = 0,
-                                                IsHdStream = false
-                                            };
+                            {
+                                Format = format,
+                                FormatProfile = string.Empty,
+                                Id = audioID,
+                                StreamId = streamID,
+                                LangCode = langCode,
+                                TempFile = string.Empty,
+                                OriginalId = audioID,
+                                Delay = 0,
+                                Bitrate = 0,
+                                SampleRate = frequency,
+                                ChannelCount = channels,
+                                ShortLang = langCode,
+                                StreamSize = 0,
+                                IsHdStream = false
+                            };
 
                         CreateNode(audioTree, audioStream, aud);
                     }
                 }
 
-                if (subtitles != null)
-                    foreach (XmlNode subtitle in subtitles)
-                    {
-                        int subID = 0;
-                        string langCode = string.Empty;
-                        string language = string.Empty;
-                        string content = string.Empty;
-                        int streamID = 0;
+                if (subtitles == null) continue;
+                foreach (XmlNode subtitle in subtitles)
+                {
+                    int subID = 0;
+                    string langCode = string.Empty;
+                    string language = string.Empty;
+                    string content = string.Empty;
+                    int streamID = 0;
 
-                        tempNode = subtitle.SelectSingleNode("ix");
-                        if (tempNode != null) 
-                            subID = Convert.ToInt32(tempNode.InnerText);
+                    tempNode = subtitle.SelectSingleNode("ix");
+                    if (tempNode != null) 
+                        subID = Convert.ToInt32(tempNode.InnerText);
 
-                        tempNode = subtitle.SelectSingleNode("langcode");
-                        if (tempNode != null) 
-                            langCode = tempNode.InnerText;
+                    tempNode = subtitle.SelectSingleNode("langcode");
+                    if (tempNode != null) 
+                        langCode = tempNode.InnerText;
 
-                        tempNode = subtitle.SelectSingleNode("language");
-                        if (tempNode != null) 
-                            language = tempNode.InnerText;
+                    tempNode = subtitle.SelectSingleNode("language");
+                    if (tempNode != null) 
+                        language = tempNode.InnerText;
 
-                        tempNode = subtitle.SelectSingleNode("content");
-                        if (tempNode != null) 
-                            content = tempNode.InnerText;
+                    tempNode = subtitle.SelectSingleNode("content");
+                    if (tempNode != null) 
+                        content = tempNode.InnerText;
 
-                        tempNode = subtitle.SelectSingleNode("streamid");
-                        if (tempNode != null)
-                            streamID = Int32.Parse(tempNode.InnerText.Replace("0x", string.Empty),
-                                                   NumberStyles.HexNumber);
+                    tempNode = subtitle.SelectSingleNode("streamid");
+                    if (tempNode != null)
+                        streamID = Int32.Parse(tempNode.InnerText.Replace("0x", string.Empty),
+                                               NumberStyles.HexNumber);
 
-                        string subtitleStream = string.Format(dvdSubFormat, subID, streamID, langCode, language, content);
+                    string subtitleStream = string.Format(dvdSubFormat, subID, streamID, langCode, language, content);
 
-                        SubtitleInfo subInfo = new SubtitleInfo
-                                                   {
-                                                       Id = subID + audioTracksCount,
-                                                       StreamId = streamID,
-                                                       TempFile = string.Empty,
-                                                       LangCode = langCode,
-                                                       Format = "VobSub",
-                                                       Delay = 0,
-                                                       StreamSize = 0
-                                                   };
+                    SubtitleInfo subInfo = new SubtitleInfo
+                        {
+                            Id = subID + audioTracksCount,
+                            StreamId = streamID,
+                            TempFile = string.Empty,
+                            LangCode = langCode,
+                            Format = "VobSub",
+                            Delay = 0,
+                            StreamSize = 0
+                        };
 
 
-                        CreateNode(subTree, subtitleStream, subInfo);
-                    }
+                    CreateNode(subTree, subtitleStream, subInfo);
+                }
             }
             _defaultSelection = longest - 1;
         }
@@ -945,23 +928,22 @@ namespace VideoConvert.Windows
                 GetVolumeInformation(
                     dir.Name,
                     volumeLabel,
-                    (uint)volumeLabel.Capacity,
+                    (uint) volumeLabel.Capacity,
                     ref serialNumber,
                     ref maxLength,
                     ref volumeFlags,
                     fileSystemName,
-                    (uint)fileSystemName.Capacity);
+                    (uint) fileSystemName.Capacity);
 
                 label = volumeLabel.ToString();
             }
-// ReSharper disable EmptyGeneralCatchClause
-            catch { }
-// ReSharper restore EmptyGeneralCatchClause
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
 
             if (label.Length == 0)
-            {
                 label = dir.Name;
-            }
 
             return label;
         }
@@ -969,15 +951,15 @@ namespace VideoConvert.Windows
         private TreeNode CreateNode(TreeNode tParent, string tName, object data)
         {
             TreeNode subNode = new TreeNode
-                                   {
-                                       ID = _treeNodeID++,
-                                       Name = tName,
-                                       Data = data,
-                                       IsChecked = tParent.IsChecked,
-                                       IsExpanded = tParent.IsExpanded,
-                                       Parent = tParent,
-                                       Children = new List<TreeNode>()
-                                   };
+                {
+                    ID = _treeNodeID++,
+                    Name = tName,
+                    Data = data,
+                    IsChecked = tParent.IsChecked,
+                    IsExpanded = tParent.IsExpanded,
+                    Parent = tParent,
+                    Children = new List<TreeNode>()
+                };
             tParent.Children.Add(subNode);
             return subNode;
         }
@@ -1001,11 +983,9 @@ namespace VideoConvert.Windows
 
                 Type dataType = item.Data.GetType();
 
-                if (dataType == typeof(string))
-                {
+                if (dataType == typeof (string))
                     JobInfo.InputFile = (string) item.Data;
-                }
-                else if (dataType == typeof(VideoInfo))
+                else if (dataType == typeof (VideoInfo))
                 {
                     if (!videoSet)
                     {
@@ -1013,37 +993,31 @@ namespace VideoConvert.Windows
                         videoSet = true;
                     }
                 }
-                else if (dataType == typeof(StereoVideoInfo))
-                {
+                else if (dataType == typeof (StereoVideoInfo))
                     JobInfo.StereoVideoStream = (StereoVideoInfo) item.Data;
-                }
-                else if (dataType == typeof(AudioInfo))
-                {
+                else if (dataType == typeof (AudioInfo))
                     JobInfo.AudioStreams.Add((AudioInfo) item.Data);
-                }
-                else if (dataType == typeof(SubtitleInfo))
+                else if (dataType == typeof (SubtitleInfo))
                 {
                     SubtitleInfo sub = (SubtitleInfo) item.Data;
                     if ((sub.Format == "PGS" || sub.Format == "VobSub") && (_bdInfo != null && !_bdInfo.Is3D))
                         // don't extract subtitles on 3d blurays, because eac3to can't handle them
                         JobInfo.SubtitleStreams.Add(sub);
                 }
-                else if (dataType == typeof(List<TimeSpan>))
-                {
+                else if (dataType == typeof (List<TimeSpan>))
                     JobInfo.Chapters.AddRange((List<TimeSpan>) item.Data);
-                }
-                else if (dataType == typeof(Dictionary<string, object>))
+                else if (dataType == typeof (Dictionary<string, object>))
                 {
                     object itemData;
                     (item.Data as Dictionary<string, object>).TryGetValue("Name", out itemData);
                     if (itemData != null)
-                        JobInfo.InputFile = (string)itemData;
+                        JobInfo.InputFile = (string) itemData;
                     (item.Data as Dictionary<string, object>).TryGetValue("PlaylistIndex", out itemData);
                     if (itemData != null)
-                        JobInfo.StreamId = (int)itemData;
+                        JobInfo.StreamId = (int) itemData;
                     (item.Data as Dictionary<string, object>).TryGetValue("TrackID", out itemData);
                     if (itemData != null)
-                        JobInfo.TrackId = (int)itemData;
+                        JobInfo.TrackId = (int) itemData;
                 }
             }
             JobInfo.StreamId = -1;
@@ -1080,40 +1054,35 @@ namespace VideoConvert.Windows
                 items.Add(tree);
 
             if (tree.Children.Count > 0)
-            {
                 foreach (TreeNode child in tree.Children)
-                {
                     items.AddRange(GetCheckedItems(child));
-                }
-            }
 
             return items;
         }
 
         private void CheckItemChanged(object sender, RoutedEventArgs e)
         {
-            if (e.Source != null)
-            {
-                CheckBoxTreeViewItem selectedNode = e.Source as CheckBoxTreeViewItem;
-                if (selectedNode != null)
-                {
-                    TreeNode item = (TreeNode)selectedNode.Header;
+            if (e.Source == null) return;
 
-                    if (String.CompareOrdinal(e.RoutedEvent.Name, "Unchecked") == 0)
+            CheckBoxTreeViewItem selectedNode = e.Source as CheckBoxTreeViewItem;
+            if (selectedNode != null)
+            {
+                TreeNode item = (TreeNode)selectedNode.Header;
+
+                if (String.CompareOrdinal(e.RoutedEvent.Name, "Unchecked") == 0)
+                {
+                    if (item != null)
                     {
-                        if (item != null)
-                        {
-                            UnCheckItems(item);
-                            selectedNode.Items.Refresh();
-                        }
+                        UnCheckItems(item);
+                        selectedNode.Items.Refresh();
                     }
-                    else if (String.CompareOrdinal(e.RoutedEvent.Name, "Checked") == 0)
+                }
+                else if (String.CompareOrdinal(e.RoutedEvent.Name, "Checked") == 0)
+                {
+                    if (item != null)
                     {
-                        if (item != null)
-                        {
-                            CheckRootItem(item);
-                            TitleInfo.Items.Refresh();
-                        }
+                        CheckRootItem(item);
+                        TitleInfo.Items.Refresh();
                     }
                 }
             }
@@ -1140,11 +1109,6 @@ namespace VideoConvert.Windows
                 topParent.IsExpanded = true;
                 topParent.IsChecked = true;
             }
-
-            //foreach (TreeNode treeItem in _tree.Where(treeItem => treeItem != item && treeItem != iParent && treeItem != topParent))
-            //{
-            //    UnCheckItems(treeItem);
-            //}
         }
 
         private void UnCheckItems(TreeNode node)
@@ -1214,6 +1178,7 @@ namespace VideoConvert.Windows
             else
             {
                 DisableSubtitleOptions();
+                DisableAudioOptions();
             }
         }
 
