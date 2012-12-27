@@ -479,6 +479,11 @@ namespace VideoConvert.Core
             set { Properties.Settings.Default.LastUpdateRun = value; }
         }
 
+        public static bool ShowChangeLog
+        {
+            get { return Properties.Settings.Default.ShowChangeLog; }
+        }
+
         public static string AppPath
         {
             get
@@ -680,6 +685,11 @@ namespace VideoConvert.Core
             Properties.Settings.Default.Reset();
             FirstStart = false;
             SaveSettings();
+        }
+
+        internal static void Reload()
+        {
+            Properties.Settings.Default.Reload();
         }
     }
 }

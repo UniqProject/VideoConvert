@@ -1,4 +1,4 @@
-﻿namespace VideoConvert {
+﻿namespace VideoConvert.Properties {
     
     
     // Diese Klasse ermöglicht die Behandlung bestimmter Ereignisse der Einstellungsklasse:

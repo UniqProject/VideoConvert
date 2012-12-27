@@ -567,14 +567,14 @@ VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Use high-quality deinterlacing
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.Height,None,False,True,,16
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.Margin,None,False,True,,"7,50,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.Margin,None,False,True,,"7,64,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlace:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.$Content,Text,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.FontWeight,None,True,True,,Bold
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.Foreground,None,False,True,,\#FFFF0000
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.Height,None,False,True,,32
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.Margin,None,False,True,,"27,72,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.Margin,None,False,True,,"27,86,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.FrameworkElement.MaxWidth,None,False,True,,700
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,UseHQDeinterlaceWarning:System.Windows.Controls.TextBlock.Text,Text,True,True,,"Warning! This deinterlacer is very slow, using AviSynth-MT is recommended!"
@@ -605,11 +605,17 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_219:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"17,356,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"16,356,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.ContentControl.ContentStringFormat,Label,True,True,,Last update: {0:dd/MM/yyyy HH:mm:ss}
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.Controls.CheckBox.$Content,CheckBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Show Changelog after update
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.Height,None,False,True,,16
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.Margin,None,False,True,,"16,383,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderTab:System.Windows.Controls.TabItem.$Content,Text,True,True,,#Grid_3;
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderTab:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoder
 VideoConvert.g.en-US.resources:settingswindow.baml,EncoderPathGroup:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_4;
@@ -4902,7 +4908,7 @@ VideoConvert.g.en-US.resources:app.baml,src:StringLengthVisiblityConverter_1:Con
 VideoConvert.g.en-US.resources:app.baml,src:Int32ToBooleanConverter_1:Converters.Int32ToBooleanConverter.$Content,None,True,True,,
 VideoConvert.g.en-US.resources:app.baml,src:Int32ToVisibilityConverter_1:Converters.Int32ToVisibilityConverter.$Content,None,True,True,,
 VideoConvert.g.en-US.resources:app.baml,src:StringLengthToBooleanConverter_1:Converters.StringLengthToBooleanConverter.$Content,None,True,True,,
-VideoConvert.g.en-US.resources:app.baml,properties:Settings_1:VideoConvert.Properties.Settings.$Content,None,True,True,,
+VideoConvert.g.en-US.resources:app.baml,properties:Settings:VideoConvert.Properties.Settings.$Content,None,True,True,,
 VideoConvert.g.en-US.resources:app.baml,my:InverseBoolConverter_1:Xceed.Wpf.Toolkit.Core.Converters.InverseBoolConverter.$Content,None,True,True,,
 VideoConvert.g.en-US.resources:app.baml,my:ColorToSolidColorBrushConverter_1:Xceed.Wpf.Toolkit.Core.Converters.ColorToSolidColorBrushConverter.$Content,None,True,True,,
 VideoConvert.g.en-US.resources:app.baml,ResourceDictionary_2:System.Windows.ResourceDictionary.Source,None,True,False,,StringResources.xaml

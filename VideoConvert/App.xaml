@@ -27,14 +27,14 @@
              xmlns:my="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=WPFToolkit.Extended"
              xmlns:converters="clr-namespace:Converters;assembly=Converters" xmlns:core="clr-namespace:VideoConvert.Properties"
              mc:Ignorable="d" x:Class="VideoConvert.App"
-             StartupUri="Windows\MainWindow.xaml" Startup="ApplicationStartup" 
+             StartupUri="Windows\MainWindow.xaml" Startup="ApplicationStartup" Exit="ApplicationExit"
              DispatcherUnhandledException="ApplicationDispatcherUnhandledException">
     <Application.Resources>
         <converters:StringLengthVisiblityConverter x:Uid="src:StringLengthVisiblityConverter_1" x:Key="StringLengthVisiblityConverter" />
         <converters:Int32ToBooleanConverter x:Uid="src:Int32ToBooleanConverter_1" x:Key="IntConverter" />
         <converters:Int32ToVisibilityConverter x:Uid="src:Int32ToVisibilityConverter_1" x:Key="VisibilityConverter" />
         <converters:StringLengthToBooleanConverter x:Uid="src:StringLengthToBooleanConverter_1" x:Key="StringLengthToBooleanConverter" />
-        <core:Settings x:Uid="properties:Settings_1" x:Key="Settings" />
+        <core:Settings x:Uid="properties:Settings" x:Key="Settings"/>
         <my:InverseBoolConverter x:Uid="my:InverseBoolConverter_1" x:Key="InverseBoolConverter" />
         <my:ColorToSolidColorBrushConverter x:Uid="my:ColorToSolidColorBrushConverter_1" x:Key="ColorToSolidColorBrushConverter1" />
         

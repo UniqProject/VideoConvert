@@ -31,7 +31,7 @@ namespace VideoConvert.Properties {
                 return ((bool)(this["FilterLoopingPlaylists"]));
             }
             set {
-                this["FilterLoopingPlaylists"] = value;
+                this["FilterLoopingPlaylists"] = (bool)value;
             }
         }
         
@@ -692,6 +692,18 @@ namespace VideoConvert.Properties {
             }
             set {
                 this["LastUpdateRun"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowChangeLog {
+            get {
+                return ((bool)(this["ShowChangeLog"]));
+            }
+            set {
+                this["ShowChangeLog"] = value;
             }
         }
     }

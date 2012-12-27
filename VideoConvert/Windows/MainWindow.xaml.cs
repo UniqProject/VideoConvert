@@ -88,8 +88,11 @@ namespace VideoConvert.Windows
                 }
                 else
                 {
-                    ChangelogViewer changeLog = new ChangelogViewer {Owner = this};
-                    changeLog.ShowDialog();
+                    if (AppSettings.ShowChangeLog)
+                    {
+                        ChangelogViewer changeLog = new ChangelogViewer {Owner = this};
+                        changeLog.ShowDialog();
+                    }
                     string msg = Processing.GetResourceString("update_done");
                     Xceed.Wpf.Toolkit.MessageBox.Show(msg,
                                                       "Update",

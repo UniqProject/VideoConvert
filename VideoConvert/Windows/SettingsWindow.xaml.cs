@@ -125,9 +125,7 @@ namespace VideoConvert.Windows
                 {
                     BackgroundWorker bw = (BackgroundWorker) bwSender;
                     foreach (FontFamily item in Fonts.SystemFontFamilies)
-                    {
                         bw.ReportProgress(-1, item);
-                    }
                 };
             fontLoader.ProgressChanged += (o, args) =>
                 {
@@ -160,9 +158,7 @@ namespace VideoConvert.Windows
             Array enumValues = Enum.GetValues(typeof(OutputType));
             QuickSelectOutputFormat.Items.Clear();
             foreach (OutputType item in enumValues)
-            {
                 QuickSelectOutputFormat.Items.Add(Processing.StringValueOf(item));
-            }
         }
 
         private void ReloadQuickProfileList()
@@ -351,6 +347,7 @@ namespace VideoConvert.Windows
 
         private void OkBtnClick(object sender, RoutedEventArgs e)
         {
+            
             if (SetDebug.IsChecked.GetValueOrDefault() != AppSettings.UseDebug)
             {
                 AppSettings.UseDebug = SetDebug.IsChecked.GetValueOrDefault();
@@ -362,10 +359,11 @@ namespace VideoConvert.Windows
                 AppSettings.UseHardwareRendering = UseHardwareRendering.IsChecked.GetValueOrDefault();
                 App.ReconfigureRenderMode();
             }
-
+            
+            
             ExplicitSettingsUpdate();
             Log.Error("saved");
-            AppSettings.SaveSettings();
+            
             DialogResult = true;
         }
 
@@ -392,16 +390,6 @@ namespace VideoConvert.Windows
             BindingExpression be;
 
             Properties.Settings.Default.FirstStart = false;
-            // update settings of all comboboxes
-            IEnumerable<ComboBox> comboBoxes = GetAllComponentsOfType<ComboBox>(this);
-            foreach (ComboBox box in comboBoxes)
-            {
-                be = box.GetBindingExpression(Selector.SelectedIndexProperty) ??
-                     box.GetBindingExpression(Selector.SelectedValueProperty);
-                if (be != null)
-                    be.UpdateSource();
-            }
-
             // update settings of all RadioButtons
             IEnumerable<RadioButton> radioButtons = GetAllComponentsOfType<RadioButton>(this);
             foreach (RadioButton button in radioButtons)

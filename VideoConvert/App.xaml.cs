@@ -183,5 +183,10 @@ namespace VideoConvert
         {
             Log.Fatal(e.Exception);
         }
+
+        private void ApplicationExit(object sender, ExitEventArgs e)
+        {
+            VideoConvert.Properties.Settings.Default.Save();
+        }
     }
 }
