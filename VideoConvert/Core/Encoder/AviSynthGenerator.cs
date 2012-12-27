@@ -77,6 +77,11 @@ namespace VideoConvert.Core.Encoder
                 sb.AppendLine(string.Format(AppSettings.CInfo, "Import(\"{0:s}\")",
                                             Path.Combine(AppSettings.AppPath, "AvsPlugins", "QTGMC-3.32.avsi")));
             }
+            else if (videoInfo.Interlaced)
+            {
+                sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
+                                            Path.Combine(AppSettings.AppPath, "AvsPlugins", "Decomb.dll")));
+            }
 
             if (useStereo)
                 sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
@@ -137,6 +142,18 @@ namespace VideoConvert.Core.Encoder
                                             configFile, videoInfo.FrameCount - 50));
                 StereoConfigFile = configFile;
                 stereoVar = "VideoRight";
+            }
+
+            if (videoInfo.Interlaced)
+            {
+                if (AppSettings.UseHQDeinterlace)
+                    sb.AppendLine("QTGMC(Preset=\"Slower\")");
+                else
+                {
+                    sb.AppendLine("ConvertToYUY2(interlaced=true)");
+                    sb.AppendLine("Telecide(post=4)");
+                    sb.AppendLine("ConvertToYV12()");
+                }
             }
 
             if (!string.IsNullOrEmpty(subtitleFile) && File.Exists(subtitleFile))
@@ -368,18 +385,6 @@ namespace VideoConvert.Core.Encoder
                                             borderTop,
                                             borderRight,
                                             borderBottom));
-
-            if (videoInfo.Interlaced)
-            {
-                if (AppSettings.UseHQDeinterlace)
-                    sb.AppendLine("QTGMC(Preset=\"Slower\")");
-                else
-                {
-                    sb.AppendLine("SeparateFields()");
-                    sb.AppendLine("Bob()");
-                }
-                sb.AppendLine("SelectEven()");
-            }
 
             if (changeFps)
             {

@@ -255,6 +255,9 @@
     <Content Include="AvsPlugins\audio\ChannelDownMix.avsi">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="AvsPlugins\Decomb.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="AvsPlugins\FFMS2.avsi">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
