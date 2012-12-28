@@ -442,11 +442,11 @@ namespace VideoConvert.Windows
         private static EncodeInfo SetInOutTemp(EncodeInfo inJob)
         {
             string asciiFile = Processing.GetAsciiFileName(inJob.InputFile);
-            if (inJob.InputFile != asciiFile)
+            if (string.CompareOrdinal(inJob.InputFile, asciiFile) != 0)
                 inJob.TempInput = Processing.CreateTempFile(Path.GetExtension(inJob.InputFile));
 
             asciiFile = Processing.GetAsciiFileName(inJob.OutputFile);
-            if (inJob.OutputFile != asciiFile)
+            if (string.CompareOrdinal(inJob.OutputFile, asciiFile) != 0)
             {
                 string fExt;
                 if ((inJob.EncodingProfile.OutFormat == OutputType.OutputAvchd) ||

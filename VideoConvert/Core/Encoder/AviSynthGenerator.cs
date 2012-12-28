@@ -490,7 +490,7 @@ namespace VideoConvert.Core.Encoder
             Log.InfoFormat("Writing AviSynth script: {1:s}{0:s}", script, Environment.NewLine);
 
             string avsFile = Processing.CreateTempFile(extension);
-            using (StreamWriter sw = new StreamWriter(avsFile))
+            using (StreamWriter sw = new StreamWriter(avsFile, false, Encoding.ASCII))
                 sw.WriteLine(script);
 
             return avsFile;

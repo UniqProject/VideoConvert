@@ -301,16 +301,12 @@ namespace VideoConvert.Core
         {
             string output;
             if (String.IsNullOrEmpty(baseName))
-            {
                 output = Path.ChangeExtension(Path.Combine(AppSettings.DemuxLocation, Guid.NewGuid().ToString()),
-                                            extension);
-            }
+                                              extension);
             else
             {
                 if (String.IsNullOrEmpty(Path.GetDirectoryName(baseName)))
-                {
                     output = Path.Combine(AppSettings.DemuxLocation, String.Format("{0}.{1}", baseName, extension));
-                }
                 else
                 {
                     string inFile = Path.GetFileNameWithoutExtension(baseName);
@@ -319,9 +315,7 @@ namespace VideoConvert.Core
             }
 
             if (output.LastIndexOf('.') == output.Length - 1)
-            {
                 output = output.Remove(output.Length - 1);
-            }
 
             return output;
         }
