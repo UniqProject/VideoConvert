@@ -456,7 +456,7 @@ namespace VideoConvert.Windows
                 else
                     fExt = Path.GetExtension(inJob.OutputFile);
 
-                inJob.TempOutput = Processing.CreateTempFile(inJob.TempInput, fExt);
+                inJob.TempOutput = Processing.CreateTempFile(string.IsNullOrEmpty(inJob.TempInput) ? asciiFile : inJob.TempInput, fExt);
             }
 
             return inJob;

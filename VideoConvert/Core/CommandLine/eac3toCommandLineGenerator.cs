@@ -44,8 +44,12 @@ namespace VideoConvert.Core.CommandLine
             else
             {
                 inputFile = string.IsNullOrEmpty(jobInfo.TempInput) ? jobInfo.InputFile : jobInfo.TempInput;
+
                 jobInfo.VideoStream.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
-                                                   ? Processing.CreateTempFile(jobInfo.JobName, "demuxed.mkv")
+                                                   ? Processing.CreateTempFile(
+                                                       string.IsNullOrEmpty(jobInfo.TempOutput)
+                                                           ? jobInfo.JobName
+                                                           : jobInfo.TempOutput, "demuxed.mkv")
                                                    : Processing.CreateTempFile(jobInfo.TempInput, "demuxed.mkv");
             }
 
@@ -88,11 +92,20 @@ namespace VideoConvert.Core.CommandLine
                 }
                 formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
 
-                item.TempFile = jobInfo.Input == InputType.InputDvd
-                                    ? Processing.CreateTempFile(jobInfo.DumpOutput, formattedExt)
-                                    : Processing.CreateTempFile(
-                                        string.IsNullOrEmpty(jobInfo.TempInput) ? jobInfo.JobName : jobInfo.TempInput,
-                                        formattedExt);
+                switch (jobInfo.Input)
+                {
+                    case InputType.InputDvd:
+                        item.TempFile = Processing.CreateTempFile(jobInfo.DumpOutput, formattedExt);
+                        break;
+                    default:
+                        item.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
+                                            ? Processing.CreateTempFile(
+                                                string.IsNullOrEmpty(jobInfo.TempOutput)
+                                                    ? jobInfo.JobName
+                                                    : jobInfo.TempOutput, formattedExt)
+                                            : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
+                        break;
+                }
 
                 sb.AppendFormat("{0:g}:\"{1}\" {2} ", item.Id + startstream, item.TempFile, core);
                 jobInfo.AudioStreams[i] = item;
@@ -105,13 +118,20 @@ namespace VideoConvert.Core.CommandLine
                 ext = StreamFormat.GetFormatExtension(item.Format, String.Empty, false);
                 formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
 
-                item.TempFile = jobInfo.Input == InputType.InputDvd
-                                    ? Processing.CreateTempFile(jobInfo.DumpOutput, formattedExt)
-                                    : Processing.CreateTempFile(
-                                        string.IsNullOrEmpty(jobInfo.TempInput)
-                                            ? jobInfo.JobName
-                                            : jobInfo.TempInput,
-                                        formattedExt);
+                switch (jobInfo.Input)
+                {
+                    case InputType.InputDvd:
+                        item.TempFile = Processing.CreateTempFile(jobInfo.DumpOutput, formattedExt);
+                        break;
+                    default:
+                        item.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
+                                            ? Processing.CreateTempFile(
+                                                string.IsNullOrEmpty(jobInfo.TempOutput)
+                                                    ? jobInfo.JobName
+                                                    : jobInfo.TempOutput, formattedExt)
+                                            : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
+                        break;
+                }
 
                 sb.AppendFormat("{0:g}:\"{1}\" ", item.Id + startstream, item.TempFile);
                 jobInfo.SubtitleStreams[i] = item;

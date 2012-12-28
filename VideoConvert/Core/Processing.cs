@@ -535,7 +535,7 @@ namespace VideoConvert.Core
         {
             return
                 Encoding.ASCII.GetString(Encoding.Convert(Encoding.Unicode, Encoding.ASCII,
-                                                          Encoding.Unicode.GetBytes(fileName)));
+                                                          Encoding.Unicode.GetBytes(fileName))).Replace('?', '_');
         }
 
         public static ulong GetFileSize(string fName)
