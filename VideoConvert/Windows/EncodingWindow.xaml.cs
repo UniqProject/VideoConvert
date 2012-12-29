@@ -708,6 +708,10 @@ namespace VideoConvert.Windows
 
             foreach (EncodeInfo job in JobList)
             {
+
+                if (!string.IsNullOrEmpty(job.TempInput))
+                    encodingSteps++; // create temp file with ascii filename
+
                 encodingSteps++; // demux
 
                 encodingSteps += job.AudioStreams.Count(aud => job.AudioProfile.Type == ProfileType.AC3 ||
@@ -776,6 +780,9 @@ namespace VideoConvert.Windows
                 } // end if videostream != null
 
                 encodingSteps++;    // mux streams
+
+                if (!string.IsNullOrEmpty(job.TempOutput))
+                    encodingSteps++; // move finished file to output destination
             }   // foreach job
 
             return encodingSteps;
