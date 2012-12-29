@@ -152,6 +152,8 @@ namespace VideoConvert.Core.Encoder
                 {
                     sb.AppendLine("ConvertToYUY2(interlaced=true)");
                     sb.AppendLine("Telecide(post=4)");
+                    sb.AppendLine("Crop(4, 0, -4, 0)");
+                    sb.AppendLine("AddBorders(4, 0, 4, 0)");
                     sb.AppendLine("ConvertToYV12()");
                 }
             }
