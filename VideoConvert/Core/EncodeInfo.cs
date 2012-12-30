@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BDInfo;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
 
@@ -33,12 +32,10 @@ namespace VideoConvert.Core
         public InputType                Input { get; set; }
         public string                   FormattedInput { get { return Processing.StringValueOf(Input); } }
         public string                   OutputFile { get; set; }
-        public bool                     CreateJobFolder { get; set; }
         public List<AudioInfo>          AudioStreams { get; set; }
 
         public List<SubtitleInfo>       SubtitleStreams { get; set; }
         public List<TimeSpan>           Chapters { get; set; }
-        public BDROM                    BdInfo { get; set; }
 
         public EncodingStep             NextStep { get; set; }
         public EncodingStep             CompletedStep { get; set; }
@@ -68,19 +65,15 @@ namespace VideoConvert.Core
 
         public int                      ExitCode { get; set; }
 
-        public bool                     OutputOverride { get; set; }
-
         public EncodeInfo()
         {
             JobName = string.Empty;
             InputFile = string.Empty;
             Input = InputType.InputUndefined;
             OutputFile = string.Empty;
-            CreateJobFolder = false;
             AudioStreams = new List<AudioInfo>();
             SubtitleStreams = new List<SubtitleInfo>();
             Chapters = new List<TimeSpan>();
-            BdInfo = null;
             NextStep = EncodingStep.NotSet;
             CompletedStep = EncodingStep.NotSet;
             MediaInfo = null;
@@ -94,7 +87,6 @@ namespace VideoConvert.Core
             SelectedDvdChapters = string.Empty;
             TempFiles = new List<string>();
             ExitCode = int.MinValue;
-            OutputOverride = false;
 
             FfIndexFile = string.Empty;
             AviSynthScript = string.Empty;
@@ -134,8 +126,6 @@ namespace VideoConvert.Core
                                     Environment.NewLine);
             result += string.Format(AppSettings.CInfo, "OutputFile:         {0:s} {1:s}", OutputFile,
                                     Environment.NewLine);
-            result += string.Format(AppSettings.CInfo, "CreateJobFolder:    {0:s} {1:s}",
-                                    CreateJobFolder.ToString(AppSettings.CInfo), Environment.NewLine);
             result += Environment.NewLine;
 
             result += string.Format(AppSettings.CInfo, "AudioStreams:       {0:s}", Environment.NewLine);
@@ -186,8 +176,6 @@ namespace VideoConvert.Core
             result += string.Format(AppSettings.CInfo, "TempFiles:          {0:s} {1:s}",
                                     string.Join(",", TempFiles.ToArray()), Environment.NewLine);
             result += string.Format(AppSettings.CInfo, "ReturnValue:        {0:g} {1:s}", ExitCode, Environment.NewLine);
-            result += string.Format(AppSettings.CInfo, "outputOverride:     {0:s} {1:s}",
-                                    OutputOverride.ToString(AppSettings.CInfo), Environment.NewLine);
 
             return result;
         }
