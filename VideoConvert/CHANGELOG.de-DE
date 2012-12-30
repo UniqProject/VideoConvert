@@ -1,4 +1,9 @@
-﻿- [change]  Standard Deinterlace Methode geändert -> höhere Qualität im vergleich zur alten Methode.
+﻿- [change]  Speicherverbrauch reduziert.
+- [change]  Ab jetzt kommt eine andere Mathode zur Bildratenkonvertierung zum Einsatz. Feedback erwünscht.
+- [change]  Ab jetzt werden 2 unterschiedliche Methoden zum herunter-/hochskalieren der Videostreams benutzt.
+
+0.21.716.1152
+- [change]  Standard Deinterlace Methode geändert -> höhere Qualität im vergleich zur alten Methode.
 - [change]  Möglichkeit hinzugefügt, die Changeloganzeige nach einem Update nicht mehr anzeigen zu lassen.
 - [fix]     Jobs, welche Unicode-Zeichen im Namen enthalten, werden wieder korrekt verarbeitet.
 

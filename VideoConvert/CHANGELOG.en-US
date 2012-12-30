@@ -1,4 +1,9 @@
-﻿- [change]  Standard deinterlacing method changed -> higher quality compared to old method.
+﻿- [change]  Reduced memory usage.
+- [change]  Using different method for framerate change from now on. I would be pleased to get some feedback.
+- [change]  Using different methods for down-/upscale the video from now on.
+
+0.21.716.1152
+- [change]  Standard deinterlacing method changed -> higher quality compared to old method.
 - [change]  Setting added to disable changelog displaying after update.
 - [fix]     Jobs, which contain UTF-encoded characters, are now correctly handled.
 
