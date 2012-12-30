@@ -1,4 +1,8 @@
-﻿- [fix]     Should not offer updates for any java-based encoders, if java path is not set.
+﻿- [change]  Standard deinterlacing method changed -> higher quality compared to old method.
+- [change]  Setting added to disable changelog displaying after update.
+- [fix]     Jobs, which contain UTF-encoded characters, are now correctly handled.
+
+0.21.713.1129- [fix]     Should not offer updates for any java-based encoders, if java path is not set.
 - [fix]     Should not offer updates for 64 bit encoders on 32 bit systems.
 - [fix]     Fixed a problem, where not all settings were saved.
 
