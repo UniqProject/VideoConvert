@@ -198,11 +198,11 @@ namespace VideoConvert.Windows
             TreeNode audioTree = CreateNode(root, strAudio, null);
             TreeNode subTree = CreateNode(root, strSubtitles, null);
 
-            if (mi.MyChapters.Count > 0)
+            if (mi.Chapters.Count > 0)
             {
-                string chaptersTitle = string.Format("{0:0} {1}", mi.MyChapters.Count, strChapters);
+                string chaptersTitle = string.Format("{0:0} {1}", mi.Chapters.Count, strChapters);
 
-                CreateNode(chaptersTree, chaptersTitle, mi.MyChapters);
+                CreateNode(chaptersTree, chaptersTitle, mi.Chapters);
             }
             else
                 chaptersTree.IsChecked = false;
@@ -1031,9 +1031,6 @@ namespace VideoConvert.Windows
                 JobInfo.VideoProfile = videoEncoder;
                 JobInfo.EncodingProfile = encProfile;
             }
-
-            if (_bdInfo != null)
-                JobInfo.BdInfo = _bdInfo;
 
             AppSettings.LastSelectedProfile = (string)EncodingProfile.SelectedValue;
             AppSettings.SaveSettings();
