@@ -394,11 +394,65 @@ namespace VideoConvert.Core.Encoder
                 int fpsden;
 
                 Processing.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
-                sb.AppendLine("super = MSuper(pel=2)");
-                sb.AppendLine("backward_vec = MAnalyse(super, overlap=4, isb = true, search=3)");
-                sb.AppendLine("forward_vec = MAnalyse(super, overlap=4, isb = false, search=3)");
-                sb.AppendFormat("MFlowFps(super, backward_vec, forward_vec, num={0:0}, den={1:0})", fpsnum,
-                                fpsden);
+
+                if ((videoInfo.FrameRateEnumerator == 24000 || videoInfo.FrameRateEnumerator == 30000) && videoInfo.FrameRateDenominator == 1001)
+                {
+                    if (fpsnum == 30000 && fpsden == 1001)
+                    {
+                        // 3:2 pulldown / telecine
+                        sb.AppendLine("AssumeFrameBased()");
+                        sb.AppendLine("SeparateFields()");
+                        sb.AppendLine("SelectEvery(8, 0, 1, 2, 3, 2, 5, 4, 7, 6, 7)");
+                        sb.AppendLine("Weave()");
+                    }
+                    else if (fpsnum == 25000 && fpsden == 1000)
+                    {
+                        if (videoInfo.FrameRateEnumerator == 30000)
+                        {
+                            sb.AppendLine("DoubleWeave()");
+                            sb.AppendLine("Pulldown(0,3)");
+                        }
+                        sb.AppendLine("ConvertToYUY2()");
+                        sb.AppendLine("ConvertFPS(50)");
+                        sb.AppendLine("AssumeTFF()");
+                        sb.AppendLine("SeparateFields()");
+                        sb.AppendLine("SelectEvery(4,0,3)");
+                        sb.AppendLine("Weave()");
+                        sb.AppendLine("ConvertToYV12()");
+                    }
+                }
+                else if (videoInfo.FrameRateEnumerator == 25000 && videoInfo.FrameRateDenominator == 1000)
+                {
+                    if ((fpsnum == 30000 || fpsnum == 24000) && fpsden == 1001)
+                    {
+                        sb.AppendLine("ConvertToYUY2()");
+                        sb.AppendLine(string.Format(AppSettings.CInfo, "ConvertFPS({0:0.000}*2)", 23.976));
+                        if (fpsnum == 30000)
+                        {
+                            sb.AppendLine("AssumeFrameBased()");
+                            sb.AppendLine("SeparateFields()");
+                            sb.AppendLine("SelectEvery(8, 0, 1, 2, 3, 2, 5, 4, 7, 6, 7)");
+                        }
+                        else
+                        {
+                            sb.AppendLine("AssumeTFF()");
+                            sb.AppendLine("SeparateFields()");
+                            sb.AppendLine("SelectEven()");
+                        }
+                        sb.AppendLine("Weave()");
+                        sb.AppendLine("ConvertToYV12()");
+                    }
+                }
+                else
+                {
+                    sb.AppendLine("super = MSuper(pel=2)");
+                    sb.AppendLine("backward_vec = MAnalyse(super, overlap=4, isb = true, search=3)");
+                    sb.AppendLine("forward_vec = MAnalyse(super, overlap=4, isb = false, search=3)");
+                    sb.AppendFormat("MFlowFps(super, backward_vec, forward_vec, num={0:0}, den={1:0})", fpsnum,
+                                    fpsden);
+                }
+
+
                 sb.AppendLine();
             }
 
