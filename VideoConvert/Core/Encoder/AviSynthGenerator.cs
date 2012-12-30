@@ -373,13 +373,23 @@ namespace VideoConvert.Core.Encoder
                 }
             }
 
-            if ((calculatedHeight != videoInfo.Height) || (calculatedWidth != videoInfo.Width) ||
-                ((stereoEncoding == StereoEncoding.HalfSideBySideLeft) ||
-                 (stereoEncoding == StereoEncoding.HalfSideBySideRight))
-                && useStereo)
-                sb.AppendLine(string.Format(AppSettings.CInfo, "Lanczos4Resize({0:g},{1:g})",
-                                            calculatedWidth,
-                                            calculatedHeight));
+            if (calculatedHeight != videoInfo.Height || calculatedWidth != videoInfo.Width ||
+                (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
+                 stereoEncoding == StereoEncoding.HalfSideBySideRight
+                && useStereo))
+            {
+                if (calculatedHeight > videoInfo.Height || calculatedWidth > videoInfo.Width ||
+                    (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
+                     stereoEncoding == StereoEncoding.HalfSideBySideRight
+                     && useStereo))
+                    sb.AppendLine(string.Format(AppSettings.CInfo, "BicubicResize({0:g},{1:g})",
+                                                calculatedWidth,
+                                                calculatedHeight));
+                else
+                    sb.AppendLine(string.Format(AppSettings.CInfo, "Lanczos4Resize({0:g},{1:g})",
+                                                calculatedWidth,
+                                                calculatedHeight));
+            }
 
             if (addBorders && (borderLeft > 0 || borderRight > 0 || borderTop > 0 || borderBottom > 0))
                 sb.AppendLine(string.Format(AppSettings.CInfo, "AddBorders({0:g},{1:g},{2:g},{3:g})",
