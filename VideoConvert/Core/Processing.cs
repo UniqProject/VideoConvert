@@ -102,6 +102,13 @@ namespace VideoConvert.Core
             Log.InfoFormat(AppSettings.CInfo, "General.Format:              {0:s}", mi.General.Format);
             Log.InfoFormat(AppSettings.CInfo, "General.FormatExtensions:    {0:s}", mi.General.FormatExtensions);
             Log.InfoFormat(AppSettings.CInfo, "General.InternetMediaType:   {0:s}", mi.General.InternetMediaType);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedApplication:  {0:s}", mi.General.EncodedApplication);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedApplicationUrl:{0:s}", mi.General.EncodedApplicationUrl);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedLibrary:      {0:s}", mi.General.EncodedLibrary);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedLibraryDate:  {0:s}", mi.General.EncodedLibraryDate);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedLibraryName:  {0:s}", mi.General.EncodedLibraryName);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedLibrarySettings: {0:s}", mi.General.EncodedLibrarySettings);
+            Log.InfoFormat(AppSettings.CInfo, "General.EncodedLibraryVersion: {0:s}", mi.General.EncodedLibraryVersion);
             Log.Info(String.Empty);
 
             foreach (MediaInfoContainer.VideoStreamInfo item in mi.Video)
@@ -118,6 +125,8 @@ namespace VideoConvert.Core
                 Log.InfoFormat(AppSettings.CInfo, "Video.FormatProfile:      {0:s}", item.FormatProfile);
                 Log.InfoFormat(AppSettings.CInfo, "Video.FormatInfo:         {0:s}", item.FormatInfo);
                 Log.InfoFormat(AppSettings.CInfo, "Video.FormatVersion:      {0:s}", item.FormatVersion);
+                Log.InfoFormat(AppSettings.CInfo, "Video.MultiViewBaseProfile: {0:s}", item.MultiViewBaseProfile);
+                Log.InfoFormat(AppSettings.CInfo, "Video.MultiViewCount:     {0:s}", item.MultiViewCount);
                 Log.InfoFormat(AppSettings.CInfo, "Video.DisplayAspectRatio: {0:s}", item.DisplayAspectRatio);
                 Log.InfoFormat(AppSettings.CInfo, "Video.PixelAspectRatio:   {0:g}", item.PixelAspectRatio);
                 Log.InfoFormat(AppSettings.CInfo, "Video.BitrateMode:        {0:s}", item.BitRateMode);
@@ -136,6 +145,13 @@ namespace VideoConvert.Core
                 Log.InfoFormat(AppSettings.CInfo, "Video.VideoSize:          {0:s}", item.VideoSize.ToString());
                 Log.InfoFormat(AppSettings.CInfo, "Video.ScanType:           {0:s}", item.ScanType);
                 Log.InfoFormat(AppSettings.CInfo, "Video.ScanOrder:          {0:g}", item.ScanOrder);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedApplication: {0:s}", item.EncodedApplication);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedApplicationUrl: {0:s}", item.EncodedApplicationUrl);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedLibrary:     {0:s}", item.EncodedLibrary);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedLibraryDate: {0:s}", item.EncodedLibraryDate);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedLibraryName: {0:s}", item.EncodedLibraryName);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedLibrarySettings: {0:s}", item.EncodedLibrarySettings);
+                Log.InfoFormat(AppSettings.CInfo, "Video.EncodedLibraryVersion: {0:s}", item.EncodedLibraryVersion);
             }
             Log.Info(String.Empty);
 
@@ -161,6 +177,11 @@ namespace VideoConvert.Core
                 Log.InfoFormat(AppSettings.CInfo, "Audio.BitrateMax:         {0:g}", item.BitRateMax);
                 Log.InfoFormat(AppSettings.CInfo, "Audio.BitDepth:           {0:g}", item.BitDepth);
                 Log.InfoFormat(AppSettings.CInfo, "Audio.SamplingRate:       {0:g}", item.SamplingRate);
+                Log.InfoFormat(AppSettings.CInfo, "Audio.EncodedLibrary:     {0:s}", item.EncodedLibrary);
+                Log.InfoFormat(AppSettings.CInfo, "Audio.EncodedLibraryDate: {0:s}", item.EncodedLibraryDate);
+                Log.InfoFormat(AppSettings.CInfo, "Audio.EncodedLibraryName: {0:s}", item.EncodedLibraryName);
+                Log.InfoFormat(AppSettings.CInfo, "Audio.EncodedLibrarySettings: {0:s}", item.EncodedLibrarySettings);
+                Log.InfoFormat(AppSettings.CInfo, "Audio.EncodedLibraryVersion: {0:s}", item.EncodedLibraryVersion);
             }
             Log.Info(String.Empty);
 
