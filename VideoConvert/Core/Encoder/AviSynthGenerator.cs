@@ -381,7 +381,7 @@ namespace VideoConvert.Core.Encoder
                                             calculatedWidth,
                                             calculatedHeight));
 
-            if (addBorders)
+            if (addBorders && (borderLeft > 0 || borderRight > 0 || borderTop > 0 || borderBottom > 0))
                 sb.AppendLine(string.Format(AppSettings.CInfo, "AddBorders({0:g},{1:g},{2:g},{3:g})",
                                             borderLeft,
                                             borderTop,
