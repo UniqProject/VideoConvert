@@ -395,9 +395,9 @@ namespace VideoConvert.Core.Encoder
 
                 Processing.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
                 sb.AppendLine("super = MSuper(pel=2)");
-                sb.AppendLine("backward_vec = MAnalyse(super, isb = true)");
-                sb.AppendLine("forward_vec = MAnalyse(super, isb = false)");
-                sb.AppendFormat("MFlowFps(super, backward_vec, forward_vec, num={0:0}, den={1:0}, ml=100)", fpsnum,
+                sb.AppendLine("backward_vec = MAnalyse(super, overlap=4, isb = true, search=3)");
+                sb.AppendLine("forward_vec = MAnalyse(super, overlap=4, isb = false, search=3)");
+                sb.AppendFormat("MFlowFps(super, backward_vec, forward_vec, num={0:0}, den={1:0})", fpsnum,
                                 fpsden);
                 sb.AppendLine();
             }
