@@ -378,7 +378,7 @@ namespace VideoConvert.Core.Encoder
                  stereoEncoding == StereoEncoding.HalfSideBySideRight
                 && useStereo))
             {
-                if (calculatedHeight > videoInfo.Height || calculatedWidth > videoInfo.Width ||
+                if (calculatedHeight < videoInfo.Height || calculatedWidth < videoInfo.Width ||
                     (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
                      stereoEncoding == StereoEncoding.HalfSideBySideRight
                      && useStereo))
@@ -405,7 +405,7 @@ namespace VideoConvert.Core.Encoder
 
                 Processing.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
 
-                if ((videoInfo.FrameRateEnumerator == 24000 || videoInfo.FrameRateEnumerator == 30000) && videoInfo.FrameRateDenominator == 1001)
+                if (videoInfo.FrameRateEnumerator == 24000 && videoInfo.FrameRateDenominator == 1001)
                 {
                     if (fpsnum == 30000 && fpsden == 1001)
                     {
@@ -417,11 +417,6 @@ namespace VideoConvert.Core.Encoder
                     }
                     else if (fpsnum == 25000 && fpsden == 1000)
                     {
-                        if (videoInfo.FrameRateEnumerator == 30000)
-                        {
-                            sb.AppendLine("DoubleWeave()");
-                            sb.AppendLine("Pulldown(0,3)");
-                        }
                         sb.AppendLine("ConvertToYUY2()");
                         sb.AppendLine("ConvertFPS(50)");
                         sb.AppendLine("AssumeTFF()");
@@ -430,6 +425,14 @@ namespace VideoConvert.Core.Encoder
                         sb.AppendLine("Weave()");
                         sb.AppendLine("ConvertToYV12()");
                     }
+                }
+                else if (videoInfo.FrameRateEnumerator == 30000)
+                {
+                    sb.AppendLine("ConvertToYUY2()");
+                    sb.AppendLine("DoubleWeave()");
+                    sb.AppendLine(string.Format(AppSettings.CInfo, "ConvertFPS({0:0.000})", targetFps*2));
+                    sb.AppendLine("SelectEven()");
+                    sb.AppendLine("ConvertToYV12()");
                 }
                 else if (videoInfo.FrameRateEnumerator == 25000 && videoInfo.FrameRateDenominator == 1000)
                 {
