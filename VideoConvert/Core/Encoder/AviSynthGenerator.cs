@@ -676,7 +676,7 @@ namespace VideoConvert.Core.Encoder
                                 sb.AppendLine("ConvertToMono()");
                                 break;
                             case 6:
-                                sb.AppendLine("GetChannel(1,6)");
+                                sb.AppendLine("GetChannel(1,2,3,4,5,6)");
                                 break;
                         }
                         break;
