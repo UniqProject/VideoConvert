@@ -229,16 +229,16 @@ namespace VideoConvert.Core.Encoder
 
                                     if (eta.Seconds != 0)
                                     {
-                                        double speed = Math.Round(overallProgress / eta.TotalSeconds, 6);
+                                        double speed = Math.Round(overallProgress/eta.TotalSeconds, 6);
 
                                         if (speed > 0f)
-                                            secRemaining = percentRemain / speed;
+                                            secRemaining = percentRemain/speed;
                                         else
                                             secRemaining = 0;
                                     }
 
                                     if (secRemaining > 0)
-                                        remaining = new TimeSpan(0, 0, (int)secRemaining);
+                                        remaining = new TimeSpan(0, 0, (int) secRemaining);
 
                                     DateTime ticks1 = new DateTime(eta.Ticks);
 
@@ -247,8 +247,6 @@ namespace VideoConvert.Core.Encoder
                                                                     currentProgress, ticks1, remaining);
 
                                     _bw.ReportProgress(overallProgress, progress);
-                                    Thread.Sleep(500);
-
                                 }
                             }
                             catch (Exception exception)
@@ -256,6 +254,7 @@ namespace VideoConvert.Core.Encoder
                                 Log.ErrorFormat("hcEnc Exception {0}", exception.Message);
                             }
                         }
+                        Thread.Sleep(500);
                     }
                     
                     encoder.WaitForExit(10000);
@@ -284,7 +283,6 @@ namespace VideoConvert.Core.Encoder
         private string GenerateAviSynthFile()
         {
             int targetHeight;
-
 
             float sourceFPS = (float)Math.Round(_jobInfo.VideoStream.FPS, 3);
             float targetFPS = 0f;
