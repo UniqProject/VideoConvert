@@ -41,6 +41,16 @@ namespace VideoConvert.Core
             get { return string.Format(@"\\.\pipe\{0}", DecodeNamedPipeName); }
         }
 
+        public static string EncodeNamedPipeName
+        {
+            get { return string.Format("{0}_encodePipe", GetProductName()); }
+        }
+
+        public static string EncodeNamedPipeFullName
+        {
+            get { return string.Format(@"\\.\pipe\{0}", EncodeNamedPipeName); }
+        }
+
         public static bool UseAviSynthMT
         {
             get { return Properties.Settings.Default.UseAviSynthMT; }
