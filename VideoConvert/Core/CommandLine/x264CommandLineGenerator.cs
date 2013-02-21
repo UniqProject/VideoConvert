@@ -109,7 +109,7 @@ namespace VideoConvert.Core.CommandLine
                 if (tempBitrate <= 0)
                     tempBitrate = inProfile.VBRSetting;
 
-                if (tempBitrate > vbvBuf)   // limit Bitrate to max vbvbuf size
+                if (vbvBuf > 0 && tempBitrate > vbvBuf)   // limit Bitrate to max vbvbuf size
                     tempBitrate = vbvBuf;
 
                 switch (inProfile.EncodingMode)

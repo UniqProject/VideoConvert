@@ -292,7 +292,7 @@ namespace VideoConvert.Core.Encoder
                             Log.InfoFormat("x264: {0:s}", line);
                         }
                     };
-
+                
                 Log.InfoFormat("start parameter: x264 {0:s}", argument);
 
                 bool started;
