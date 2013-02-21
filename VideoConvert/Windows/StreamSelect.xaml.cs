@@ -1034,7 +1034,7 @@ namespace VideoConvert.Windows
 
             AppSettings.LastSelectedProfile = (string)EncodingProfile.SelectedValue;
             AppSettings.SaveSettings();
-
+            _bdInfo = null;
             DialogResult = true;
         }
 
