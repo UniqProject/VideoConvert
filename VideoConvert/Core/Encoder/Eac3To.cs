@@ -210,7 +210,7 @@ namespace VideoConvert.Core.Encoder
         private void GetStreamInfo()
         {
             if (_jobInfo.Input == InputType.InputDvd)
-                _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream);
+                _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, false);
             else
             {
                 MediaInfoContainer container = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);

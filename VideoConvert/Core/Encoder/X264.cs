@@ -170,7 +170,8 @@ namespace VideoConvert.Core.Encoder
                                                                 _jobInfo.VideoStream.PicSize,
 
                                                                 // check if we use 64 bit version
-                                                                use64BitEncoder ? "-" : inputFile,
+                                                                //use64BitEncoder ? "-" : inputFile,
+                                                                "-",
                                                                 outFile);
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, use64BitEncoder ? Executable64 : Executable);
@@ -200,8 +201,8 @@ namespace VideoConvert.Core.Encoder
 
                         if (string.IsNullOrEmpty(line)) return;
 
-                        Match result = frameInformation.Match(line);
-                        Match result2 = fullFrameInformation.Match(line);
+                        Match frameMatch = frameInformation.Match(line);
+                        Match fullFrameMatch = fullFrameInformation.Match(line);
 
                         TimeSpan eta = DateTime.Now.Subtract(startTime);
 
@@ -213,9 +214,9 @@ namespace VideoConvert.Core.Encoder
                         float fps;
                         DateTime ticks;
                         double codingFPS;
-                        if (result.Success)
+                        if (frameMatch.Success)
                         {
-                            Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
+                            Int64.TryParse(frameMatch.Groups[1].Value, NumberStyles.Number,
                                            AppSettings.CInfo, out current);
                             framesRemaining = _frameCount - current;
 
@@ -235,9 +236,9 @@ namespace VideoConvert.Core.Encoder
 
                             ticks = new DateTime(eta.Ticks);
 
-                            Single.TryParse(result.Groups[2].Value, NumberStyles.Number,
+                            Single.TryParse(frameMatch.Groups[2].Value, NumberStyles.Number,
                                             AppSettings.CInfo, out fps);
-                            Single.TryParse(result.Groups[3].Value, NumberStyles.Number,
+                            Single.TryParse(frameMatch.Groups[3].Value, NumberStyles.Number,
                                             AppSettings.CInfo, out encBitrate);
 
                             string progress = string.Format(progressFormat,
@@ -249,11 +250,11 @@ namespace VideoConvert.Core.Encoder
                                                progress);
 
                         }
-                        else if (result2.Success)
+                        else if (fullFrameMatch.Success)
                         {
-                            Int64.TryParse(result2.Groups[1].Value, NumberStyles.Number,
+                            Int64.TryParse(fullFrameMatch.Groups[1].Value, NumberStyles.Number,
                                            AppSettings.CInfo, out current);
-                            Int64.TryParse(result2.Groups[2].Value, NumberStyles.Number,
+                            Int64.TryParse(fullFrameMatch.Groups[2].Value, NumberStyles.Number,
                                            AppSettings.CInfo, out _frameCount);
 
                             framesRemaining = _frameCount - current;
@@ -274,9 +275,9 @@ namespace VideoConvert.Core.Encoder
 
                             ticks = new DateTime(eta.Ticks);
 
-                            Single.TryParse(result2.Groups[3].Value, NumberStyles.Number,
+                            Single.TryParse(fullFrameMatch.Groups[3].Value, NumberStyles.Number,
                                             AppSettings.CInfo, out fps);
-                            Single.TryParse(result2.Groups[4].Value, NumberStyles.Number,
+                            Single.TryParse(fullFrameMatch.Groups[4].Value, NumberStyles.Number,
                                             AppSettings.CInfo, out encBitrate);
 
                             string progress = string.Format(progressFormat,
@@ -296,30 +297,29 @@ namespace VideoConvert.Core.Encoder
                 Log.InfoFormat("start parameter: x264 {0:s}", argument);
 
                 bool started;
-                bool decStarted = false;
-                Process decoder = new Process();
+                bool decStarted;
 
-                NamedPipeServerStream decodePipe = null;
-                if (use64BitEncoder)
+                NamedPipeServerStream decodePipe = new NamedPipeServerStream(AppSettings.DecodeNamedPipeName,
+                                                                             PipeDirection.InOut, 3,
+                                                                             PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                decodePipe.BeginWaitForConnection(decoderConnected, null);
+
+                Process decoder = FfMpeg.GenerateDecodeProcess(inputFile);
+                try
                 {
-                    decodePipe = new NamedPipeServerStream(AppSettings.DecodeNamedPipeName, PipeDirection.In, 1,
-                                                           PipeTransmissionMode.Byte, PipeOptions.None);
-
-                    decoder = FfMpeg.GenerateDecodeProcess(inputFile);
-                    try
-                    {
-                        decStarted = decoder.Start();
-                    }
-                    catch (Exception ex)
-                    {
-                        decStarted = false;
-                        Log.ErrorFormat("avconv exception: {0}", ex);
-                        _jobInfo.ExitCode = -1;
-                    }    
+                    
+                    decStarted = decoder.Start();
                 }
+                catch (Exception ex)
+                {
+                    decStarted = false;
+                    Log.ErrorFormat("avconv exception: {0}", ex);
+                    _jobInfo.ExitCode = -1;
+                }    
 
                 try
                 {
+                    
                     started = encoder.Start();
                 }
                 catch (Exception ex)
@@ -331,74 +331,56 @@ namespace VideoConvert.Core.Encoder
 
                 startTime = DateTime.Now;
 
-                if ((started && !use64BitEncoder) || (started && decStarted))
+                if (started && decStarted)
                 {
                     encoder.PriorityClass = AppSettings.GetProcessPriority();
                     encoder.BeginErrorReadLine();
-                    
-                    if (decStarted)
+
+                    decoder.PriorityClass = AppSettings.GetProcessPriority();
+                    decoder.BeginErrorReadLine();
+
+                    Thread pipeReadThread = new Thread(() =>
                     {
-                        decoder.PriorityClass = AppSettings.GetProcessPriority();
-                        decoder.BeginErrorReadLine();
-
-                        Thread pipeReadThread = new Thread(() =>
-                        {
-                            try
-                            {
-                                ReadThreadStart(decodePipe, encoder);
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error(ex);
-                            }
-                        });
-                        pipeReadThread.Start();
-                        pipeReadThread.Priority = ThreadPriority.BelowNormal;
-                        encoder.Exited += (o, args) => pipeReadThread.Abort();
-                    }
-
-                    while (!encoder.HasExited)
-                    {
-                        if (_bw.CancellationPending)
-                        {
-                            encoder.Kill();
-
-                            if (decStarted && !decoder.HasExited)
-                                decoder.Kill();
-                        }
-                        Thread.Sleep(200);
-                    }
-                    encoder.WaitForExit(10000);
-                    encoder.CancelErrorRead();
-
-                    if (decStarted)
-                    {
-                        if (decodePipe.IsConnected)
-                        {
-                            try
-                            {
-                                decodePipe.Disconnect();
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error(ex);
-                            }
-                        }
-
                         try
                         {
-                            decodePipe.Close();
-                            decodePipe.Dispose();
+                            ReadThreadStart(decodePipe, encoder);
                         }
                         catch (Exception ex)
                         {
                             Log.Error(ex);
                         }
+                    });
+                    pipeReadThread.Start();
+                    pipeReadThread.Priority = ThreadPriority.BelowNormal;
+                    decoder.Exited += (o, args) =>
+                        {
+                            try
+                            {
+                                decodePipe.Disconnect();
+                                decodePipe.Close();
+                                decodePipe.Dispose();
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error(ex);
+                            }
+                        };
+                    encoder.Exited += (o, args) => pipeReadThread.Abort();
 
-                        decoder.WaitForExit(10000);
-                        decoder.CancelErrorRead();
-                        
+                    while (!encoder.HasExited && !decoder.HasExited)
+                    {
+                        if (_bw.CancellationPending)
+                        {
+                            encoder.Kill();
+                            decoder.Kill();
+                        }
+                        Thread.Sleep(200);
                     }
+                    encoder.WaitForExit(10000);
+                    encoder.CancelErrorRead();
+                    decoder.WaitForExit(10000);
+                    decoder.CancelErrorRead();
+
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                 }
@@ -416,7 +398,7 @@ namespace VideoConvert.Core.Encoder
 
                     _jobInfo.TempFiles.Add(_jobInfo.VideoStream.TempFile);
                     _jobInfo.VideoStream.TempFile = outFile;
-                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream);
+                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, _jobInfo.EncodingProfile.OutFormat == OutputType.OutputBluRay);
 
                     _jobInfo.TempFiles.Add(Path.Combine(AppSettings.DemuxLocation, "x264_2pass.log"));
                     _jobInfo.TempFiles.Add(Path.Combine(AppSettings.DemuxLocation, "x264_2pass.log.mbtree"));
@@ -431,17 +413,29 @@ namespace VideoConvert.Core.Encoder
             e.Result = _jobInfo;
         }
 
+        private void decoderConnected(IAsyncResult ar)
+        {
+            Log.Info("decoder pipe connected");
+        }
+
         private void ReadThreadStart(NamedPipeServerStream decodePipe, Process encoder)
         {
-            const int bufSize = 1024 * 1024;
+            const int bufSize = 5 * 1024 * 1024;
             byte[] buffer = new byte[bufSize];
 
-            decodePipe.WaitForConnection();
-            while (decodePipe.IsConnected && !encoder.HasExited)
+            if (!decodePipe.IsConnected)
+                decodePipe.WaitForConnection();
+
+            try
             {
-                int readCnt = decodePipe.Read(buffer, 0, bufSize);
-                encoder.StandardInput.BaseStream.Write(buffer, 0, readCnt);
+                decodePipe.CopyTo(encoder.StandardInput.BaseStream);
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+            
+
             encoder.StandardInput.BaseStream.Close();
         }
 

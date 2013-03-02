@@ -314,7 +314,7 @@ namespace VideoConvert.Core.Encoder
                     _jobInfo.TempFiles.Add(_jobInfo.VideoStream.TempFile);
                     _jobInfo.VideoStream.TempFile = outFile;
                     _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
-                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream);
+                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, _jobInfo.EncodingProfile.OutFormat == OutputType.OutputBluRay);
 
                     string statsFile = Processing.CreateTempFile(outFile, "stats");
                     _jobInfo.TempFiles.Add(statsFile);

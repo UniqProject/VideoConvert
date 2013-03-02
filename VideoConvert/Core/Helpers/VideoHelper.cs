@@ -26,7 +26,7 @@ namespace VideoConvert.Core.Helpers
 {
     class VideoHelper
     {
-        public static VideoInfo GetStreamInfo(VideoInfo vStream)
+        public static VideoInfo GetStreamInfo(VideoInfo vStream, bool bluRayTarget)
         {
             MediaInfoContainer mi = Processing.GetMediaInfo(vStream.TempFile);
             if (mi.Video.Count > 0)
@@ -36,10 +36,14 @@ namespace VideoConvert.Core.Helpers
                 vStream.Bitrate = mi.Video[0].BitRate;
                 vStream.Format = mi.Video[0].Format;
                 vStream.FormatProfile = mi.Video[0].FormatProfile;
-                vStream.FPS = mi.Video[0].FrameRate;
-                vStream.FrameCount = mi.Video[0].FrameCount;
-                vStream.FrameRateDenominator = mi.Video[0].FrameRateDenominator;
-                vStream.FrameRateEnumerator = mi.Video[0].FrameRateEnumerator;
+                if (mi.Video[0].FrameRateEnumerator < vStream.FrameRateEnumerator*2 || !bluRayTarget)
+                {
+                    vStream.FPS = mi.Video[0].FrameRate;
+                    vStream.FrameCount = mi.Video[0].FrameCount;
+                    vStream.FrameRateDenominator = mi.Video[0].FrameRateDenominator;
+                    vStream.FrameRateEnumerator = mi.Video[0].FrameRateEnumerator;
+
+                }
                 vStream.Height = mi.Video[0].Height;
                 vStream.Width = mi.Video[0].Width;
                 vStream.Interlaced = mi.Video[0].ScanType != "Progressive";

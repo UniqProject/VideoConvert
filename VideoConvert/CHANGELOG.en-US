@@ -1,4 +1,7 @@
-﻿- [change]  Reduced memory usage.
+﻿- [fix]     Fix a bug, where some bluray discs converted with videoconvert were played too fast.
+
+0.21.717.2135
+- [change]  Reduced memory usage.
 - [change]  Using different method for framerate change from now on. I would be pleased to get some feedback.
 - [change]  Using different methods for down-/upscale the video from now on.
 

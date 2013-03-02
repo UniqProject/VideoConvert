@@ -1,4 +1,7 @@
-﻿- [change]  Speicherverbrauch reduziert.
+﻿- [fix]     Fehler behoben, der dazu führte, dass manche BluRay Disks zu schnell abgespielt wurden.
+
+0.21.717.2135
+- [change]  Speicherverbrauch reduziert.
 - [change]  Ab jetzt kommt eine andere Mathode zur Bildratenkonvertierung zum Einsatz. Feedback erwünscht.
 - [change]  Ab jetzt werden 2 unterschiedliche Methoden zum herunter-/hochskalieren der Videostreams benutzt.
 
