@@ -216,6 +216,7 @@ namespace VideoConvert.Core.Encoder
                 _jobInfo.VideoStream.Bitrate = _jobInfo.MediaInfo.Video[0].BitRate;
                 _jobInfo.VideoStream.StreamSize = Processing.GetFileSize(_jobInfo.VideoStream.TempFile);
                 _jobInfo.VideoStream.FrameCount = _jobInfo.MediaInfo.Video[0].FrameCount;
+                _jobInfo.VideoStream.StreamId = _jobInfo.MediaInfo.Video[0].ID;
             }
 
             for (int i = 0; i < _jobInfo.AudioStreams.Count; i++)
