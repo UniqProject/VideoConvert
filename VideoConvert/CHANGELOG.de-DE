@@ -1,4 +1,10 @@
-﻿- [fix]     Fehler behoben, der dazu führte, dass manche BluRay Disks zu schnell abgespielt wurden.
+﻿- [fix]     Ein mögliches Einfrieren der Hintergrundprozesse beim Abschliessen des eac3to Demuxvorgangs
+            wurde behoben.
+- [fix]     Manche Dateien konnten nicht richtig gemuxed werden, wenn der Videostream kopiert werden sollte,
+            dies wurde nun behoben.
+
+0.21.779.1921
+- [fix]     Fehler behoben, der dazu führte, dass manche BluRay Disks zu schnell abgespielt wurden.
 
 0.21.717.2135
 - [change]  Speicherverbrauch reduziert.

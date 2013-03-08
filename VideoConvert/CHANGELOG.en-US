@@ -1,4 +1,8 @@
-﻿- [fix]     Fix a bug, where some bluray discs converted with videoconvert were played too fast.
+﻿- [fix]     An possible lockup of background threads while finalizing the eac3to demux process is fixed.
+- [fix]     Some files weren't muxed correctly if video stream should be copied. This is fixed now.
+
+0.21.779.1921
+- [fix]     Fix a bug, where some bluray discs converted with videoconvert were played too fast.
 
 0.21.717.2135
 - [change]  Reduced memory usage.
