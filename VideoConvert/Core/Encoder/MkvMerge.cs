@@ -125,12 +125,12 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(0, status);
 
             string tempExt = Path.GetExtension(_jobInfo.VideoStream.TempFile);
-            if (_jobInfo.VideoStream.IsRawStream)
+            if (_jobInfo.VideoStream.IsRawStream ||
+                (_jobInfo.Input == InputType.InputAvi && !_jobInfo.VideoStream.Encoded) ||
+                _jobInfo.VideoStream.Encoded)
                 vidStream = 0;
-            else if ((_jobInfo.Input == InputType.InputAvi) && (!_jobInfo.VideoStream.Encoded))
-                vidStream = 0;
-            else if ((_jobInfo.VideoStream.Encoded) || (tempExt == ".mkv") || (tempExt == ".mp4"))
-                vidStream = 0;
+            else if (!_jobInfo.VideoStream.Encoded && (tempExt == ".mp4" || tempExt == ".mkv"))
+                vidStream = Math.Max(_jobInfo.VideoStream.StreamId - 1, 0);
             else
                 vidStream = _jobInfo.VideoStream.StreamId;
 
