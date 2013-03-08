@@ -190,11 +190,13 @@ namespace VideoConvert.Core.Media
             const NumberStyles numStyle = NumberStyles.Number;
 
             if (Processing.mediaInfo == null)
+            {
                 Processing.mediaInfo = new MediaInfo();
+                Processing.mediaInfo.Option("Internet", "No");
+            }
+
             Processing.mediaInfo.Open(fileName);
-
-            Processing.mediaInfo.Option("Complete_Get");
-
+            
             _videoStreams = Processing.mediaInfo.Count_Get(StreamKind.Video);
             _audioStreams = Processing.mediaInfo.Count_Get(StreamKind.Audio);
             _imageStreams = Processing.mediaInfo.Count_Get(StreamKind.Image);
@@ -394,7 +396,7 @@ namespace VideoConvert.Core.Media
                 }
             }
         #endregion
-
+            Processing.mediaInfo.Option("Complete");
             Processing.mediaInfo.Close();
         }
 
