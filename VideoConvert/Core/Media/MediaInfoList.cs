@@ -24,136 +24,48 @@ namespace VideoConvert.Core.Media
 {
     public class MediaInfoList
     {
-        //Import of DLL functions. DO NOT USE until you know what you do (MediaInfo DLL do NOT use CoTaskMemAlloc to allocate memory)  
+        //Import of DLL functions. DO NOT USE until you know what you do (MediaInfo DLL do NOT use CoTaskMemAlloc to allocate memory)
         [DllImport("MediaInfo.dll")]
         private static extern IntPtr MediaInfoList_New();
-
         [DllImport("MediaInfo.dll")]
-        private static extern void MediaInfoList_Delete(IntPtr handle);
-
+        private static extern void MediaInfoList_Delete(IntPtr Handle);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_Open(IntPtr handle, [MarshalAs(UnmanagedType.LPWStr)] string fileName,
-                                                        IntPtr options);
-
+        private static extern IntPtr MediaInfoList_Open(IntPtr Handle, [MarshalAs(UnmanagedType.LPWStr)] string FileName, IntPtr Options);
         [DllImport("MediaInfo.dll")]
-        private static extern void MediaInfoList_Close(IntPtr handle, IntPtr filePos);
-
+        private static extern void MediaInfoList_Close(IntPtr Handle, IntPtr FilePos);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_Inform(IntPtr handle, IntPtr filePos, IntPtr reserved);
-
+        private static extern IntPtr MediaInfoList_Inform(IntPtr Handle, IntPtr FilePos, IntPtr Reserved);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_GetI(IntPtr handle, IntPtr filePos, IntPtr streamKind,
-                                                        IntPtr streamNumber, IntPtr parameter, IntPtr kindOfInfo);
-
+        private static extern IntPtr MediaInfoList_GetI(IntPtr Handle, IntPtr FilePos, IntPtr StreamKind, IntPtr StreamNumber, IntPtr Parameter, IntPtr KindOfInfo);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_Get(IntPtr handle, IntPtr filePos, IntPtr streamKind,
-                                                       IntPtr streamNumber,
-                                                       [MarshalAs(UnmanagedType.LPWStr)] string parameter,
-                                                       IntPtr kindOfInfo, IntPtr kindOfSearch);
-
+        private static extern IntPtr MediaInfoList_Get(IntPtr Handle, IntPtr FilePos, IntPtr StreamKind, IntPtr StreamNumber, [MarshalAs(UnmanagedType.LPWStr)] string Parameter, IntPtr KindOfInfo, IntPtr KindOfSearch);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_Option(IntPtr handle, [MarshalAs(UnmanagedType.LPWStr)] string option,
-                                                          [MarshalAs(UnmanagedType.LPWStr)] string value);
-
+        private static extern IntPtr MediaInfoList_Option(IntPtr Handle, [MarshalAs(UnmanagedType.LPWStr)] string Option, [MarshalAs(UnmanagedType.LPWStr)] string Value);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_State_Get(IntPtr handle);
-
+        private static extern IntPtr MediaInfoList_State_Get(IntPtr Handle);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoList_Count_Get(IntPtr handle, IntPtr filePos, IntPtr streamKind,
-                                                             IntPtr streamNumber);
+        private static extern IntPtr MediaInfoList_Count_Get(IntPtr Handle, IntPtr FilePos, IntPtr StreamKind, IntPtr StreamNumber);
 
         //MediaInfo class
-        public MediaInfoList()
-        {
-            _handle = MediaInfoList_New();
-        }
-
-        ~MediaInfoList()
-        {
-            MediaInfoList_Delete(_handle);
-        }
-
-        public int Open(String fileName, InfoFileOptions options)
-        {
-            return (int) MediaInfoList_Open(_handle, fileName, (IntPtr) options);
-        }
-
-        public void Close(int filePos)
-        {
-            MediaInfoList_Close(_handle, (IntPtr) filePos);
-        }
-
-        public String Inform(int filePos)
-        {
-            return Marshal.PtrToStringUni(MediaInfoList_Inform(_handle, (IntPtr) filePos, (IntPtr) 0));
-        }
-
-        public String Get(int filePos, StreamKind streamKind, int streamNumber, String parameter, InfoKind kindOfInfo, InfoKind kindOfSearch)
-        {
-            return
-                Marshal.PtrToStringUni(MediaInfoList_Get(_handle, (IntPtr) filePos, (IntPtr) streamKind,
-                                                         (IntPtr) streamNumber, parameter, (IntPtr) kindOfInfo,
-                                                         (IntPtr) kindOfSearch));
-        }
-
-        public String Get(int filePos, StreamKind streamKind, int streamNumber, int parameter, InfoKind kindOfInfo)
-        {
-            return
-                Marshal.PtrToStringUni(MediaInfoList_GetI(_handle, (IntPtr) filePos, (IntPtr) streamKind,
-                                                          (IntPtr) streamNumber, (IntPtr) parameter, (IntPtr) kindOfInfo));
-        }
-
-        public String Option(String option, String value)
-        {
-            return Marshal.PtrToStringUni(MediaInfoList_Option(_handle, option, value));
-        }
-
-        public int StateGet()
-        {
-            return (int) MediaInfoList_State_Get(_handle);
-        }
-
-        public int CountGet(int filePos, StreamKind streamKind, int streamNumber)
-        {
-            return (int) MediaInfoList_Count_Get(_handle, (IntPtr) filePos, (IntPtr) streamKind, (IntPtr) streamNumber);
-        }
-
-        private readonly IntPtr _handle;
+        public MediaInfoList() { Handle = MediaInfoList_New(); }
+        ~MediaInfoList() { MediaInfoList_Delete(Handle); }
+        public int Open(String FileName, InfoFileOptions Options) { return (int)MediaInfoList_Open(Handle, FileName, (IntPtr)Options); }
+        public void Close(int FilePos) { MediaInfoList_Close(Handle, (IntPtr)FilePos); }
+        public String Inform(int FilePos) { return Marshal.PtrToStringUni(MediaInfoList_Inform(Handle, (IntPtr)FilePos, (IntPtr)0)); }
+        public String Get(int FilePos, StreamKind StreamKind, int StreamNumber, String Parameter, InfoKind KindOfInfo, InfoKind KindOfSearch) { return Marshal.PtrToStringUni(MediaInfoList_Get(Handle, (IntPtr)FilePos, (IntPtr)StreamKind, (IntPtr)StreamNumber, Parameter, (IntPtr)KindOfInfo, (IntPtr)KindOfSearch)); }
+        public String Get(int FilePos, StreamKind StreamKind, int StreamNumber, int Parameter, InfoKind KindOfInfo) { return Marshal.PtrToStringUni(MediaInfoList_GetI(Handle, (IntPtr)FilePos, (IntPtr)StreamKind, (IntPtr)StreamNumber, (IntPtr)Parameter, (IntPtr)KindOfInfo)); }
+        public String Option(String Option, String Value) { return Marshal.PtrToStringUni(MediaInfoList_Option(Handle, Option, Value)); }
+        public int State_Get() { return (int)MediaInfoList_State_Get(Handle); }
+        public int Count_Get(int FilePos, StreamKind StreamKind, int StreamNumber) { return (int)MediaInfoList_Count_Get(Handle, (IntPtr)FilePos, (IntPtr)StreamKind, (IntPtr)StreamNumber); }
+        private IntPtr Handle;
 
         //Default values, if you know how to set default values in C#, say me
-        public void Open(String fileName)
-        {
-            Open(fileName, 0);
-        }
-
-        public void Close()
-        {
-            Close(-1);
-        }
-
-        public String Get(int filePos, StreamKind streamKind, int streamNumber, String parameter, InfoKind kindOfInfo)
-        {
-            return Get(filePos, streamKind, streamNumber, parameter, kindOfInfo, InfoKind.Name);
-        }
-
-        public String Get(int filePos, StreamKind streamKind, int streamNumber, String parameter)
-        {
-            return Get(filePos, streamKind, streamNumber, parameter, InfoKind.Text, InfoKind.Name);
-        }
-
-        public String Get(int filePos, StreamKind streamKind, int streamNumber, int parameter)
-        {
-            return Get(filePos, streamKind, streamNumber, parameter, InfoKind.Text);
-        }
-
-        public String Option(String option)
-        {
-            return Option(option, "");
-        }
-
-        public int CountGet(int filePos, StreamKind streamKind)
-        {
-            return CountGet(filePos, streamKind, -1);
-        }
+        public void Open(String FileName) { Open(FileName, 0); }
+        public void Close() { Close(-1); }
+        public String Get(int FilePos, StreamKind StreamKind, int StreamNumber, String Parameter, InfoKind KindOfInfo) { return Get(FilePos, StreamKind, StreamNumber, Parameter, KindOfInfo, InfoKind.Name); }
+        public String Get(int FilePos, StreamKind StreamKind, int StreamNumber, String Parameter) { return Get(FilePos, StreamKind, StreamNumber, Parameter, InfoKind.Text, InfoKind.Name); }
+        public String Get(int FilePos, StreamKind StreamKind, int StreamNumber, int Parameter) { return Get(FilePos, StreamKind, StreamNumber, Parameter, InfoKind.Text); }
+        public String Option(String Option_) { return Option(Option_, ""); }
+        public int Count_Get(int FilePos, StreamKind StreamKind) { return Count_Get(FilePos, StreamKind, -1); }
     }
 }
