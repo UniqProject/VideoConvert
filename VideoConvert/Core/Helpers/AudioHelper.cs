@@ -86,20 +86,22 @@ namespace VideoConvert.Core.Helpers
 
         public static AudioInfo GetStreamInfo(AudioInfo aStream)
         {
-            MediaInfoContainer mi = Processing.GetMediaInfo(aStream.TempFile);
-            if (mi.Audio.Count > 0)
+            using (MediaInfoContainer mi = Processing.GetMediaInfo(aStream.TempFile))
             {
-                aStream.Bitrate = mi.Audio[0].BitRate;
-                aStream.BitDepth = mi.Audio[0].BitDepth;
-                aStream.ChannelCount = mi.Audio[0].Channels;
-                aStream.SampleRate = mi.Audio[0].SamplingRate;
-                aStream.Format = mi.Audio[0].Format;
-                aStream.FormatProfile = mi.Audio[0].FormatProfile;
-                aStream.StreamSize = Processing.GetFileSize(aStream.TempFile);
-                if (aStream.Format == "PCM")
-                    aStream.Length = GetRuntimePCM(aStream);
-                else
-                    aStream.Length = mi.Audio[0].Duration / 1000d;   // convert from ms to seconds
+                if (mi.Audio.Count > 0)
+                {
+                    aStream.Bitrate = mi.Audio[0].BitRate;
+                    aStream.BitDepth = mi.Audio[0].BitDepth;
+                    aStream.ChannelCount = mi.Audio[0].Channels;
+                    aStream.SampleRate = mi.Audio[0].SamplingRate;
+                    aStream.Format = mi.Audio[0].Format;
+                    aStream.FormatProfile = mi.Audio[0].FormatProfile;
+                    aStream.StreamSize = Processing.GetFileSize(aStream.TempFile);
+                    if (aStream.Format == "PCM")
+                        aStream.Length = GetRuntimePCM(aStream);
+                    else
+                        aStream.Length = mi.Audio[0].Duration/1000d; // convert from ms to seconds
+                }
             }
             return aStream;
         }

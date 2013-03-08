@@ -197,7 +197,6 @@ namespace VideoConvert.Core.Encoder
                 {
                     _jobInfo.VideoStream.IsRawStream = false;
                     GetStreamInfo();
-                    _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
                 }
             }
 
@@ -213,10 +212,10 @@ namespace VideoConvert.Core.Encoder
                 _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, false);
             else
             {
-                MediaInfoContainer container = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
-                _jobInfo.VideoStream.Bitrate = container.Video[0].BitRate;
+                _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
+                _jobInfo.VideoStream.Bitrate = _jobInfo.MediaInfo.Video[0].BitRate;
                 _jobInfo.VideoStream.StreamSize = Processing.GetFileSize(_jobInfo.VideoStream.TempFile);
-                _jobInfo.VideoStream.FrameCount = container.Video[0].FrameCount;
+                _jobInfo.VideoStream.FrameCount = _jobInfo.MediaInfo.Video[0].FrameCount;
             }
 
             for (int i = 0; i < _jobInfo.AudioStreams.Count; i++)

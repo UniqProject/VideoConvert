@@ -40,6 +40,8 @@ namespace VideoConvert.Core
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(Processing));
 
+        public static MediaInfo mediaInfo;
+
         private static InputType CheckFolderStructure(string pathToFile)
         {
             string dvdCheck = Path.Combine(pathToFile, "VIDEO_TS\\VIDEO_TS.IFO");
