@@ -23,7 +23,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using VideoConvert.Core.Encoder;
 using VideoConvert.Core.Helpers;
@@ -95,7 +97,17 @@ namespace VideoConvert.Core
         private static InputType CheckFileType(string pathToFile)
         {
 
-            MediaInfoContainer mi = GetMediaInfo(pathToFile);
+            MediaInfoContainer mi = new MediaInfoContainer();
+            try
+            {
+                mi = GetMediaInfo(pathToFile);
+            }
+            catch (TimeoutException ex)
+            {
+                Log.Error(ex);
+                mi = new MediaInfoContainer();
+            }
+                
 
             string containerFormat = mi.General.Format;
 
@@ -534,7 +546,22 @@ namespace VideoConvert.Core
             return outPut;
         }
 
+        // Get media information with an 10 sec timeout
+        delegate MediaInfoContainer MiWorkDelegate(string fileName);
         internal static MediaInfoContainer GetMediaInfo(string fileName)
+        {
+            MiWorkDelegate d = DoWorkHandler;
+            IAsyncResult res = d.BeginInvoke(fileName, null, null);
+            if (res.IsCompleted == false)
+            {
+                res.AsyncWaitHandle.WaitOne(10000, false);
+                if (res.IsCompleted == false)
+                    throw new TimeoutException("Could not open media file!");
+            }
+            return d.EndInvoke(res);
+        }
+
+        private static MediaInfoContainer DoWorkHandler(string fileName)
         {
             MediaInfoContainer mi = new MediaInfoContainer();
             mi.GetMediaInfo(fileName);

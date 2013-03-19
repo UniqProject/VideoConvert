@@ -209,14 +209,29 @@ namespace VideoConvert.Core.Encoder
         private void GetStreamInfo()
         {
             if (_jobInfo.Input == InputType.InputDvd)
-                _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, false);
+                _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.MediaInfo, _jobInfo.VideoStream, false);
             else
             {
-                _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
-                _jobInfo.VideoStream.Bitrate = _jobInfo.MediaInfo.Video[0].BitRate;
-                _jobInfo.VideoStream.StreamSize = Processing.GetFileSize(_jobInfo.VideoStream.TempFile);
-                _jobInfo.VideoStream.FrameCount = _jobInfo.MediaInfo.Video[0].FrameCount;
-                _jobInfo.VideoStream.StreamId = _jobInfo.MediaInfo.Video[0].ID;
+                try
+                {
+                    _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
+                }
+                catch (TimeoutException ex)
+                {
+                    Log.Error(ex);
+                }
+                finally
+                {
+                    if (_jobInfo.MediaInfo.Video.Count > 0)
+                    {
+                        _jobInfo.VideoStream.Bitrate = _jobInfo.MediaInfo.Video[0].BitRate;
+                        _jobInfo.VideoStream.StreamSize = Processing.GetFileSize(_jobInfo.VideoStream.TempFile);
+                        _jobInfo.VideoStream.FrameCount = _jobInfo.MediaInfo.Video[0].FrameCount;
+                        _jobInfo.VideoStream.StreamId = _jobInfo.MediaInfo.Video[0].ID;
+                    }
+                }
+                
+                
             }
 
             for (int i = 0; i < _jobInfo.AudioStreams.Count; i++)

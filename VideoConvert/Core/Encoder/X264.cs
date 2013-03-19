@@ -392,13 +392,25 @@ namespace VideoConvert.Core.Encoder
                     (encProfile.EncodingMode == 3 && _jobInfo.StreamId == 3) ||
                     (encProfile.EncodingMode < 2 || _jobInfo.StreamId > 3))
                 {
-                    _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
+                    
+
                     _jobInfo.VideoStream.Encoded = true;
                     _jobInfo.VideoStream.IsRawStream = true;
 
                     _jobInfo.TempFiles.Add(_jobInfo.VideoStream.TempFile);
                     _jobInfo.VideoStream.TempFile = outFile;
-                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, _jobInfo.EncodingProfile.OutFormat == OutputType.OutputBluRay);
+
+                    try
+                    {
+                        _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        Log.Error(ex);
+                    }
+                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.MediaInfo, _jobInfo.VideoStream,
+                                                                     _jobInfo.EncodingProfile.OutFormat ==
+                                                                     OutputType.OutputBluRay);
 
                     _jobInfo.TempFiles.Add(Path.Combine(AppSettings.DemuxLocation, "x264_2pass.log"));
                     _jobInfo.TempFiles.Add(Path.Combine(AppSettings.DemuxLocation, "x264_2pass.log.mbtree"));

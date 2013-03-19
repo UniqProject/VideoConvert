@@ -115,8 +115,15 @@ namespace VideoConvert.Core.Encoder
             string inputFile = string.IsNullOrEmpty(_jobInfo.TempInput) ? _jobInfo.InputFile : _jobInfo.TempInput;
 
             _jobInfo.VideoStream.TempFile = inputFile;
-            _jobInfo.MediaInfo = Processing.GetMediaInfo(inputFile);
-
+            try
+            {
+                _jobInfo.MediaInfo = Processing.GetMediaInfo(inputFile);
+            }
+            catch (TimeoutException ex)
+            {
+                Log.Error(ex);
+            }
+            
             StringBuilder sb = new StringBuilder();
 
             sb.AppendFormat("-i \"{0}\" ", inputFile);

@@ -165,7 +165,16 @@ namespace VideoConvert.Windows
 
         private void GetFileInfo()
         {
-            MediaInfoContainer mi = Processing.GetMediaInfo(JobInfo.InputFile);
+            MediaInfoContainer mi = new MediaInfoContainer();
+            try
+            {
+                mi = Processing.GetMediaInfo(JobInfo.InputFile);
+            }
+            catch (TimeoutException ex)
+            {
+                Log.Error(ex);
+            }
+            
             JobInfo.MediaInfo = mi;
 
             string fileTitleFormat = Processing.GetResourceString("streamselect_single_file_general");

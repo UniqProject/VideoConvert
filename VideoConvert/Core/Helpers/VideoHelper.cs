@@ -26,9 +26,8 @@ namespace VideoConvert.Core.Helpers
 {
     class VideoHelper
     {
-        public static VideoInfo GetStreamInfo(VideoInfo vStream, bool bluRayTarget)
+        public static VideoInfo GetStreamInfo(MediaInfoContainer mi, VideoInfo vStream, bool bluRayTarget)
         {
-            MediaInfoContainer mi = Processing.GetMediaInfo(vStream.TempFile);
             if (mi.Video.Count > 0)
             {
                 Single.TryParse(mi.Video[0].DisplayAspectRatio, NumberStyles.Number, AppSettings.CInfo,

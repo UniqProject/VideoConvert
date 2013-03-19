@@ -267,7 +267,17 @@ namespace VideoConvert.Core.Encoder
                         _jobInfo.VideoStream.TempFile = outFile;
                         _jobInfo.TempFiles.Add(_jobInfo.AviSynthScript);
                         _jobInfo.TempFiles.Add(iniFile);
-                        _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.VideoStream, _jobInfo.EncodingProfile.OutFormat == OutputType.OutputBluRay);
+
+                        try
+                        {
+                            _jobInfo.MediaInfo = Processing.GetMediaInfo(_jobInfo.VideoStream.TempFile);
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            Log.Error(ex);
+                        }
+
+                        _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.MediaInfo, _jobInfo.VideoStream, _jobInfo.EncodingProfile.OutFormat == OutputType.OutputBluRay);
                         _jobInfo.TempFiles.Add(Path.Combine(AppSettings.DemuxLocation, "HC01.lls"));
                         _jobInfo.TempFiles.Add(_jobInfo.FfIndexFile);
                     }

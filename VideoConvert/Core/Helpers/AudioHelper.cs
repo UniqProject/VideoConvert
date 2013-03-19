@@ -17,13 +17,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //=============================================================================
 
+using System;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
+using log4net;
 
 namespace VideoConvert.Core.Helpers
 {
     class AudioHelper
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(AudioHelper));
+
         public static bool AudioProcessingNeeded(EncoderProfile aProfile)
         {
             int sampleRate = -1, channelOrder = -1;
@@ -86,7 +90,17 @@ namespace VideoConvert.Core.Helpers
 
         public static AudioInfo GetStreamInfo(AudioInfo aStream)
         {
-            using (MediaInfoContainer mi = Processing.GetMediaInfo(aStream.TempFile))
+            MediaInfoContainer mi = new MediaInfoContainer();
+            try
+            {
+                mi = Processing.GetMediaInfo(aStream.TempFile);
+            }
+            catch (TimeoutException ex)
+            {
+                Log.Error(ex);
+                mi = new MediaInfoContainer();
+            }
+            finally
             {
                 if (mi.Audio.Count > 0)
                 {

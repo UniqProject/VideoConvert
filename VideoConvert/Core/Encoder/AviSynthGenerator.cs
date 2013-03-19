@@ -109,20 +109,33 @@ namespace VideoConvert.Core.Encoder
 
             if (videoInfo.FPS <= 0)
             {
-                MediaInfoContainer mi = Processing.GetMediaInfo(videoInfo.TempFile);
-                if (mi.Video.Count > 0)
+                MediaInfoContainer mi = new MediaInfoContainer();
+                try
                 {
-                    videoInfo.FPS = mi.Video[0].FrameRate;
-                    Processing.GetFPSNumDenom(videoInfo.FPS, out videoInfo.FrameRateEnumerator,
-                                              out videoInfo.FrameRateDenominator);
-
-                    if (videoInfo.FrameRateEnumerator == 0)
+                     mi = Processing.GetMediaInfo(videoInfo.TempFile);
+                }
+                catch (TimeoutException ex)
+                {
+                    Log.Error(ex);
+                    mi = new MediaInfoContainer();
+                }
+                finally
+                {
+                    if (mi.Video.Count > 0)
                     {
-                        videoInfo.FrameRateEnumerator = (int)Math.Round(videoInfo.FPS) * 1000;
-                        videoInfo.FrameRateDenominator =
-                            (int) (Math.Round(Math.Ceiling(videoInfo.FPS) - Math.Floor(videoInfo.FPS)) + 1000);
+                        videoInfo.FPS = mi.Video[0].FrameRate;
+                        Processing.GetFPSNumDenom(videoInfo.FPS, out videoInfo.FrameRateEnumerator,
+                                                  out videoInfo.FrameRateDenominator);
+
+                        if (videoInfo.FrameRateEnumerator == 0)
+                        {
+                            videoInfo.FrameRateEnumerator = (int)Math.Round(videoInfo.FPS) * 1000;
+                            videoInfo.FrameRateDenominator =
+                                (int)(Math.Round(Math.Ceiling(videoInfo.FPS) - Math.Floor(videoInfo.FPS)) + 1000);
+                        }
                     }
                 }
+                
             }
 
             if (videoInfo.FrameRateEnumerator > 0 && videoInfo.FrameRateDenominator > 0)
