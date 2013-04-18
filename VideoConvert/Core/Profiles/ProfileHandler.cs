@@ -96,16 +96,32 @@ namespace VideoConvert.Core.Profiles
             XmlTextReader xmlTextReader = new XmlTextReader(fileName);
             XmlProfiles xmlProfiles = (XmlProfiles)serializer.Deserialize(xmlTextReader);
 
+            
             StreamCopyProfile copyProfile = new StreamCopyProfile();
             importedProfiles.Add(copyProfile);
 
+            xmlProfiles.QuickSelectProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.QuickSelectProfiles);
+
+            xmlProfiles.X264Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.X264Profiles);
+
+            xmlProfiles.HcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.HcEncProfiles);
+
+            xmlProfiles.VP8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.VP8Profiles);
+
+            xmlProfiles.AC3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.AC3Profiles);
+
+            xmlProfiles.OggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.OggProfiles);
+
+            xmlProfiles.MP3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.MP3Profiles);
+
+            xmlProfiles.AACProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.AACProfiles);
             xmlTextReader.Close();
 
@@ -257,22 +273,35 @@ namespace VideoConvert.Core.Profiles
         {
             List<QuickSelectProfile> quickSelectProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.QuickSelect).Cast<QuickSelectProfile>().ToList();
+            quickSelectProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             List<X264Profile> x264Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.X264).Cast<X264Profile>().ToList();
+            x264Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+
             List<HcEncProfile> hcEncProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.HcEnc).Cast<HcEncProfile>().ToList();
+            hcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+
             List<VP8Profile> vp8Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.VP8).Cast<VP8Profile>().ToList();
+            vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             List<AC3Profile> ac3Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.AC3).Cast<AC3Profile>().ToList();
+            ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+
             List<MP3Profile> mp3Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.MP3).Cast<MP3Profile>().ToList();
+            mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+
             List<OggProfile> oggProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.OGG).Cast<OggProfile>().ToList();
+            oggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+
             List<AACProfile> aacProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AACProfile>().ToList();
+            aacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             XmlProfiles profiles = new XmlProfiles
                 {

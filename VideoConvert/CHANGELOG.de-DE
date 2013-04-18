@@ -4,6 +4,7 @@
 - [fix]     Bildratenkonvertierung für 24fps Quelldateien funktioniert wieder korrekt.
 - [fix]     Untertitelvorschau wird nun korrekt dargestellt, selbst wenn die Schrift die gleiche Farbe wie
             Fensterhintergrund hat.
+- [change]  Profile werden nun sortiert angezeigt.
 
 0.21.786.0230
 - [fix]     Ein mögliches Einfrieren der Hintergrundprozesse beim Abschliessen des eac3to Demuxvorgangs
