@@ -19,17 +19,43 @@
 =============================================================================
 -->
 <Window x:Uid="MainForm" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" x:Class="VideoConvert.Windows.MainWindow" mc:Ignorable="d" Title="VideoConvert" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" FontFamily="Verdana" Loaded="WindowLoaded" Icon="/VideoConvert;component/Videos-Library.ico" WindowStyle="SingleBorderWindow" Width="1024" SnapsToDevicePixels="True" VerticalAlignment="Top" SizeToContent="Height" SizeChanged="MainFormSizeChanged" Background="{DynamicResource WindowBackgroundBrush}" d:DesignHeight="390"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" x:Class="VideoConvert.Windows.MainWindow" mc:Ignorable="d" Title="VideoConvert" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" FontFamily="Verdana" Loaded="WindowLoaded" Icon="/VideoConvert;component/Videos-Library.ico" WindowStyle="SingleBorderWindow" Width="1024" SnapsToDevicePixels="True" VerticalAlignment="Top" SizeToContent="Height" SizeChanged="MainFormSizeChanged" d:DesignHeight="422"
         Name="MainForm">
-<Window.TaskbarItemInfo>
-<TaskbarItemInfo x:Uid="TaskbarItemInfo_1" RenderOptions.ClearTypeHint="Enabled" />
-</Window.TaskbarItemInfo>
-<Grid x:Uid="MainGrid" x:Name="MainGrid" SnapsToDevicePixels="True">
-<Image x:Uid="AppVersionLabelBG" Height="50" Name="AppVersionLabelBG" Stretch="Fill" VerticalAlignment="Top" Source="/VideoConvert;component/Resources/blue-bar.png" Margin="-10,0,-10,0" />
-<Label x:Uid="AppVersionLabel" Content="Label" Height="50" Margin="12,0,0,0" x:Name="AppVersionLabel" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Foreground="White" FontStyle="Italic" HorizontalContentAlignment="Left" IsHitTestVisible="False" Padding="12,0,0,0" VerticalContentAlignment="Center" />
-<GroupBox x:Uid="InputFilesGroup" Height="219" Margin="0,56,0,0" x:Name="InputFilesGroup" VerticalAlignment="Top" Header="File List">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Uid="TaskbarItemInfo_1" RenderOptions.ClearTypeHint="Enabled" />
+    </Window.TaskbarItemInfo>
+    <Grid x:Uid="MainGrid" x:Name="MainGrid" SnapsToDevicePixels="True">
+        <Image x:Uid="AppVersionLabelBG" Height="50" Name="AppVersionLabelBG" Stretch="Fill" VerticalAlignment="Top" Source="/VideoConvert;component/Resources/blue-bar.png" Margin="-10,0,-10,0" />
+        <Label x:Uid="AppVersionLabel" Content="Label" Height="50" Margin="12,0,0,0" x:Name="AppVersionLabel" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Foreground="White" FontStyle="Italic" HorizontalContentAlignment="Left" IsHitTestVisible="False" Padding="12,0,0,0" VerticalContentAlignment="Center" />
+        <ToolBarTray x:Uid="MainToolbar" Height="64" Margin="0,50,0,0" Name="MainToolbar" VerticalAlignment="Top" Orientation="Horizontal">
+            <ToolBar x:Uid="ToolBarAddActions" Height="64" Name="ToolBarAddActions" Band="0" VerticalContentAlignment="Center" Width="145" BandIndex="0">
+                <Button x:Uid="AddFilesBtn" Name="AddFilesBtn" Click="AddFilesClick">
+                    <Image x:Uid="AddFilesBtnImage" Source="/VideoConvert;component/Resources/Toolbar-Regular-Movie-icon.png" Name="AddFilesBtnImage" ToolTip="Add File (s)"></Image>
+                </Button>
+                <Button x:Uid="AddFolderBtn" Name="AddFolderBtn" Click="AddFolderClick">
+                    <Image x:Uid="AddFolderBtnImage" Name="AddFolderBtnImage" Source="/VideoConvert;component/Resources/Device-Optical-CD-icon.png" ToolTip="Add Disk"></Image>
+                </Button>
+            </ToolBar>
+            <ToolBar x:Uid="ToolBarRemoveActions" Band="0" Name="ToolBarRemoveActions" Height="64" VerticalContentAlignment="Center" BandIndex="1">
+                <Button x:Uid="RemoveItemBtn" Name="RemoveItemBtn" Click="RemoveEntryClick">
+                    <Image x:Uid="RemoveItemBtnImage" Name="RemoveItemBtnImage" Source="/VideoConvert;component/Resources/document-remove-icon.png" ToolTip="Remove Entry"></Image>
+                </Button>
+                <Button x:Uid="ClearListBtn" Name="ClearListBtn" Click="ClearListClick">
+                    <Image x:Uid="ClearListBtnImage" Name="ClearListBtnImage" Source="/VideoConvert;component/Resources/Actions-edit-clear-list-icon.png" ToolTip="Clear List"></Image>
+                </Button>
+            </ToolBar>
+            <ToolBar x:Uid="ToolBarSettingsActions" Band="0" BandIndex="2" Height="64" Name="ToolBarSettingsActions">
+                <Button x:Uid="RunEncodeBtn" Name="RunEncodeBtn" Click="EncodeBtnClick">
+                    <Image x:Uid="RunEncodeBtnImage" Name="RunEncodeBtnImage" Source="/VideoConvert;component/Resources/Apps-preferences-desktop-launch-feedback-icon.png" ToolTip="Encode"></Image>
+                </Button>
+                <Button x:Uid="ShowSettingsBtn" Name="ShowSettingsBtn" Click="SettingsButtonClick">
+                    <Image x:Uid="ShowSettingsBtnImage" Name="ShowSettingsBtnImage" Source="/VideoConvert;component/Resources/Categories-preferences-other-icon.png" ToolTip="Settings"></Image>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <GroupBox x:Uid="InputFilesGroup" Height="240" Margin="0,118,0,0" x:Name="InputFilesGroup" VerticalAlignment="Top" Header="File List">
 <Grid x:Uid="Grid_1">
-<ListView x:Uid="FileList" Margin="6,6,6,39" x:Name="FileList" BorderThickness="0.5" ItemsSource="{Binding JobCollection}">
+<ListView x:Uid="FileList" Margin="6,6,6,5" x:Name="FileList" BorderThickness="0.5" ItemsSource="{Binding JobCollection}">
 <ListView.View>
 <GridView x:Uid="GridView_1" AllowsColumnReorder="False" RenderOptions.ClearTypeHint="Auto">
 <GridViewColumn x:Uid="GridViewColumn_1" Header="Name" Width="240" DisplayMemberBinding="{Binding JobName}" />
@@ -39,15 +65,9 @@
 </GridView>
 </ListView.View>
 </ListView>
-<Button x:Uid="AddFiles" Content="Add File(s)" HorizontalAlignment="Left" Margin="6,0,0,5" x:Name="AddFiles" Width="230" Click="AddFilesClick" Height="23" VerticalAlignment="Bottom" />
-<Button x:Uid="AddFolder" Content="Add Disk" Height="23" HorizontalAlignment="Left" Margin="242,0,0,5" x:Name="AddFolder" VerticalAlignment="Bottom" Width="230" Click="AddFolderClick" />
-<Button x:Uid="RemoveEntry" Content="Remove" Height="23" Margin="0,0,242,5" x:Name="RemoveEntry" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="230" Click="RemoveEntryClick" />
-<Button x:Uid="ClearList" Content="Clear" Height="23" HorizontalAlignment="Right" Margin="0,0,6,5" x:Name="ClearList" VerticalAlignment="Bottom" Width="230" Click="ClearListClick" />
-</Grid>
+            </Grid>
 </GroupBox>
-<Button x:Uid="EncodeBtn" Content="Encode" Height="23" HorizontalAlignment="Left" Margin="662,285,0,0" x:Name="EncodeBtn" VerticalAlignment="Top" Width="154" Click="EncodeBtnClick" IsEnabled="{Binding HasItems, ElementName=FileList, Mode=OneWay}" />
-<Button x:Uid="SettingsButton" Content="Settings" Height="23" HorizontalAlignment="Left" Margin="836,285,0,0" x:Name="SettingsButton" VerticalAlignment="Top" Width="154" Click="SettingsButtonClick" />
-<StatusBar x:Uid="AppStatus" HorizontalAlignment="Stretch" Margin="0" Name="AppStatus" Height="23" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#20FFFFFF">
+        <StatusBar x:Uid="AppStatus" HorizontalAlignment="Stretch" Margin="0" Name="AppStatus" Height="23" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#20FFFFFF">
 <StatusBarItem x:Uid="StatusItemHeader" Name="StatusItemHeader">
 <StatusBarItem.Content>
 <Label x:Uid="Label_1" Padding="0">
@@ -59,7 +79,6 @@
 </StatusBarItem.Content>
 </StatusBarItem>
 </StatusBar>
-<Grid x:Uid="ViewControl" HorizontalAlignment="Center" Margin="0,312,0,32" Name="ViewControl" Width="1002" MinHeight="5" SizeChanged="ViewControlSizeChanged" />
-       
+<Grid x:Uid="ViewControl" HorizontalAlignment="Center" Margin="0,364,0,12" Name="ViewControl" Width="1002" MinHeight="5" SizeChanged="ViewControlSizeChanged" />
     </Grid>
 </Window>

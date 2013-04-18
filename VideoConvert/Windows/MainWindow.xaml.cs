@@ -532,11 +532,11 @@ namespace VideoConvert.Windows
 
             bool enable = ViewControl.Children.Count > 0;
 
-            SettingsButton.IsEnabled = !enable;
-            AddFiles.IsEnabled = !enable;
-            AddFolder.IsEnabled = !enable;
-            RemoveEntry.IsEnabled = !enable;
-            ClearList.IsEnabled = !enable;
+            ShowSettingsBtn.IsEnabled = !enable;
+            AddFilesBtn.IsEnabled = !enable;
+            AddFolderBtn.IsEnabled = !enable;
+            RemoveItemBtn.IsEnabled = !enable;
+            ClearListBtn.IsEnabled = !enable;
         }
 
         private void UpdateEncodeButton()
@@ -544,10 +544,10 @@ namespace VideoConvert.Windows
             if (!IsLoaded) return;
 
             if (ViewControl.Children.Count > 0)
-                EncodeBtn.IsEnabled = false;
+                RunEncodeBtn.IsEnabled = false;
             else
             {
-                EncodeBtn.IsEnabled = _jobCollection.Count > 0;
+                RunEncodeBtn.IsEnabled = _jobCollection.Count > 0;
             }
         }
 
