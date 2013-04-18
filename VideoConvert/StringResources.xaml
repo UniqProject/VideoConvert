@@ -101,4 +101,5 @@
     <system:String x:Uid="theora_pass"                          x:Key="theora_pass">pass</system:String>
     <system:String x:Uid="theora_encoding_status"               x:Key="theora_encoding_status">Encoding videostream</system:String>
     <system:String x:Uid="theora_encoding_progress"             x:Key="theora_encoding_progress">Encoding videostream - {2} elapsed: {0:T}; ETA: {1:T}</system:String>
+    <system:String x:Uid="total_progress_time"                  x:Key="total_progress_time">Time elapsed: {0:T} / ETA: {1:T}</system:String>
 </ResourceDictionary>

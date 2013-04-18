@@ -343,6 +343,7 @@ VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_muxing_webm_status:
 VideoConvert.g.en-US.resources:stringresources.baml,theora_pass:System.String.$Content,None,True,True,,pass
 VideoConvert.g.en-US.resources:stringresources.baml,theora_encoding_status:System.String.$Content,None,True,True,,Encoding videostream
 VideoConvert.g.en-US.resources:stringresources.baml,theora_encoding_progress:System.String.$Content,None,True,True,,Encoding videostream - {2} elapsed: {0:T}\; ETA: {1:T}
+VideoConvert.g.en-US.resources:stringresources.baml,total_progress_time:System.String.$Content,None,True,True,,Time elapsed: {0:T} / ETA: {1:T}
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,UserControl_1:VideoConvert.Windows.ToolUpdaterWindow.$Content,None,True,True,,#Grid_1;
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,ToolUpdaterExpander:System.Windows.Controls.Expander.$Content,None,False,True,,#Grid_2;
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,ToolUpdaterExpander:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoder Update
@@ -3126,6 +3127,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSwitcherPreview:Sy
 VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSwitcherPreview:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSwitcherPreview:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
 VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSwitcherPreview:System.Windows.Controls.ContentControl.ContentStringFormat,Label,True,True,,0
+VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSwitcherPreview:System.Windows.Controls.Control.Background,None,False,True,,\#FF0078FF
 VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSizeLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSizeLabel:System.Windows.Controls.ContentControl.Content,Label,True,True,,Size
 VideoConvert.g.en-US.resources:settingswindow.baml,tsMuxeRFontSizeLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
@@ -3276,13 +3278,57 @@ VideoConvert.g.en-US.resources:mainwindow.baml,AppVersionLabel:System.Windows.Co
 VideoConvert.g.en-US.resources:mainwindow.baml,AppVersionLabel:System.Windows.UIElement.IsHitTestVisible,None,False,True,,False
 VideoConvert.g.en-US.resources:mainwindow.baml,AppVersionLabel:System.Windows.Controls.Control.Padding,None,False,True,,"12,0,0,0"
 VideoConvert.g.en-US.resources:mainwindow.baml,AppVersionLabel:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:mainwindow.baml,MainToolbar:System.Windows.Controls.ToolBarTray.$Content,None,True,True,,#ToolBarAddActions;#ToolBarRemoveActions;#ToolBarSettingsActions;
+VideoConvert.g.en-US.resources:mainwindow.baml,MainToolbar:System.Windows.FrameworkElement.Height,None,False,True,,64
+VideoConvert.g.en-US.resources:mainwindow.baml,MainToolbar:System.Windows.FrameworkElement.Margin,None,False,True,,"0,50,0,0"
+VideoConvert.g.en-US.resources:mainwindow.baml,MainToolbar:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:mainwindow.baml,MainToolbar:System.Windows.Controls.ToolBarTray.Orientation,None,False,True,,Horizontal
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.ToolBar.$Content,Menu,True,True,,#AddFilesBtn;#AddFolderBtn;
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.FrameworkElement.Height,None,False,True,,64
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.ToolBar.Band,None,False,True,,0
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.FrameworkElement.Width,None,False,True,,145
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.ToolBar.BandIndex,None,False,True,,0
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#AddFilesBtnImage;
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Toolbar-Regular-Movie-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Add File (s)
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#AddFolderBtnImage;
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Device-Optical-CD-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Add Disk
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.ToolBar.$Content,Menu,True,True,,#RemoveItemBtn;#ClearListBtn;
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.ToolBar.Band,None,False,True,,0
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.FrameworkElement.Height,None,False,True,,64
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.ToolBar.BandIndex,None,False,True,,1
+VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#RemoveItemBtnImage;
+VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
+VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/document-remove-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Remove Entry
+VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#ClearListBtnImage;
+VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
+VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Actions-edit-clear-list-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Clear List
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.ToolBar.$Content,Menu,True,True,,#RunEncodeBtn;#ShowSettingsBtn;
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.ToolBar.Band,None,False,True,,0
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.ToolBar.BandIndex,None,False,True,,2
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.FrameworkElement.Height,None,False,True,,64
+VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#RunEncodeBtnImage;
+VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
+VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Apps-preferences-desktop-launch-feedback-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Encode
+VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#ShowSettingsBtnImage;
+VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
+VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Categories-preferences-other-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Settings
 VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_1;
-VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.FrameworkElement.Height,None,False,True,,219
-VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.FrameworkElement.Margin,None,False,True,,"0,56,0,0"
+VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.FrameworkElement.Height,None,False,True,,240
+VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.FrameworkElement.Margin,None,False,True,,"0,118,0,0"
 VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,File List
 VideoConvert.g.en-US.resources:mainwindow.baml,FileList:System.Windows.Controls.ListView.$Content,ListBox,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,FileList:System.Windows.FrameworkElement.Margin,None,False,True,,"6,6,6,39"
+VideoConvert.g.en-US.resources:mainwindow.baml,FileList:System.Windows.FrameworkElement.Margin,None,False,True,,"6,6,6,5"
 VideoConvert.g.en-US.resources:mainwindow.baml,FileList:System.Windows.Controls.Control.BorderThickness,None,False,True,,0.5
 VideoConvert.g.en-US.resources:mainwindow.baml,GridView_1:System.Windows.Controls.GridView.$Content,ListBox,True,True,,#GridViewColumn_1;#GridViewColumn_2;#GridViewColumn_3;#GridViewColumn_4;
 VideoConvert.g.en-US.resources:mainwindow.baml,GridView_1:System.Windows.Controls.GridView.AllowsColumnReorder,None,False,True,,False
@@ -3299,48 +3345,6 @@ VideoConvert.g.en-US.resources:mainwindow.baml,GridViewColumn_3:System.Windows.C
 VideoConvert.g.en-US.resources:mainwindow.baml,GridViewColumn_4:System.Windows.Controls.GridViewColumn.$Content,None,False,True,,
 VideoConvert.g.en-US.resources:mainwindow.baml,GridViewColumn_4:System.Windows.Controls.GridViewColumn.Header,Label,True,True,,Output format
 VideoConvert.g.en-US.resources:mainwindow.baml,GridViewColumn_4:System.Windows.Controls.GridViewColumn.Width,None,False,True,,135
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.Controls.Button.$Content,Button,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.Controls.ContentControl.Content,Button,True,True,,Add File(s)
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.FrameworkElement.Margin,None,False,True,,"6,0,0,5"
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.FrameworkElement.Width,None,False,True,,230
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.FrameworkElement.Height,None,False,True,,23
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFiles:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.Controls.Button.$Content,Button,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.Controls.ContentControl.Content,Button,True,True,,Add Disk
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.FrameworkElement.Height,None,False,True,,23
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.FrameworkElement.Margin,None,False,True,,"242,0,0,5"
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolder:System.Windows.FrameworkElement.Width,None,False,True,,230
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.Controls.Button.$Content,Button,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.Controls.ContentControl.Content,Button,True,True,,Remove
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.FrameworkElement.Height,None,False,True,,23
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.FrameworkElement.Margin,None,False,True,,"0,0,242,5"
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Right
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveEntry:System.Windows.FrameworkElement.Width,None,False,True,,230
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.Controls.Button.$Content,Button,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.Controls.ContentControl.Content,Button,True,True,,Clear
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.FrameworkElement.Height,None,False,True,,23
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Right
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.FrameworkElement.Margin,None,False,True,,"0,0,6,5"
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearList:System.Windows.FrameworkElement.Width,None,False,True,,230
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.Controls.Button.$Content,Button,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.Controls.ContentControl.Content,Button,True,True,,Encode
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.FrameworkElement.Height,None,False,True,,23
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.FrameworkElement.Margin,None,False,True,,"662,285,0,0"
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
-VideoConvert.g.en-US.resources:mainwindow.baml,EncodeBtn:System.Windows.FrameworkElement.Width,None,False,True,,154
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.Controls.Button.$Content,Button,True,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.Controls.ContentControl.Content,Button,True,True,,Settings
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.FrameworkElement.Height,None,False,True,,23
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.FrameworkElement.Margin,None,False,True,,"836,285,0,0"
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
-VideoConvert.g.en-US.resources:mainwindow.baml,SettingsButton:System.Windows.FrameworkElement.Width,None,False,True,,154
 VideoConvert.g.en-US.resources:mainwindow.baml,AppStatus:System.Windows.Controls.Primitives.StatusBar.$Content,None,False,True,,#StatusItemHeader;
 VideoConvert.g.en-US.resources:mainwindow.baml,AppStatus:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Stretch
 VideoConvert.g.en-US.resources:mainwindow.baml,AppStatus:System.Windows.FrameworkElement.Margin,None,False,True,,0
@@ -3355,7 +3359,7 @@ VideoConvert.g.en-US.resources:mainwindow.baml,Label_1:System.Windows.Controls.C
 VideoConvert.g.en-US.resources:mainwindow.baml,StatusItemLink:System.Windows.Documents.TextElement.Foreground,None,False,True,,\#FF000000
 VideoConvert.g.en-US.resources:mainwindow.baml,StatusItem:System.Windows.Controls.TextBlock.$Content,Text,True,True,,
 VideoConvert.g.en-US.resources:mainwindow.baml,ViewControl:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Center
-VideoConvert.g.en-US.resources:mainwindow.baml,ViewControl:System.Windows.FrameworkElement.Margin,None,False,True,,"0,312,0,32"
+VideoConvert.g.en-US.resources:mainwindow.baml,ViewControl:System.Windows.FrameworkElement.Margin,None,False,True,,"0,364,0,12"
 VideoConvert.g.en-US.resources:mainwindow.baml,ViewControl:System.Windows.FrameworkElement.Width,None,False,True,,1002
 VideoConvert.g.en-US.resources:mainwindow.baml,ViewControl:System.Windows.FrameworkElement.MinHeight,None,False,True,,5
 VideoConvert.g.en-US.resources:x264advancedsettings.baml,Window_1:VideoConvert.Windows.X264AdvancedSettings.$Content,None,True,True,,#Grid_1;
