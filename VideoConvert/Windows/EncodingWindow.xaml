@@ -48,6 +48,7 @@
                         <ProgressBar x:Uid="ActualProgress" Height="20" Margin="6,30,6,0" Name="ActualProgress" VerticalAlignment="Top" />
                         <Label x:Uid="TotalStatus" Content="Total" Height="18" HorizontalAlignment="Left" Margin="6,56,0,0" Name="TotalStatus" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                         <ProgressBar x:Uid="TotalProgress" Height="20" Margin="6,80,6,0" Name="TotalProgress" VerticalAlignment="Top"/>
+                        <Label x:Uid="TotalTime" Content="" Height="18" HorizontalAlignment="Right" Margin="0,56,6,0" Name="TotalTime" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                     </Grid>
                 </GroupBox>
             </Grid>

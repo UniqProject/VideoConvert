@@ -57,6 +57,10 @@ namespace VideoConvert.Windows
 
         public ObservableCollection<LogEntry> LogEntries { get { return _logEntries; } }
 
+        private DateTime _startTime = DateTime.MinValue;
+        private string status = Processing.GetResourceString("total_progress_time");
+        private DateTime _updateTime = DateTime.MinValue;
+
         public EncodingWindow()
         {
             InitializeComponent();
@@ -98,6 +102,7 @@ namespace VideoConvert.Windows
         void StartTimerTick(object sender, EventArgs e)
         {
             ((DispatcherTimer) sender).Stop();
+            _startTime = DateTime.Now;
 
             foreach (EncodeInfo job in JobList)
             {
@@ -123,6 +128,28 @@ namespace VideoConvert.Windows
 
                 TotalProgress.Value = _actualProcessStep + (ActualProgress.Value / 100D);
                 TaskBar.ProgressValue = TotalProgress.Value / TotalProgress.Maximum;
+
+                DateTime now = DateTime.Now;
+
+                if (_updateTime.AddSeconds(1).CompareTo(now) <= 0)
+                {
+                    DateTime processingTime = DateTime.MinValue.Add(DateTime.Now.Subtract(_startTime));
+
+                    double progressTime = 0;
+                    if (TotalProgress.Value > 0)
+                        progressTime = processingTime.TimeOfDay.TotalSeconds/TotalProgress.Value;
+                    
+
+                    double progressRemain = TotalProgress.Maximum - TotalProgress.Value;
+
+                    if (progressRemain < 0)
+                        progressRemain = 0;
+
+                    DateTime remainTime = DateTime.MinValue.Add(TimeSpan.FromSeconds(progressTime*progressRemain));
+                    TotalTime.Content = string.Format(status, processingTime, remainTime);
+
+                    _updateTime = now;
+                }
             }
             else if (e.ProgressPercentage >= -1)
                 ActualProgress.IsIndeterminate = true;
