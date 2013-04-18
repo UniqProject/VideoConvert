@@ -323,10 +323,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\wpfthemes\WPF.Themes\WPF.Themes.csproj">
-      <Project>{CD3CD636-D63E-4BD5-9FE9-2B63DA6F0616}</Project>
-      <Name>WPF.Themes</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\VideoConvertLibraries\BDInfo\BDInfo\BDInfo.csproj">
       <Project>{3209AF1D-4762-4960-9DE5-13E90E77EE96}</Project>
       <Name>BDInfo</Name>
@@ -383,6 +379,7 @@
     <Resource Include="Resources\x264_fire.gif" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Images\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
@@ -511,6 +508,12 @@
     </Content>
     <Content Include="profiles.xml" />
     <Resource Include="Resources\blue-bar.png" />
+    <Resource Include="Resources\Toolbar-Regular-Movie-icon.png" />
+    <Resource Include="Resources\Device-Optical-CD-icon.png" />
+    <Resource Include="Resources\document-remove-icon.png" />
+    <Resource Include="Resources\Actions-edit-clear-list-icon.png" />
+    <Resource Include="Resources\Categories-preferences-other-icon.png" />
+    <Resource Include="Resources\Apps-preferences-desktop-launch-feedback-icon.png" />
     <Content Include="WriteChangeLog.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -522,7 +525,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" />
+      <UserProperties BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

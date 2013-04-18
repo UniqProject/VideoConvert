@@ -24,7 +24,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cbt="clr-namespace:CheckBoxTreeViewLibrary;assembly=CheckBoxTreeViewLibrary"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Select streams" Height="496" Width="1024" WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Name="StreamSelectWindow" Loaded="WindowLoaded" Background="{DynamicResource WindowBackgroundBrush}">
+        Title="Select streams" Height="496" Width="1024" WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Name="StreamSelectWindow" Loaded="WindowLoaded">
     <Window.Resources>
         <Style x:Uid="Style_1" x:Key="TreeViewItemFocusVisual">
             <Setter x:Uid="Setter_1" Property="Control.Template">

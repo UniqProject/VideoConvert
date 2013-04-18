@@ -32,8 +32,7 @@
         Width="628" 
         WindowStyle="ToolWindow" 
         WindowStartupLocation="CenterOwner" 
-        FontSize="12" ResizeMode="NoResize" Loaded="WindowLoaded"
-        Background="{DynamicResource WindowBackgroundBrush}">
+        FontSize="12" ResizeMode="NoResize" Loaded="WindowLoaded">
     <Grid x:Uid="Grid_1">
         <Image x:Uid="x264Logo" Height="84" Margin="0" x:Name="x264Logo" Stretch="Fill" VerticalAlignment="Top" Source="/VideoConvert;component/Resources/x264_fire.gif" />
         <TabControl x:Uid="tabControl1" Margin="0,84,0,40" x:Name="tabControl1" >

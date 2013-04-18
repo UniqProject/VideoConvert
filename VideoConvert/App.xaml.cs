@@ -32,7 +32,6 @@ using log4net.Filter;
 using log4net.Layout;
 using System.Windows.Media;
 using System.Windows.Interop;
-using WPF.Themes;
 
 namespace VideoConvert
 {
@@ -56,8 +55,6 @@ namespace VideoConvert
                 AppSettings.FirstStart = savedFirstStart;
 // ReSharper restore ConditionIsAlwaysTrueOrFalse
             }
-
-            this.ApplyTheme("ExpressionDark");
 
             ReconfigureLogger();
             ReconfigureLanguage(AppSettings.UseLanguage);
