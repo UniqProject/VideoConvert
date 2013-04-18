@@ -470,6 +470,12 @@
     <Content Include="AvsPlugins\nnedi3.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="AvsPlugins\QTSource.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AvsPlugins\QTSource_usage.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="AvsPlugins\RemoveGrainSSE2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
