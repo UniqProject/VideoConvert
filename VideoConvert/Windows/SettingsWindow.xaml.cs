@@ -1446,5 +1446,17 @@ namespace VideoConvert.Windows
                     break;
             }
         }
+
+        private void tsMuxeRFontColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+        {
+            SolidColorBrush cValue = new SolidColorBrush(e.NewValue);
+            SolidColorBrush bValue = tsMuxeRFontSwitcherPreview.Background as SolidColorBrush;
+            if (bValue != null && Color.AreClose(bValue.Color, cValue.Color))
+                tsMuxeRFontSwitcherPreview.Background =
+                    new SolidColorBrush(Color.FromArgb(e.NewValue.A, (byte) ~e.NewValue.R, (byte) ~e.NewValue.G,
+                                                       (byte) ~e.NewValue.B));
+            else
+                tsMuxeRFontSwitcherPreview.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x78, 0xFF));
+        }
     }
 }
