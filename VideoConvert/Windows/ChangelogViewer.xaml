@@ -22,8 +22,7 @@
 <Window x:Uid="Window_1" x:Class="VideoConvert.Windows.ChangelogViewer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ChangeLog" Height="643" Width="1055" Loaded="WindowLoaded" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" FontFamily="Verdana"
-        Background="{DynamicResource WindowBackgroundBrush}" ShowInTaskbar="False" ResizeMode="NoResize">
+        Title="ChangeLog" Height="643" Width="1055" Loaded="WindowLoaded" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" FontFamily="Verdana" ShowInTaskbar="False" ResizeMode="NoResize">
     <Grid x:Uid="Grid_1">
         <TextBox x:Uid="ChangeLogText" Margin="12,12,12,49" Name="ChangeLogText" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Courier New" FontSize="14" />
         <Button x:Uid="OkBtn" Content="OK" Height="23" Margin="480,0,480,12" Name="OkBtn" VerticalAlignment="Bottom" Click="OkBtnClick" />
