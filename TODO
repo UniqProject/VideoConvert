@@ -1,0 +1,8 @@
+TO-DO List:
+
+- implement mp4 video encoder (such as xvid)
+- improve code readability (comments etc.)
+- review usability
+- avisynth script editor / profiles
+- improve video bitrate calculation
+- review framerate conversion for dvd output
