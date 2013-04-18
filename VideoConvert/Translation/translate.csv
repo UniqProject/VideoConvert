@@ -4896,6 +4896,14 @@ VideoConvert.g.en-US.resources:encodingwindow.baml,TotalProgress:System.Windows.
 VideoConvert.g.en-US.resources:encodingwindow.baml,TotalProgress:System.Windows.FrameworkElement.Height,None,False,True,,20
 VideoConvert.g.en-US.resources:encodingwindow.baml,TotalProgress:System.Windows.FrameworkElement.Margin,None,False,True,,"6,80,6,0"
 VideoConvert.g.en-US.resources:encodingwindow.baml,TotalProgress:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.Controls.Label.$Content,Label,True,True,,
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.Controls.ContentControl.Content,Label,True,True,,
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.FrameworkElement.Height,None,False,True,,18
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Right
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.FrameworkElement.Margin,None,False,True,,"0,56,6,0"
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.Controls.Control.Padding,None,False,True,,0
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:encodingwindow.baml,TotalTime:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:encodingwindow.baml,AbortBtn:System.Windows.Controls.Button.$Content,Button,True,True,,
 VideoConvert.g.en-US.resources:encodingwindow.baml,AbortBtn:System.Windows.Controls.ContentControl.Content,Button,True,True,,Cancel
 VideoConvert.g.en-US.resources:encodingwindow.baml,AbortBtn:System.Windows.FrameworkElement.Height,None,False,True,,23

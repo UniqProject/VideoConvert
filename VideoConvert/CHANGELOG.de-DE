@@ -1,4 +1,12 @@
-﻿- [fix]     Ein mögliches Einfrieren der Hintergrundprozesse beim Abschliessen des eac3to Demuxvorgangs
+﻿- [change]  Benutze Standard fensterdesign anstatt des früher mitgelieferten.
+- [change]  Hauptfenster der Anwendung neu gestaltet.
+- [new]     Restlaufzeit des Kodierprozesses wird nun im Fortschrittsfenster angezeigt.
+- [fix]     Bildratenkonvertierung für 24fps Quelldateien funktioniert wieder korrekt.
+- [fix]     Untertitelvorschau wird nun korrekt dargestellt, selbst wenn die Schrift die gleiche Farbe wie
+            Fensterhintergrund hat.
+
+0.21.786.0230
+- [fix]     Ein mögliches Einfrieren der Hintergrundprozesse beim Abschliessen des eac3to Demuxvorgangs
             wurde behoben.
 - [fix]     Manche Dateien konnten nicht richtig gemuxed werden, wenn der Videostream kopiert werden sollte,
             dies wurde nun behoben.

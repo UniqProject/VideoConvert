@@ -1,4 +1,11 @@
-﻿- [fix]     An possible lockup of background threads while finalizing the eac3to demux process is fixed.
+﻿- [change]  Use default theme instead of shipped wpf theme
+- [change]  redesign of main window
+- [new]     added ETA timer for total progress to encoding window
+- [fix]     fix framerate conversion for 24fps sources
+- [fix]     subtitle preview in the settings is now visible, if using same font color as window background.
+
+0.21.786.0230
+- [fix]     An possible lockup of background threads while finalizing the eac3to demux process is fixed.
 - [fix]     Some files weren't muxed correctly if video stream should be copied. This is fixed now.
 
 0.21.779.1921
