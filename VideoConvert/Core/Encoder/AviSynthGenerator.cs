@@ -418,7 +418,7 @@ namespace VideoConvert.Core.Encoder
 
                 Processing.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
 
-                if (videoInfo.FrameRateEnumerator == 24000 && videoInfo.FrameRateDenominator == 1001)
+                if (videoInfo.FrameRateEnumerator == 24000 && (videoInfo.FrameRateDenominator == 1001 || videoInfo.FrameRateDenominator == 1000))
                 {
                     if (fpsnum == 30000 && fpsden == 1001)
                     {
