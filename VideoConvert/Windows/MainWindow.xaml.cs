@@ -24,12 +24,12 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
+using UpdateCore;
 using VideoConvert.Core;
 using log4net;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Net;
-using System.Xml;
 
 namespace VideoConvert.Windows
 {
@@ -183,175 +183,87 @@ namespace VideoConvert.Windows
                 Processing.GetAviSynthPluginsVer();
 
                 WebClient downloader = new WebClient {UseDefaultCredentials = true};
-                string versionFile = string.Empty;
+                Stream onlineUpdateFile;
                 try
                 {
-                    versionFile = downloader.DownloadString(new Uri("http://www.jt-soft.de/videoconvert/update.xml"));
+                    onlineUpdateFile = downloader.OpenRead(new Uri("http://www.jt-soft.de/videoconvert/updatefile.xml"));
                 }
-                catch (Exception exception)
+                catch (WebException exception)
                 {
                     Log.Error(exception);
+                    e.Result = false;
+                    return;
                 }
-                if (string.IsNullOrEmpty(versionFile))
+
+                if (onlineUpdateFile == null)
                 {
                     e.Result = false;
                     return;
                 }
 
-                XmlDocument verFile = new XmlDocument();
-                verFile.LoadXml(versionFile);
-
-                // small check if we have the right structure
-                if (verFile.SelectSingleNode("/videoconvert_updatefile") != null)      
+                using (UpdateFileInfo updateFile = Updater.LoadUpdateFileFromStream(onlineUpdateFile))
                 {
-                    XmlNode appVersion = verFile.SelectSingleNode("//videoconvert");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                        {
-                            XmlAttribute verAttrib = appVersion.Attributes["version"];
+                    if (updateFile.Core.PackageVersion.CompareTo(AppSettings.GetAppVersion()) > 0)
+                        needUpdate = true;
 
-                            Version verOnline = new Version(verAttrib.Value);
-                            if (verOnline.CompareTo(AppSettings.GetAppVersion()) > 0)
-                                needUpdate = true;
+                    if (updateFile.Updater.PackageVersion.CompareTo(AppSettings.UpdaterVersion) > 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//uac_updater");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            verOnline = new Version(verAttrib.Value);
-                            if (verOnline.CompareTo(AppSettings.UpdaterVersion) > 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.AviSynthPlugins.PackageVersion, AppSettings.LastAviSynthPluginsVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//avisynth_plugins");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastAviSynthPluginsVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.Profiles.PackageVersion, AppSettings.LastProfilesVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//profiles");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null)
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastProfilesVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.X264.PackageVersion, AppSettings.Lastx264Ver) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//x264");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx264Ver) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.X26464.PackageVersion, AppSettings.Lastx26464Ver) != 0 &&
+                        Environment.Is64BitOperatingSystem)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//x264_64");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null)
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0 &&
-                                Environment.Is64BitOperatingSystem)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.FFMPEG.PackageVersion, AppSettings.LastffmpegVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//ffmpeg");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastffmpegVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.Eac3To.PackageVersion, AppSettings.Lasteac3ToVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//eac3to");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lasteac3ToVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.LsDvd.PackageVersion, AppSettings.LastlsdvdVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//lsdvd");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastlsdvdVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.MKVToolnix.PackageVersion, AppSettings.LastMKVMergeVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//mkv_toolnix");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMKVMergeVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.Mplayer.PackageVersion, AppSettings.LastMplayerVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//mplayer");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMplayerVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.TSMuxeR.PackageVersion, AppSettings.LastTSMuxerVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//tsmuxer");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastTSMuxerVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.MjpegTools.PackageVersion, AppSettings.LastMJPEGToolsVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//mjpegtools");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMJPEGToolsVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.DVDAuthor.PackageVersion, AppSettings.LastDVDAuthorVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//dvdauthor");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastDVDAuthorVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.MP4Box.PackageVersion, AppSettings.LastMp4BoxVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//mp4box");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMp4BoxVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.HcEnc.PackageVersion, AppSettings.LastHcEncVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//hcenc");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastHcEncVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.OggEnc.PackageVersion, AppSettings.LastOggEncVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//oggenc");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null)
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastOggEncVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.Lame.PackageVersion, AppSettings.LastLameVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//lame");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null)
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastLameVer) != 0)
-                                needUpdate = true;
+                    if (String.CompareOrdinal(updateFile.VpxEnc.PackageVersion, AppSettings.LastVpxEncVer) != 0)
+                        needUpdate = true;
 
-                            appVersion = verFile.SelectSingleNode("//vpxenc");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null)
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastVpxEncVer) != 0)
-                                needUpdate = true;
-
-                            appVersion = verFile.SelectSingleNode("//bdsup2sub");
-                            if (appVersion != null)
-                                if (appVersion.Attributes != null) 
-                                    verAttrib = appVersion.Attributes["version"];
-                            if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastBDSup2SubVer) != 0 &&
-                                AppSettings.JavaInstalled)
-                                needUpdate = true;
-                        }
-                    }
+                    if (String.CompareOrdinal(updateFile.BDSup2Sub.PackageVersion, AppSettings.LastBDSup2SubVer) != 0 &&
+                        AppSettings.JavaInstalled)
+                        needUpdate = true;
                 }
             }
 

@@ -1,4 +1,8 @@
-﻿- [change]  Use default theme instead of shipped wpf theme
+﻿- [change]  Button icons changed.
+- [change]  Improved update process.
+
+0.21.826.2057
+- [change]  Use default theme instead of shipped wpf theme
 - [change]  redesign of main window
 - [new]     added ETA timer for total progress to encoding window
 - [fix]     fix framerate conversion for 24fps sources

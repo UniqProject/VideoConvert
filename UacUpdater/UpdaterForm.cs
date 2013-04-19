@@ -116,6 +116,32 @@ namespace UacUpdater
             {
                 if (!Directory.Exists(pInfo.Destination))
                     Directory.CreateDirectory(pInfo.Destination);
+                else
+                {
+                    if (pInfo.ClearDirectory || pInfo.RecursiveClearDirectory)
+                        bwWorker.ReportProgress(-5, "Cleaning up target folder");
+                    List<string> fileEntries = new List<string>();
+                    List<string> dirEntries = new List<string>();
+                    if (pInfo.ClearDirectory)
+                    {
+                        fileEntries = Directory.GetFiles(pInfo.Destination, "*", SearchOption.TopDirectoryOnly).ToList();
+                    }
+                    else if (pInfo.RecursiveClearDirectory)
+                    {
+                        fileEntries = Directory.GetFiles(pInfo.Destination, "*", SearchOption.AllDirectories).ToList();
+                        dirEntries =
+                            Directory.GetDirectories(pInfo.Destination, "*", SearchOption.AllDirectories).ToList();
+                    }
+                    foreach (string fileEntry in fileEntries)
+                    {
+                        File.Delete(fileEntry);
+                    }
+                    foreach (string dirEntry in dirEntries)
+                    {
+                        Directory.Delete(dirEntry);
+                    }
+                    
+                }
                 bwWorker.ReportProgress(-5, "Updating Package " + pInfo.PackageName + " Version " + pInfo.Version);
                 using (ZipFile zFile = new ZipFile(pInfo.PackageLocation))
                 {

@@ -17,25 +17,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //=============================================================================
 
-using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Windows.Controls;
-using System.ComponentModel;
-using System.Net;
-using System.Xml;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.IO;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
-using ICSharpCode.SharpZipLib.Zip;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using ICSharpCode.SharpZipLib.Zip;
+using log4net;
+using UpdateCore;
 using VideoConvert.Core;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
-using log4net;
-using UpdateCore;
-using System.Linq;
 
 namespace VideoConvert.Windows
 {
@@ -82,386 +81,276 @@ namespace VideoConvert.Windows
         {
             const string serverPath = "http://www.jt-soft.de/videoconvert/";
             const string serverPathTools = "http://www.jt-soft.de/videoconvert/tools/";
+            string tempPath = AppSettings.TempPath;
 
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                WebClient downloader = new WebClient {UseDefaultCredentials = true};
-                string versionFile = downloader.DownloadString(new Uri("http://www.jt-soft.de/videoconvert/update.xml"));
-
-                XmlDocument verFile = new XmlDocument();
-                verFile.LoadXml(versionFile);
-
-                XmlAttribute verAttrib = verFile.CreateAttribute("version");
-                string tempPath = AppSettings.TempPath;
-
-                if (verFile.SelectSingleNode("/videoconvert_updatefile") != null)      // small check if we have the right structure
+                WebClient downloader = new WebClient { UseDefaultCredentials = true };
+                Stream onlineUpdateFile;
+                try
                 {
-                    Version verOnline;
-                    XmlNode appVersion = verFile.SelectSingleNode("//videoconvert");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        verOnline = new Version(verAttrib.Value);
-                        if (verOnline.CompareTo(AppSettings.GetAppVersion()) > 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "Core",
-                                                            LocalVersion = AppSettings.GetAppVersion().ToString(4),
-                                                            ServerVersion = verOnline.ToString(4),
-                                                            FileName =
-                                                                Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPath + appVersion.InnerText,
-                                                            DownloadType = AppType.MainApp,
-                                                            Destination = AppSettings.AppPath
-                                                        });
-                    }
+                    onlineUpdateFile = downloader.OpenRead(new Uri("http://www.jt-soft.de/videoconvert/updatefile.xml"));
+                }
+                catch (WebException exception)
+                {
+                    Log.Error(exception);
+                    e.Result = false;
+                    return;
+                }
 
-                    appVersion = verFile.SelectSingleNode("//uac_updater");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        verOnline = new Version(verAttrib.Value);
-                        if (verOnline.CompareTo(AppSettings.UpdaterVersion) > 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "Updater (UAC Compatible)",
-                                                            LocalVersion = AppSettings.UpdaterVersion.ToString(4),
-                                                            ServerVersion = verOnline.ToString(4),
-                                                            FileName =
-                                                                Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPath + appVersion.InnerText,
-                                                            DownloadType = AppType.Updater,
-                                                            Destination = AppSettings.UpdaterPath
-                                                        });
-                    }
+                if (onlineUpdateFile == null)
+                {
+                    e.Result = false;
+                    return;
+                }
 
-                    appVersion = verFile.SelectSingleNode("//avisynth_plugins");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastAviSynthPluginsVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "AviSynth Plugins",
-                                                            LocalVersion = AppSettings.LastAviSynthPluginsVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPath + appVersion.InnerText,
-                                                            DownloadType = AppType.AviSynthPlugins,
-                                                            Destination = AppSettings.AvsPluginsPath
-                                                        });
-                    }
+                using (UpdateFileInfo updateFile = Updater.LoadUpdateFileFromStream(onlineUpdateFile))
+                {
+                    if (updateFile.Core.PackageVersion.CompareTo(AppSettings.GetAppVersion()) > 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "Core",
+                                LocalVersion = AppSettings.GetAppVersion().ToString(4),
+                                ServerVersion = updateFile.Core.PackageVersionStr,
+                                FileName =
+                                    Path.Combine(tempPath, updateFile.Core.PackageName),
+                                DownloadUri = serverPath + updateFile.Core.PackageName,
+                                DownloadType = AppType.MainApp,
+                                Destination = AppSettings.AppPath
+                            });
 
-                    appVersion = verFile.SelectSingleNode("//profiles");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastProfilesVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
+                    if (updateFile.Updater.PackageVersion.CompareTo(AppSettings.UpdaterVersion) > 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "Updater (UAC Compatible)",
+                                LocalVersion = AppSettings.UpdaterVersion.ToString(4),
+                                ServerVersion = updateFile.Updater.PackageVersionStr,
+                                FileName =
+                                    Path.Combine(tempPath, updateFile.Updater.PackageName),
+                                DownloadUri = serverPath + updateFile.Updater.PackageName,
+                                DownloadType = AppType.Updater,
+                                Destination = AppSettings.UpdaterPath
+                            });
+
+                    if (
+                        String.CompareOrdinal(updateFile.AviSynthPlugins.PackageVersion,
+                                              AppSettings.LastAviSynthPluginsVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "AviSynth Plugins",
+                                LocalVersion = AppSettings.LastAviSynthPluginsVer,
+                                ServerVersion = updateFile.AviSynthPlugins.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.AviSynthPlugins.PackageName),
+                                DownloadUri = serverPath + updateFile.AviSynthPlugins.PackageName,
+                                DownloadType = AppType.AviSynthPlugins,
+                                Destination = AppSettings.AvsPluginsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.Profiles.PackageVersion, AppSettings.LastProfilesVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
                             {
                                 ToolName = "Profiles",
                                 LocalVersion = AppSettings.LastProfilesVer,
-                                ServerVersion = verAttrib.Value,
-                                FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                DownloadUri = serverPath + appVersion.InnerText,
+                                ServerVersion = updateFile.Profiles.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.Profiles.PackageName),
+                                DownloadUri = serverPath + updateFile.Profiles.PackageName,
                                 DownloadType = AppType.Profiles,
                                 Destination = AppSettings.CommonAppSettingsPath
                             });
-                    }
 
-                    appVersion = verFile.SelectSingleNode("//x264");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx264Ver) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "x264",
-                                                            LocalVersion = AppSettings.Lastx264Ver,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//x264_64");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lastx26464Ver) != 0 &&
-                            Environment.Is64BitOperatingSystem)
-                            _tempToolCollection.Add(new ToolVersions
-                                {
-                                    ToolName = "x264 (64 bit)",
-                                    LocalVersion = AppSettings.Lastx26464Ver,
-                                    ServerVersion = verAttrib.Value,
-                                    FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                    DownloadUri = serverPathTools + appVersion.InnerText,
-                                    DownloadType = AppType.Encoder,
-                                    Destination = AppSettings.ToolsPath
-                                });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//ffmpeg");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastffmpegVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "ffmpeg",
-                                                            LocalVersion = AppSettings.LastffmpegVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//eac3to");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.Lasteac3ToVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "eac3to",
-                                                            LocalVersion = AppSettings.Lasteac3ToVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//lsdvd");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastlsdvdVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "lsdvd",
-                                                            LocalVersion = AppSettings.LastlsdvdVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//mkv_toolnix");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMKVMergeVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "MKVToolnix",
-                                                            LocalVersion = AppSettings.LastMKVMergeVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//mplayer");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMplayerVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "MPlayer",
-                                                            LocalVersion = AppSettings.LastMplayerVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//tsmuxer");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastTSMuxerVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "TSMuxeR",
-                                                            LocalVersion = AppSettings.LastTSMuxerVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//mjpegtools");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMJPEGToolsVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "mjpegtools",
-                                                            LocalVersion = AppSettings.LastMJPEGToolsVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//dvdauthor");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastDVDAuthorVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "DVDAuthor",
-                                                            LocalVersion = AppSettings.LastDVDAuthorVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//mp4box");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastMp4BoxVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "MP4Box",
-                                                            LocalVersion = AppSettings.LastMp4BoxVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//hcenc");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastHcEncVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "HCEnc",
-                                                            LocalVersion = AppSettings.LastHcEncVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//oggenc");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastOggEncVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "OggEnc2",
-                                                            LocalVersion = AppSettings.LastOggEncVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//lame");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastLameVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
-                                                        {
-                                                            ToolName = "Lame",
-                                                            LocalVersion = AppSettings.LastLameVer,
-                                                            ServerVersion = verAttrib.Value,
-                                                            FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                                            DownloadUri = serverPathTools + appVersion.InnerText,
-                                                            DownloadType = AppType.Encoder,
-                                                            Destination = AppSettings.ToolsPath
-                                                        });
-                    }
-
-                    appVersion = verFile.SelectSingleNode("//vpxenc");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null)
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastVpxEncVer) != 0)
-                            _tempToolCollection.Add(new ToolVersions
+                    if (String.CompareOrdinal(updateFile.X264.PackageVersion, AppSettings.Lastx264Ver) != 0)
+                        _tempToolCollection.Add(new ToolVersions
                             {
-                                ToolName = "VP8 Encoder",
-                                LocalVersion = AppSettings.LastVpxEncVer,
-                                ServerVersion = verAttrib.Value,
-                                FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                DownloadUri = serverPathTools + appVersion.InnerText,
+                                ToolName = "x264",
+                                LocalVersion = AppSettings.Lastx264Ver,
+                                ServerVersion = updateFile.X264.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.X264.PackageName),
+                                DownloadUri = serverPathTools + updateFile.X264.PackageName,
                                 DownloadType = AppType.Encoder,
                                 Destination = AppSettings.ToolsPath
                             });
-                    }
 
-                    appVersion = verFile.SelectSingleNode("//bdsup2sub");
-                    if (appVersion != null)
-                    {
-                        if (appVersion.Attributes != null) 
-                            verAttrib = appVersion.Attributes["version"];
-                        if (String.CompareOrdinal(verAttrib.Value, AppSettings.LastBDSup2SubVer) != 0 &&
-                            AppSettings.JavaInstalled)
-                            _tempToolCollection.Add(new ToolVersions
-                                {
-                                    ToolName = "bdsup2sub",
-                                    LocalVersion = AppSettings.LastBDSup2SubVer,
-                                    ServerVersion = verAttrib.Value,
-                                    FileName = Path.Combine(tempPath, appVersion.InnerText),
-                                    DownloadUri = serverPathTools + appVersion.InnerText,
-                                    DownloadType = AppType.Encoder,
-                                    Destination = AppSettings.ToolsPath
-                                });
-                    }
+                    if (String.CompareOrdinal(updateFile.X26464.PackageVersion, AppSettings.Lastx26464Ver) != 0 &&
+                        Environment.Is64BitOperatingSystem)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "x264 (64 bit)",
+                                LocalVersion = AppSettings.Lastx26464Ver,
+                                ServerVersion = updateFile.X26464.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.X26464.PackageName),
+                                DownloadUri = serverPathTools + updateFile.X26464.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.FFMPEG.PackageVersion, AppSettings.LastffmpegVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "ffmpeg",
+                                LocalVersion = AppSettings.LastffmpegVer,
+                                ServerVersion = updateFile.FFMPEG.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.FFMPEG.PackageName),
+                                DownloadUri = serverPathTools + updateFile.FFMPEG.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.Eac3To.PackageVersion, AppSettings.Lasteac3ToVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "eac3to",
+                                LocalVersion = AppSettings.Lasteac3ToVer,
+                                ServerVersion = updateFile.Eac3To.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.Eac3To.PackageName),
+                                DownloadUri = serverPathTools + updateFile.Eac3To.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.LsDvd.PackageVersion, AppSettings.LastlsdvdVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "lsdvd",
+                                LocalVersion = AppSettings.LastlsdvdVer,
+                                ServerVersion = updateFile.LsDvd.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.LsDvd.PackageName),
+                                DownloadUri = serverPathTools + updateFile.LsDvd.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.MKVToolnix.PackageVersion, AppSettings.LastMKVMergeVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "MKVToolnix",
+                                LocalVersion = AppSettings.LastMKVMergeVer,
+                                ServerVersion = updateFile.MKVToolnix.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.MKVToolnix.PackageName),
+                                DownloadUri = serverPathTools + updateFile.MKVToolnix.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.Mplayer.PackageVersion, AppSettings.LastMplayerVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "MPlayer",
+                                LocalVersion = AppSettings.LastMplayerVer,
+                                ServerVersion = updateFile.Mplayer.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.Mplayer.PackageName),
+                                DownloadUri = serverPathTools + updateFile.Mplayer.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.TSMuxeR.PackageVersion, AppSettings.LastTSMuxerVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "TSMuxeR",
+                                LocalVersion = AppSettings.LastTSMuxerVer,
+                                ServerVersion = updateFile.TSMuxeR.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.TSMuxeR.PackageName),
+                                DownloadUri = serverPathTools + updateFile.TSMuxeR.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.MjpegTools.PackageVersion, AppSettings.LastMJPEGToolsVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "mjpegtools",
+                                LocalVersion = AppSettings.LastMJPEGToolsVer,
+                                ServerVersion = updateFile.MjpegTools.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.MjpegTools.PackageName),
+                                DownloadUri = serverPathTools + updateFile.MjpegTools.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.DVDAuthor.PackageVersion, AppSettings.LastDVDAuthorVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "DVDAuthor",
+                                LocalVersion = AppSettings.LastDVDAuthorVer,
+                                ServerVersion = updateFile.DVDAuthor.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.DVDAuthor.PackageName),
+                                DownloadUri = serverPathTools + updateFile.DVDAuthor.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.MP4Box.PackageVersion, AppSettings.LastMp4BoxVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "MP4Box",
+                                LocalVersion = AppSettings.LastMp4BoxVer,
+                                ServerVersion = updateFile.MP4Box.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.MP4Box.PackageName),
+                                DownloadUri = serverPathTools + updateFile.MP4Box.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.HcEnc.PackageVersion, AppSettings.LastHcEncVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "HCEnc",
+                                LocalVersion = AppSettings.LastHcEncVer,
+                                ServerVersion = updateFile.HcEnc.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.HcEnc.PackageName),
+                                DownloadUri = serverPathTools + updateFile.HcEnc.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.OggEnc.PackageVersion, AppSettings.LastOggEncVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "OggEnc2",
+                                LocalVersion = AppSettings.LastOggEncVer,
+                                ServerVersion = updateFile.OggEnc.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.OggEnc.PackageName),
+                                DownloadUri = serverPathTools + updateFile.OggEnc.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.Lame.PackageVersion, AppSettings.LastLameVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "Lame",
+                                LocalVersion = AppSettings.LastLameVer,
+                                ServerVersion = updateFile.Lame.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.Lame.PackageName),
+                                DownloadUri = serverPathTools + updateFile.Lame.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.VpxEnc.PackageVersion, AppSettings.LastVpxEncVer) != 0)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "VP8 Encoder",
+                                LocalVersion = AppSettings.LastVpxEncVer,
+                                ServerVersion = updateFile.VpxEnc.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.VpxEnc.PackageName),
+                                DownloadUri = serverPathTools + updateFile.VpxEnc.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
+
+                    if (String.CompareOrdinal(updateFile.BDSup2Sub.PackageVersion, AppSettings.LastBDSup2SubVer) != 0 &&
+                        AppSettings.JavaInstalled)
+                        _tempToolCollection.Add(new ToolVersions
+                            {
+                                ToolName = "bdsup2sub",
+                                LocalVersion = AppSettings.LastBDSup2SubVer,
+                                ServerVersion = updateFile.BDSup2Sub.PackageVersion,
+                                FileName = Path.Combine(tempPath, updateFile.BDSup2Sub.PackageName),
+                                DownloadUri = serverPathTools + updateFile.BDSup2Sub.PackageName,
+                                DownloadType = AppType.Encoder,
+                                Destination = AppSettings.ToolsPath
+                            });
                 }
             }
 
@@ -621,13 +510,15 @@ namespace VideoConvert.Windows
                         {
                             _mainAppUpdate = true;
                             PackageInfo package = new PackageInfo
-                                                      {
-                                                          PackageName = item.ToolName,
-                                                          PackageLocation = item.FileName,
-                                                          Version = item.ServerVersion,
-                                                          Destination = item.Destination,
-                                                          WriteVersion = item.DownloadType == AppType.AviSynthPlugins
-                                                      };
+                                {
+                                    PackageName = item.ToolName,
+                                    PackageLocation = item.FileName,
+                                    Version = item.ServerVersion,
+                                    Destination = item.Destination,
+                                    WriteVersion = item.DownloadType == AppType.AviSynthPlugins,
+                                    ClearDirectory = item.DownloadType == AppType.MainApp,
+                                    RecursiveClearDirectory = item.DownloadType == AppType.AviSynthPlugins
+                                };
                             _packages.Add(package);
                         }
                         break;

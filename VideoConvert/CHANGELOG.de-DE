@@ -1,4 +1,8 @@
-﻿- [change]  Benutze Standard fensterdesign anstatt des früher mitgelieferten.
+﻿- [change]  Schaltflächenpiktogramme geändert.
+- [change]  Updateroutine verbessert.
+
+0.21.826.2057
+- [change]  Benutze Standard fensterdesign anstatt des früher mitgelieferten.
 - [change]  Hauptfenster der Anwendung neu gestaltet.
 - [new]     Restlaufzeit des Kodierprozesses wird nun im Fortschrittsfenster angezeigt.
 - [fix]     Bildratenkonvertierung für 24fps Quelldateien funktioniert wieder korrekt.
