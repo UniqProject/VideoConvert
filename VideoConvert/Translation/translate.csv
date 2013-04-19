@@ -344,6 +344,7 @@ VideoConvert.g.en-US.resources:stringresources.baml,theora_pass:System.String.$C
 VideoConvert.g.en-US.resources:stringresources.baml,theora_encoding_status:System.String.$Content,None,True,True,,Encoding videostream
 VideoConvert.g.en-US.resources:stringresources.baml,theora_encoding_progress:System.String.$Content,None,True,True,,Encoding videostream - {2} elapsed: {0:T}\; ETA: {1:T}
 VideoConvert.g.en-US.resources:stringresources.baml,total_progress_time:System.String.$Content,None,True,True,,Time elapsed: {0:T} / ETA: {1:T}
+VideoConvert.g.en-US.resources:stringresources.baml,process_finish_warnings:System.String.$Content,None,True,True,,Process finished with 1 or more warnings
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,UserControl_1:VideoConvert.Windows.ToolUpdaterWindow.$Content,None,True,True,,#Grid_1;
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,ToolUpdaterExpander:System.Windows.Controls.Expander.$Content,None,False,True,,#Grid_2;
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,ToolUpdaterExpander:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoder Update

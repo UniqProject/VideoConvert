@@ -401,8 +401,15 @@ namespace VideoConvert.Core.Encoder
 
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
-                    if (_jobInfo.ExitCode == 0)
+                    if (_jobInfo.ExitCode < 2)
                     {
+                        if (_jobInfo.ExitCode == 1)
+                        {
+                            string warningStr = Processing.GetResourceString("process_finish_warnings");
+                            _bw.ReportProgress(-10, warningStr);
+                            _jobInfo.ExitCode = 0;
+                        }
+
                         _jobInfo.TempFiles.Add(_jobInfo.VideoStream.TempFile);
                         foreach (AudioInfo item in _jobInfo.AudioStreams)
                             _jobInfo.TempFiles.Add(item.TempFile);
