@@ -514,12 +514,12 @@
     </Content>
     <Content Include="profiles.xml" />
     <Resource Include="Resources\blue-bar.png" />
-    <Resource Include="Resources\Toolbar-Regular-Movie-icon.png" />
-    <Resource Include="Resources\Device-Optical-CD-icon.png" />
-    <Resource Include="Resources\document-remove-icon.png" />
-    <Resource Include="Resources\Actions-edit-clear-list-icon.png" />
-    <Resource Include="Resources\Categories-preferences-other-icon.png" />
-    <Resource Include="Resources\Apps-preferences-desktop-launch-feedback-icon.png" />
+    <Resource Include="Resources\configure.png" />
+    <Resource Include="Resources\db_add.png" />
+    <Resource Include="Resources\edit_add.png" />
+    <Resource Include="Resources\editcut.png" />
+    <Resource Include="Resources\editdelete.png" />
+    <Resource Include="Resources\run.png" />
     <Content Include="WriteChangeLog.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -531,7 +531,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
+      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

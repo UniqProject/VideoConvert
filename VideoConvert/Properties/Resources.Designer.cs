@@ -63,26 +63,6 @@ namespace VideoConvert.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Actions_edit_clear_list_icon {
-            get {
-                object obj = ResourceManager.GetObject("Actions_edit_clear_list_icon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Apps_preferences_desktop_launch_feedback_icon {
-            get {
-                object obj = ResourceManager.GetObject("Apps_preferences_desktop_launch_feedback_icon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap blue_bar {
             get {
                 object obj = ResourceManager.GetObject("blue_bar", resourceCulture);
@@ -113,9 +93,9 @@ namespace VideoConvert.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Categories_preferences_other_icon {
+        internal static System.Drawing.Bitmap configure {
             get {
-                object obj = ResourceManager.GetObject("Categories_preferences_other_icon", resourceCulture);
+                object obj = ResourceManager.GetObject("configure", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,19 +103,9 @@ namespace VideoConvert.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Device_Optical_CD_icon {
+        internal static System.Drawing.Bitmap db_add {
             get {
-                object obj = ResourceManager.GetObject("Device_Optical_CD_icon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap document_remove_icon {
-            get {
-                object obj = ResourceManager.GetObject("document_remove_icon", resourceCulture);
+                object obj = ResourceManager.GetObject("db_add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +123,39 @@ namespace VideoConvert.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Toolbar_Regular_Movie_icon {
+        internal static System.Drawing.Bitmap edit_add {
             get {
-                object obj = ResourceManager.GetObject("Toolbar_Regular_Movie_icon", resourceCulture);
+                object obj = ResourceManager.GetObject("edit_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap editcut {
+            get {
+                object obj = ResourceManager.GetObject("editcut", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap editdelete {
+            get {
+                object obj = ResourceManager.GetObject("editdelete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap run {
+            get {
+                object obj = ResourceManager.GetObject("run", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

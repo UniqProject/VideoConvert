@@ -28,28 +28,28 @@
         <Image x:Uid="AppVersionLabelBG" Height="50" Name="AppVersionLabelBG" Stretch="Fill" VerticalAlignment="Top" Source="/VideoConvert;component/Resources/blue-bar.png" Margin="-10,0,-10,0" />
         <Label x:Uid="AppVersionLabel" Content="Label" Height="50" Margin="12,0,0,0" x:Name="AppVersionLabel" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Foreground="White" FontStyle="Italic" HorizontalContentAlignment="Left" IsHitTestVisible="False" Padding="12,0,0,0" VerticalContentAlignment="Center" />
         <ToolBarTray x:Uid="MainToolbar" Height="64" Margin="0,50,0,0" Name="MainToolbar" VerticalAlignment="Top" Orientation="Horizontal">
-            <ToolBar x:Uid="ToolBarAddActions" Height="64" Name="ToolBarAddActions" Band="0" VerticalContentAlignment="Center" Width="145" BandIndex="0">
+            <ToolBar x:Uid="ToolBarAddActions" Height="64" Name="ToolBarAddActions" Band="0" VerticalContentAlignment="Center" BandIndex="0">
                 <Button x:Uid="AddFilesBtn" Name="AddFilesBtn" Click="AddFilesClick">
-                    <Image x:Uid="AddFilesBtnImage" Source="/VideoConvert;component/Resources/Toolbar-Regular-Movie-icon.png" Name="AddFilesBtnImage" ToolTip="Add File (s)"></Image>
+                    <Image x:Uid="AddFilesBtnImage" Source="/VideoConvert;component/Resources/edit_add.png" Name="AddFilesBtnImage" ToolTip="Add File (s)"></Image>
                 </Button>
                 <Button x:Uid="AddFolderBtn" Name="AddFolderBtn" Click="AddFolderClick">
-                    <Image x:Uid="AddFolderBtnImage" Name="AddFolderBtnImage" Source="/VideoConvert;component/Resources/Device-Optical-CD-icon.png" ToolTip="Add Disk"></Image>
+                    <Image x:Uid="AddFolderBtnImage" Name="AddFolderBtnImage" Source="/VideoConvert;component/Resources/db_add.png" ToolTip="Add Disk"></Image>
                 </Button>
             </ToolBar>
             <ToolBar x:Uid="ToolBarRemoveActions" Band="0" Name="ToolBarRemoveActions" Height="64" VerticalContentAlignment="Center" BandIndex="1">
                 <Button x:Uid="RemoveItemBtn" Name="RemoveItemBtn" Click="RemoveEntryClick">
-                    <Image x:Uid="RemoveItemBtnImage" Name="RemoveItemBtnImage" Source="/VideoConvert;component/Resources/document-remove-icon.png" ToolTip="Remove Entry"></Image>
+                    <Image x:Uid="RemoveItemBtnImage" Name="RemoveItemBtnImage" Source="/VideoConvert;component/Resources/editcut.png" ToolTip="Remove Entry"></Image>
                 </Button>
                 <Button x:Uid="ClearListBtn" Name="ClearListBtn" Click="ClearListClick">
-                    <Image x:Uid="ClearListBtnImage" Name="ClearListBtnImage" Source="/VideoConvert;component/Resources/Actions-edit-clear-list-icon.png" ToolTip="Clear List"></Image>
+                    <Image x:Uid="ClearListBtnImage" Name="ClearListBtnImage" Source="/VideoConvert;component/Resources/editdelete.png" ToolTip="Clear List"></Image>
                 </Button>
             </ToolBar>
-            <ToolBar x:Uid="ToolBarSettingsActions" Band="0" BandIndex="2" Height="64" Name="ToolBarSettingsActions">
+            <ToolBar x:Uid="ToolBarSettingsActions" Band="0" BandIndex="2" Height="64" Name="ToolBarSettingsActions" VerticalContentAlignment="Center">
                 <Button x:Uid="RunEncodeBtn" Name="RunEncodeBtn" Click="EncodeBtnClick">
-                    <Image x:Uid="RunEncodeBtnImage" Name="RunEncodeBtnImage" Source="/VideoConvert;component/Resources/Apps-preferences-desktop-launch-feedback-icon.png" ToolTip="Encode"></Image>
+                    <Image x:Uid="RunEncodeBtnImage" Name="RunEncodeBtnImage" Source="/VideoConvert;component/Resources/run.png" ToolTip="Encode"></Image>
                 </Button>
                 <Button x:Uid="ShowSettingsBtn" Name="ShowSettingsBtn" Click="SettingsButtonClick">
-                    <Image x:Uid="ShowSettingsBtnImage" Name="ShowSettingsBtnImage" Source="/VideoConvert;component/Resources/Categories-preferences-other-icon.png" ToolTip="Settings"></Image>
+                    <Image x:Uid="ShowSettingsBtnImage" Name="ShowSettingsBtnImage" Source="/VideoConvert;component/Resources/configure.png" ToolTip="Settings"></Image>
                 </Button>
             </ToolBar>
         </ToolBarTray>

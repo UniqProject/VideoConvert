@@ -3287,15 +3287,14 @@ VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.FrameworkElement.Height,None,False,True,,64
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.ToolBar.Band,None,False,True,,0
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
-VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.FrameworkElement.Width,None,False,True,,145
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarAddActions:System.Windows.Controls.ToolBar.BandIndex,None,False,True,,0
 VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#AddFilesBtnImage;
 VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Toolbar-Regular-Movie-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/edit_add.png
 VideoConvert.g.en-US.resources:mainwindow.baml,AddFilesBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Add File (s)
 VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#AddFolderBtnImage;
 VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Device-Optical-CD-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/db_add.png
 VideoConvert.g.en-US.resources:mainwindow.baml,AddFolderBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Add Disk
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.ToolBar.$Content,Menu,True,True,,#RemoveItemBtn;#ClearListBtn;
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.ToolBar.Band,None,False,True,,0
@@ -3304,23 +3303,24 @@ VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windo
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarRemoveActions:System.Windows.Controls.ToolBar.BandIndex,None,False,True,,1
 VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#RemoveItemBtnImage;
 VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/document-remove-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/editcut.png
 VideoConvert.g.en-US.resources:mainwindow.baml,RemoveItemBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Remove Entry
 VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#ClearListBtnImage;
 VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Actions-edit-clear-list-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/editdelete.png
 VideoConvert.g.en-US.resources:mainwindow.baml,ClearListBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Clear List
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.ToolBar.$Content,Menu,True,True,,#RunEncodeBtn;#ShowSettingsBtn;
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.ToolBar.Band,None,False,True,,0
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.ToolBar.BandIndex,None,False,True,,2
 VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.FrameworkElement.Height,None,False,True,,64
+VideoConvert.g.en-US.resources:mainwindow.baml,ToolBarSettingsActions:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#RunEncodeBtnImage;
 VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Apps-preferences-desktop-launch-feedback-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/run.png
 VideoConvert.g.en-US.resources:mainwindow.baml,RunEncodeBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Encode
 VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtn:System.Windows.Controls.Button.$Content,Button,True,True,,#ShowSettingsBtnImage;
 VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.Controls.Image.$Content,None,False,True,,
-VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/Categories-preferences-other-icon.png
+VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.Controls.Image.Source,None,False,True,,/VideoConvert\;component/Resources/configure.png
 VideoConvert.g.en-US.resources:mainwindow.baml,ShowSettingsBtnImage:System.Windows.FrameworkElement.ToolTip,ToolTip,True,True,,Settings
 VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_1;
 VideoConvert.g.en-US.resources:mainwindow.baml,InputFilesGroup:System.Windows.FrameworkElement.Height,None,False,True,,240
