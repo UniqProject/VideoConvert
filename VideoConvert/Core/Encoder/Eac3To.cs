@@ -24,7 +24,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using VideoConvert.Core.CommandLine;
 using VideoConvert.Core.Helpers;
-using VideoConvert.Core.Media;
 using log4net;
 using System.Threading;
 
