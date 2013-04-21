@@ -25,8 +25,16 @@ namespace VideoConvert.Core.Encoder
 {
     class BePipe
     {
+        /// <summary>
+        /// Executable filename
+        /// </summary>
         private const string Executable = "BePipe.exe";
 
+        /// <summary>
+        /// Creates process for piping audio data from avisynth
+        /// </summary>
+        /// <param name="scriptName">Path to AviSynth script</param>
+        /// <returns>Created process</returns>
         public static Process GenerateProcess(string scriptName)
         {
             string localExecutable = Path.Combine(AppSettings.AppPath, "AvsPlugins", "audio", Executable);
