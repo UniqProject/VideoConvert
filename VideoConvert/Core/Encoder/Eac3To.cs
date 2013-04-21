@@ -32,22 +32,42 @@ namespace VideoConvert.Core.Encoder
 {
     class Eac3To
     {
+        /// <summary>
+        /// Errorlog
+        /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(Eac3To));
 
-        private EncodeInfo _jobInfo;
+        /// <summary>
+        /// Executable filename
+        /// </summary>
         private const string Executable = "eac3to.exe";
 
+        private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
 
+        /// <summary>
+        /// Sets job for processing
+        /// </summary>
+        /// <param name="job">Job to process</param>
         public void SetJob(EncodeInfo job)
         {
             _jobInfo = job;
         }
+
+        /// <summary>
+        /// Reads encoder version from its output, use standard path settings
+        /// </summary>
+        /// <returns>Encoder version</returns>
         public string GetVersionInfo()
         {
             return GetVersionInfo(AppSettings.ToolsPath);
         }
 
+        /// <summary>
+        /// Reads encoder version from its output, use path settings from parameters
+        /// </summary>
+        /// <param name="encPath">Path to encoder</param>
+        /// <returns>Encoder version</returns>
         public string GetVersionInfo(string encPath)
         {
             string verInfo = string.Empty;
@@ -97,23 +117,21 @@ namespace VideoConvert.Core.Encoder
             return verInfo;
         }
 
+        /// <summary>
+        /// Main processing function, called by BackgroundWorker thread
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void DoDemux(object sender, DoWorkEventArgs e)
         {
             _bw = (BackgroundWorker)sender;
 
             string status = Processing.GetResourceString("eac3to_demuxing_status");
-            string demuxFormat = Processing.GetResourceString("eac3to_demuxing_progress");
-            string analyzeFormat = Processing.GetResourceString("eac3to_analyze");
 
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
-
-            Regex processingRegex = new Regex(@"^.*process: ([\d]+)%.*$",
-                                              RegexOptions.Singleline | RegexOptions.Multiline);
-            Regex analyzingRegex = new Regex(@"^.*analyze: ([\d]+)%.*$",
-                                             RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process())
             {
@@ -129,35 +147,7 @@ namespace VideoConvert.Core.Encoder
 
                 encoder.StartInfo = parameter;
 
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match processingResult = processingRegex.Match(line);
-                    Match analyzingResult = analyzingRegex.Match(line);
-
-                    if (processingResult.Success)
-                    {
-                        int progress = Convert.ToInt32(processingResult.Groups[1].Value);
-
-                        if (!String.IsNullOrEmpty(demuxFormat))
-                            status = string.Format(demuxFormat, Path.GetFileName(_jobInfo.InputFile), progress);
-
-                        _bw.ReportProgress(progress, status);
-                    }
-                    else if (analyzingResult.Success)
-                    {
-                        if (!String.IsNullOrEmpty(analyzeFormat))
-                            status = string.Format(analyzeFormat, Path.GetFileName(_jobInfo.InputFile),
-                                                   analyzingResult.Groups[1].Value);
-
-                        _bw.ReportProgress(0, status);
-                    }
-                    else
-                        Log.InfoFormat("eac3to: {0:s}", line);
-                };
+                encoder.OutputDataReceived += EncoderOnOutputDataReceived;
 
                 Log.InfoFormat("eac3to {0:s}", parameter.Arguments);
 
@@ -204,6 +194,50 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private readonly Regex _processingRegex = new Regex(@"^.*process: ([\d]+)%.*$",
+                                                            RegexOptions.Singleline | RegexOptions.Multiline);
+        private readonly Regex _analyzingRegex = new Regex(@"^.*analyze: ([\d]+)%.*$",
+                                                          RegexOptions.Singleline | RegexOptions.Multiline);
+
+        private readonly string _demuxFormat = Processing.GetResourceString("eac3to_demuxing_progress");
+        private readonly string _analyzeFormat = Processing.GetResourceString("eac3to_analyze");
+        
+        /// <summary>
+        /// Parses output from the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="outputEvent"></param>
+        private void EncoderOnOutputDataReceived(object sender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            string status = string.Empty;
+
+            Match processingResult = _processingRegex.Match(line);
+            Match analyzingResult = _analyzingRegex.Match(line);
+
+            if (processingResult.Success)
+            {
+                int progress = Convert.ToInt32(processingResult.Groups[1].Value);
+
+                if (!String.IsNullOrEmpty(_demuxFormat))
+                    status = string.Format(_demuxFormat, Path.GetFileName(_jobInfo.InputFile), progress);
+
+                _bw.ReportProgress(progress, status);
+            }
+            else if (analyzingResult.Success)
+            {
+                if (!String.IsNullOrEmpty(_analyzeFormat))
+                    status = string.Format(_analyzeFormat, Path.GetFileName(_jobInfo.InputFile),
+                                           analyzingResult.Groups[1].Value);
+
+                _bw.ReportProgress(0, status);
+            }
+            else
+                Log.InfoFormat("eac3to: {0:s}", line);
         }
 
         private void GetStreamInfo()
