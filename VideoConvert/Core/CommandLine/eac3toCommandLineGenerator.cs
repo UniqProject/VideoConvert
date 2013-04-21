@@ -27,6 +27,11 @@ namespace VideoConvert.Core.CommandLine
 {
     class Eac3ToCommandLineGenerator
     {
+        /// <summary>
+        /// Generates commandline for the eac3to executable
+        /// </summary>
+        /// <param name="jobInfo">Job entry to process</param>
+        /// <returns>commandline arguments</returns>
         public static string GenerateDemuxLine(ref EncodeInfo jobInfo)
         {
             StringBuilder sb = new StringBuilder();
@@ -36,6 +41,7 @@ namespace VideoConvert.Core.CommandLine
             string ext;
             string formattedExt;
 
+            // generate output filename depending input file given
             if (jobInfo.Input == InputType.InputDvd)
             {
                 inputFile = jobInfo.DumpOutput;
@@ -56,6 +62,7 @@ namespace VideoConvert.Core.CommandLine
             sb.AppendFormat("\"{0}\" {1:g}:\"{2}\" ", inputFile, jobInfo.VideoStream.StreamId + startstream,
                             jobInfo.VideoStream.TempFile);
 
+            // on stereo sources, decide if stream for right eye should be extracted
             if (jobInfo.StereoVideoStream.RightStreamId > 0 && jobInfo.EncodingProfile.StereoType != StereoEncoding.None)
             {
                 jobInfo.StereoVideoStream.RightTempFile = Processing.CreateTempFile(jobInfo.VideoStream.TempFile,
@@ -67,16 +74,20 @@ namespace VideoConvert.Core.CommandLine
                                 jobInfo.StereoVideoStream.RightTempFile);
             }
 
+            // if input source is dvd, increment stream id to match eac2to stream counting
             if (jobInfo.Input == InputType.InputDvd)
                 startstream++;
 
+            // process all audio streams
             for (int i = 0; i < jobInfo.AudioStreams.Count; i++)
             {
                 AudioInfo item = jobInfo.AudioStreams[i];
 
+                // get file extension for selected stream based on format and format profile
                 ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
                 string core = string.Empty;
 
+                // extract only core audio data for dvd output
                 if (jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd && jobInfo.AudioProfile.Type == ProfileType.Copy)
                 {
                     if (string.CompareOrdinal(ext, "dtshd") == 0)
@@ -111,6 +122,7 @@ namespace VideoConvert.Core.CommandLine
                 jobInfo.AudioStreams[i] = item;
             }
 
+            // process all subtitle streams
             for (int i = 0; i < jobInfo.SubtitleStreams.Count; i++)
             {
                 SubtitleInfo item = jobInfo.SubtitleStreams[i];
@@ -137,6 +149,7 @@ namespace VideoConvert.Core.CommandLine
                 jobInfo.SubtitleStreams[i] = item;
             }
 
+            // add logfile to tempfiles list for deletion
             jobInfo.TempFiles.Add(
                 jobInfo.VideoStream.TempFile.Substring(0, jobInfo.VideoStream.TempFile.LastIndexOf('.')) + " - Log.txt");
 
