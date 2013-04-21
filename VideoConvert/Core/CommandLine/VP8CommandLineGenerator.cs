@@ -25,16 +25,26 @@ namespace VideoConvert.Core.CommandLine
 {
     class VP8CommandLineGenerator
     {
+        /// <summary>
+        /// Generates commandline arguments used for encoding an video stream to VP8 format.
+        /// Input is always stdin.
+        /// </summary>
+        /// <param name="inProfile">Encoding profile</param>
+        /// <param name="bitrate">Target bitrate</param>
+        /// <param name="hRes">Video width</param>
+        /// <param name="vRes">Video height</param>
+        /// <param name="pass">Encoding pass</param>
+        /// <param name="fpsN">Framerate numerator</param>
+        /// <param name="fpsD">Framerate denominator</param>
+        /// <param name="outFile">Path to output file</param>
+        /// <returns>Commandline arguments</returns>
         public static string Generate(VP8Profile inProfile, int bitrate, int hRes, int vRes, int pass, int fpsN, int fpsD,
-                                      bool preview = false, VideoFormat format = VideoFormat.Unknown, string outFile = "output")
+                                      string outFile = "output")
         {
             StringBuilder sb = new StringBuilder();
             if (inProfile != null)
             {
                 int tempPass = pass;
-
-                if (preview)
-                    sb.Append("program ");
 
                 sb.Append("--debug --codec=vp8 ");
                 sb.AppendFormat(AppSettings.CInfo, "--width={0:g} --height={1:g} ", hRes, vRes);
@@ -49,8 +59,6 @@ namespace VideoConvert.Core.CommandLine
                         break;
                     case 1:
                         sb.Append("2 ");
-                        if (preview)
-                            tempPass = 2;
                         sb.AppendFormat(AppSettings.CInfo, "--pass={0:g} ", tempPass);
                         break;
                 }
@@ -128,6 +136,7 @@ namespace VideoConvert.Core.CommandLine
                 sb.AppendFormat(AppSettings.CInfo, "--minsection-pct={0:g} --maxsection-pct={1:g} ", 
                                 inProfile.SectionMin, inProfile.SectionMax);
 
+                // in 2-pass encoding mode use null output for first pass
                 if (inProfile.EncodingMode == 1 && tempPass == 1)
                     sb.Append("-o NUL ");
                 else if (!String.IsNullOrEmpty(outFile))

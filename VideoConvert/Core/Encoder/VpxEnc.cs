@@ -133,8 +133,6 @@ namespace VideoConvert.Core.Encoder
                                                                 _jobInfo.StreamId,
                                                                 _jobInfo.VideoStream.FrameRateEnumerator,
                                                                 _jobInfo.VideoStream.FrameRateDenominator,
-                                                                false,
-                                                                _jobInfo.VideoStream.PicSize,
                                                                 outFile);
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
