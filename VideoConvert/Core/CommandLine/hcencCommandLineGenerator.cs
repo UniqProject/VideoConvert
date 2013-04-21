@@ -29,6 +29,16 @@ namespace VideoConvert.Core.CommandLine
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(HcencCommandLineGenerator));
 
+        /// <summary>
+        /// Generates ini file used for encoding an video stream to MPEG-2 format.
+        /// </summary>
+        /// <param name="encProfile">Encoder profile for HcEnc</param>
+        /// <param name="inFile">Path to input file</param>
+        /// <param name="outFile">Path to ouput file</param>
+        /// <param name="aspect">Aspect ratio for output, valid values are: 0 (4:3), 1 (16:9), 2 (16:9 pan&amp;scan), 3 (1:1) or 4 (2.21:1)</param>
+        /// <param name="bitrate">Target bitrate</param>
+        /// <param name="maxBitrate">Maximal bitrate</param>
+        /// <returns>Path to generated ini file</returns>
         public static string Generate(HcEncProfile encProfile, string inFile, string outFile, int aspect, int bitrate, int maxBitrate)
         {
             StringBuilder sb = new StringBuilder();
