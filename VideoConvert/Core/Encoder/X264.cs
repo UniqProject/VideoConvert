@@ -166,7 +166,6 @@ namespace VideoConvert.Core.Encoder
                                                                 _jobInfo.VideoStream.FrameRateEnumerator,
                                                                 _jobInfo.VideoStream.FrameRateDenominator,
                                                                 _jobInfo.EncodingProfile.StereoType,
-                                                                false,
                                                                 _jobInfo.VideoStream.PicSize,
 
                                                                 // check if we use 64 bit version

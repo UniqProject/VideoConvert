@@ -33,18 +33,30 @@ namespace VideoConvert.Core.CommandLine
                                                                  "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1",
                                                                  "3.2", "4", "4.1", "4.2", "5", "5.1"
                                                              };
-
+        /// <summary>
+        /// Generates commandline arguments used for encoding an video stream to h.264 format.
+        /// Input is either stdin or file/avisynth script.
+        /// </summary>
+        /// <param name="inProfile">Encoding profile</param>
+        /// <param name="bitrate">Target bitrate</param>
+        /// <param name="hRes">Video width</param>
+        /// <param name="vRes">Video height</param>
+        /// <param name="pass">Encoding pass</param>
+        /// <param name="fpsN">Framerate numerator</param>
+        /// <param name="fpsD">Framerate denominator</param>
+        /// <param name="stereo">Defines, which stereo encoding mode should be used</param>
+        /// <param name="format">Image format</param>
+        /// <param name="inFile">Path to input file</param>
+        /// <param name="outFile">Path to output file</param>
+        /// <returns>Commandline arguments</returns>
         public static string Generate(X264Profile inProfile, int bitrate, int hRes, int vRes, int pass, int fpsN, int fpsD, StereoEncoding stereo = StereoEncoding.None,
-                                      bool preview = false, VideoFormat format = VideoFormat.Unknown, string inFile = "input", string outFile = "output")
+                                      VideoFormat format = VideoFormat.Unknown, string inFile = "input", string outFile = "output")
         {
             StringBuilder sb = new StringBuilder();
             if (inProfile != null)
             {
                 bool display;
                 X264Device device = X264Device.CreateDeviceList()[inProfile.TuneDevice];
-
-                if (preview)
-                    sb.Append("program ");
 
                 // AVC Profiles
                 switch (inProfile.AVCProfile)
@@ -123,13 +135,7 @@ namespace VideoConvert.Core.CommandLine
                             sb.AppendFormat(AppSettings.CInfo, "--qp {0:0}", inProfile.QuantizerSetting);
                         break;
                     case 2: // automated 2 pass
-                        if (preview)
-                            tempPass = 2;
-                        sb.AppendFormat(AppSettings.CInfo, "--pass {0:0} --bitrate {1:0} ", tempPass, tempBitrate);
-                        break;
                     case 3: // automated 3 pass
-                        if (preview)
-                            tempPass = 3;
                         sb.AppendFormat(AppSettings.CInfo, "--pass {0:0} --bitrate {1:0} ", tempPass, tempBitrate);
                         break;
                     default:
