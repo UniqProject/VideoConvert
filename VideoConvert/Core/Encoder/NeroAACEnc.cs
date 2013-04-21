@@ -158,7 +158,7 @@ namespace VideoConvert.Core.Encoder
 
             string inputFile = AviSynthGenerator.GenerateAudioScript(item.TempFile, item.Format, item.FormatProfile,
                                                                      item.ChannelCount, outChannels, item.SampleRate,
-                                                                     outSampleRate, (long) _jobInfo.VideoStream.Length);
+                                                                     outSampleRate);
             string outFile = Processing.CreateTempFile(item.TempFile, "encoded.m4a");
 
             StringBuilder sb = new StringBuilder();

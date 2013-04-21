@@ -24,7 +24,17 @@ namespace VideoConvert.Core.CommandLine
 {
     class FfmpegCommandLineGenerator
     {
-        public static string GenerateAC3EncodeLine(EncodeInfo jobInfo, AudioInfo audioItem, string inFile, string outFile)
+        private static readonly int[] BitrateList = new int[]
+            {64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640};
+
+        /// <summary>
+        /// Generates commandline used for encoding an audio stream to AC-3 format.
+        /// </summary>
+        /// <param name="jobInfo">Container which holds all encoding profiles</param>
+        /// <param name="inFile">Path to inputfile, can be "-" when using pipes</param>
+        /// <param name="outFile">Path to outputfile</param>
+        /// <returns>Commandline arguments</returns>
+        public static string GenerateAC3EncodeLine(EncodeInfo jobInfo, string inFile, string outFile)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -38,6 +48,8 @@ namespace VideoConvert.Core.CommandLine
             int bitrate = 10;
             int channels = 0;
             bool drc = false;
+
+            // safety check, should always be true
             if (jobInfo.AudioProfile.Type == ProfileType.AC3)
             {
                 AC3Profile audProfile = (AC3Profile) jobInfo.AudioProfile;
@@ -45,55 +57,13 @@ namespace VideoConvert.Core.CommandLine
                 channels = audProfile.OutputChannels;
                 drc = audProfile.ApplyDynamicRangeCompression;
             }
+            else
+                return string.Empty;
 
             if (bitrate > 10 && jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
                 bitrate = 10;   // limit DVD Audio Bitrate to 448 kbit/s
 
-            switch (bitrate)
-            {
-                case 0:
-                    bitrate = 64;
-                    break;
-                case 1:
-                    bitrate = 128;
-                    break;
-                case 2:
-                    bitrate = 160;
-                    break;
-                case 3:
-                    bitrate = 192;
-                    break;
-                case 4:
-                    bitrate = 224;
-                    break;
-                case 5:
-                    bitrate = 256;
-                    break;
-                case 6:
-                    bitrate = 288;
-                    break;
-                case 7:
-                    bitrate = 320;
-                    break;
-                case 8:
-                    bitrate = 352;
-                    break;
-                case 9:
-                    bitrate = 384;
-                    break;
-                case 10:
-                    bitrate = 448;
-                    break;
-                case 11:
-                    bitrate = 512;
-                    break;
-                case 12:
-                    bitrate = 576;
-                    break;
-                case 13:
-                    bitrate = 640;
-                    break;
-            }
+            bitrate = BitrateList[bitrate];
 
             sb.AppendFormat(" -b:a {0:0}k", bitrate);
 

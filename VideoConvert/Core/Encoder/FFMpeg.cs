@@ -323,7 +323,7 @@ namespace VideoConvert.Core.Encoder
             }
             string inputFile = AviSynthGenerator.GenerateAudioScript(item.TempFile, item.Format, item.FormatProfile,
                                                                      item.ChannelCount, outChannels, item.SampleRate,
-                                                                     outSampleRate, (long) _jobInfo.VideoStream.Length);
+                                                                     outSampleRate);
             string outFile = Processing.CreateTempFile(item.TempFile, "encoded.ac3");
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
@@ -342,7 +342,6 @@ namespace VideoConvert.Core.Encoder
                         Arguments =
                             FfmpegCommandLineGenerator.GenerateAC3EncodeLine(
                                 _jobInfo,
-                                item,
                                 "-",
                                 outFile),
                         CreateNoWindow = true,

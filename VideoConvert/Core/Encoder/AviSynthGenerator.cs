@@ -33,10 +33,29 @@ namespace VideoConvert.Core.Encoder
 
     class AviSynthGenerator
     {
+        /// <summary>
+        /// Errorlog
+        /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(AviSynthGenerator));
 
+        /// <summary>
+        /// Contains path to config file used by h264StereoSource plugin for AviSynth
+        /// </summary>
         public static string StereoConfigFile = string.Empty;
 
+        /// <summary>
+        /// Generates AviSynth script used for video encoding
+        /// </summary>
+        /// <param name="videoInfo">All video properties</param>
+        /// <param name="changeFps">Defines whether framerate should be changed</param>
+        /// <param name="targetFps">Sets target framerate</param>
+        /// <param name="resizeTo">Sets target video resolution</param>
+        /// <param name="stereoEncoding">Defines, which stereo encoding mode should be used</param>
+        /// <param name="stereoVideoInfo">Sets all parameters for stereo encoding</param>
+        /// <param name="isDvdResolution">Defines whether target resolution is used for DVD encoding</param>
+        /// <param name="subtitleFile">Sets subtitle file for hardcoding into video</param>
+        /// <param name="subtitleOnlyForced">Defines whether only forced captions should be hardcoded</param>
+        /// <returns>Path to AviSynth script</returns>
         public static string Generate(VideoInfo videoInfo, bool changeFps, float targetFps, Size resizeTo,
                                       StereoEncoding stereoEncoding, StereoVideoInfo stereoVideoInfo, bool isDvdResolution, string subtitleFile, bool subtitleOnlyForced)
         {
@@ -46,15 +65,15 @@ namespace VideoConvert.Core.Encoder
 
             bool useStereo = stereoEncoding != StereoEncoding.None && stereoVideoInfo.RightStreamId > -1;
 
+            // support for multithreaded AviSynth
             if (AppSettings.UseAviSynthMT && mtUseful)
             {
                 sb.AppendLine("SetMTMode(2,0)");
                 sb.AppendLine("SetMemoryMax(512)");
             }
-            //loading plugins
 
-            sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
-                                        Path.Combine(AppSettings.AppPath, "AvsPlugins", "ffms2.dll")));
+            //loading plugins
+            sb.AppendLine(ImportFFMPEGSource());  // ffms2
 
             if (changeFps || (videoInfo.Interlaced && AppSettings.UseHQDeinterlace))
                 sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
@@ -107,6 +126,7 @@ namespace VideoConvert.Core.Encoder
 
             //generate rest of the script
 
+            // calculate framerate numerator & denominator
             if (videoInfo.FPS <= 0)
             {
                 MediaInfoContainer mi = new MediaInfoContainer();
@@ -157,6 +177,7 @@ namespace VideoConvert.Core.Encoder
                 stereoVar = "VideoRight";
             }
 
+            // deinterlace video source
             if (videoInfo.Interlaced)
             {
                 if (AppSettings.UseHQDeinterlace)
@@ -171,6 +192,7 @@ namespace VideoConvert.Core.Encoder
                 }
             }
 
+            // hardcode subtitles
             if (!string.IsNullOrEmpty(subtitleFile) && File.Exists(subtitleFile))
             {
                 switch (Path.GetExtension(subtitleFile))
@@ -189,6 +211,7 @@ namespace VideoConvert.Core.Encoder
                 sb.AppendLine();
             }
 
+            // video cropping
             if (!videoInfo.CropRect.IsEmpty)
             {
                 int temp;
@@ -226,6 +249,7 @@ namespace VideoConvert.Core.Encoder
                 }
             }
 
+            // Side-By-Side stereo encoding
             if (!string.IsNullOrEmpty(stereoVar))
             {
                 switch(stereoEncoding)
@@ -250,6 +274,7 @@ namespace VideoConvert.Core.Encoder
             int borderTop = 0;
             bool addBorders = false;
 
+            // video resizing
             if (!resizeTo.IsEmpty && (resizeTo.Height != videoInfo.Height || resizeTo.Width != videoInfo.Width))
             {
                 // aspect ratios
@@ -260,7 +285,7 @@ namespace VideoConvert.Core.Encoder
 
                 float mod = 1f;
 
-                if (videoInfo.AspectRatio > toAr)
+                if (videoInfo.AspectRatio > toAr) // source aspectratio higher than target aspectratio
                 {
                     if (isDvdResolution)
                     {
@@ -292,7 +317,7 @@ namespace VideoConvert.Core.Encoder
                         borderBottom = borderHeight - borderTop;
                     }
                 }
-                else if (Math.Abs(videoInfo.AspectRatio - toAr) <= 0)
+                else if (Math.Abs(videoInfo.AspectRatio - toAr) <= 0)  // source and target aspectratio equals
                 {
                     if (isDvdResolution)
                     {
@@ -326,7 +351,7 @@ namespace VideoConvert.Core.Encoder
                 }
                 else
                 {
-                    if (videoInfo.AspectRatio > 1.4f && isDvdResolution)
+                    if (videoInfo.AspectRatio > 1.4f && isDvdResolution)  // source aspectratio not 4:3, encoding for dvd resolution
                     {
                         mod = 720f/resizeTo.Width;
 
@@ -353,7 +378,7 @@ namespace VideoConvert.Core.Encoder
                     Math.DivRem(calculatedHeight, 2, out temp);
                     calculatedHeight += temp;
 
-                    if (Math.Abs(toAr - 1.778f) <= 0)
+                    if (Math.Abs(toAr - 1.778f) <= 0)     // aspectratio 16:9
                     {
                         addBorders = true;
                         int borderHeight = resizeTo.Height - calculatedHeight;
@@ -386,6 +411,7 @@ namespace VideoConvert.Core.Encoder
                 }
             }
 
+            // apply resize filter
             if (calculatedHeight != videoInfo.Height || calculatedWidth != videoInfo.Width ||
                 (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
                  stereoEncoding == StereoEncoding.HalfSideBySideRight
@@ -404,6 +430,7 @@ namespace VideoConvert.Core.Encoder
                                                 calculatedHeight));
             }
 
+            // add borders if needed
             if (addBorders && (borderLeft > 0 || borderRight > 0 || borderTop > 0 || borderBottom > 0))
                 sb.AppendLine(string.Format(AppSettings.CInfo, "AddBorders({0:g},{1:g},{2:g},{3:g})",
                                             borderLeft,
@@ -411,13 +438,16 @@ namespace VideoConvert.Core.Encoder
                                             borderRight,
                                             borderBottom));
 
+            // change framerate
             if (changeFps)
             {
                 int fpsnum;
                 int fpsden;
 
+                // get framerate numerator & denominator for target framerate
                 Processing.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
 
+                // source is 23.976 or 24 fps
                 if (videoInfo.FrameRateEnumerator == 24000 && (videoInfo.FrameRateDenominator == 1001 || videoInfo.FrameRateDenominator == 1000))
                 {
                     if (fpsnum == 30000 && fpsden == 1001)
@@ -430,6 +460,7 @@ namespace VideoConvert.Core.Encoder
                     }
                     else if (fpsnum == 25000 && fpsden == 1000)
                     {
+                        // convert to 25 fps
                         sb.AppendLine("ConvertToYUY2()");
                         sb.AppendLine("ConvertFPS(50)");
                         sb.AppendLine("AssumeTFF()");
@@ -439,6 +470,7 @@ namespace VideoConvert.Core.Encoder
                         sb.AppendLine("ConvertToYV12()");
                     }
                 }
+                // source is 30fps
                 else if (videoInfo.FrameRateEnumerator == 30000)
                 {
                     sb.AppendLine("ConvertToYUY2()");
@@ -447,6 +479,7 @@ namespace VideoConvert.Core.Encoder
                     sb.AppendLine("SelectEven()");
                     sb.AppendLine("ConvertToYV12()");
                 }
+                // source is 25fps
                 else if (videoInfo.FrameRateEnumerator == 25000 && videoInfo.FrameRateDenominator == 1000)
                 {
                     if ((fpsnum == 30000 || fpsnum == 24000) && fpsden == 1001)
@@ -469,8 +502,10 @@ namespace VideoConvert.Core.Encoder
                         sb.AppendLine("ConvertToYV12()");
                     }
                 }
+                // every other framerate
                 else
                 {
+                    // very slow framerate interpolation
                     sb.AppendLine("super = MSuper(pel=2)");
                     sb.AppendLine("backward_vec = MAnalyse(super, overlap=4, isb = true, search=3)");
                     sb.AppendLine("forward_vec = MAnalyse(super, overlap=4, isb = false, search=3)");
@@ -478,10 +513,10 @@ namespace VideoConvert.Core.Encoder
                                     fpsden);
                 }
 
-
                 sb.AppendLine();
             }
 
+            // multithreaded avisynth
             if (AppSettings.UseAviSynthMT && mtUseful)
             {
                 sb.AppendLine("SetMTMode(1)");
@@ -491,6 +526,11 @@ namespace VideoConvert.Core.Encoder
             return WriteScript(sb.ToString());
         }
 
+        /// <summary>
+        /// Generates configuration file used by H264StereoSource plugin
+        /// </summary>
+        /// <param name="stereoVideoInfo"></param>
+        /// <returns></returns>
         private static string GenerateStereoSourceConfig(StereoVideoInfo stereoVideoInfo)
         {
             StringBuilder sb = new StringBuilder();
@@ -511,12 +551,19 @@ namespace VideoConvert.Core.Encoder
             return (WriteScript(sb.ToString(), "cfg"));
         }
 
+        /// <summary>
+        /// Creates AviSynth script used to determine black borders for cropping
+        /// </summary>
+        /// <param name="inputFile">Path to source file</param>
+        /// <param name="targetFps">Sets framerate of the source file</param>
+        /// <param name="streamLength">Sets duration of the source file, in seconds</param>
+        /// <param name="frameCount">Calculated amount of frames</param>
+        /// <returns>Path to AviSynth script</returns>
         public static string GenerateCropDetect(string inputFile, float targetFps, double streamLength, out int frameCount)
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine(string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
-                                        Path.Combine(AppSettings.AppPath, "AvsPlugins\\ffms2.dll")));
+            sb.AppendLine(ImportFFMPEGSource()); // ffms2
 
             int fpsnum;
             int fpsden;
@@ -562,11 +609,21 @@ namespace VideoConvert.Core.Encoder
             return WriteScript(sb.ToString());
         }
 
+        /// <summary>
+        /// Generates simple script used to check whether AviSynth is installed on system
+        /// </summary>
+        /// <returns>Path to AviSynth script</returns>
         public static string GenerateTestFile()
         {
             return WriteScript("Version()");
         }
 
+        /// <summary>
+        /// Writes script content to file and returns the path of written file
+        /// </summary>
+        /// <param name="script">Script content</param>
+        /// <param name="extension">File extension of the file, default "avs"</param>
+        /// <returns>Path of written file</returns>
         private static string WriteScript(string script, string extension = "avs")
         {
             Log.InfoFormat("Writing AviSynth script: {1:s}{0:s}", script, Environment.NewLine);
@@ -578,9 +635,20 @@ namespace VideoConvert.Core.Encoder
             return avsFile;
         }
 
+        /// <summary>
+        /// Generates AviSynth script used for audio encoding
+        /// </summary>
+        /// <param name="inputFile">Path to input file</param>
+        /// <param name="inFormat">Format of input file</param>
+        /// <param name="inFormatProfile">Format profile of input file</param>
+        /// <param name="inChannels">Channel count of input file</param>
+        /// <param name="outChannels">Target channel count</param>
+        /// <param name="inSampleRate">Samplerate of input file</param>
+        /// <param name="outSampleRate">Target samplerate</param>
+        /// <returns>Path to AviSynth script</returns>
         public static string GenerateAudioScript(string inputFile, string inFormat, string inFormatProfile, 
                                                  int inChannels, int outChannels, int inSampleRate, 
-                                                 int outSampleRate, long length, float speed = 1)
+                                                 int outSampleRate)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -708,12 +776,20 @@ namespace VideoConvert.Core.Encoder
             return WriteScript(sb.ToString());
         }
 
+        /// <summary>
+        /// Imports NicAudio plugin
+        /// </summary>
+        /// <returns></returns>
         public static string ImportNicAudio()
         {
             return string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
                                  Path.Combine(AppSettings.AppPath, "AvsPlugins", "audio", "NicAudio.dll"));
         }
 
+        /// <summary>
+        /// Imports ffmpegsource (ffms2) plugin
+        /// </summary>
+        /// <returns></returns>
         public static string ImportFFMPEGSource()
         {
             return string.Format(AppSettings.CInfo, "LoadPlugin(\"{0:s}\")",
