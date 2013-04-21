@@ -34,23 +34,42 @@ namespace VideoConvert.Core.Encoder
 {
     class DvdAuthor
     {
+        /// <summary>
+        /// Errorlog
+        /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(DvdAuthor));
-
-        private EncodeInfo _jobInfo;
+        
+        /// <summary>
+        /// Executable filename
+        /// </summary>
         private const string Executable = "dvdauthor.exe";
-
+        
+        private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
 
+        /// <summary>
+        /// Sets job for processing
+        /// </summary>
+        /// <param name="job">Job to process</param>
         public void SetJob(EncodeInfo job)
         {
             _jobInfo = job;
         }
 
+        /// <summary>
+        /// Reads encoder version from its output, use standard path settings
+        /// </summary>
+        /// <returns>Encoder version</returns>
         public string GetVersionInfo()
         {
             return GetVersionInfo(AppSettings.ToolsPath);
         }
 
+        /// <summary>
+        /// Reads encoder version from its output, use path settings from parameters
+        /// </summary>
+        /// <param name="encPath">Path to encoder</param>
+        /// <returns>Encoder version</returns>
         public string GetVersionInfo(string encPath)
         {
             string verInfo = string.Empty;
@@ -102,6 +121,11 @@ namespace VideoConvert.Core.Encoder
             return verInfo;
         }
 
+        /// <summary>
+        /// Main processing function, called by BackgroundWorker thread
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void DoEncode(object sender, DoWorkEventArgs e)
         {
             _bw = (BackgroundWorker)sender;
@@ -229,12 +253,7 @@ namespace VideoConvert.Core.Encoder
                 parameter.Arguments = string.Format("-o \"{0}\" -x \"{1}\"", outFile, xmlFile);
                 encoder.StartInfo = parameter;
 
-                encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-                    if (!string.IsNullOrEmpty(line))
-                        Log.InfoFormat("dvdauthor: {0:s}", line);
-                };
+                encoder.ErrorDataReceived += EncoderOnErrorDataReceived;
 
                 Log.InfoFormat("dvdauthor: {0:s}", parameter.Arguments);
 
@@ -291,6 +310,18 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        /// <summary>
+        /// Parses output from the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="outputEvent"></param>
+        private void EncoderOnErrorDataReceived(object sender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (!string.IsNullOrEmpty(line))
+                Log.InfoFormat("dvdauthor: {0:s}", line);
         }
     }
 }
