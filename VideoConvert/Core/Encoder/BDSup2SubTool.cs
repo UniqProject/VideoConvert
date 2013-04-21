@@ -35,23 +35,43 @@ namespace VideoConvert.Core.Encoder
 {
     public class BdSup2SubTool
     {
+        /// <summary>
+        /// Errorlog
+        /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(BdSup2SubTool));
 
-        private EncodeInfo _jobInfo;
+        /// <summary>
+        /// Executable filename
+        /// </summary>
         private const string Executable = "BDSup2Sub400.jar";
 
+        private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
 
+        /// <summary>
+        /// Sets job for processing
+        /// </summary>
+        /// <param name="job">Job to process</param>
         public void SetJob(EncodeInfo job)
         {
             _jobInfo = job;
         }
 
+        /// <summary>
+        /// Reads encoder version from its output, use standard path settings
+        /// </summary>
+        /// <returns>Encoder version</returns>
         public string GetVersionInfo()
         {
             return GetVersionInfo(AppSettings.ToolsPath, AppSettings.JavaInstallPath);
         }
 
+        /// <summary>
+        /// Reads encoder version from its output, use path settings from parameters
+        /// </summary>
+        /// <param name="encPath">Path to encoder</param>
+        /// <param name="javaPath">Path to java installation</param>
+        /// <returns>Encoder version</returns>
         public string GetVersionInfo(string encPath, string javaPath)
         {
             string verInfo = string.Empty;
@@ -104,17 +124,21 @@ namespace VideoConvert.Core.Encoder
             return verInfo;
         }
 
+        private readonly string _status = Processing.GetResourceString("bdsup2sub_convert_subtitles_status");
+
+        /// <summary>
+        /// Main processing function, called by BackgroundWorker thread
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void DoProcess(object sender, DoWorkEventArgs e)
         {
             _bw = (BackgroundWorker)sender;
 
-            string status = Processing.GetResourceString("bdsup2sub_convert_subtitles_status");
-            string subtitleLoadStatus = Processing.GetResourceString("bdsup2sub_convert_subtitle_load");
-            string subtitleProcess = Processing.GetResourceString("bdsup2sub_convert_subtitle_process");
             string createSubtitle = Processing.GetResourceString("bdsup2sub_convert_subtitle_create");
 
-            _bw.ReportProgress(-10, status);
-            _bw.ReportProgress(0, status);
+            _bw.ReportProgress(-10, _status);
+            _bw.ReportProgress(0, _status);
 
             string javaExecutable = AppSettings.JavaInstallPath;
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
@@ -161,10 +185,6 @@ namespace VideoConvert.Core.Encoder
             if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
                 sb.AppendFormat(AppSettings.CInfo, " /res:{0:0} ", targetRes);
 
-            Regex readCaptions = new Regex(@"^#>\s+?(\d*?)\s\(.*$", RegexOptions.Singleline | RegexOptions.Multiline);
-            Regex decodeFrames = new Regex(@"^Decoding frame\s(\d*)/(\d*)\s*?.*$",
-                                           RegexOptions.Singleline | RegexOptions.Multiline);
-
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(javaExecutable)
@@ -176,47 +196,8 @@ namespace VideoConvert.Core.Encoder
                         Arguments = sb.ToString()
                     };
 
-
                 encoder.StartInfo = parameter;
-
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match resultReadCaptions = readCaptions.Match(line);
-                    Match resultDecodeFrames = decodeFrames.Match(line);
-
-                    if (resultReadCaptions.Success)
-                    {
-                        if (!String.IsNullOrEmpty(subtitleLoadStatus))
-                        {
-                            status = string.Format(subtitleLoadStatus, resultReadCaptions.Groups[1].Value);
-                            _bw.ReportProgress(-1, status);
-                        }
-
-                    }
-                    else if (resultDecodeFrames.Success)
-                    {
-                        int actFrame, maxFrames;
-
-                        Int32.TryParse(resultDecodeFrames.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
-                                       out actFrame);
-                        Int32.TryParse(resultDecodeFrames.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
-                                       out maxFrames);
-
-                        int progress = (int) Math.Round(actFrame/(double) maxFrames*100d, 0);
-
-                        if (!String.IsNullOrEmpty(subtitleProcess))
-                        {
-                            status = string.Format(subtitleProcess, actFrame, maxFrames, progress);
-                            _bw.ReportProgress(progress, status);
-                        }
-                    }
-                    else
-                        Log.InfoFormat("BDSup2Sub: {0:s}", line);
-                };
+                encoder.OutputDataReceived += EncoderOnOutputDataReceived; 
 
                 Log.InfoFormat("BDSup2Sub: {0:s}", parameter.Arguments);
 
@@ -269,6 +250,62 @@ namespace VideoConvert.Core.Encoder
             e.Result = _jobInfo;
         }
 
+        private readonly Regex _readCaptions = new Regex(@"^#>\s+?(\d*?)\s\(.*$",
+                                                         RegexOptions.Singleline | RegexOptions.Multiline);
+        private readonly Regex _decodeFrames = new Regex(@"^Decoding frame\s(\d*)/(\d*)\s*?.*$",
+                                                         RegexOptions.Singleline | RegexOptions.Multiline);
+        private readonly string _subtitleLoadStatus = Processing.GetResourceString("bdsup2sub_convert_subtitle_load");
+        private readonly string _subtitleProcess = Processing.GetResourceString("bdsup2sub_convert_subtitle_process");
+
+        /// <summary>
+        /// Parses output from the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="outputEvent"></param>
+        private void EncoderOnOutputDataReceived(object sender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match resultReadCaptions = _readCaptions.Match(line);
+            Match resultDecodeFrames = _decodeFrames.Match(line);
+
+            string status;
+
+            if (resultReadCaptions.Success)
+            {
+                if (!String.IsNullOrEmpty(_subtitleLoadStatus))
+                {
+                    status = string.Format(_subtitleLoadStatus, resultReadCaptions.Groups[1].Value);
+                    _bw.ReportProgress(-1, status);
+                }
+            }
+            else if (resultDecodeFrames.Success)
+            {
+                int actFrame, maxFrames;
+
+                Int32.TryParse(resultDecodeFrames.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                               out actFrame);
+                Int32.TryParse(resultDecodeFrames.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
+                               out maxFrames);
+
+                int progress = (int)Math.Round(actFrame / (double)maxFrames * 100d, 0);
+
+                if (!String.IsNullOrEmpty(_subtitleProcess))
+                {
+                    status = string.Format(_subtitleProcess, actFrame, maxFrames, progress);
+                    _bw.ReportProgress(progress, status);
+                }
+            }
+            else
+                Log.InfoFormat("BDSup2Sub: {0:s}", line);
+        }
+
+        /// <summary>
+        /// Processes xml file generated by the application and replace with image captions valid for dvd subtitles.
+        /// </summary>
+        /// <param name="inFile">Path to input xml file</param>
+        /// <returns>Path to output xml file</returns>
         private string GenerateSpuMuxSubtitle(string inFile)
         {
             XmlDocument inSubFile = new XmlDocument();
@@ -320,14 +357,14 @@ namespace VideoConvert.Core.Encoder
                     spu.Attributes.Append(spuEnd);
 
                     Color first;
-// ReSharper disable AssignNullToNotNullAttribute
-                    using (Bitmap bit = new Bitmap(Path.Combine(Path.GetDirectoryName(inFile), imageFile)),
-// ReSharper restore AssignNullToNotNullAttribute
+                    string inPath = Path.GetDirectoryName(inFile);
+                    if (string.IsNullOrEmpty(inPath))
+                        inPath = string.Empty;
+
+                    using (Bitmap bit = new Bitmap(Path.Combine(inPath, imageFile)),
                                   newBit = bit.Clone(new Rectangle(0, 0, bit.Width, bit.Height), PixelFormat.Format1bppIndexed))
                     {
-// ReSharper disable AssignNullToNotNullAttribute
-                        string oldImage = Path.Combine(Path.GetDirectoryName(inFile), imageFile);
-// ReSharper restore AssignNullToNotNullAttribute
+                        string oldImage = Path.Combine(inPath, imageFile);
                         _jobInfo.TempFiles.Add(oldImage);
                         imageFile = Path.ChangeExtension(oldImage, "encoded.png");
                         first = newBit.Palette.Entries[0];
