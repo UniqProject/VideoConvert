@@ -44,6 +44,9 @@ namespace VideoConvert.Windows
 
         public ObservableCollection<EncodeInfo> JobCollection { get { return _jobCollection; } }
 
+
+        private string _lastDir;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -332,8 +335,14 @@ namespace VideoConvert.Windows
         private void AddFolderClick(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+            if (!string.IsNullOrEmpty(_lastDir))
+                folderBrowser.SelectedPath = _lastDir;
+
             if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
                 CreateJob(folderBrowser.SelectedPath);
+                _lastDir = folderBrowser.SelectedPath;
+            }
         }
 
         private void CreateJob(string fileName)
