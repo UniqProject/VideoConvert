@@ -129,15 +129,15 @@ namespace VideoConvert.Core.Helpers
             {
                 long total = fromStream.Length;
                 long current = 0;
-                Byte[] buffer = new Byte[51200]; // 50kbyte buffer
+                Byte[] buffer = new Byte[1048576]; // 1 mbyte buffer
                 int secRemaining = 0;
 
                 DateTime startTime = DateTime.Now;
+                DateTime reportTime = DateTime.Now;
                 do
                 {
                     int read = fromStream.Read(buffer, 0, buffer.Length);
                     toStream.Write(buffer, 0, read);
-
                     current += read;
 
                     long prozent = current * 100 / total;
@@ -149,12 +149,15 @@ namespace VideoConvert.Core.Helpers
                         secRemaining = kbRemaining / (int)kbs;
                     }
 
-                    string progressText = string.Format(progressFormat,
-                                                        Path.GetFileName(fromFile), (int) (current/1024),
-                                                        (int) (total/1024), secRemaining);
+                    if (reportTime.AddSeconds(1) <= DateTime.Now)
+                    {
+                        string progressText = string.Format(progressFormat,
+                                                            Path.GetFileName(fromFile), (int) (current/1024),
+                                                            (int) (total/1024), secRemaining);
 
-                    _bw.ReportProgress((int)prozent, progressText);
-
+                        _bw.ReportProgress((int) prozent, progressText);
+                        reportTime = DateTime.Now;
+                    }
                 } while (total != current);
             }
         }
