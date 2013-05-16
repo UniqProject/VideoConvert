@@ -1,4 +1,8 @@
-﻿- [change]  Button icons changed.
+﻿- [change]  Use ffmpeg instead of libav
+- [new]     64bit ffmpeg support added
+
+0.22.827.2028
+- [change]  Button icons changed.
 - [change]  Improved update process.
 
 0.21.826.2057

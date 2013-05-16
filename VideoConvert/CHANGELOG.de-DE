@@ -1,4 +1,8 @@
-﻿- [change]  Schaltflächenpiktogramme geändert.
+﻿- [change]  Benutze ffmpeg anstatt libav
+- [new]     Unterstützung für 64bit ffmpeg hinzugefügt
+
+0.22.827.2028
+- [change]  Schaltflächenpiktogramme geändert.
 - [change]  Updateroutine verbessert.
 
 0.21.826.2057
