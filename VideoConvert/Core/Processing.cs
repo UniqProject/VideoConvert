@@ -23,9 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using System.Threading;
 using System.Windows;
 using VideoConvert.Core.Encoder;
 using VideoConvert.Core.Helpers;
@@ -97,7 +95,7 @@ namespace VideoConvert.Core
         private static InputType CheckFileType(string pathToFile)
         {
 
-            MediaInfoContainer mi = new MediaInfoContainer();
+            MediaInfoContainer mi;
             try
             {
                 mi = GetMediaInfo(pathToFile);
