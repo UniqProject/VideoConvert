@@ -159,6 +159,17 @@ namespace VideoConvert.Core
             get { return !string.IsNullOrEmpty(LastffmpegVer); }
         }
 
+        public static string Lastffmpeg64Ver
+        {
+            get { return Properties.Settings.Default.Lastffmpeg_64Ver; }
+            set { Properties.Settings.Default.Lastffmpeg_64Ver = value; }
+        }
+
+        public static bool Ffmpeg64Installed
+        {
+            get { return !string.IsNullOrEmpty(Lastffmpeg64Ver); }
+        }
+
         public static string Lasteac3ToVer
         {
             get { return Properties.Settings.Default.Lasteac3toVer; }

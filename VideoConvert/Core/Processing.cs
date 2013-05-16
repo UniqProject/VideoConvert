@@ -607,7 +607,10 @@ namespace VideoConvert.Core
                 AppSettings.Lastx26464Ver = x264Enc.GetVersionInfo(encPath, true);
 
             FfMpeg ffmpeg = new FfMpeg();
-            AppSettings.LastffmpegVer = ffmpeg.GetVersionInfo(encPath);
+            AppSettings.LastffmpegVer = ffmpeg.GetVersionInfo(encPath, false);
+
+            if (Environment.Is64BitOperatingSystem)
+                AppSettings.Lastffmpeg64Ver = ffmpeg.GetVersionInfo(encPath, true);
 
             Eac3To eac3To = new Eac3To();
             AppSettings.Lasteac3ToVer = eac3To.GetVersionInfo(encPath);

@@ -692,11 +692,19 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ffmpegVer:System.Windows.Fram
 VideoConvert.g.en-US.resources:settingswindow.baml,ffmpegVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,ffmpegVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,ffmpegVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
-VideoConvert.g.en-US.resources:settingswindow.baml,ffmpegVer:System.Windows.Controls.ContentControl.ContentStringFormat,Label,True,True,,avconv Version {0:s}
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpegVer:System.Windows.Controls.ContentControl.ContentStringFormat,Label,True,True,,ffmpeg Version {0:s}
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.Controls.Label.$Content,Label,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.FrameworkElement.Height,None,False,True,,21
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.FrameworkElement.Margin,None,False,True,,"10,73,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.Controls.Control.Padding,None,False,True,,0
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,ffmpeg64Ver:System.Windows.Controls.ContentControl.ContentStringFormat,Label,True,True,,ffmpeg Version {0:s} (64 bit)
 VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,73,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,94,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -704,7 +712,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,eac3toVer:System.Windows.Cont
 VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,94,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,115,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -712,7 +720,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,lsdvdVer:System.Windows.Contr
 VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,115,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,136,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -720,7 +728,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,mkvmergeVer:System.Windows.Co
 VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,136,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,157,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -728,7 +736,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,mplayerVer:System.Windows.Con
 VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,157,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,178,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -736,7 +744,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,TSMuxerVer:System.Windows.Con
 VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,178,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,199,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -744,7 +752,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,MJPEGtoolsVer:System.Windows.
 VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,199,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,220,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -752,7 +760,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,DVDAuthorVer:System.Windows.C
 VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,220,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,241,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -760,7 +768,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,MP4BoxVer:System.Windows.Cont
 VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,241,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,262,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -768,7 +776,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,HcEncVer:System.Windows.Contr
 VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,262,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,283,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -776,7 +784,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,OggEncVer:System.Windows.Cont
 VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,283,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,304,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -784,7 +792,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,NeroAACEncVer:System.Windows.
 VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,304,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,325,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -792,7 +800,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,LameVer:System.Windows.Contro
 VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,325,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,346,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -800,7 +808,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,VpxEncVer:System.Windows.Cont
 VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,346,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,367,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -808,7 +816,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,BDSup2SubVer:System.Windows.C
 VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,367,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,388,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -816,14 +824,14 @@ VideoConvert.g.en-US.resources:settingswindow.baml,BDInfoVer:System.Windows.Cont
 VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,388,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,409,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,MediaInfoVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,409,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.FrameworkElement.Margin,None,False,True,,"10,430,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthVer:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center

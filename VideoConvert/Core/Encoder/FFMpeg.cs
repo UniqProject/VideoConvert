@@ -43,17 +43,22 @@ namespace VideoConvert.Core.Encoder
         /// <summary>
         /// Executable filename
         /// </summary>
-        private const string Executable = "avconv.exe";
+        private const string Executable = "ffmpeg.exe";
+
+        /// <summary>
+        /// 64bit Executable filename
+        /// </summary>
+        private const string Executable64 = "ffmpeg_64.exe";
 
         private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
 
-        private readonly Regex _demuxReg = new Regex(@"^size=\s+?(\d+)[\w\s]+?time=([\d\.]+).+$",
+        private readonly Regex _demuxReg = new Regex(@"^size=\s+?(\d+)[\w\s]+?time=([\d\.\:]+).+$",
                                                    RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly string _demuxProgressFormat = Processing.GetResourceString("ffmpeg_demuxing_progress");
 
         private readonly Regex _ac3EncReg =
-            new Regex(@"^size=.\s*?([\d]*?)kB\s*?time=\s*?([\d\.]*)\s*?bitrate=\s*?([\d\.]*?)kbit.*$",
+            new Regex(@"^size=.\s*?([\d]*?)kB\s*?time=\s*?([\d\.\:]*)\s*?bitrate=\s*?([\d\.]*?)kbit.*$",
                       RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly string _ac3EncProgressFmt = Processing.GetResourceString("ffmpeg_encoding_audio_progress");
 
@@ -79,22 +84,26 @@ namespace VideoConvert.Core.Encoder
         /// <summary>
         /// Reads encoder version from its output, use standard path settings
         /// </summary>
+        /// <param name="use64Bit">Defines whether the 64bit encoder should be used</param>
         /// <returns>Encoder version</returns>
-        public string GetVersionInfo()
+        public string GetVersionInfo(bool use64Bit)
         {
-            return GetVersionInfo(AppSettings.ToolsPath);
+            return GetVersionInfo(AppSettings.ToolsPath, use64Bit);
         }
 
         /// <summary>
         /// Reads encoder version from its output, use path settings from parameters
         /// </summary>
         /// <param name="encPath">Path to encoder</param>
+        /// <param name="use64Bit"></param>
         /// <returns>Encoder version</returns>
-        public string GetVersionInfo(string encPath)
+        public string GetVersionInfo(string encPath, bool use64Bit)
         {
             string verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
+
+            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
             using (Process encoder = new Process())
             {
@@ -114,13 +123,13 @@ namespace VideoConvert.Core.Encoder
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("avconv exception: {0}", ex);
+                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
                 }
 
                 if (started)
                 {
                     string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*avconv version ([\w\d\.\-_]+),.*$",
+                    Regex regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
@@ -134,8 +143,11 @@ namespace VideoConvert.Core.Encoder
 
             // Debug info
             if (Log.IsDebugEnabled)
-                Log.DebugFormat("avconv \"{0:s}\" found", verInfo);
-
+            {
+                if (use64Bit)
+                    Log.Debug("Selected 64 bit encoder");
+                Log.DebugFormat("ffmpeg \"{0:s}\" found", verInfo);
+            }
             return verInfo;
         }
 
@@ -218,7 +230,7 @@ namespace VideoConvert.Core.Encoder
                     encoder.StartInfo = parameter;
                     encoder.ErrorDataReceived += DemuxOnErrorDataReceived;
 
-                    Log.InfoFormat("avconv {0:s}", parameter.Arguments);
+                    Log.InfoFormat("ffmpeg {0:s}", parameter.Arguments);
 
                     bool started;
                     try
@@ -228,7 +240,7 @@ namespace VideoConvert.Core.Encoder
                     catch (Exception ex)
                     {
                         started = false;
-                        Log.ErrorFormat("avconv exception: {0}", ex);
+                        Log.ErrorFormat("ffmpeg exception: {0}", ex);
                         _jobInfo.ExitCode = -1;
                     }
 
@@ -279,9 +291,10 @@ namespace VideoConvert.Core.Encoder
             Match result = _demuxReg.Match(line);
             if (result.Success)
             {
-                double secDemux;
-                Double.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
-                                out secDemux);
+                TimeSpan procTime;
+                TimeSpan.TryParseExact(result.Groups[2].Value, @"hh\:mm\:ss\.ff", AppSettings.CInfo, out procTime);
+
+                double secDemux = procTime.TotalSeconds;
                 int progress = (int)Math.Floor(secDemux / _jobInfo.VideoStream.Length * 100d);
 
                 string progressStr = string.Format(_demuxProgressFormat, Path.GetFileName(_jobInfo.InputFile),
@@ -289,7 +302,7 @@ namespace VideoConvert.Core.Encoder
                 _bw.ReportProgress(progress, progressStr);
             }
             else
-                Log.InfoFormat("avconv: {0:s}", line);
+                Log.InfoFormat("ffmpeg: {0:s}", line);
         }
 
         /// <summary>
@@ -300,6 +313,10 @@ namespace VideoConvert.Core.Encoder
         public void DoEncodeAc3(object sender, DoWorkEventArgs e)
         {
             _bw = (BackgroundWorker)sender;
+
+            bool use64BitEncoder = AppSettings.Use64BitEncoders &&
+                                   AppSettings.Ffmpeg64Installed &&
+                                   Environment.Is64BitOperatingSystem;
 
             int[] sampleRateArr = new[] {0, 8000, 11025, 22050, 44100, 48000};
             int[] channelArr = new[] {0, 2, 3, 4, 1};
@@ -337,7 +354,7 @@ namespace VideoConvert.Core.Encoder
                                                                      outSampleRate);
             string outFile = Processing.CreateTempFile(item.TempFile, "encoded.ac3");
 
-            string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
+            string localExecutable = Path.Combine(AppSettings.ToolsPath, use64BitEncoder ? Executable64 : Executable);
 
             DateTime startTime = DateTime.Now;
 
@@ -363,7 +380,7 @@ namespace VideoConvert.Core.Encoder
                 _encodingStart = startTime;
                 encoder.ErrorDataReceived += Ac3EncodeOnErrorDataReceived;
 
-                Log.InfoFormat("avconv {0:s}", encoderParameter.Arguments);
+                Log.InfoFormat("ffmpeg {0:s}", encoderParameter.Arguments);
 
                 bool encStarted;
                 bool decStarted;
@@ -374,7 +391,7 @@ namespace VideoConvert.Core.Encoder
                 catch (Exception ex)
                 {
                     encStarted = false;
-                    Log.ErrorFormat("avconv exception: {0}", ex);
+                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
                     _jobInfo.ExitCode = -1;
                 }
 
@@ -456,19 +473,21 @@ namespace VideoConvert.Core.Encoder
             if (result.Success)
             {
                 int progress = -1;
-                float procTime;
-                Single.TryParse(result.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo, out procTime);
+                TimeSpan procTime;
+                TimeSpan.TryParseExact(result.Groups[2].Value, @"hh\:mm\:ss\.ff", AppSettings.CInfo, out procTime);
 
-                if (procTime > 0f)
-                    progress = (int)Math.Round(procTime / _localItem.Length * 100, 0);
+                double secProcessed = procTime.TotalSeconds;
+
+                if (secProcessed > 0f)
+                    progress = (int)Math.Round(secProcessed / _localItem.Length * 100, 0);
 
                 TimeSpan eta = DateTime.Now.Subtract(_encodingStart);
-                double timeRemaining = _localItem.Length - procTime;
+                double timeRemaining = _localItem.Length - secProcessed;
                 long secRemaining = 0;
 
                 if (eta.Seconds != 0)
                 {
-                    double speed = Math.Round(procTime / eta.TotalSeconds, 2);
+                    double speed = Math.Round(secProcessed / eta.TotalSeconds, 2);
 
                     if (speed > 1)
                         secRemaining = (long)Math.Round(timeRemaining / speed, 0);
@@ -486,7 +505,7 @@ namespace VideoConvert.Core.Encoder
                 _bw.ReportProgress(progress, encProgress);
             }
             else
-                Log.InfoFormat("avconv: {0:s}", line);
+                Log.InfoFormat("ffmpeg: {0:s}", line);
         }
 
         /// <summary>
@@ -524,7 +543,7 @@ namespace VideoConvert.Core.Encoder
                 encoder.StartInfo = encoderParameter;
                 encoder.ErrorDataReceived += CropDetectOnErrorDataReceived;
 
-                Log.InfoFormat("avconv {0:s}", encoderParameter.Arguments);
+                Log.InfoFormat("ffmpeg {0:s}", encoderParameter.Arguments);
 
                 bool encstarted;
                 try
@@ -534,7 +553,7 @@ namespace VideoConvert.Core.Encoder
                 catch (Exception ex)
                 {
                     encstarted = false;
-                    Log.ErrorFormat("avconv exception: {0}", ex);
+                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
                     _jobInfo.ExitCode = -1;
                 }
 
@@ -637,7 +656,7 @@ namespace VideoConvert.Core.Encoder
                 _bw.ReportProgress(progress, _cropDetectStatus);
             }
             else
-                Log.InfoFormat("avconv: {0:s}", line);
+                Log.InfoFormat("ffmpeg: {0:s}", line);
         }
 
         /// <summary>
@@ -665,7 +684,7 @@ namespace VideoConvert.Core.Encoder
             ffmpeg.ErrorDataReceived += DecodeOnErrorDataReceived;
 
             Log.Info("ffmpeg decoding process created!");
-            Log.Info("params: avconv " + ffmpeg.StartInfo.Arguments);
+            Log.Info("params: ffmpeg " + ffmpeg.StartInfo.Arguments);
 
             return ffmpeg;
         }
