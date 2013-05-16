@@ -8,7 +8,9 @@ VideoConvert makes use of profile-based encoding, where one can chose profile fo
 This program makes use of following libraries/applications:<br>
 MediaInfo (http://mediainfo.sourceforge.net/)<br>
 ffmpeg (http://www.ffmpeg.org/)<br>
+ -> ffmpeg binary builds from http://ffmpeg.zeranoe.com/builds/<br>
 x264 (http://www.videolan.org/developers/x264.html)<br>
+ -> x264 binary builds from http://x264.nl/<br>
 eac3to (http://forum.doom9.org/showthread.php?t=125966)<br>
 lsdvd (http://lsdvd.sourceforge.net/)<br>
 mkvtoolnix (http://www.bunkus.org/videotools/mkvtoolnix/)<br>
