@@ -670,6 +670,7 @@ namespace VideoConvert.Windows
             VP8EncodingMode.SelectedIndex = ((VP8Profile) _selectedVideoProfile).EncodingMode;
             VP8BitrateValue.Value = ((VP8Profile) _selectedVideoProfile).Bitrate;
             VP8BitrateMode.SelectedIndex = ((VP8Profile) _selectedVideoProfile).BitrateMode;
+            VPXEncoder.SelectedIndex = ((VP8Profile) _selectedVideoProfile).Encoder;
 
             VP8ProfileVal.SelectedIndex = ((VP8Profile) _selectedVideoProfile).Profile;
             VP8BasicSpeedControl.SelectedIndex = ((VP8Profile) _selectedVideoProfile).SpeedControl;
@@ -783,29 +784,32 @@ namespace VideoConvert.Windows
                     ((HcEncProfile) _selectedVideoProfile).Interlacing = HcEncInterlacing.SelectedIndex;
                     ((HcEncProfile) _selectedVideoProfile).FieldOrder = HcEncInterlaceFieldOrder.SelectedIndex;
                     ((HcEncProfile) _selectedVideoProfile).ChromaDownsampling = HcEncChromaDownsampling.SelectedIndex;
-                    ((HcEncProfile)_selectedVideoProfile).ClosedGops = HcEncClosedGOP.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).SceneChange = HcEncSceneChange.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).AutoGOP = HcEncAutoGOP.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).GopLength = HcEncGopLength.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).BFrames = HcEncBFrames.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).LuminanceGain = HcEncLumGain.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).AQ = HcEncAQ.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).SMP = HcEncSMP.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).VBVCheck = hcEncVBVCheck.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).ClosedGops = HcEncClosedGOP.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).SceneChange = HcEncSceneChange.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).AutoGOP = HcEncAutoGOP.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).GopLength = HcEncGopLength.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).BFrames = HcEncBFrames.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).LuminanceGain = HcEncLumGain.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).AQ = HcEncAQ.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).SMP = HcEncSMP.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).VBVCheck = hcEncVBVCheck.IsChecked.GetValueOrDefault();
                     ((HcEncProfile) _selectedVideoProfile).Matrix = hcEncBuiltinMatrix.SelectedIndex;
                     ((HcEncProfile) _selectedVideoProfile).IntraVLC = hcEncIntraVLC.SelectedIndex;
                     ((HcEncProfile) _selectedVideoProfile).Colorimetry = hcEncColorimetry.SelectedIndex;
                     ((HcEncProfile) _selectedVideoProfile).MPGLevel = hcEncMPGLevel.SelectedIndex;
-                    ((HcEncProfile)_selectedVideoProfile).VBRBias = hcEncVBRBias.Value.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).LastIFrame = hcEncLastIFrame.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).SeqEndCode = hcEncSeqEndCode.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).Allow3BFrames = hcEncAllow3Frames.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile)_selectedVideoProfile).UseLosslessFile = hcEncUseLosslessFile.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).VBRBias = hcEncVBRBias.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).LastIFrame = hcEncLastIFrame.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).SeqEndCode = hcEncSeqEndCode.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).Allow3BFrames =
+                        hcEncAllow3Frames.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).UseLosslessFile =
+                        hcEncUseLosslessFile.IsChecked.GetValueOrDefault();
                     break;
                 case 4:
                     ((VP8Profile) _selectedVideoProfile).EncodingMode = VP8EncodingMode.SelectedIndex;
                     ((VP8Profile) _selectedVideoProfile).Bitrate = VP8BitrateValue.Value.GetValueOrDefault();
                     ((VP8Profile) _selectedVideoProfile).BitrateMode = VP8BitrateMode.SelectedIndex;
+                    ((VP8Profile) _selectedVideoProfile).Encoder = VPXEncoder.SelectedIndex;
 
                     ((VP8Profile) _selectedVideoProfile).Profile = VP8ProfileVal.SelectedIndex;
                     ((VP8Profile) _selectedVideoProfile).SpeedControl = VP8BasicSpeedControl.SelectedIndex;
@@ -813,34 +817,41 @@ namespace VideoConvert.Windows
                     ((VP8Profile) _selectedVideoProfile).DeadlinePerFrame = VP8DeadlinePerFrameValue.Value.GetValueOrDefault();
                     ((VP8Profile) _selectedVideoProfile).TokenPart = VP8TokenPartitioning.SelectedIndex;
 
-                    ((VP8Profile)_selectedVideoProfile).NoiseFiltering = VP8NoiseFiltering.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).Sharpness = VP8Sharpness.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).Threads = VP8Threads.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).StaticThreshold = VP8StaticThreshold.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).UseErrorResilience = VP8UseErrorResilience.IsChecked.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).NoiseFiltering = VP8NoiseFiltering.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).Sharpness = VP8Sharpness.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).Threads = VP8Threads.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).StaticThreshold = VP8StaticThreshold.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).UseErrorResilience =
+                        VP8UseErrorResilience.IsChecked.GetValueOrDefault();
 
-                    ((VP8Profile)_selectedVideoProfile).ArnrMaxFrames = VP8ArnrMaxFrameCount.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).ArnrStrength = VP8ArnrMaxStrength.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).ArnrMaxFrames = VP8ArnrMaxFrameCount.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).ArnrStrength = VP8ArnrMaxStrength.Value.GetValueOrDefault();
 
-                    ((VP8Profile)_selectedVideoProfile).GopMax = VP8GopSizeMax.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).GopMin = VP8GopSizeMin.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).MaxFramesLag = VP8MaxFramesLag.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).FrameDrop = VP8FrameDrop.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).UseSpatialResampling = VP8UseSpatialResampling.IsChecked.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).DownscaleThreshold = VP8DownScalingThreshold.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).UpscaleThreshold = VP8UpScalingThreshold.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).UseArnrFrameDecision = VP8UseArnr.IsChecked.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).GopMax = VP8GopSizeMax.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).GopMin = VP8GopSizeMin.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).MaxFramesLag = VP8MaxFramesLag.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).FrameDrop = VP8FrameDrop.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).UseSpatialResampling =
+                        VP8UseSpatialResampling.IsChecked.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).DownscaleThreshold =
+                        VP8DownScalingThreshold.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).UpscaleThreshold =
+                        VP8UpScalingThreshold.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).UseArnrFrameDecision = VP8UseArnr.IsChecked.GetValueOrDefault();
 
-                    ((VP8Profile)_selectedVideoProfile).InitialBufferSize = VP8InitialBufferSize.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).OptimalBufferSize = VP8OptimalBufferSize.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).BufferSize = VP8BufferSize.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).UndershootDataRate = VP8UndershootDatarate.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).InitialBufferSize =
+                        VP8InitialBufferSize.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).OptimalBufferSize =
+                        VP8OptimalBufferSize.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).BufferSize = VP8BufferSize.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).UndershootDataRate =
+                        VP8UndershootDatarate.Value.GetValueOrDefault();
 
-                    ((VP8Profile)_selectedVideoProfile).QuantizerMin = VP8QuantizerMin.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).QuantizerMax = VP8QuantizerMax.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).BiasFrameAdjust = VP8FrameAdjust.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).SectionMin = VP8SectionMin.Value.GetValueOrDefault();
-                    ((VP8Profile)_selectedVideoProfile).SectionMax = VP8SectionMax.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).QuantizerMin = VP8QuantizerMin.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).QuantizerMax = VP8QuantizerMax.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).BiasFrameAdjust = VP8FrameAdjust.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).SectionMin = VP8SectionMin.Value.GetValueOrDefault();
+                    ((VP8Profile) _selectedVideoProfile).SectionMax = VP8SectionMax.Value.GetValueOrDefault();
                     break;
             }
 

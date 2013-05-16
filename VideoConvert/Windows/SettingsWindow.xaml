@@ -423,12 +423,16 @@
                                     		<ComboBoxItem x:Uid="ComboBoxItem_204" Content="Automated 2 pass" />
                                     	</ComboBox>
                                     	<Label x:Uid="VP8BitrateLabel" Content="Bitrate (kbit/s):" HorizontalAlignment="Left" Margin="8,37,0,0" Name="VP8BitrateLabel" Padding="0" VerticalContentAlignment="Center" Height="21" VerticalAlignment="Top" />
-                                    	<toolkit:IntegerUpDown x:Uid="VP8BitrateValue" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="193,37,0,0" Maximum="245760" Minimum="0" Name="VP8BitrateValue" Value="1500" Width="110" Height="21" VerticalAlignment="Top"/>
-                                    	<Label x:Uid="VP8BitrateModeLabel" Content="Bitrate Mode:" HorizontalAlignment="Left" Margin="8,0,0,11" Name="VP8BitrateModeLabel" Padding="0" VerticalContentAlignment="Center" Height="21" VerticalAlignment="Bottom" />
-                                    	<ComboBox x:Uid="VP8BitrateMode" Margin="108,64,0,0" x:Name="VP8BitrateMode" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="195">
+                                    	<toolkit:IntegerUpDown x:Uid="VP8BitrateValue" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="108,37,0,0" Maximum="245760" Minimum="0" Name="VP8BitrateValue" Value="1500" Width="110" Height="21" VerticalAlignment="Top"/>
+                                    	<ComboBox x:Uid="VP8BitrateMode" Margin="226,35,0,0" x:Name="VP8BitrateMode" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="77">
                                     		<ComboBoxItem x:Uid="ComboBoxItem_205" Content="VBR" />
                                     		<ComboBoxItem x:Uid="ComboBoxItem_206" Content="CBR" />
                                     	</ComboBox>
+                                        <Label x:Uid="VP8EncoderLabel" Content="Encoder:" HorizontalAlignment="Left" Margin="8,0,0,11" Name="VP8EncoderLabel" Padding="0" VerticalContentAlignment="Center" Height="21" VerticalAlignment="Bottom" />
+                                        <ComboBox x:Uid="VPXEncoder" Margin="108,64,0,0" x:Name="VPXEncoder" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="195">
+                                            <ComboBoxItem x:Uid="ComboBoxItem_220" Content="VP8" />
+                                            <ComboBoxItem x:Uid="ComboBoxItem_221" Content="VP9" />
+                                        </ComboBox>
                                     </Grid>
                                 </GroupBox>
                                 <GroupBox x:Uid="VP8SpeedComplexityGroup" Header="Speed and Complexity" Height="162" HorizontalAlignment="Left" Margin="6,126,0,0" Name="VP8SpeedComplexityGroup" VerticalAlignment="Top" Width="323">

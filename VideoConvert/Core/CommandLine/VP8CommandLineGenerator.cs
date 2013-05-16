@@ -46,7 +46,9 @@ namespace VideoConvert.Core.CommandLine
             {
                 int tempPass = pass;
 
-                sb.Append("--debug --codec=vp8 ");
+                sb.Append("--debug --codec=");
+                sb.Append(inProfile.Encoder == 0 ? "vp8 " : "vp9 ");
+
                 sb.AppendFormat(AppSettings.CInfo, "--width={0:g} --height={1:g} ", hRes, vRes);
 
                 sb.AppendFormat(AppSettings.CInfo, " --deadline={0:g} ", inProfile.DeadlinePerFrame);

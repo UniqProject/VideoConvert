@@ -24,6 +24,7 @@ namespace VideoConvert.Core.Profiles
         public int EncodingMode { get; set; }
         public int Bitrate { get; set; }
         public int BitrateMode { get; set; }
+        public int Encoder { get; set; } // 0 = vp8, 1 = vp9
         public int Profile { get; set; }
         public int SpeedControl { get; set; }
         public int CPUModifier { get; set; }
@@ -61,6 +62,7 @@ namespace VideoConvert.Core.Profiles
             EncodingMode = 0;
             Bitrate = 1000;
             BitrateMode = 0;
+            Encoder = 0;
             Profile = 0;
             SpeedControl = 1;
             CPUModifier = 3;

@@ -1905,33 +1905,45 @@ VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:Xceed.Wpf.Too
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:Xceed.Wpf.Toolkit.Primitives.InputBase.CultureInfo,None,False,True,,en-US
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
 VideoConvert.g.en-US.resources:settingswindow.baml,"VP8BitrateValue:Xceed.Wpf.Toolkit.NumericUpDown`1[[System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]].Increment",None,False,True,,1
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:System.Windows.FrameworkElement.Margin,None,False,True,,"193,37,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:System.Windows.FrameworkElement.Margin,None,False,True,,"108,37,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,"VP8BitrateValue:Xceed.Wpf.Toolkit.NumericUpDown`1[[System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]].Maximum",None,False,True,,245760
 VideoConvert.g.en-US.resources:settingswindow.baml,"VP8BitrateValue:Xceed.Wpf.Toolkit.NumericUpDown`1[[System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]].Minimum",None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,"VP8BitrateValue:Xceed.Wpf.Toolkit.Primitives.UpDownBase`1[[System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]].Value",None,False,True,,1500
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:System.Windows.FrameworkElement.Width,None,False,True,,110
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateValue:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.Controls.ContentControl.Content,Label,True,True,,Bitrate Mode:
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"8,0,0,11"
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.Controls.Control.Padding,None,False,True,,0
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateModeLabel:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.Controls.ComboBox.$Content,ComboBox,True,True,,#ComboBoxItem_205;#ComboBoxItem_206;
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.Margin,None,False,True,,"108,64,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.Margin,None,False,True,,"226,35,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.Controls.Control.HorizontalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.Height,None,False,True,,23
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.Width,None,False,True,,195
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8BitrateMode:System.Windows.FrameworkElement.Width,None,False,True,,77
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_205:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_205:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,VBR
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_206:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_206:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,CBR
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.Controls.ContentControl.Content,Label,True,True,,Encoder:
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"8,0,0,11"
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.Controls.Control.Padding,None,False,True,,0
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
+VideoConvert.g.en-US.resources:settingswindow.baml,VP8EncoderLabel:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Bottom
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.Controls.ComboBox.$Content,ComboBox,True,True,,#ComboBoxItem_220;#ComboBoxItem_221;
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.FrameworkElement.Margin,None,False,True,,"108,64,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.Controls.Control.HorizontalContentAlignment,None,False,True,,Center
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.FrameworkElement.Height,None,False,True,,23
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,VPXEncoder:System.Windows.FrameworkElement.Width,None,False,True,,195
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_220:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_220:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,VP8
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_221:System.Windows.Controls.ComboBoxItem.$Content,ComboBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_221:System.Windows.Controls.ContentControl.Content,ComboBox,True,True,,VP9
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8SpeedComplexityGroup:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_37;
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8SpeedComplexityGroup:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Speed and Complexity
 VideoConvert.g.en-US.resources:settingswindow.baml,VP8SpeedComplexityGroup:System.Windows.FrameworkElement.Height,None,False,True,,162
