@@ -195,6 +195,19 @@ namespace VideoConvert.Windows
                                 Destination = AppSettings.ToolsPath
                             });
 
+                    if (String.CompareOrdinal(updateFile.FFMPEG64.PackageVersion, AppSettings.Lastffmpeg64Ver) != 0 &&
+                        Environment.Is64BitOperatingSystem)
+                        _tempToolCollection.Add(new ToolVersions
+                        {
+                            ToolName = "ffmpeg (64 bit)",
+                            LocalVersion = AppSettings.Lastffmpeg64Ver,
+                            ServerVersion = updateFile.FFMPEG64.PackageVersion,
+                            FileName = Path.Combine(tempPath, updateFile.FFMPEG64.PackageName),
+                            DownloadUri = serverPathTools + updateFile.FFMPEG64.PackageName,
+                            DownloadType = AppType.Encoder,
+                            Destination = AppSettings.ToolsPath
+                        });
+
                     if (String.CompareOrdinal(updateFile.Eac3To.PackageVersion, AppSettings.Lasteac3ToVer) != 0)
                         _tempToolCollection.Add(new ToolVersions
                             {

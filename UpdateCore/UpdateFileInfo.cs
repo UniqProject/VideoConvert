@@ -22,6 +22,8 @@ namespace UpdateCore
         public ToolInfo X26464 { get; set; }
         [XmlElement("ffmpeg")]
         public ToolInfo FFMPEG { get; set; }
+        [XmlElement("ffmpeg_64")]
+        public ToolInfo FFMPEG64 { get; set; }
         [XmlElement("eac3to")]
         public ToolInfo Eac3To { get; set; }
         [XmlElement("lsdvd")]

@@ -228,6 +228,10 @@ namespace VideoConvert.Windows
                     if (String.CompareOrdinal(updateFile.FFMPEG.PackageVersion, AppSettings.LastffmpegVer) != 0)
                         needUpdate = true;
 
+                    if (String.CompareOrdinal(updateFile.FFMPEG64.PackageVersion, AppSettings.Lastffmpeg64Ver) != 0 &&
+                        Environment.Is64BitOperatingSystem)
+                        needUpdate = true;
+
                     if (String.CompareOrdinal(updateFile.Eac3To.PackageVersion, AppSettings.Lasteac3ToVer) != 0)
                         needUpdate = true;
 
