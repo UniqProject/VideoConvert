@@ -30,7 +30,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JT-Soft")]
 [assembly: AssemblyProduct("VideoConvert")]
-[assembly: AssemblyCopyright("Copyright © JT-Soft 2011-2012")]
+[assembly: AssemblyCopyright("Copyright © JT-Soft 2011-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: GuidAttribute("6109EC7F-753E-438A-B5CB-01A2117B3EE6")]
@@ -70,5 +70,5 @@ using System.Windows;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.22.854.1240")]
-[assembly: AssemblyFileVersion("0.22.854.1240")]
+[assembly: AssemblyVersion("0.23.854.1240")]
+[assembly: AssemblyFileVersion("0.23.854.1240")]
