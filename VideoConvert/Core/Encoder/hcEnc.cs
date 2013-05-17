@@ -89,7 +89,7 @@ namespace VideoConvert.Core.Encoder
 
                 if (started)
                 {
-                    encoder.WaitForInputIdle(10000);
+                    encoder.WaitForInputIdle(2500);
                     SystemWindow mainWin = new SystemWindow(encoder.MainWindowHandle) {VisibilityFlag = false};
 
                     Regex regObj = new Regex(@"^.*HCenc ([\d\.]*?)$", RegexOptions.Singleline | RegexOptions.Multiline);
