@@ -1,6 +1,6 @@
-//============================================================================
+﻿//============================================================================
 // VideoConvert - Fast Video & Audio Conversion Tool
-// Copyright � 2012 JT-Soft
+// Copyright © 2012 JT-Soft
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public

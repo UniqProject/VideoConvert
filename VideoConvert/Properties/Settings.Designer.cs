@@ -718,5 +718,41 @@ namespace VideoConvert.Properties {
                 this["Lastffmpeg_64Ver"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CreateXbmcInfoFile {
+            get {
+                return ((bool)(this["CreateXbmcInfoFile"]));
+            }
+            set {
+                this["CreateXbmcInfoFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MovieDBLastLanguage {
+            get {
+                return ((string)(this["MovieDBLastLanguage"]));
+            }
+            set {
+                this["MovieDBLastLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MovieDBLastRatingCountry {
+            get {
+                return ((string)(this["MovieDBLastRatingCountry"]));
+            }
+            set {
+                this["MovieDBLastRatingCountry"] = value;
+            }
+        }
     }
 }

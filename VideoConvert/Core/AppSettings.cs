@@ -505,6 +505,23 @@ namespace VideoConvert.Core
             get { return Properties.Settings.Default.ShowChangeLog; }
         }
 
+        public static bool CreateXbmcInfoFile
+        {
+            get { return Properties.Settings.Default.CreateXbmcInfoFile; }
+        }
+
+        public static string MovieDBLastLanguage
+        {
+            get { return Properties.Settings.Default.MovieDBLastLanguage; }
+            set { Properties.Settings.Default.MovieDBLastLanguage = value; }
+        }
+
+        public static string MovieDBLastRatingCountry
+        {
+            get { return Properties.Settings.Default.MovieDBLastRatingCountry; }
+            set { Properties.Settings.Default.MovieDBLastRatingCountry = value; }
+        }
+
         public static string AppPath
         {
             get

@@ -1,6 +1,6 @@
-//============================================================================
+ï»¿//============================================================================
 // VideoConvert - Fast Video & Audio Conversion Tool
-// Copyright © 2012 JT-Soft
+// Copyright Â© 2012 JT-Soft
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
 
@@ -65,6 +66,10 @@ namespace VideoConvert.Core
 
         public int                      ExitCode { get; set; }
 
+        public string                   BackDropImage { get; set; }
+        public string                   PosterImage { get; set; }
+        public MovieEntry               MovieInfo { get; set; }
+
         public EncodeInfo()
         {
             JobName = string.Empty;
@@ -94,7 +99,7 @@ namespace VideoConvert.Core
         }
 
         /// <summary>
-        /// Gibt einen <see cref="T:System.String"/> zurück, der das aktuelle <see cref="T:System.Object"/> darstellt.
+        /// Gibt einen <see cref="T:System.String"/> zurÃ¼ck, der das aktuelle <see cref="T:System.Object"/> darstellt.
         /// </summary>
         /// <returns>
         /// Ein <see cref="T:System.String"/>, der das aktuelle <see cref="T:System.Object"/> darstellt.
@@ -111,10 +116,10 @@ namespace VideoConvert.Core
         /// <returns>
         /// Der Wert der aktuellen Instanz im angegebenen Format.
         /// </returns>
-        /// <param name="format">Das zu verwendende Format.– oder – Ein NULL-Verweis (Nothing in Visual Basic),
-        ///  wenn das für den Typ der <see cref="T:System.IFormattable"/> -Implementierung definierte Standardformat verwendet werden soll. </param>
-        /// <param name="formatProvider">Der zum Formatieren des Werts zu verwendende Anbieter.– oder – Ein NULL-Verweis (Nothing in Visual Basic),
-        ///  wenn die Informationen über numerische Formate dem aktuellen Gebietsschema des Betriebssystems entnommen werden sollen. </param>
+        /// <param name="format">Das zu verwendende Format.â€“ oder â€“ Ein NULL-Verweis (Nothing in Visual Basic),
+        ///  wenn das fÃ¼r den Typ der <see cref="T:System.IFormattable"/> -Implementierung definierte Standardformat verwendet werden soll. </param>
+        /// <param name="formatProvider">Der zum Formatieren des Werts zu verwendende Anbieter.â€“ oder â€“ Ein NULL-Verweis (Nothing in Visual Basic),
+        ///  wenn die Informationen Ã¼ber numerische Formate dem aktuellen Gebietsschema des Betriebssystems entnommen werden sollen. </param>
         /// <filterpriority>2</filterpriority>
         public string ToString(string format, IFormatProvider formatProvider)
         {

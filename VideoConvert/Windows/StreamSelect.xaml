@@ -147,6 +147,7 @@
         </GroupBox>
         <Button x:Uid="OKButton" Content="OK" Height="23" HorizontalAlignment="Right" Margin="0,78,119,0" Name="OKButton" VerticalAlignment="Top" Width="95" Click="OkButtonClick" />
         <Button x:Uid="CancelButton" Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="0,78,12,0" Name="CancelButton" VerticalAlignment="Top" Width="95" IsCancel="True" />
+        <Button x:Uid="XbmcMediaInfo" Content="Media Info" Height="23" HorizontalAlignment="Right" Margin="0,112,12,0" Name="XbmcMediaInfo" VerticalAlignment="Top" Width="202" IsEnabled="{Binding Source={StaticResource Settings}, Path=Default.CreateXbmcInfoFile}" Click="XbmcMediaInfo_Click" />
         <Label x:Uid="EncodingProfileLabel" Content="Encoding profile:" Height="18" HorizontalAlignment="Left" Margin="12,114,0,0" Name="EncodingProfileLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <ComboBox x:Uid="EncodingProfile" DisplayMemberPath="Name" SelectedValuePath="Name" Height="21" HorizontalContentAlignment="Center" ItemsSource="{Binding}" Margin="118,113,229,0" Name="EncodingProfile" Padding="5,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <Label x:Uid="SelectedTitleLabel" Content="Select Title:" Height="18" HorizontalAlignment="Left" Margin="12,151,0,0" Name="SelectedTitleLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
@@ -165,5 +166,6 @@
                 <CheckBox x:Uid="AudioMKVDefault" Content="Make stream default" Height="16" HorizontalAlignment="Left" Margin="6,29,0,0" Name="AudioMKVDefault" VerticalAlignment="Top" Checked="AudioMKVDefaultChecked" Unchecked="AudioMKVDefaultChecked" />
             </Grid>
         </GroupBox>
+        
     </Grid>
 </Window>

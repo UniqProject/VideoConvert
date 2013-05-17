@@ -34,6 +34,7 @@ using VideoConvert.Core.Encoder;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
+using VideoConvert.Windows.TheMovieDB;
 using log4net;
 
 namespace VideoConvert.Windows
@@ -53,10 +54,12 @@ namespace VideoConvert.Windows
         public List<TreeNode> Tree { get { return _tree; } }
 
         private int _treeNodeID;
-
         private BDROM _bdInfo;
-
         private int _defaultSelection;
+
+        private MovieEntry _resultMovieData;
+        private string _resultBackdropImage;
+        private string _resultPosterImage;
 
         public StreamSelect()
         {
@@ -1043,6 +1046,14 @@ namespace VideoConvert.Windows
 
             AppSettings.LastSelectedProfile = (string)EncodingProfile.SelectedValue;
             AppSettings.SaveSettings();
+
+            if (AppSettings.CreateXbmcInfoFile)
+            {
+                JobInfo.MovieInfo = _resultMovieData;
+                JobInfo.PosterImage = _resultPosterImage;
+                JobInfo.BackDropImage = _resultBackdropImage;
+            }
+
             _bdInfo = null;
             DialogResult = true;
         }
@@ -1254,6 +1265,18 @@ namespace VideoConvert.Windows
             AudioInfo audioInfo = (AudioInfo)selectedNode.Data;
 
             audioInfo.MkvDefault = AudioMKVDefault.IsChecked.GetValueOrDefault();
+        }
+
+        private void XbmcMediaInfo_Click(object sender, RoutedEventArgs e)
+        {
+            using (MovieDBInfo dbInfo = new MovieDBInfo {MovieName = FileTitle.Text, Owner = this})
+            {
+                if (dbInfo.ShowDialog() != true) return;
+
+                _resultBackdropImage = dbInfo.ResultBackdropImage;
+                _resultPosterImage = dbInfo.ResultPosterImage;
+                _resultMovieData = dbInfo.ResultMovieData;
+            }
         }
     }
 }

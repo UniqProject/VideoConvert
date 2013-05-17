@@ -58,7 +58,7 @@ namespace VideoConvert.Windows
         public ObservableCollection<LogEntry> LogEntries { get { return _logEntries; } }
 
         private DateTime _startTime = DateTime.MinValue;
-        private string status = Processing.GetResourceString("total_progress_time");
+        private readonly string _status = Processing.GetResourceString("total_progress_time");
         private DateTime _updateTime = DateTime.MinValue;
 
         public EncodingWindow()
@@ -146,7 +146,7 @@ namespace VideoConvert.Windows
                         progressRemain = 0;
 
                     DateTime remainTime = DateTime.MinValue.Add(TimeSpan.FromSeconds(progressTime*progressRemain));
-                    TotalTime.Content = string.Format(status, processingTime, remainTime);
+                    TotalTime.Content = string.Format(_status, processingTime, remainTime);
 
                     _updateTime = now;
                 }
@@ -241,6 +241,9 @@ namespace VideoConvert.Windows
                     case EncodingStep.MoveOutFile:
                         DoMoveOutFile(job);
                         break;
+                    case EncodingStep.WriteInfoFile:
+                        DoWriteInfoFile(job);
+                        break;
                     case EncodingStep.Done:
                         job.TempFiles.Add(job.TempInput);
                         job.TempFiles.Add(job.TempOutput);
@@ -279,7 +282,6 @@ namespace VideoConvert.Windows
                 Log.Info("Job processing done");
                 CloseWindow();
             }
-
         }
 
         private void CloseWindow()
@@ -332,6 +334,14 @@ namespace VideoConvert.Windows
                 }
             }
             job.TempFiles.Clear();
+        }
+
+        private void DoWriteInfoFile(EncodeInfo job)
+        {
+            InfoWriter writer = new InfoWriter();
+            writer.SetJob(job);
+            _worker.DoWork += writer.DoWrite;
+            Log.Info("InfoWriter.DoWrite()");
         }
 
         private void DoMoveOutFile(EncodeInfo job)
@@ -671,10 +681,22 @@ namespace VideoConvert.Windows
                     break;
 
                 case EncodingStep.MuxResult:
-                    job.NextStep = string.IsNullOrEmpty(job.TempOutput) ? EncodingStep.Done : EncodingStep.MoveOutFile;
+                    if (string.IsNullOrEmpty(job.TempOutput))
+                        if (AppSettings.CreateXbmcInfoFile && job.MovieInfo != null)
+                            job.NextStep = EncodingStep.WriteInfoFile;
+                        else
+                            job.NextStep = EncodingStep.Done;
+                    else 
+                        job.NextStep = EncodingStep.MoveOutFile;
                     break;
 
                 case EncodingStep.MoveOutFile:
+                    if (AppSettings.CreateXbmcInfoFile && job.MovieInfo != null)
+                        job.NextStep = EncodingStep.WriteInfoFile;
+                    else
+                        job.NextStep = EncodingStep.Done;
+                    break;
+                case EncodingStep.WriteInfoFile:
                     job.NextStep = EncodingStep.Done;
                     break;
             }
@@ -810,6 +832,9 @@ namespace VideoConvert.Windows
 
                 if (!string.IsNullOrEmpty(job.TempOutput))
                     encodingSteps++; // move finished file to output destination
+
+                if (AppSettings.CreateXbmcInfoFile && job.MovieInfo != null)
+                    encodingSteps++; // create xbmc info files
             }   // foreach job
 
             return encodingSteps;

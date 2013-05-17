@@ -103,4 +103,6 @@
     <system:String x:Uid="theora_encoding_progress"             x:Key="theora_encoding_progress">Encoding videostream - {2} elapsed: {0:T}; ETA: {1:T}</system:String>
     <system:String x:Uid="total_progress_time"                  x:Key="total_progress_time">Time elapsed: {0:T} / ETA: {1:T}</system:String>
     <system:String x:Uid="process_finish_warnings"              x:Key="process_finish_warnings">Process finished with 1 or more warnings</system:String>
+    <system:String x:Uid="infowriter_images_status"             x:Key="infowriter_images_status">Download and write images</system:String>
+    <system:String x:Uid="infowriter_info_status"               x:Key="infowriter_info_status">Writing info file</system:String>
 </ResourceDictionary>

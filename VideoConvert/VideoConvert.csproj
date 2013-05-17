@@ -108,7 +108,9 @@
     <Compile Include="Core\Encoder\Eac3To.cs" />
     <Compile Include="Core\Encoder\FFMpeg.cs" />
     <Compile Include="Core\Encoder\FfmsIndex.cs" />
+    <Compile Include="Core\Encoder\FileWorker.cs" />
     <Compile Include="Core\Encoder\hcEnc.cs" />
+    <Compile Include="Core\Encoder\InfoWriter.cs" />
     <Compile Include="Core\Encoder\Lame.cs" />
     <Compile Include="Core\Encoder\LsDvd.cs" />
     <Compile Include="Core\Encoder\MJpeg.cs" />
@@ -125,16 +127,24 @@
     <Compile Include="Core\Helpers\AudioHelper.cs" />
     <Compile Include="Core\Helpers\DAR.cs" />
     <Compile Include="Core\Helpers\DirSecurity.cs" />
-    <Compile Include="Core\Helpers\FileWorker.cs" />
     <Compile Include="Core\Helpers\InputBox.xaml.cs">
       <DependentUpon>InputBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\Helpers\LanguageHelper.cs" />
     <Compile Include="Core\Helpers\LogEntry.cs" />
+    <Compile Include="Core\Helpers\MovieEntry.cs" />
     <Compile Include="Core\Helpers\SizeModificator.cs" />
     <Compile Include="Core\Helpers\StreamFormat.cs" />
     <Compile Include="Core\Helpers\SupportedLanguage.cs" />
     <Compile Include="Core\Helpers\TargetSize.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBCast.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBCastList.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBCertCountries.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBCertCountry.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBImageInfo.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBLanguage.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\MovieDBLanguages.cs" />
+    <Compile Include="Core\Helpers\TheMovieDB\TMDbSerializer.cs" />
     <Compile Include="Core\Helpers\TreeNode.cs" />
     <Compile Include="Core\AppSettings.cs" />
     <Compile Include="Core\Helpers\VideoHelper.cs" />
@@ -179,6 +189,12 @@
     <Compile Include="Windows\StreamSelect.xaml.cs">
       <DependentUpon>StreamSelect.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\TheMovieDB\MovieDBInfo.xaml.cs">
+      <DependentUpon>MovieDBInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TheMovieDB\MovieDBMultipleSelection.xaml.cs">
+      <DependentUpon>MovieDBMultipleSelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ToolUpdaterWindow.xaml.cs">
       <DependentUpon>ToolUpdaterWindow.xaml</DependentUpon>
     </Compile>
@@ -205,6 +221,14 @@
     <Page Include="Windows\StreamSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TheMovieDB\MovieDBInfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\TheMovieDB\MovieDBMultipleSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\ToolUpdaterWindow.xaml">
       <SubType>Designer</SubType>
@@ -330,6 +354,10 @@
     <ProjectReference Include="..\..\VideoConvertLibraries\CheckBoxTreeViewLibrary\CheckBoxTreeViewLibrary.csproj">
       <Project>{8762FBAD-B3B1-4ECF-97EF-AEB634BDD0AC}</Project>
       <Name>CheckBoxTreeViewLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VideoConvertLibraries\TMDbLib\TMDbLib\TMDbLib.csproj">
+      <Project>{C0006F17-212A-474F-983E-7DA2F91E0233}</Project>
+      <Name>TMDbLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Converters\Converters.csproj">
       <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
@@ -531,7 +559,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" />
+      <UserProperties BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

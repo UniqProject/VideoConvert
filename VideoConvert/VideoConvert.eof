@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <EurekaLogOptions xmlns="EurekaLogOptions">
   <ActivateHandle>True</ActivateHandle>
   <ActivateLog>False</ActivateLog>
