@@ -130,14 +130,14 @@ namespace VideoConvert.Windows
             fontLoader.ProgressChanged += (o, args) =>
                 {
                     FontFamily font = (FontFamily) args.UserState;
-                    tsMuxeRFontSwitcher.Items.Add(font);
+                    TSMuxeRFontSwitcher.Items.Add(font);
                 };
             fontLoader.RunWorkerCompleted +=
-                (o, args) => { tsMuxeRFontSwitcher.SelectedItem = AppSettings.TSMuxeRSubtitleFont; };
+                (o, args) => { TSMuxeRFontSwitcher.SelectedItem = AppSettings.TSMuxeRSubtitleFont; };
 
             fontLoader.RunWorkerAsync();
             
-            tsMuxeRFontColorPicker.SelectedColor = AppSettings.TSMuxeRSubtitleColor;
+            TSMuxeRFontColorPicker.SelectedColor = AppSettings.TSMuxeRSubtitleColor;
 
             ReloadQuickProfileList();
             ReloadVideoProfiles();
@@ -444,8 +444,8 @@ namespace VideoConvert.Windows
                     be.UpdateSource();
             }
 
-            AppSettings.TSMuxeRSubtitleFont = (FontFamily)tsMuxeRFontSwitcher.SelectedItem;
-            AppSettings.TSMuxeRSubtitleColor = tsMuxeRFontColorPicker.SelectedColor;
+            AppSettings.TSMuxeRSubtitleFont = (FontFamily)TSMuxeRFontSwitcher.SelectedItem;
+            AppSettings.TSMuxeRSubtitleColor = TSMuxeRFontColorPicker.SelectedColor;
             AppSettings.UseLanguage = LanguageSelect.SelectedValue as string;
             AppSettings.ProcessPriority = ProcessPriority.SelectedIndex;
             AppSettings.UpdateFrequency = AutoUpdateFrequency.SelectedIndex;
@@ -792,18 +792,18 @@ namespace VideoConvert.Windows
                     ((HcEncProfile) _selectedVideoProfile).LuminanceGain = HcEncLumGain.Value.GetValueOrDefault();
                     ((HcEncProfile) _selectedVideoProfile).AQ = HcEncAQ.Value.GetValueOrDefault();
                     ((HcEncProfile) _selectedVideoProfile).SMP = HcEncSMP.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile) _selectedVideoProfile).VBVCheck = hcEncVBVCheck.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile) _selectedVideoProfile).Matrix = hcEncBuiltinMatrix.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).IntraVLC = hcEncIntraVLC.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).Colorimetry = hcEncColorimetry.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).MPGLevel = hcEncMPGLevel.SelectedIndex;
-                    ((HcEncProfile) _selectedVideoProfile).VBRBias = hcEncVBRBias.Value.GetValueOrDefault();
-                    ((HcEncProfile) _selectedVideoProfile).LastIFrame = hcEncLastIFrame.IsChecked.GetValueOrDefault();
-                    ((HcEncProfile) _selectedVideoProfile).SeqEndCode = hcEncSeqEndCode.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).VBVCheck = HcEncVBVCheck.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).Matrix = HcEncBuiltinMatrix.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).IntraVLC = HcEncIntraVLC.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).Colorimetry = HcEncColorimetry.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).MPGLevel = HcEncMPGLevel.SelectedIndex;
+                    ((HcEncProfile) _selectedVideoProfile).VBRBias = HcEncVBRBias.Value.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).LastIFrame = HcEncLastIFrame.IsChecked.GetValueOrDefault();
+                    ((HcEncProfile) _selectedVideoProfile).SeqEndCode = HcEncSeqEndCode.IsChecked.GetValueOrDefault();
                     ((HcEncProfile) _selectedVideoProfile).Allow3BFrames =
-                        hcEncAllow3Frames.IsChecked.GetValueOrDefault();
+                        HcEncAllow3Frames.IsChecked.GetValueOrDefault();
                     ((HcEncProfile) _selectedVideoProfile).UseLosslessFile =
-                        hcEncUseLosslessFile.IsChecked.GetValueOrDefault();
+                        HcEncUseLosslessFile.IsChecked.GetValueOrDefault();
                     break;
                 case 4:
                     ((VP8Profile) _selectedVideoProfile).EncodingMode = VP8EncodingMode.SelectedIndex;
@@ -1339,16 +1339,16 @@ namespace VideoConvert.Windows
             HcEncLumGain.Value = ((HcEncProfile)_selectedVideoProfile).LuminanceGain;
             HcEncAQ.Value = ((HcEncProfile)_selectedVideoProfile).AQ;
             HcEncSMP.IsChecked = ((HcEncProfile)_selectedVideoProfile).SMP;
-            hcEncVBVCheck.IsChecked = ((HcEncProfile)_selectedVideoProfile).VBVCheck;
-            hcEncBuiltinMatrix.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Matrix;
-            hcEncIntraVLC.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).IntraVLC;
-            hcEncColorimetry.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Colorimetry;
-            hcEncMPGLevel.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).MPGLevel;
-            hcEncVBRBias.Value = ((HcEncProfile)_selectedVideoProfile).VBRBias;
-            hcEncLastIFrame.IsChecked = ((HcEncProfile)_selectedVideoProfile).LastIFrame;
-            hcEncSeqEndCode.IsChecked = ((HcEncProfile)_selectedVideoProfile).SeqEndCode;
-            hcEncAllow3Frames.IsChecked = ((HcEncProfile)_selectedVideoProfile).Allow3BFrames;
-            hcEncUseLosslessFile.IsChecked = ((HcEncProfile)_selectedVideoProfile).UseLosslessFile;
+            HcEncVBVCheck.IsChecked = ((HcEncProfile)_selectedVideoProfile).VBVCheck;
+            HcEncBuiltinMatrix.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Matrix;
+            HcEncIntraVLC.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).IntraVLC;
+            HcEncColorimetry.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).Colorimetry;
+            HcEncMPGLevel.SelectedIndex = ((HcEncProfile)_selectedVideoProfile).MPGLevel;
+            HcEncVBRBias.Value = ((HcEncProfile)_selectedVideoProfile).VBRBias;
+            HcEncLastIFrame.IsChecked = ((HcEncProfile)_selectedVideoProfile).LastIFrame;
+            HcEncSeqEndCode.IsChecked = ((HcEncProfile)_selectedVideoProfile).SeqEndCode;
+            HcEncAllow3Frames.IsChecked = ((HcEncProfile)_selectedVideoProfile).Allow3BFrames;
+            HcEncUseLosslessFile.IsChecked = ((HcEncProfile)_selectedVideoProfile).UseLosslessFile;
         }
 
         private void JavaPathSelectionClick(object sender, RoutedEventArgs e)
@@ -1461,13 +1461,13 @@ namespace VideoConvert.Windows
         private void tsMuxeRFontColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
         {
             SolidColorBrush cValue = new SolidColorBrush(e.NewValue);
-            SolidColorBrush bValue = tsMuxeRFontSwitcherPreview.Background as SolidColorBrush;
+            SolidColorBrush bValue = TSMuxeRFontSwitcherPreview.Background as SolidColorBrush;
             if (bValue != null && Color.AreClose(bValue.Color, cValue.Color))
-                tsMuxeRFontSwitcherPreview.Background =
+                TSMuxeRFontSwitcherPreview.Background =
                     new SolidColorBrush(Color.FromArgb(e.NewValue.A, (byte) ~e.NewValue.R, (byte) ~e.NewValue.G,
                                                        (byte) ~e.NewValue.B));
             else
-                tsMuxeRFontSwitcherPreview.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x78, 0xFF));
+                TSMuxeRFontSwitcherPreview.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x78, 0xFF));
         }
     }
 }
