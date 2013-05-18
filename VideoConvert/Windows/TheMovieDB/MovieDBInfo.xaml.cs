@@ -73,8 +73,12 @@ namespace VideoConvert.Windows.TheMovieDB
             if (string.IsNullOrEmpty(selectedCertCountry))
                 selectedCertCountry = "us";
 
-            TMDbClient client = new TMDbClient(MovieDBApiKey);
+            string fallbackLang = AppSettings.MovieDBLastFallbackLanguage;
+            string fallbackCertCountry = AppSettings.MovieDBLastFallbackRatingCountry;
 
+            #region MovieDB Client configuration
+
+            TMDbClient client = new TMDbClient(MovieDBApiKey);
             FileInfo configXml = new FileInfo("TMDbconfig.xml");
             if (configXml.Exists && configXml.LastWriteTimeUtc >= DateTime.UtcNow.AddHours(-1))
             {
@@ -96,7 +100,12 @@ namespace VideoConvert.Windows.TheMovieDB
                 File.WriteAllText(configXml.FullName, xmlDoc.OuterXml, Encoding.Unicode);
             }
 
+            #endregion
+
             SearchContainer<SearchMovie> movieList = client.SearchMovie(searchMedia, selectedLang);
+            if (movieList == null || movieList.TotalResults <= 0) 
+                movieList = client.SearchMovie(searchMedia, fallbackLang);
+
             if (movieList == null || movieList.TotalResults <= 0) return;
 
             SearchMovie resultMovie = new SearchMovie();
@@ -115,14 +124,16 @@ namespace VideoConvert.Windows.TheMovieDB
 
             if (resultMovie.Id == 0) return;
 
-            Movie searchResult = client.GetMovie(resultMovie.Id, selectedLang);
+            Movie searchResult = client.GetMovie(resultMovie.Id, selectedLang) ??
+                                 client.GetMovie(resultMovie.Id, fallbackLang);
+
+            if (searchResult == null) return;
+
             ImagesWithId imageList = client.GetMovieImages(resultMovie.Id);
             Casts movieCasts = client.GetMovieCasts(resultMovie.Id);
             KeywordsContainer movieKeywords = client.GetMovieKeywords(resultMovie.Id);
             Trailers movieTrailers = client.GetMovieTrailers(resultMovie.Id);
             Releases movieReleases = client.GetMovieReleases(resultMovie.Id);
-
-            if (searchResult == null) return;
 
             MovieTitle.Text = searchResult.Title;
             MovieOriginalTitle.Text = searchResult.OriginalTitle;
@@ -180,10 +191,9 @@ namespace VideoConvert.Windows.TheMovieDB
             else
                 Trailer.Text = string.Empty;
 
-
             Country selCountry =
                 movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == selectedCertCountry) ??
-                movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == "us");
+                movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == fallbackCertCountry);
 
             MovieDBCertCountry certCountry =
                 MovieDBCertCountries.CountryList.Single(country => country.CountryName == selectedCertCountry);
