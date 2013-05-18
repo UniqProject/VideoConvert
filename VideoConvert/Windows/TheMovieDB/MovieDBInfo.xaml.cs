@@ -143,9 +143,21 @@ namespace VideoConvert.Windows.TheMovieDB
                              ? string.Join(" / ", searchResult.Genres.ConvertAll(input => input.Name))
                              : string.Empty;
 
-            Rating.Text = searchResult.VoteAverage.ToString("g");
             Runtime.Text = searchResult.Runtime.ToString("g");
-            Votes.Text = searchResult.VoteCount.ToString("g");
+
+            if (AppSettings.MovieDBRatingSource == 0)
+            {
+                Rating.Text = searchResult.VoteAverage.ToString("g");
+                Votes.Text = searchResult.VoteCount.ToString("g");
+            }
+            else
+            {
+                ImdbClient imdb = new ImdbClient();
+                ImdbMovieData movieData = imdb.GetMovieById(searchResult.ImdbId);
+                Rating.Text = movieData.Rating.ToString("g");
+                Votes.Text = movieData.RatingCount.ToString("g");
+            }
+
             Year.Text = searchResult.ReleaseDate.Year.ToString("g");
             Tagline.Text = searchResult.Tagline;
             Plot.Text = searchResult.Overview;
