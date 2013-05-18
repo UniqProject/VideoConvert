@@ -528,6 +528,30 @@ namespace VideoConvert.Core
             set { Properties.Settings.Default.MovieDBLastFallbackLanguage = value; }
         }
 
+        public static string MovieDBLastFallbackRatingCountry
+        {
+            get { return Properties.Settings.Default.MovieDBLastFallbackRatingCountry; }
+            set { Properties.Settings.Default.MovieDBLastFallbackRatingCountry = value; }
+        }
+
+        public static string MovieDBPreferredCertPrefix
+        {
+            get { return Properties.Settings.Default.MovieDBPreferredCertPrefix; }
+            set { Properties.Settings.Default.MovieDBPreferredCertPrefix = value; }
+        }
+
+        public static string MovieDBFallbackCertPrefix
+        {
+            get { return Properties.Settings.Default.MovieDBFallbackCertPrefix; }
+            set { Properties.Settings.Default.MovieDBFallbackCertPrefix = value; }
+        }
+
+        public static int MovieDBRatingSource
+        {
+            get { return Properties.Settings.Default.MovieDBRatingSource; }
+            set { Properties.Settings.Default.MovieDBRatingSource = value; }
+        }
+
         public static string AppPath
         {
             get

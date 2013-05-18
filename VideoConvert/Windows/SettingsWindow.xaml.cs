@@ -31,15 +31,15 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Media;
+using VideoConvert.Core.Helpers.TheMovieDB;
+using log4net;
 using VideoConvert.Core;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
 using VideoConvert.Core.Video.x264;
 using Xceed.Wpf.Toolkit;
-using log4net;
 using CheckBox = System.Windows.Controls.CheckBox;
-using ComboBox = System.Windows.Controls.ComboBox;
 using GroupBox = System.Windows.Controls.GroupBox;
 using RadioButton = System.Windows.Controls.RadioButton;
 using TabControl = System.Windows.Controls.TabControl;
@@ -159,6 +159,27 @@ namespace VideoConvert.Windows
             QuickSelectOutputFormat.Items.Clear();
             foreach (OutputType item in enumValues)
                 QuickSelectOutputFormat.Items.Add(Processing.StringValueOf(item));
+
+            MovieDBPreferredSearchLanguage.ItemsSource = MovieDBLanguages.LangList;
+            MovieDBPreferredSearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastLanguage)
+                                                               ? AppSettings.MovieDBLastLanguage
+                                                               : "en";
+            MovieDBFallbackSearchLanguage.ItemsSource = MovieDBLanguages.LangList;
+            MovieDBFallbackSearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastFallbackLanguage)
+                                                              ? AppSettings.MovieDBLastFallbackLanguage
+                                                              : "en";
+
+            MovieDBCertCountry.ItemsSource = MovieDBCertCountries.CountryList;
+            MovieDBCertCountry.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastRatingCountry)
+                                                   ? AppSettings.MovieDBLastRatingCountry
+                                                   : "us";
+            MovieDBFallbackCertCountry.ItemsSource = MovieDBCertCountries.CountryList;
+            MovieDBFallbackCertCountry.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastFallbackRatingCountry)
+                                                            ? AppSettings.MovieDBLastFallbackRatingCountry
+                                                            : "us";
+
+            MovieDBPreferredCertPrefix.Text = AppSettings.MovieDBPreferredCertPrefix;
+            MovieDBFallbackCertPrefix.Text = AppSettings.MovieDBFallbackCertPrefix;
         }
 
         private void ReloadQuickProfileList()
@@ -449,6 +470,11 @@ namespace VideoConvert.Windows
             AppSettings.UseLanguage = LanguageSelect.SelectedValue as string;
             AppSettings.ProcessPriority = ProcessPriority.SelectedIndex;
             AppSettings.UpdateFrequency = AutoUpdateFrequency.SelectedIndex;
+            AppSettings.MovieDBLastLanguage = MovieDBPreferredSearchLanguage.SelectedValue as string;
+            AppSettings.MovieDBLastFallbackLanguage = MovieDBFallbackSearchLanguage.SelectedValue as string;
+            AppSettings.MovieDBLastRatingCountry = MovieDBCertCountry.SelectedValue as string;
+            AppSettings.MovieDBLastFallbackRatingCountry = MovieDBFallbackCertCountry.SelectedValue as string;
+            AppSettings.MovieDBRatingSource = MovieDBRatingSource.SelectedIndex;
         }
 
         /// <summary>
@@ -1468,6 +1494,20 @@ namespace VideoConvert.Windows
                                                        (byte) ~e.NewValue.B));
             else
                 TSMuxeRFontSwitcherPreview.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x78, 0xFF));
+        }
+
+        private void MovieDBCertCountry_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            MovieDBCertCountry item = MovieDBCertCountry.SelectedItem as MovieDBCertCountry;
+            if (item == null) return;
+            MovieDBPreferredCertPrefix.Text = item.Prefix;
+        }
+
+        private void MovieDBFallbackCertCountry_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            MovieDBCertCountry item = MovieDBFallbackCertCountry.SelectedItem as MovieDBCertCountry;
+            if (item == null) return;
+            MovieDBFallbackCertPrefix.Text = item.Prefix;
         }
     }
 }

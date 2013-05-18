@@ -733,7 +733,7 @@ namespace VideoConvert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("en")]
         public string MovieDBLastLanguage {
             get {
                 return ((string)(this["MovieDBLastLanguage"]));
@@ -745,7 +745,7 @@ namespace VideoConvert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("us")]
         public string MovieDBLastRatingCountry {
             get {
                 return ((string)(this["MovieDBLastRatingCountry"]));
@@ -757,13 +757,61 @@ namespace VideoConvert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("en")]
         public string MovieDBLastFallbackLanguage {
             get {
                 return ((string)(this["MovieDBLastFallbackLanguage"]));
             }
             set {
                 this["MovieDBLastFallbackLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("us")]
+        public string MovieDBLastFallbackRatingCountry {
+            get {
+                return ((string)(this["MovieDBLastFallbackRatingCountry"]));
+            }
+            set {
+                this["MovieDBLastFallbackRatingCountry"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rated ")]
+        public string MovieDBPreferredCertPrefix {
+            get {
+                return ((string)(this["MovieDBPreferredCertPrefix"]));
+            }
+            set {
+                this["MovieDBPreferredCertPrefix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rated ")]
+        public string MovieDBFallbackCertPrefix {
+            get {
+                return ((string)(this["MovieDBFallbackCertPrefix"]));
+            }
+            set {
+                this["MovieDBFallbackCertPrefix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MovieDBRatingSource {
+            get {
+                return ((int)(this["MovieDBRatingSource"]));
+            }
+            set {
+                this["MovieDBRatingSource"] = value;
             }
         }
     }

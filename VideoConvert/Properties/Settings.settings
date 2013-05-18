@@ -180,13 +180,25 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MovieDBLastLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">en</Value>
     </Setting>
     <Setting Name="MovieDBLastRatingCountry" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">us</Value>
     </Setting>
     <Setting Name="MovieDBLastFallbackLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">en</Value>
+    </Setting>
+    <Setting Name="MovieDBLastFallbackRatingCountry" Type="System.String" Scope="User">
+      <Value Profile="(Default)">us</Value>
+    </Setting>
+    <Setting Name="MovieDBPreferredCertPrefix" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Rated </Value>
+    </Setting>
+    <Setting Name="MovieDBFallbackCertPrefix" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Rated </Value>
+    </Setting>
+    <Setting Name="MovieDBRatingSource" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>
