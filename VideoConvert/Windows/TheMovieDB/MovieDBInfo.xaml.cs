@@ -73,9 +73,6 @@ namespace VideoConvert.Windows.TheMovieDB
             if (string.IsNullOrEmpty(selectedCertCountry))
                 selectedCertCountry = "us";
 
-            AppSettings.MovieDBLastLanguage = selectedLang;
-            AppSettings.MovieDBLastRatingCountry = selectedCertCountry;
-
             TMDbClient client = new TMDbClient(MovieDBApiKey);
 
             FileInfo configXml = new FileInfo("TMDbconfig.xml");
