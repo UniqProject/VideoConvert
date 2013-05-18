@@ -522,6 +522,12 @@ namespace VideoConvert.Core
             set { Properties.Settings.Default.MovieDBLastRatingCountry = value; }
         }
 
+        public static string MovieDBLastFallbackLanguage
+        {
+            get { return Properties.Settings.Default.MovieDBLastFallbackLanguage; }
+            set { Properties.Settings.Default.MovieDBLastFallbackLanguage = value; }
+        }
+
         public static string AppPath
         {
             get

@@ -754,5 +754,17 @@ namespace VideoConvert.Properties {
                 this["MovieDBLastRatingCountry"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MovieDBLastFallbackLanguage {
+            get {
+                return ((string)(this["MovieDBLastFallbackLanguage"]));
+            }
+            set {
+                this["MovieDBLastFallbackLanguage"] = value;
+            }
+        }
     }
 }

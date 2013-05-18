@@ -177,7 +177,7 @@ namespace VideoConvert.Core.Encoder
                 if (encstarted)
                 {
                     encoder.PriorityClass = AppSettings.GetProcessPriority();
-                    encoder.WaitForInputIdle(10000);
+                    encoder.WaitForInputIdle(2500);
 
                     SystemWindow mainWin = new SystemWindow(encoder.MainWindowHandle) {VisibilityFlag = false};
 
