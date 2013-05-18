@@ -204,15 +204,18 @@ namespace VideoConvert.Windows.TheMovieDB
             else
                 Trailer.Text = string.Empty;
 
-            Country selCountry =
-                movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == selectedCertCountry) ??
-                movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == fallbackCertCountry);
+            Country selCountry = movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == selectedCertCountry);
+            string certPrefix = AppSettings.MovieDBPreferredCertPrefix;
 
-            MovieDBCertCountry certCountry =
-                MovieDBCertCountries.CountryList.Single(country => country.CountryName == selectedCertCountry);
+            if (selCountry == null)
+            {
+                selCountry =
+                    movieReleases.Countries.Single(
+                        country => country.Iso_3166_1.ToLowerInvariant() == fallbackCertCountry);
+                certPrefix = AppSettings.MovieDBFallbackCertPrefix;
+            }
 
-            MPAARating.Text = certCountry.Prefix + selCountry.Certification;
-
+            MPAARating.Text = certPrefix + selCountry.Certification;
 
             // loading image sizes
             string posterOriginal = client.Config.Images.PosterSizes.Last();
