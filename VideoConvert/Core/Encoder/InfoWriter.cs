@@ -81,7 +81,6 @@ namespace VideoConvert.Core.Encoder
             XmlSerializer serializer = new XmlSerializer(typeof(MovieEntry));
             using (XmlWriter writer = XmlWriter.Create(infoFile, new XmlWriterSettings{Encoding = Encoding.UTF8, Indent = true}))
             {
-                
                 serializer.Serialize(writer, _jobInfo.MovieInfo,ns);
             }
 

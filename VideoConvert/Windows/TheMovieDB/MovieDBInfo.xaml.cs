@@ -11,6 +11,7 @@ using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.Search;
 using VideoConvert.Core;
 using VideoConvert.Core.Helpers;
+using VideoConvert.Core.Helpers.IMDB;
 using VideoConvert.Core.Helpers.TheMovieDB;
 using log4net;
 
@@ -19,7 +20,7 @@ namespace VideoConvert.Windows.TheMovieDB
     /// <summary>
     /// Interaktionslogik für MovieDBInfo.xaml
     /// </summary>
-    public partial class MovieDBInfo : Window, IDisposable
+    public partial class MovieDBInfo : IDisposable
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(MovieDBInfo));
 
