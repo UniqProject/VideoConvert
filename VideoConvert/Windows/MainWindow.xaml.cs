@@ -171,11 +171,11 @@ namespace VideoConvert.Windows
                     needCheck = true;
                     break;
                 case 1:
-                    if (AppSettings.LastUpdateRun.AddDays(1) > DateTime.Now)
+                    if (AppSettings.LastUpdateRun.AddDays(1) < DateTime.Now)
                         needCheck = true;
                     break;
                 case 2:
-                    if (AppSettings.LastUpdateRun.AddDays(7) > DateTime.Now)
+                    if (AppSettings.LastUpdateRun.AddDays(7) < DateTime.Now)
                         needCheck = true;
                     break;
             }
@@ -274,7 +274,7 @@ namespace VideoConvert.Windows
                 }
             }
 
-            if (!needUpdate)
+            if (needCheck && !needUpdate)
                 AppSettings.LastUpdateRun = DateTime.Now;
 
             e.Result = needUpdate;
