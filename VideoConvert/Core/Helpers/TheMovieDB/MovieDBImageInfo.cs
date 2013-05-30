@@ -13,22 +13,16 @@ namespace VideoConvert.Core.Helpers.TheMovieDB
         [XmlText()]
         public string UrlOriginal { get; set; }
 
+        public bool ShouldSerializeUrlPreview()
+        {
+            return !(string.IsNullOrEmpty(UrlPreview));
+        }
+
         public MovieDBImageInfo()
         {
             Title = string.Empty;
             UrlPreview = string.Empty;
             UrlOriginal = string.Empty;
-        }
-    }
-
-    public class MovieDBPosterImage : MovieDBImageInfo
-    {
-        [XmlAttribute("aspect")]
-        public string Aspect { get; set; }
-        
-        public MovieDBPosterImage()
-        {
-            Aspect = "poster";
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿- [change]  Use ffmpeg instead of libav
+﻿- [new]     Added support for creation of sidecar-files for XBMC video database. Data source is TheMovieDB.com
+            and TheTVDB.com.
+
+0.23.854.1240
+- [change]  Use ffmpeg instead of libav
 - [new]     64bit ffmpeg support added
 
 0.22.827.2028

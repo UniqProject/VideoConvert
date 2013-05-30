@@ -22,6 +22,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Windows.Media;
+using BDInfo;
+using VideoConvert.Core.Helpers;
+using VideoConvert.Properties;
 using log4net;
 
 namespace VideoConvert.Core
@@ -31,425 +35,428 @@ namespace VideoConvert.Core
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(AppSettings));
 
+        public const string MovieDBApiKey = "3c0a6fc7bb8fea5432a4e21ec32be907";
+        public const string TheTVDBApiKey = "1DBEA8A1430711B7";
+
         public static string DecodeNamedPipeName
         {
-            get { return string.Format("{0}_decodePipe", GetProductName()); }
+            get { return String.Format("{0}_decodePipe", GetProductName()); }
         }
 
         public static string DecodeNamedPipeFullName
         {
-            get { return string.Format(@"\\.\pipe\{0}", DecodeNamedPipeName); }
+            get { return String.Format(@"\\.\pipe\{0}", DecodeNamedPipeName); }
         }
 
         public static string EncodeNamedPipeName
         {
-            get { return string.Format("{0}_encodePipe", GetProductName()); }
+            get { return String.Format("{0}_encodePipe", GetProductName()); }
         }
 
         public static string EncodeNamedPipeFullName
         {
-            get { return string.Format(@"\\.\pipe\{0}", EncodeNamedPipeName); }
+            get { return String.Format(@"\\.\pipe\{0}", EncodeNamedPipeName); }
         }
 
         public static bool UseAviSynthMT
         {
-            get { return Properties.Settings.Default.UseAviSynthMT; }
-            set { Properties.Settings.Default.UseAviSynthMT = value; }
+            get { return Settings.Default.UseAviSynthMT; }
+            set { Settings.Default.UseAviSynthMT = value; }
         }
 
         public static bool UseHQDeinterlace
         {
-            get { return Properties.Settings.Default.UseHQDeinterlace; }
-            set { Properties.Settings.Default.UseHQDeinterlace = value; }
+            get { return Settings.Default.UseHQDeinterlace; }
+            set { Settings.Default.UseHQDeinterlace = value; }
         }
 
         public static bool EnableSSIF
         {
-            get { return Properties.Settings.Default.EnableSSIF; }
-            set { Properties.Settings.Default.EnableSSIF = value; }
+            get { return Settings.Default.EnableSSIF; }
+            set { Settings.Default.EnableSSIF = value; }
         }
 
         public static bool FilterLoopingPlaylists
         {
-            get { return Properties.Settings.Default.FilterLoopingPlaylists; }
-            set { Properties.Settings.Default.FilterLoopingPlaylists = value; }
+            get { return Settings.Default.FilterLoopingPlaylists; }
+            set { Settings.Default.FilterLoopingPlaylists = value; }
         }
 
         public static bool FilterShortPlaylists
         {
-            get { return Properties.Settings.Default.FilterShortPlaylists; }
+            get { return Settings.Default.FilterShortPlaylists; }
         }
 
         public static int FilterShortPlaylistsValue
         {
-            get { return Properties.Settings.Default.FilterShortPlaylistsValue; }
+            get { return Settings.Default.FilterShortPlaylistsValue; }
         }
 
         public static bool KeepStreamOrder
         {
-            get { return Properties.Settings.Default.KeepStreamOrder; }
+            get { return Settings.Default.KeepStreamOrder; }
         }
 
         public static string ToolsPath
         {
             get
             {
-                string tPath = Properties.Settings.Default.ToolsPath;
-                if (string.IsNullOrEmpty(tPath))
+                string tPath = Settings.Default.ToolsPath;
+                if (String.IsNullOrEmpty(tPath))
                     tPath = Path.Combine(CommonAppSettingsPath, "codecs");
                 return tPath;
             }
 
-            set { Properties.Settings.Default.ToolsPath = value; }
+            set { Settings.Default.ToolsPath = value; }
         }
 
         public static string JavaInstallPath
         {
-            get { return Properties.Settings.Default.JavaInstallPath; }
-            set { Properties.Settings.Default.JavaInstallPath = value; }
+            get { return Settings.Default.JavaInstallPath; }
+            set { Settings.Default.JavaInstallPath = value; }
         }
 
         public static bool JavaInstalled
         {
-            get { return !string.IsNullOrEmpty(JavaInstallPath); }
+            get { return !String.IsNullOrEmpty(JavaInstallPath); }
         }
 
         public static string OutputLocation
         {
-            get { return Properties.Settings.Default.OutputLocation; }
-            set { Properties.Settings.Default.OutputLocation = value; }
+            get { return Settings.Default.OutputLocation; }
+            set { Settings.Default.OutputLocation = value; }
         }
 
         public static string DemuxLocation
         {
-            get { return Properties.Settings.Default.DemuxLocation; }
-            set { Properties.Settings.Default.DemuxLocation = value; }
+            get { return Settings.Default.DemuxLocation; }
+            set { Settings.Default.DemuxLocation = value; }
         }
 
         public static string Lastx264Ver
         {
-            get { return Properties.Settings.Default.Lastx264Ver; }
-            set { Properties.Settings.Default.Lastx264Ver = value; }
+            get { return Settings.Default.Lastx264Ver; }
+            set { Settings.Default.Lastx264Ver = value; }
         }
 
         public static bool X264Installed
         {
-            get { return !string.IsNullOrEmpty(Lastx264Ver); }
+            get { return !String.IsNullOrEmpty(Lastx264Ver); }
         }
 
         public static string Lastx26464Ver
         {
-            get { return Properties.Settings.Default.Lastx264_64Ver; }
-            set { Properties.Settings.Default.Lastx264_64Ver = value; }
+            get { return Settings.Default.Lastx264_64Ver; }
+            set { Settings.Default.Lastx264_64Ver = value; }
         }
 
         public static bool X26464Installed
         {
-            get { return !string.IsNullOrEmpty(Lastx26464Ver); }
+            get { return !String.IsNullOrEmpty(Lastx26464Ver); }
         }
 
         public static string LastffmpegVer
         {
-            get { return Properties.Settings.Default.LastffmpegVer; }
-            set { Properties.Settings.Default.LastffmpegVer = value; }
+            get { return Settings.Default.LastffmpegVer; }
+            set { Settings.Default.LastffmpegVer = value; }
         }
 
         public static bool FfmpegInstalled
         {
-            get { return !string.IsNullOrEmpty(LastffmpegVer); }
+            get { return !String.IsNullOrEmpty(LastffmpegVer); }
         }
 
         public static string Lastffmpeg64Ver
         {
-            get { return Properties.Settings.Default.Lastffmpeg_64Ver; }
-            set { Properties.Settings.Default.Lastffmpeg_64Ver = value; }
+            get { return Settings.Default.Lastffmpeg_64Ver; }
+            set { Settings.Default.Lastffmpeg_64Ver = value; }
         }
 
         public static bool Ffmpeg64Installed
         {
-            get { return !string.IsNullOrEmpty(Lastffmpeg64Ver); }
+            get { return !String.IsNullOrEmpty(Lastffmpeg64Ver); }
         }
 
         public static string Lasteac3ToVer
         {
-            get { return Properties.Settings.Default.Lasteac3toVer; }
-            set { Properties.Settings.Default.Lasteac3toVer = value; }
+            get { return Settings.Default.Lasteac3toVer; }
+            set { Settings.Default.Lasteac3toVer = value; }
         }
 
         public static bool Eac3ToInstalled
         {
-            get { return !string.IsNullOrEmpty(Lasteac3ToVer); }
+            get { return !String.IsNullOrEmpty(Lasteac3ToVer); }
         }
 
         public static string LastHcEncVer
         {
-            get { return Properties.Settings.Default.LastHcEncVer; }
-            set { Properties.Settings.Default.LastHcEncVer = value; }
+            get { return Settings.Default.LastHcEncVer; }
+            set { Settings.Default.LastHcEncVer = value; }
         }
 
         public static bool HcEncInstalled
         {
-            get { return !string.IsNullOrEmpty(LastHcEncVer); }
+            get { return !String.IsNullOrEmpty(LastHcEncVer); }
         }
 
         public static string LastlsdvdVer
         {
-            get { return Properties.Settings.Default.LastlsdvdVer; }
-            set { Properties.Settings.Default.LastlsdvdVer = value; }
+            get { return Settings.Default.LastlsdvdVer; }
+            set { Settings.Default.LastlsdvdVer = value; }
         }
 
         public static bool LsDvdInstalled
         {
-            get { return !string.IsNullOrEmpty(LastlsdvdVer); }
+            get { return !String.IsNullOrEmpty(LastlsdvdVer); }
         }
 
         public static string LastMKVMergeVer
         {
-            get { return Properties.Settings.Default.LastMKVMergeVer; }
-            set { Properties.Settings.Default.LastMKVMergeVer = value; }
+            get { return Settings.Default.LastMKVMergeVer; }
+            set { Settings.Default.LastMKVMergeVer = value; }
         }
 
         public static bool MKVMergeInstalled
         {
-            get { return !string.IsNullOrEmpty(LastMKVMergeVer); }
+            get { return !String.IsNullOrEmpty(LastMKVMergeVer); }
         }
 
         public static string LastMplayerVer
         {
-            get { return Properties.Settings.Default.LastMplayerVer; }
-            set { Properties.Settings.Default.LastMplayerVer = value; }
+            get { return Settings.Default.LastMplayerVer; }
+            set { Settings.Default.LastMplayerVer = value; }
         }
 
         public static bool MplayerInstalled
         {
-            get { return !string.IsNullOrEmpty(LastMplayerVer); }
+            get { return !String.IsNullOrEmpty(LastMplayerVer); }
         }
 
         public static string LastTSMuxerVer
         {
-            get { return Properties.Settings.Default.LastTSMuxerVer; }
-            set { Properties.Settings.Default.LastTSMuxerVer = value; }
+            get { return Settings.Default.LastTSMuxerVer; }
+            set { Settings.Default.LastTSMuxerVer = value; }
         }
 
         public static bool TsMuxerInstalled
         {
-            get { return !string.IsNullOrEmpty(LastTSMuxerVer); }
+            get { return !String.IsNullOrEmpty(LastTSMuxerVer); }
         }
 
         public static string LastAviSynthVer
         {
-            get { return Properties.Settings.Default.LastAviSynthVer; }
-            set { Properties.Settings.Default.LastAviSynthVer = value; }
+            get { return Settings.Default.LastAviSynthVer; }
+            set { Settings.Default.LastAviSynthVer = value; }
         }
 
         public static bool AviSynthInstalled
         {
-            get { return !string.IsNullOrEmpty(LastAviSynthVer); }
+            get { return !String.IsNullOrEmpty(LastAviSynthVer); }
         }
 
         public static string LastAviSynthPluginsVer
         {
-            get { return Properties.Settings.Default.LastAviSynthPluginsVer; }
-            set { Properties.Settings.Default.LastAviSynthPluginsVer = value; }
+            get { return Settings.Default.LastAviSynthPluginsVer; }
+            set { Settings.Default.LastAviSynthPluginsVer = value; }
         }
 
         public static string LastBDSup2SubVer
         {
-            get { return Properties.Settings.Default.LastBDSup2SubVer; }
-            set { Properties.Settings.Default.LastBDSup2SubVer = value; }
+            get { return Settings.Default.LastBDSup2SubVer; }
+            set { Settings.Default.LastBDSup2SubVer = value; }
         }
 
         public static bool BDSup2SubInstalled
         {
-            get { return !string.IsNullOrEmpty(LastBDSup2SubVer); }
+            get { return !String.IsNullOrEmpty(LastBDSup2SubVer); }
         }
 
         public static string LastMp4BoxVer
         {
-            get { return Properties.Settings.Default.LastMp4BoxVer; }
-            set { Properties.Settings.Default.LastMp4BoxVer = value; }
+            get { return Settings.Default.LastMp4BoxVer; }
+            set { Settings.Default.LastMp4BoxVer = value; }
         }
 
         public static bool MP4BoxInstalled
         {
-            get { return !string.IsNullOrEmpty(LastMp4BoxVer); }
+            get { return !String.IsNullOrEmpty(LastMp4BoxVer); }
         }
 
         public static string LastMJPEGToolsVer
         {
-            get { return Properties.Settings.Default.LastMJPEGtoolsVer; }
-            set { Properties.Settings.Default.LastMJPEGtoolsVer = value; }
+            get { return Settings.Default.LastMJPEGtoolsVer; }
+            set { Settings.Default.LastMJPEGtoolsVer = value; }
         }
 
         public static bool MjpegToolsInstalled
         {
-            get { return !string.IsNullOrEmpty(LastMJPEGToolsVer); }
+            get { return !String.IsNullOrEmpty(LastMJPEGToolsVer); }
         }
 
         public static string LastDVDAuthorVer
         {
-            get { return Properties.Settings.Default.LastDVDAuthorVer; }
-            set { Properties.Settings.Default.LastDVDAuthorVer = value; }
+            get { return Settings.Default.LastDVDAuthorVer; }
+            set { Settings.Default.LastDVDAuthorVer = value; }
         }
 
         public static bool DVDAuthorInstalled
         {
-            get { return !string.IsNullOrEmpty(LastDVDAuthorVer); }
+            get { return !String.IsNullOrEmpty(LastDVDAuthorVer); }
         }
 
         public static string LastOggEncVer
         {
-            get { return Properties.Settings.Default.LastOggEncVer; }
-            set { Properties.Settings.Default.LastOggEncVer = value; }
+            get { return Settings.Default.LastOggEncVer; }
+            set { Settings.Default.LastOggEncVer = value; }
         }
 
         public static bool OggEncInstalled
         {
-            get { return !string.IsNullOrEmpty(LastOggEncVer); }
+            get { return !String.IsNullOrEmpty(LastOggEncVer); }
         }
 
         public static string LastNeroAacEncVer
         {
-            get { return Properties.Settings.Default.LastNeroAacEncVer; }
-            set { Properties.Settings.Default.LastNeroAacEncVer = value; }
+            get { return Settings.Default.LastNeroAacEncVer; }
+            set { Settings.Default.LastNeroAacEncVer = value; }
         }
 
         public static bool NeroAacEncInstalled
         {
-            get { return !string.IsNullOrEmpty(LastNeroAacEncVer); }
+            get { return !String.IsNullOrEmpty(LastNeroAacEncVer); }
         }
 
         public static string LastLameVer
         {
-            get { return Properties.Settings.Default.LastLameVer; }
-            set { Properties.Settings.Default.LastLameVer = value; }
+            get { return Settings.Default.LastLameVer; }
+            set { Settings.Default.LastLameVer = value; }
         }
 
         public static bool LameInstalled
         {
-            get { return !string.IsNullOrEmpty(LastLameVer); }
+            get { return !String.IsNullOrEmpty(LastLameVer); }
         }
 
         public static string LastVpxEncVer
         {
-            get { return Properties.Settings.Default.LastVpxEncVer; }
-            set { Properties.Settings.Default.LastVpxEncVer = value; }
+            get { return Settings.Default.LastVpxEncVer; }
+            set { Settings.Default.LastVpxEncVer = value; }
         }
 
         public static bool VpxEncInstalled
         {
-            get { return !string.IsNullOrEmpty(LastVpxEncVer); }
+            get { return !String.IsNullOrEmpty(LastVpxEncVer); }
         }
 
         public static bool FirstStart
         {
-            get { return Properties.Settings.Default.FirstStart; }
-            set { Properties.Settings.Default.FirstStart = value; }
+            get { return Settings.Default.FirstStart; }
+            set { Settings.Default.FirstStart = value; }
         }
 
         public static bool TSMuxeRUseAsyncIO
         {
-            get { return Properties.Settings.Default.tsMuxeRUseAsyncIO; }
+            get { return Settings.Default.tsMuxeRUseAsyncIO; }
         }
 
         public static bool TSMuxeRBlurayAudioPES
         {
-            get { return Properties.Settings.Default.tsMuxeRBlurayAudioPES; }
+            get { return Settings.Default.tsMuxeRBlurayAudioPES; }
         }
 
         public static int TSMuxerSubtitleAdditionalBorder
         {
-            get { return Properties.Settings.Default.tsMuxerSubtitleAdditionalBorder; }
+            get { return Settings.Default.tsMuxerSubtitleAdditionalBorder; }
         }
 
         public static int TSMuxeRBottomOffset
         {
-            get { return Properties.Settings.Default.tsMuxeRBottomOffset; }
+            get { return Settings.Default.tsMuxeRBottomOffset; }
         }
 
-        public static System.Windows.Media.FontFamily TSMuxeRSubtitleFont
+        public static FontFamily TSMuxeRSubtitleFont
         {
-            get { return Properties.Settings.Default.tsMuxeRSubtitleFont; }
-            set { Properties.Settings.Default.tsMuxeRSubtitleFont = value; }
+            get { return Settings.Default.tsMuxeRSubtitleFont; }
+            set { Settings.Default.tsMuxeRSubtitleFont = value; }
         }
 
-        public static System.Windows.Media.Color TSMuxeRSubtitleColor
+        public static Color TSMuxeRSubtitleColor
         {
-            get { return Properties.Settings.Default.tsMuxeRSubtitleColor; }
-            set { Properties.Settings.Default.tsMuxeRSubtitleColor = value; }
+            get { return Settings.Default.tsMuxeRSubtitleColor; }
+            set { Settings.Default.tsMuxeRSubtitleColor = value; }
         }
 
         public static int TSMuxeRSubtitleFontSize
         {
-            get { return Properties.Settings.Default.tsMuxeRSubtitleFontSize; }
+            get { return Settings.Default.tsMuxeRSubtitleFontSize; }
         }
 
         public static bool TSMuxeRVideoTimingInfo
         {
-            get { return Properties.Settings.Default.tsMuxeRVideoTimingInfo; }
+            get { return Settings.Default.tsMuxeRVideoTimingInfo; }
         }
 
         public static bool TSMuxeRAddVideoPPS
         {
-            get { return Properties.Settings.Default.tsMuxeRAddVideoPPS; }
+            get { return Settings.Default.tsMuxeRAddVideoPPS; }
         }
 
         public static bool DeleteCompletedJobs
         {
-            get { return Properties.Settings.Default.DeleteCompletedJobs;}
+            get { return Settings.Default.DeleteCompletedJobs;}
         }
 
         public static int ProcessPriority
         {
-            get { return Properties.Settings.Default.ProcessPriority; }
-            set { Properties.Settings.Default.ProcessPriority = value; }
+            get { return Settings.Default.ProcessPriority; }
+            set { Settings.Default.ProcessPriority = value; }
         }
 
         public static bool DeleteTemporaryFiles
         {
-            get { return Properties.Settings.Default.DeleteTemporaryFiles; }
-            set { Properties.Settings.Default.DeleteTemporaryFiles = value; }
+            get { return Settings.Default.DeleteTemporaryFiles; }
+            set { Settings.Default.DeleteTemporaryFiles = value; }
         }
 
         public static bool UseDebug
         {
-            get { return Properties.Settings.Default.UseDebug; }
-            set { Properties.Settings.Default.UseDebug = value; }
+            get { return Settings.Default.UseDebug; }
+            set { Settings.Default.UseDebug = value; }
         }
 
         public static bool Use64BitEncoders
         {
-            get { return Properties.Settings.Default.Use64bitEncoders; }
-            set { Properties.Settings.Default.Use64bitEncoders = value; }
+            get { return Settings.Default.Use64bitEncoders; }
+            set { Settings.Default.Use64bitEncoders = value; }
         }
 
         public static bool UseHardwareRendering
         {
-            get { return Properties.Settings.Default.UseHardwareRendering; }
-            set { Properties.Settings.Default.UseHardwareRendering = value; }
+            get { return Settings.Default.UseHardwareRendering; }
+            set { Settings.Default.UseHardwareRendering = value; }
         }
 
         public static string UseLanguage
         {
-            get { return Properties.Settings.Default.UseLanguage; }
-            set { Properties.Settings.Default.UseLanguage = value; }
+            get { return Settings.Default.UseLanguage; }
+            set { Settings.Default.UseLanguage = value; }
         }
 
         public static string LastSelectedProfile
         {
-            get { return Properties.Settings.Default.LastSelectedProfile; }
-            set { Properties.Settings.Default.LastSelectedProfile = value; }
+            get { return Settings.Default.LastSelectedProfile; }
+            set { Settings.Default.LastSelectedProfile = value; }
         }
 
         public static string LastProfilesVer
         {
-            get { return Properties.Settings.Default.LastProfilesVer; }
-            set { Properties.Settings.Default.LastProfilesVer = value; }
+            get { return Settings.Default.LastProfilesVer; }
+            set { Settings.Default.LastProfilesVer = value; }
         }
 
         public static string GetCompanyName()
         {
-            string companyName = string.Empty;
+            string companyName = String.Empty;
 
             Assembly myAssembly = Assembly.GetExecutingAssembly();
             object[] attributes = myAssembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
@@ -467,7 +474,7 @@ namespace VideoConvert.Core
 
         public static string GetProductName()
         {
-            string productName = string.Empty;
+            string productName = String.Empty;
 
             Assembly myAssembly = Assembly.GetExecutingAssembly();
             object[] attributes = myAssembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
@@ -484,72 +491,105 @@ namespace VideoConvert.Core
 
         public static bool UpdateVersions
         {
-            get { return Properties.Settings.Default.UpdateVersions; }
-            set { Properties.Settings.Default.UpdateVersions = value; }
+            get { return Settings.Default.UpdateVersions; }
+            set { Settings.Default.UpdateVersions = value; }
         }
 
         public static int UpdateFrequency
         {
-            get { return Properties.Settings.Default.UpdateFrequency; }
-            set { Properties.Settings.Default.UpdateFrequency = value; }
+            get { return Settings.Default.UpdateFrequency; }
+            set { Settings.Default.UpdateFrequency = value; }
         }
 
         public static DateTime LastUpdateRun
         {
-            get { return Properties.Settings.Default.LastUpdateRun; }
-            set { Properties.Settings.Default.LastUpdateRun = value; }
+            get { return Settings.Default.LastUpdateRun; }
+            set { Settings.Default.LastUpdateRun = value; }
         }
 
         public static bool ShowChangeLog
         {
-            get { return Properties.Settings.Default.ShowChangeLog; }
+            get { return Settings.Default.ShowChangeLog; }
         }
 
         public static bool CreateXbmcInfoFile
         {
-            get { return Properties.Settings.Default.CreateXbmcInfoFile; }
+            get { return Settings.Default.CreateXbmcInfoFile; }
         }
 
         public static string MovieDBLastLanguage
         {
-            get { return Properties.Settings.Default.MovieDBLastLanguage; }
-            set { Properties.Settings.Default.MovieDBLastLanguage = value; }
+            get { return Settings.Default.MovieDBLastLanguage; }
+            set { Settings.Default.MovieDBLastLanguage = value; }
         }
 
         public static string MovieDBLastRatingCountry
         {
-            get { return Properties.Settings.Default.MovieDBLastRatingCountry; }
-            set { Properties.Settings.Default.MovieDBLastRatingCountry = value; }
+            get { return Settings.Default.MovieDBLastRatingCountry; }
+            set { Settings.Default.MovieDBLastRatingCountry = value; }
         }
 
         public static string MovieDBLastFallbackLanguage
         {
-            get { return Properties.Settings.Default.MovieDBLastFallbackLanguage; }
-            set { Properties.Settings.Default.MovieDBLastFallbackLanguage = value; }
+            get { return Settings.Default.MovieDBLastFallbackLanguage; }
+            set { Settings.Default.MovieDBLastFallbackLanguage = value; }
         }
 
         public static string MovieDBLastFallbackRatingCountry
         {
-            get { return Properties.Settings.Default.MovieDBLastFallbackRatingCountry; }
-            set { Properties.Settings.Default.MovieDBLastFallbackRatingCountry = value; }
+            get { return Settings.Default.MovieDBLastFallbackRatingCountry; }
+            set { Settings.Default.MovieDBLastFallbackRatingCountry = value; }
         }
 
         public static string MovieDBPreferredCertPrefix
         {
-            get { return Properties.Settings.Default.MovieDBPreferredCertPrefix; }
-            set { Properties.Settings.Default.MovieDBPreferredCertPrefix = value; }
+            get { return Settings.Default.MovieDBPreferredCertPrefix; }
+            set { Settings.Default.MovieDBPreferredCertPrefix = value; }
         }
 
         public static string MovieDBFallbackCertPrefix
         {
-            get { return Properties.Settings.Default.MovieDBFallbackCertPrefix; }
-            set { Properties.Settings.Default.MovieDBFallbackCertPrefix = value; }
+            get { return Settings.Default.MovieDBFallbackCertPrefix; }
+            set { Settings.Default.MovieDBFallbackCertPrefix = value; }
         }
 
         public static int MovieDBRatingSource
         {
-            get { return Properties.Settings.Default.MovieDBRatingSource; }
-            set { Properties.Settings.Default.MovieDBRatingSource = value; }
+            get { return Settings.Default.MovieDBRatingSource; }
+            set { Settings.Default.MovieDBRatingSource = value; }
+        }
+
+        public static string TvDBCachePath
+        {
+            get { return Settings.Default.TvDBCachePath; }
+            set { Settings.Default.TvDBCachePath = value; }
+        }
+
+        public static string TvDBParseString
+        {
+            get { return Settings.Default.TvDBParseString; }
+            set { Settings.Default.TvDBParseString = value; }
+        }
+
+        public static void InitTvDBCache()
+        {
+            if (!String.IsNullOrEmpty(TvDBCachePath)) return;
+
+            TvDBCachePath = Path.Combine(CommonAppSettingsPath, "TvDBCache");
+            if (!Directory.Exists(TvDBCachePath))
+                Directory.CreateDirectory(TvDBCachePath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
+        }
+
+        public static string TvDBPreferredLanguage
+        {
+            get { return Settings.Default.TvDBPreferredLanguage; }
+            set { Settings.Default.TvDBPreferredLanguage = value; }
+        }
+
+        public static string TvDBFallbackLanguage
+        {
+            get { return Settings.Default.TvDBFallbackLanguage; }
+            set { Settings.Default.TvDBFallbackLanguage = value; }
         }
 
         public static string AppPath
@@ -563,7 +603,7 @@ namespace VideoConvert.Core
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return string.Empty;
+                    return String.Empty;
                 }
             }
         }
@@ -581,7 +621,7 @@ namespace VideoConvert.Core
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return string.Empty;
+                    return String.Empty;
                 }
             }
         }
@@ -599,7 +639,7 @@ namespace VideoConvert.Core
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return string.Empty;
+                    return String.Empty;
                 }
             }
         }
@@ -617,7 +657,7 @@ namespace VideoConvert.Core
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return string.Empty;
+                    return String.Empty;
                 }
             }
         }
@@ -629,12 +669,12 @@ namespace VideoConvert.Core
 
         public static object GetPreviousVersion(string propertyName)
         {
-            return Properties.Settings.Default.GetPreviousVersion(propertyName);
+            return Settings.Default.GetPreviousVersion(propertyName);
         }
 
         public static void Upgrade()
         {
-            Properties.Settings.Default.Upgrade();
+            Settings.Default.Upgrade();
             SaveSettings();
         }
 
@@ -642,13 +682,13 @@ namespace VideoConvert.Core
         {
             try
             {
-                Properties.Settings.Default.Save();
-                BDInfo.BDInfoSettings.EnableSSIF = EnableSSIF;
-                BDInfo.BDInfoSettings.FilterLoopingPlaylists = FilterLoopingPlaylists;
-                BDInfo.BDInfoSettings.FilterShortPlaylists = FilterShortPlaylists;
-                BDInfo.BDInfoSettings.FilterShortPlaylistsValue = FilterShortPlaylistsValue;
-                BDInfo.BDInfoSettings.KeepStreamOrder = KeepStreamOrder;
-                BDInfo.BDInfoSettings.SaveSettings();
+                Settings.Default.Save();
+                BDInfoSettings.EnableSSIF = EnableSSIF;
+                BDInfoSettings.FilterLoopingPlaylists = FilterLoopingPlaylists;
+                BDInfoSettings.FilterShortPlaylists = FilterShortPlaylists;
+                BDInfoSettings.FilterShortPlaylistsValue = FilterShortPlaylistsValue;
+                BDInfoSettings.KeepStreamOrder = KeepStreamOrder;
+                BDInfoSettings.SaveSettings();
             }
             catch (Exception ex)
             {
@@ -720,7 +760,7 @@ namespace VideoConvert.Core
                 Version result = new Version(0,0,0,0);
                 try
                 {
-                    result = Version.Parse(Properties.Settings.Default.UpdaterVersion);
+                    result = Version.Parse(Settings.Default.UpdaterVersion);
                 }
                 catch (Exception ex)
                 { 
@@ -731,7 +771,7 @@ namespace VideoConvert.Core
             }
             set
             {
-                Properties.Settings.Default.UpdaterVersion = string.Format("{0:0}.{1:0}.{2:0}.{3:0}", value.Major,
+                Settings.Default.UpdaterVersion = String.Format("{0:0}.{1:0}.{2:0}.{3:0}", value.Major,
                                                                            value.Minor,
                                                                            value.Build, value.Revision);
             }
@@ -750,14 +790,14 @@ namespace VideoConvert.Core
 
         internal static void Reset()
         {
-            Properties.Settings.Default.Reset();
+            Settings.Default.Reset();
             FirstStart = false;
             SaveSettings();
         }
 
         internal static void Reload()
         {
-            Properties.Settings.Default.Reload();
+            Settings.Default.Reload();
         }
     }
 }

@@ -58,8 +58,7 @@ namespace VideoConvert.Windows
         private int _defaultSelection;
 
         private MovieEntry _resultMovieData;
-        private string _resultBackdropImage;
-        private string _resultPosterImage;
+        private EpisodeEntry _resultEpisodeData;
 
         public StreamSelect()
         {
@@ -1049,9 +1048,10 @@ namespace VideoConvert.Windows
 
             if (AppSettings.CreateXbmcInfoFile)
             {
-                JobInfo.MovieInfo = _resultMovieData;
-                JobInfo.PosterImage = _resultPosterImage;
-                JobInfo.BackDropImage = _resultBackdropImage;
+                if (_resultMovieData != null)
+                    JobInfo.MovieInfo = _resultMovieData;
+                else if (_resultEpisodeData != null)
+                    JobInfo.EpisodeInfo = _resultEpisodeData;
             }
 
             _bdInfo = null;
@@ -1269,13 +1269,18 @@ namespace VideoConvert.Windows
 
         private void XbmcMediaInfo_Click(object sender, RoutedEventArgs e)
         {
-            using (MovieDBInfo dbInfo = new MovieDBInfo {MovieName = FileTitle.Text, Owner = this})
+            using (DBInfoWindow dbInfoWindow = new DBInfoWindow {SearchString = FileTitle.Text, Owner = this})
             {
-                if (dbInfo.ShowDialog() != true) return;
+                if (dbInfoWindow.ShowDialog() != true) return;
 
-                _resultBackdropImage = dbInfo.ResultBackdropImage;
-                _resultPosterImage = dbInfo.ResultPosterImage;
-                _resultMovieData = dbInfo.ResultMovieData;
+                if (dbInfoWindow.ResultMovieData != null)
+                {
+                    _resultMovieData = dbInfoWindow.ResultMovieData;
+                    return;
+                }
+
+                if (dbInfoWindow.ResultEpisodeData != null)
+                    _resultEpisodeData = dbInfoWindow.ResultEpisodeData;
             }
         }
     }

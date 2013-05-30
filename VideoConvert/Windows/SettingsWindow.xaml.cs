@@ -31,6 +31,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Media;
+using TvdbLib;
+using TvdbLib.Cache;
 using VideoConvert.Core.Helpers.TheMovieDB;
 using log4net;
 using VideoConvert.Core;
@@ -180,6 +182,27 @@ namespace VideoConvert.Windows
 
             MovieDBPreferredCertPrefix.Text = AppSettings.MovieDBPreferredCertPrefix;
             MovieDBFallbackCertPrefix.Text = AppSettings.MovieDBFallbackCertPrefix;
+
+            if (string.IsNullOrEmpty(AppSettings.TvDBCachePath))
+            {
+                AppSettings.InitTvDBCache();
+                TvDBCachePath.Text = AppSettings.TvDBCachePath;
+            }
+
+            if (string.IsNullOrEmpty(AppSettings.TvDBParseString))
+            {
+                TvDBParseString.Text = "%show% - S%season%E%episode% - %episode_name%";
+            }
+
+            TvdbHandler tvdbHandler = new TvdbHandler(new XmlCacheProvider(TvDBCachePath.Text), AppSettings.TheTVDBApiKey);
+            tvdbHandler.InitCache();
+
+            TvDBPreferredSearchLanguage.ItemsSource = tvdbHandler.Languages;
+            TvDBPreferredSearchLanguage.SelectedValue = AppSettings.TvDBPreferredLanguage;
+
+            TvDBFallbackSearchLanguage.ItemsSource = tvdbHandler.Languages;
+            TvDBFallbackSearchLanguage.SelectedValue = AppSettings.TvDBFallbackLanguage;
+            tvdbHandler.CloseCache();
         }
 
         private void ReloadQuickProfileList()
@@ -383,8 +406,14 @@ namespace VideoConvert.Windows
             
             
             ExplicitSettingsUpdate();
-            Log.Error("saved");
-            
+
+            if (!string.IsNullOrEmpty(TvDBCachePath.Text) && !Directory.Exists(TvDBCachePath.Text))
+                Directory.CreateDirectory(TvDBCachePath.Text, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
+            AppSettings.TvDBPreferredLanguage = TvDBPreferredSearchLanguage.SelectedValue as string;
+            AppSettings.TvDBFallbackLanguage = TvDBFallbackSearchLanguage.SelectedValue as string;
+
+            Log.Error("Settings saved");
+
             DialogResult = true;
         }
 
@@ -1508,6 +1537,15 @@ namespace VideoConvert.Windows
             MovieDBCertCountry item = MovieDBFallbackCertCountry.SelectedItem as MovieDBCertCountry;
             if (item == null) return;
             MovieDBFallbackCertPrefix.Text = item.Prefix;
+        }
+
+        private void TvDBCachePathLocateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string folder = GetFolder();
+            if (!string.IsNullOrEmpty(folder))
+            {
+                TvDBCachePath.Text = folder;
+            }
         }
     }
 }

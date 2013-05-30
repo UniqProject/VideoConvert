@@ -4,17 +4,14 @@ using VideoConvert.Core.Helpers.TheMovieDB;
 
 namespace VideoConvert.Core.Helpers
 {
-    [XmlRoot("movie")]
-    public class MovieEntry
+    [XmlRoot("episodedetails")]
+    public class EpisodeEntry
     {
         [XmlElement("title")]
         public string Title { get; set; }
 
-        [XmlElement("originaltitle")]
-        public string OriginalTitle { get; set; }
-
-        [XmlElement("sorttitle")]
-        public string SortTitle { get; set; }
+        [XmlElement("showtitle")]
+        public string ShowTitle { get; set; }
 
         [XmlElement("rating", typeof(float))]
         public float Rating { get; set; }
@@ -27,6 +24,21 @@ namespace VideoConvert.Core.Helpers
 
         [XmlElement("top250", typeof(int))]
         public int Top250 { get; set; }
+
+        [XmlElement("season")]
+        public int Season { get; set; }
+
+        [XmlElement("episode")]
+        public int Episode { get; set; }
+
+        [XmlElement("uniqueid")]
+        public int UniqueID { get; set; }
+
+        [XmlElement("displayseason")]
+        public int DisplaySeason { get; set; }
+
+        [XmlElement("displayepisode")]
+        public int DisplayEpisode { get; set; }
 
         [XmlElement("votes", typeof(int))]
         public int Votes { get; set; }
@@ -44,11 +56,7 @@ namespace VideoConvert.Core.Helpers
         public int Runtime { get; set; }
 
         [XmlElement("thumb")]
-        public List<MovieDBPosterImage> PosterImages { get; set; }
-
-        [XmlArray("fanart")]
-        [XmlArrayItem("thumb")]
-        public List<MovieDBImageInfo> FanartImages { get; set; }
+        public MovieDBImageInfo PosterImage { get; set; }
 
         [XmlElement("mpaa")]
         public string MPAARating { get; set; }
@@ -61,12 +69,6 @@ namespace VideoConvert.Core.Helpers
 
         [XmlElement("id")]
         public string ImdbID { get; set; }
-
-        [XmlElement("genre")]
-        public List<string> Genres { get; set; }
-
-        [XmlElement("country")]
-        public List<string> Countries { get; set; }
 
         [XmlElement("set")]
         public List<string> SetNames { get; set; }
@@ -101,10 +103,10 @@ namespace VideoConvert.Core.Helpers
         [XmlElement("dateadded")]
         public string DateAdded { get; set; }
 
-        [XmlIgnore]
+        [XmlIgnore()]
         public string SelectedBackdropImage { get; set; }
 
-        [XmlIgnore]
+        [XmlIgnore()]
         public string SelectedPosterImage { get; set; }
     }
 }

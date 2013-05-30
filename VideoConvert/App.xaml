@@ -34,15 +34,23 @@
         <converters:Int32ToBooleanConverter x:Uid="src:Int32ToBooleanConverter_1" x:Key="IntConverter" />
         <converters:Int32ToVisibilityConverter x:Uid="src:Int32ToVisibilityConverter_1" x:Key="VisibilityConverter" />
         <converters:StringLengthToBooleanConverter x:Uid="src:StringLengthToBooleanConverter_1" x:Key="StringLengthToBooleanConverter" />
+        <converters:XmbcDateConverter x:Uid="converters:XmbcDateConverter_1" x:Key="XmbcDateConverter" />
         <core:Settings x:Uid="properties:Settings" x:Key="Settings"/>
         <my:InverseBoolConverter x:Uid="my:InverseBoolConverter_1" x:Key="InverseBoolConverter" />
         <my:ColorToSolidColorBrushConverter x:Uid="my:ColorToSolidColorBrushConverter_1" x:Key="ColorToSolidColorBrushConverter1" />
-        
         <ResourceDictionary x:Key="StringRes" x:Uid="ResourceDictionary_1">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary x:Uid="ResourceDictionary_2" Source="StringResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    <converters:DateTimeConverter x:Uid="Converters:DateTimeConverter_1" x:Key="DateTimeConverter1" />
+        <converters:DateTimeConverter x:Uid="Converters:DateTimeConverter_1" x:Key="DateTimeConverter1" />
+        <Style x:Uid="Style_1" TargetType="TabItem" x:Key="EmptyHeader" >
+            <Setter x:Uid="Setter_1" Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Uid="ControlTemplate_1" TargetType="TabItem">
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
   </Application.Resources>
 </Application>

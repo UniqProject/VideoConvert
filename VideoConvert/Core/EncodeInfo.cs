@@ -66,9 +66,8 @@ namespace VideoConvert.Core
 
         public int                      ExitCode { get; set; }
 
-        public string                   BackDropImage { get; set; }
-        public string                   PosterImage { get; set; }
         public MovieEntry               MovieInfo { get; set; }
+        public EpisodeEntry             EpisodeInfo { get; set; }
 
         public EncodeInfo()
         {

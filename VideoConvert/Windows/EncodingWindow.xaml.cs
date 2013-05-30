@@ -682,7 +682,7 @@ namespace VideoConvert.Windows
 
                 case EncodingStep.MuxResult:
                     if (string.IsNullOrEmpty(job.TempOutput))
-                        if (AppSettings.CreateXbmcInfoFile && job.MovieInfo != null)
+                        if (AppSettings.CreateXbmcInfoFile && (job.MovieInfo != null || job.EpisodeInfo != null))
                             job.NextStep = EncodingStep.WriteInfoFile;
                         else
                             job.NextStep = EncodingStep.Done;
@@ -691,7 +691,7 @@ namespace VideoConvert.Windows
                     break;
 
                 case EncodingStep.MoveOutFile:
-                    if (AppSettings.CreateXbmcInfoFile && job.MovieInfo != null)
+                    if (AppSettings.CreateXbmcInfoFile && (job.MovieInfo != null || job.EpisodeInfo != null))
                         job.NextStep = EncodingStep.WriteInfoFile;
                     else
                         job.NextStep = EncodingStep.Done;
@@ -833,7 +833,7 @@ namespace VideoConvert.Windows
                 if (!string.IsNullOrEmpty(job.TempOutput))
                     encodingSteps++; // move finished file to output destination
 
-                if (AppSettings.CreateXbmcInfoFile && job.MovieInfo != null)
+                if (AppSettings.CreateXbmcInfoFile && (job.MovieInfo != null || job.EpisodeInfo != null))
                     encodingSteps++; // create xbmc info files
             }   // foreach job
 

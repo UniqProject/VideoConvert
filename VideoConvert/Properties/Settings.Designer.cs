@@ -814,5 +814,53 @@ namespace VideoConvert.Properties {
                 this["MovieDBRatingSource"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TvDBCachePath {
+            get {
+                return ((string)(this["TvDBCachePath"]));
+            }
+            set {
+                this["TvDBCachePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TvDBParseString {
+            get {
+                return ((string)(this["TvDBParseString"]));
+            }
+            set {
+                this["TvDBParseString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        public string TvDBPreferredLanguage {
+            get {
+                return ((string)(this["TvDBPreferredLanguage"]));
+            }
+            set {
+                this["TvDBPreferredLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        public string TvDBFallbackLanguage {
+            get {
+                return ((string)(this["TvDBFallbackLanguage"]));
+            }
+            set {
+                this["TvDBFallbackLanguage"] = value;
+            }
+        }
     }
 }
