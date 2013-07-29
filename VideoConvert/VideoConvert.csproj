@@ -207,6 +207,9 @@
     <Compile Include="Windows\TheMovieDB\DBMultipleSelection.xaml.cs">
       <DependentUpon>DBMultipleSelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\TheMovieDB\ImageAddWin.xaml.cs">
+      <DependentUpon>ImageAddWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ToolUpdaterWindow.xaml.cs">
       <DependentUpon>ToolUpdaterWindow.xaml</DependentUpon>
     </Compile>
@@ -241,6 +244,10 @@
     <Page Include="Windows\TheMovieDB\DBMultipleSelection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\TheMovieDB\ImageAddWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ToolUpdaterWindow.xaml">
       <SubType>Designer</SubType>
@@ -583,13 +590,13 @@
 FINDSTR /C:"[assembly: AssemblyVersion(" %25ASMINFO%25 | sed.exe "s/\[assembly: AssemblyVersion(\"/SET CURRENT_VERSION=/g;s/\")\]//g;s/\.\*//g" &gt;SetCurrVer.cmd
 CALL SetCurrVer.cmd
 DEL  SetCurrVer.cmd
-echo %25CURRENT_VERSION%25&gt;D:\VideoConvert.txt
+echo %25CURRENT_VERSION%25&gt;E:\VideoConvert.txt
 $(WinDir)\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe /t:updateuid "$(ProjectDir)$(ProjectFileName)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>cd $(SolutionDir)
-"$(ProjectDir)WriteChangelog" D:\VideoConvert.txt "$(ProjectDir)CHANGELOG.de-DE" "$(TargetDir)CHANGELOG.de-DE"
-"$(ProjectDir)WriteChangelog" D:\VideoConvert.txt "$(ProjectDir)CHANGELOG.en-US" "$(TargetDir)CHANGELOG.en-US"</PostBuildEvent>
+"$(ProjectDir)WriteChangelog" E:\VideoConvert.txt "$(ProjectDir)CHANGELOG.de-DE" "$(TargetDir)CHANGELOG.de-DE"
+"$(ProjectDir)WriteChangelog" E:\VideoConvert.txt "$(ProjectDir)CHANGELOG.en-US" "$(TargetDir)CHANGELOG.en-US"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
