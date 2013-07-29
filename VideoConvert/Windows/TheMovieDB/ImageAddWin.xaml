@@ -1,0 +1,13 @@
+﻿<Window x:Uid="Window_1" x:Class="VideoConvert.Windows.TheMovieDB.ImageAddWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ImageAddWin" Height="154" Width="614" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow">
+    <Grid x:Uid="Grid_1">
+        <Label x:Uid="PreviewUrlLabel" Content="Preview URL" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="PreviewUrlLabel" VerticalAlignment="Top" />
+        <TextBox x:Uid="PreviewUrl" Height="23" HorizontalAlignment="Left" Margin="131,16,0,0" Name="PreviewUrl" VerticalAlignment="Top" Width="449" />
+        <Label x:Uid="ImageUrlLabel" Content="Image URL" Height="28" HorizontalAlignment="Left" Margin="12,41,0,0" Name="ImageUrlLabel" VerticalAlignment="Top" />
+        <TextBox x:Uid="ImageUrl" Height="23" HorizontalAlignment="Left" Margin="131,45,0,0" Name="ImageUrl" VerticalAlignment="Top" Width="449" />
+        <Button x:Uid="OkButton" Content="OK" Height="23" HorizontalAlignment="Left" Margin="160,80,0,0" Name="OkButton" VerticalAlignment="Top" Width="75" Click="OkButton_Click" />
+        <Button x:Uid="CancelButton" Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="340,80,0,0" Name="CancelButton" VerticalAlignment="Top" Width="75" Click="CancelButton_Click" />
+    </Grid>
+</Window>
