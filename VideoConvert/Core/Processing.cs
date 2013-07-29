@@ -471,17 +471,17 @@ namespace VideoConvert.Core
 
         private static int CalculateMaxRatex264(X264Profile x264Prof, OutputType outType)
         {
-            int[] baseLineBitrates = new[]
-                {
-                    64, 192, 384, 786, 2000, 4000, 4000, 10000, 14000, 20000, 20000, 50000, 50000,
-                    135000, 240000, -1
-                };
+            int[] baseLineBitrates =
+            {
+                64, 192, 384, 786, 2000, 4000, 4000, 10000, 14000, 20000, 20000, 50000, 50000,
+                135000, 240000, -1
+            };
 
-            int[] highBitrates = new[]
-                {
-                    80, 240, 480, 960, 2500, 5000, 5000, 12500, 17500, 25000, 25000, 62500, 62500,
-                    168750, 300000, -1
-                };
+            int[] highBitrates =
+            {
+                80, 240, 480, 960, 2500, 5000, 5000, 12500, 17500, 25000, 25000, 62500, 62500,
+                168750, 300000, -1
+            };
 
             const int maxBlurayBitrate = 40000;
 

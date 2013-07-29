@@ -28,11 +28,11 @@ namespace VideoConvert.Core.CommandLine
 {
     class X264CommandLineGenerator
     {
-        private static readonly string[] CLILevelNames = new[]
-                                                             {
-                                                                 "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1",
-                                                                 "3.2", "4", "4.1", "4.2", "5", "5.1"
-                                                             };
+        private static readonly string[] CLILevelNames =
+        {
+            "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1",
+            "3.2", "4", "4.1", "4.2", "5", "5.1"
+        };
         /// <summary>
         /// Generates commandline arguments used for encoding an video stream to h.264 format.
         /// Input is either stdin or file/avisynth script.

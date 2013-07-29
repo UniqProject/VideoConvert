@@ -194,6 +194,7 @@ namespace VideoConvert.Core.Encoder
                     };
                 encoder.StartInfo = parameter;
 
+                DateTime time = startTime;
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
                     {
                         string line = outputEvent.Data;
@@ -203,7 +204,7 @@ namespace VideoConvert.Core.Encoder
                         Match frameMatch = frameInformation.Match(line);
                         Match fullFrameMatch = fullFrameInformation.Match(line);
 
-                        TimeSpan eta = DateTime.Now.Subtract(startTime);
+                        TimeSpan eta = DateTime.Now.Subtract(time);
 
                         long current;
                         long framesRemaining;
@@ -301,7 +302,7 @@ namespace VideoConvert.Core.Encoder
                 NamedPipeServerStream decodePipe = new NamedPipeServerStream(AppSettings.DecodeNamedPipeName,
                                                                              PipeDirection.InOut, 3,
                                                                              PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-                decodePipe.BeginWaitForConnection(decoderConnected, null);
+                decodePipe.BeginWaitForConnection(DecoderConnected, null);
 
                 Process decoder = FfMpeg.GenerateDecodeProcess(inputFile);
                 try
@@ -342,7 +343,7 @@ namespace VideoConvert.Core.Encoder
                     {
                         try
                         {
-                            ReadThreadStart(decodePipe, encoder);
+                            if (encoder != null) ReadThreadStart(decodePipe, encoder);
                         }
                         catch (Exception ex)
                         {
@@ -424,16 +425,13 @@ namespace VideoConvert.Core.Encoder
             e.Result = _jobInfo;
         }
 
-        private void decoderConnected(IAsyncResult ar)
+        private static void DecoderConnected(IAsyncResult ar)
         {
             Log.Info("decoder pipe connected");
         }
 
         private void ReadThreadStart(NamedPipeServerStream decodePipe, Process encoder)
         {
-            const int bufSize = 5 * 1024 * 1024;
-            byte[] buffer = new byte[bufSize];
-
             if (!decodePipe.IsConnected)
                 decodePipe.WaitForConnection();
 

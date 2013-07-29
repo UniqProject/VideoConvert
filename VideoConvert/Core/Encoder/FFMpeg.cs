@@ -318,8 +318,8 @@ namespace VideoConvert.Core.Encoder
                                    AppSettings.Ffmpeg64Installed &&
                                    Environment.Is64BitOperatingSystem;
 
-            int[] sampleRateArr = new[] {0, 8000, 11025, 22050, 44100, 48000};
-            int[] channelArr = new[] {0, 2, 3, 4, 1};
+            int[] sampleRateArr = {0, 8000, 11025, 22050, 44100, 48000};
+            int[] channelArr = {0, 2, 3, 4, 1};
 
             string status = Processing.GetResourceString("ffmpeg_encoding_audio_status");
 

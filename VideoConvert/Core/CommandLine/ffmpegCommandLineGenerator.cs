@@ -24,8 +24,7 @@ namespace VideoConvert.Core.CommandLine
 {
     class FfmpegCommandLineGenerator
     {
-        private static readonly int[] BitrateList = new int[]
-            {64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640};
+        private static readonly int[] BitrateList = {64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640};
 
         /// <summary>
         /// Generates commandline used for encoding an audio stream to AC-3 format.
@@ -45,9 +44,9 @@ namespace VideoConvert.Core.CommandLine
 
             sb.Append(" -c:a ac3");
 
-            int bitrate = 10;
-            int channels = 0;
-            bool drc = false;
+            int bitrate;
+            int channels;
+            bool drc;
 
             // safety check, should always be true
             if (jobInfo.AudioProfile.Type == ProfileType.AC3)

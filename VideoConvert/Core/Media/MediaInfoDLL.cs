@@ -126,11 +126,9 @@ namespace VideoConvert.Core.Media
         public MediaInfo()
         {
             Handle = MediaInfo_New();
-            if (Environment.OSVersion.ToString().IndexOf("Windows")==-1)
-                MustUseAnsi=true;
-            else
-                MustUseAnsi=false;
+            MustUseAnsi = Environment.OSVersion.ToString().IndexOf("Windows", StringComparison.Ordinal)==-1;
         }
+
         ~MediaInfo() { MediaInfo_Delete(Handle); }
         public int Open(String FileName)
         {

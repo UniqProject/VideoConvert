@@ -103,10 +103,10 @@ namespace VideoConvert.Core.Helpers
         [XmlElement("dateadded")]
         public string DateAdded { get; set; }
 
-        [XmlIgnore()]
+        [XmlIgnore]
         public string SelectedBackdropImage { get; set; }
 
-        [XmlIgnore()]
+        [XmlIgnore]
         public string SelectedPosterImage { get; set; }
     }
 }

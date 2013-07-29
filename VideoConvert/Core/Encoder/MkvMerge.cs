@@ -313,8 +313,8 @@ namespace VideoConvert.Core.Encoder
                         for (int j = 0; j < _jobInfo.Chapters.Count; j++)
                         {
                             dt = DateTime.MinValue.Add(_jobInfo.Chapters[j]);
-                            chapters.WriteLine(string.Format(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff")));
-                            chapters.WriteLine(string.Format(chapterFormatNames, j + 1));
+                            chapters.WriteLine(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff"));
+                            chapters.WriteLine(chapterFormatNames, j + 1);
                         }
                     }
                     else
@@ -324,8 +324,8 @@ namespace VideoConvert.Core.Encoder
                         {
                             actualTime = actualTime.Add(_jobInfo.Chapters[j]);
                             dt = DateTime.MinValue.Add(actualTime);
-                            chapters.WriteLine(string.Format(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff")));
-                            chapters.WriteLine(string.Format(chapterFormatNames, j + 1));
+                            chapters.WriteLine(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff"));
+                            chapters.WriteLine(chapterFormatNames, j + 1);
                         }
                     }
                 }

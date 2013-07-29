@@ -7,12 +7,12 @@ namespace VideoConvert.Core.Helpers.TheMovieDB
 {
     class TMDbSerializer
     {
-        private static XmlSerializerNamespaces _serializerNamespaces;
+        private static readonly XmlSerializerNamespaces SerializerNamespaces;
 
         static TMDbSerializer()
         {
-            _serializerNamespaces = new XmlSerializerNamespaces();
-            _serializerNamespaces.Add("", "");
+            SerializerNamespaces = new XmlSerializerNamespaces();
+            SerializerNamespaces.Add("", "");
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace VideoConvert.Core.Helpers.TheMovieDB
             using (MemoryStream stream = new MemoryStream())
             using (StreamWriter sw = new StreamWriter(stream))
             {
-                s.Serialize(sw, obj, alternateNamespaces ?? _serializerNamespaces);
+                s.Serialize(sw, obj, alternateNamespaces ?? SerializerNamespaces);
 
                 stream.Position = 0;
                 stream.Flush();
@@ -52,8 +52,12 @@ namespace VideoConvert.Core.Helpers.TheMovieDB
             // Use awesomeness of Activator
             T tmp = Activator.CreateInstance<T>();
             XmlSerializer serializer = new XmlSerializer(tmp.GetType());
-            T objectToSerialize = (T)serializer.Deserialize(new XmlNodeReader(doc.DocumentElement));
-            return objectToSerialize;
+            if (doc.DocumentElement != null)
+            {
+                T objectToSerialize = (T)serializer.Deserialize(new XmlNodeReader(doc.DocumentElement));
+                return objectToSerialize;
+            }
+            return default(T);
         }
     }
 }

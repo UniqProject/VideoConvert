@@ -22,7 +22,7 @@ namespace VideoConvert.Core.Helpers.IMDB
         [XmlElement("day")]
         public int Day { get; set; }
 
-        [XmlIgnore()]
+        [XmlIgnore]
         public DateTime Date { get { return new DateTime(Year, Month, Day); } }
 
         public ImdbReleaseDateEntry()

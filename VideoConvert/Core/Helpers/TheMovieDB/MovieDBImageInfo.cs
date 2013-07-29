@@ -4,13 +4,13 @@ namespace VideoConvert.Core.Helpers.TheMovieDB
 {
     public class MovieDBImageInfo
     {
-        [XmlIgnore()]
+        [XmlIgnore]
         public string Title { get; set; }
 
         [XmlAttribute("preview")]
         public string UrlPreview { get; set; }
 
-        [XmlText()]
+        [XmlText]
         public string UrlOriginal { get; set; }
 
         public bool ShouldSerializeUrlPreview()
