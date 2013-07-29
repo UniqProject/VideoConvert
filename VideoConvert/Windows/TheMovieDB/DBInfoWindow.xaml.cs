@@ -20,6 +20,7 @@ using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Helpers.IMDB;
 using VideoConvert.Core.Helpers.TheMovieDB;
 using log4net;
+using System.Collections.ObjectModel;
 
 namespace VideoConvert.Windows.TheMovieDB
 {
@@ -35,23 +36,20 @@ namespace VideoConvert.Windows.TheMovieDB
         public MovieEntry ResultMovieData;
         public EpisodeEntry ResultEpisodeData;
 
-        private List<MovieDBImageInfo> _backdropsList;
+        private ObservableCollection<MovieDBImageInfo> _backdropsList;
 
-        private List<MovieDBPosterImage> _postersList;
-        private List<MovieDBSeasonPosterImage> _seasonPosterList;
- 
-        private List<MovieDBBannerImage> _bannerList;
-        private List<MovieDBSeasonBannerImage> _seasonBannerList;
-        private List<MovieDBBannerImage> _previewBannerList;
+        private ObservableCollection<MovieDBPosterImage> _postersList;
 
-        private MovieDBImageInfo _episodeImage;
+        private ObservableCollection<MovieDBBannerImage> _bannerList;
+        private ObservableCollection<MovieDBSeasonBannerImage> _seasonBannerList;
+        private ObservableCollection<MovieDBBannerImage> _previewBannerList;
 
-        private List<DBTvShowSeason> _seasonList; 
+        private ObservableCollection<DBTvShowSeason> _seasonList; 
 
         private MovieDBCastList _castList;
 
-        private TvdbHandler _tvDbclient;
-        private TMDbClient _tmDbClient;
+        private readonly TvdbHandler _tvDbclient;
+        private readonly TMDbClient _tmDbClient;
 
         public DBInfoWindow()
         {
@@ -96,19 +94,16 @@ namespace VideoConvert.Windows.TheMovieDB
 
         private void InitLists()
         {
-            _backdropsList = new List<MovieDBImageInfo>();
+            _backdropsList = new ObservableCollection<MovieDBImageInfo>();
 
-            _postersList = new List<MovieDBPosterImage>();
-            _seasonPosterList = new List<MovieDBSeasonPosterImage>();
+            _postersList = new ObservableCollection<MovieDBPosterImage>();
 
-            _bannerList = new List<MovieDBBannerImage>();
-            _seasonBannerList = new List<MovieDBSeasonBannerImage>();
+            _bannerList = new ObservableCollection<MovieDBBannerImage>();
+            _seasonBannerList = new ObservableCollection<MovieDBSeasonBannerImage>();
 
-            _previewBannerList = new List<MovieDBBannerImage>();
+            _previewBannerList = new ObservableCollection<MovieDBBannerImage>();
 
-            _episodeImage = new MovieDBImageInfo();
-
-            _seasonList = new List<DBTvShowSeason>();
+            _seasonList = new ObservableCollection<DBTvShowSeason>();
 
             _castList = new MovieDBCastList();
         }
@@ -161,11 +156,17 @@ namespace VideoConvert.Windows.TheMovieDB
                            .Replace("%episode%", @"(?<episode>[\d]*)")
                            .Replace("%episode_name%", @"(?<episodename>[\w\s]*)");
 
-            Regex searchObj = new Regex(regexSearch, RegexOptions.Multiline | RegexOptions.Singleline);
+            Regex searchObj = new Regex(regexSearch, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.ExplicitCapture);
             Match matchResult = searchObj.Match(searchMedia);
 
             // check first if we can use the search string
-            if (!matchResult.Success) return;
+            if (!matchResult.Success)
+            {
+                regexSearch = regexSearch.Replace(@"(?<episodename>[\w\s]*)", "").Trim().TrimEnd(new []{'-'}).Trim();
+                searchObj = new Regex(regexSearch, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.ExplicitCapture);
+                matchResult = searchObj.Match(searchMedia);
+                if (!matchResult.Success) return;
+            }
 
             TvdbLanguage dbLang = _tvDbclient.Languages.Single(language => language.Abbriviation == selectedLang) ??
                                   _tvDbclient.Languages.Single(language => language.Abbriviation == fallbackLang);
@@ -244,7 +245,7 @@ namespace VideoConvert.Windows.TheMovieDB
 
             int tempInt;
             int.TryParse(matchResult.Groups["season"].Value, NumberStyles.Integer, AppSettings.CInfo, out tempInt);
-            TvShowSeason.SelectedIndex = _seasonList.FindIndex(season => season.SeasonNumber == tempInt);
+            TvShowSeason.SelectedIndex = _seasonList.ToList().FindIndex(season => season.SeasonNumber == tempInt);
 
             int.TryParse(matchResult.Groups["episode"].Value, NumberStyles.Integer, AppSettings.CInfo, out tempInt);
             TvShowEpisodeNumber.SelectedIndex =
@@ -279,8 +280,8 @@ namespace VideoConvert.Windows.TheMovieDB
                     });
                 imageCounter++;
             }
-            _previewBannerList.AddRange(_bannerList);
-            _previewBannerList.AddRange(_seasonBannerList);
+            _bannerList.ToList().ForEach(image => _previewBannerList.Add(image));
+            _seasonBannerList.ToList().ForEach(image => _previewBannerList.Add(image));
 
             imageCounter = 1;
             foreach (TvdbFanartBanner banner in series.FanartBanners)
@@ -378,84 +379,92 @@ namespace VideoConvert.Windows.TheMovieDB
             MovieTitle.Text = searchResult.Title;
             MovieOriginalTitle.Text = searchResult.OriginalTitle;
 
-            Genre.Text = searchResult.Genres != null
-                             ? string.Join(" / ", searchResult.Genres.ConvertAll(input => input.Name))
-                             : string.Empty;
+            MovieGenre.Text = searchResult.Genres != null
+                                  ? string.Join(" / ", searchResult.Genres.ConvertAll(input => input.Name))
+                                  : string.Empty;
 
-            Runtime.Text = searchResult.Runtime.ToString("g");
+            MovieRuntime.Text = searchResult.Runtime.ToString("g");
 
             if (AppSettings.MovieDBRatingSource == 0)
             {
-                Rating.Text = searchResult.VoteAverage.ToString("g");
-                Votes.Text = searchResult.VoteCount.ToString("g");
+                MovieRating.Text = searchResult.VoteAverage.ToString("g");
+                MovieVotes.Text = searchResult.VoteCount.ToString("g");
             }
             else
             {
                 ImdbClient imdb = new ImdbClient();
                 ImdbMovieData movieData = imdb.GetMovieById(searchResult.ImdbId);
-                Rating.Text = movieData.Rating.ToString("g");
-                Votes.Text = movieData.RatingCount.ToString("g");
+                MovieRating.Text = movieData.Rating.ToString("g");
+                MovieVotes.Text = movieData.RatingCount.ToString("g");
             }
 
-            Year.Text = searchResult.ReleaseDate.Year.ToString("g");
-            Tagline.Text = searchResult.Tagline;
-            Plot.Text = searchResult.Overview;
+            MovieYear.Text = searchResult.ReleaseDate.Year.ToString("g");
+            MovieTagline.Text = searchResult.Tagline;
+            MoviePlot.Text = searchResult.Overview;
 
             if (movieKeywords != null && movieKeywords.Keywords != null)
-                Keywords.Text = string.Join(", ", movieKeywords.Keywords.ConvertAll(input => input.Name));
+                MovieKeywords.Text = string.Join(", ", movieKeywords.Keywords.ConvertAll(input => input.Name));
             else
-                Keywords.Text = string.Empty;
+                MovieKeywords.Text = string.Empty;
 
-            ImdbId.Text = searchResult.ImdbId;
+            MovieImdbId.Text = searchResult.ImdbId;
 
-            Country.Text = searchResult.ProductionCountries != null
+            MovieCountry.Text = searchResult.ProductionCountries != null
                                ? string.Join(" / ", searchResult.ProductionCountries.ConvertAll(input => input.Name))
                                : string.Empty;
 
             if (movieCasts != null && movieCasts.Crew != null)
             {
-                Director.Text = string.Join(" / ",
-                                            movieCasts.Crew.Where(crew => crew.Job == "Director")
-                                                      .ToList()
-                                                      .ConvertAll(input => input.Name));
-                Writers.Text = string.Join(" / ",
-                                           movieCasts.Crew.Where(crew => crew.Job == "Writer" || crew.Job == "Screenplay")
-                                                     .ToList()
-                                                     .ConvertAll(input => input.Name));
+                MovieDirector.Text = string.Join(" / ",
+                                                 movieCasts.Crew.Where(crew => crew.Job == "Director")
+                                                           .ToList()
+                                                           .ConvertAll(input => input.Name));
+                MovieWriters.Text = string.Join(" / ",
+                                                movieCasts.Crew.Where(
+                                                    crew => crew.Job == "Writer" || crew.Job == "Screenplay")
+                                                          .ToList()
+                                                          .ConvertAll(input => input.Name));
             }
             else
             {
-                Director.Text = string.Empty;
-                Writers.Text = string.Empty;
+                MovieDirector.Text = string.Empty;
+                MovieWriters.Text = string.Empty;
             }
 
-            Studio.Text = searchResult.ProductionCompanies != null
-                              ? string.Join(" / ", searchResult.ProductionCompanies.ConvertAll(input => input.Name))
-                              : string.Empty;
+            MovieStudio.Text = searchResult.ProductionCompanies != null
+                                   ? string.Join(" / ", searchResult.ProductionCompanies.ConvertAll(input => input.Name))
+                                   : string.Empty;
 
-            SetName.Text = searchResult.BelongsToCollection != null
-                               ? string.Join(" / ", searchResult.BelongsToCollection.ConvertAll(input => input.Name))
-                               : string.Empty;
+            MovieSetName.Text = searchResult.BelongsToCollection != null
+                                    ? string.Join(" / ",
+                                                  searchResult.BelongsToCollection.ConvertAll(input => input.Name))
+                                    : string.Empty;
 
             if (movieTrailers != null && movieTrailers.Youtube != null && movieTrailers.Youtube.Count > 0)
-                Trailer.Text = "plugin://plugin.video.youtube/?action=play_video&amp;videoid=" +
-                               movieTrailers.Youtube.First().Source;
+                MovieTrailer.Text = "plugin://plugin.video.youtube/?action=play_video&amp;videoid=" +
+                                    movieTrailers.Youtube.First().Source;
             else
-                Trailer.Text = string.Empty;
+                MovieTrailer.Text = string.Empty;
 
             Country selCountry =
-                movieReleases.Countries.Single(country => country.Iso_3166_1.ToLowerInvariant() == selectedCertCountry);
+                movieReleases.Countries.SingleOrDefault(country => country.Iso_3166_1.ToLowerInvariant() == selectedCertCountry);
             string certPrefix = AppSettings.MovieDBPreferredCertPrefix;
 
             if (selCountry == null)
             {
                 selCountry =
-                    movieReleases.Countries.Single(
+                    movieReleases.Countries.SingleOrDefault(
                         country => country.Iso_3166_1.ToLowerInvariant() == fallbackCertCountry);
                 certPrefix = AppSettings.MovieDBFallbackCertPrefix;
             }
 
-            MPAARating.Text = certPrefix + selCountry.Certification;
+            if (selCountry == null)
+            {
+                selCountry = movieReleases.Countries.First();
+                certPrefix = string.Empty;
+            }
+
+            MovieMPAARating.Text = certPrefix + selCountry.Certification;
 
             // loading image sizes
             string posterOriginal = _tmDbClient.Config.Images.PosterSizes.Last();
@@ -501,8 +510,8 @@ namespace VideoConvert.Windows.TheMovieDB
                     });
                 cnt++;
             }
-            PosterList.ItemsSource = _postersList;
-            PosterList.SelectedIndex = 0;
+            MoviePosterList.ItemsSource = _postersList;
+            MoviePosterList.SelectedIndex = 0;
 
             cnt = 1;
             foreach (ImageData backdrop in imageList.Backdrops)
@@ -515,8 +524,8 @@ namespace VideoConvert.Windows.TheMovieDB
                     });
                 cnt++;
             }
-            BackdropList.ItemsSource = _backdropsList;
-            BackdropList.SelectedIndex = 0;
+            MovieBackdropList.ItemsSource = _backdropsList;
+            MovieBackdropList.SelectedIndex = 0;
 
             foreach (Cast cast in movieCasts.Cast)
             {
@@ -527,7 +536,7 @@ namespace VideoConvert.Windows.TheMovieDB
                         Thumbnail = _tmDbClient.GetImageUrl("original", cast.ProfilePath).AbsoluteUri
                     });
             }
-            CastListView.ItemsSource = _castList.Casts;
+            MovieCastListView.ItemsSource = _castList.Casts;
 
             ResultTabControl.SelectedIndex = 1;
         }
@@ -539,47 +548,64 @@ namespace VideoConvert.Windows.TheMovieDB
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+            float tempRating;
+            int tempRuntime;
             switch (ResultTabControl.SelectedIndex)
             {
                 case 1:
+                    int tempVotes;
+                    int tempYear;
+                    float.TryParse(MovieRating.Text, NumberStyles.Float, AppSettings.CInfo, out tempRating);
+                    int.TryParse(MovieRuntime.Text, NumberStyles.Integer, AppSettings.CInfo, out tempRuntime);
+                    int.TryParse(MovieVotes.Text, NumberStyles.Integer, AppSettings.CInfo, out tempVotes);
+                    int.TryParse(MovieYear.Text, NumberStyles.Integer, AppSettings.CInfo, out tempYear);
+
                     ResultMovieData = new MovieEntry
                         {
                             Casts = _castList.Casts,
                             Aired = "1969-12-31",
                             Premiered = "1969-12-31",
                             Code = "",
-                            Countries = Country.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            Countries =
+                                MovieCountry.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
                             DateAdded = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                            Directors = Director.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            Directors =
+                                MovieDirector.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
                             EpBookmark = 0f,
-                            FanartImages = _backdropsList,
-                            Genres = Genre.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                            ImdbID = ImdbId.Text,
+                            FanartImages = _backdropsList.ToList(),
+                            Genres =
+                                MovieGenre.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            ImdbID = MovieImdbId.Text,
                             LastPlayed = "1969-12-31",
-                            MPAARating = MPAARating.Text,
+                            MPAARating = MovieMPAARating.Text,
                             OriginalTitle = MovieOriginalTitle.Text,
                             Outline = "",
                             PlayCount = 0,
-                            Plot = Plot.Text,
-                            PosterImages = _postersList,
-                            Rating = float.Parse(Rating.Text, AppSettings.CInfo),
-                            Runtime = int.Parse(Runtime.Text, AppSettings.CInfo),
-                            SetNames = SetName.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                            SortTitle = SortTitle.Text,
+                            Plot = MoviePlot.Text,
+                            PosterImages = _postersList.ToList(),
+                            Rating = tempRating,
+                            Runtime = tempRuntime,
+                            SetNames =
+                                MovieSetName.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            SortTitle = MovieSortTitle.Text,
                             Status = "",
-                            Studios = Studio.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                            Tagline = Tagline.Text,
+                            Studios =
+                                MovieStudio.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            Tagline = MovieTagline.Text,
                             Title = MovieTitle.Text,
                             Top250 = 0,
-                            Trailer = Trailer.Text,
-                            Votes = int.Parse(Votes.Text, AppSettings.CInfo),
-                            Writers = Writers.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                            Year = int.Parse(Year.Text, AppSettings.CInfo),
-                            SelectedBackdropImage = ((MovieDBImageInfo) BackdropList.SelectedItem).UrlOriginal,
-                            SelectedPosterImage = ((MovieDBPosterImage) PosterList.SelectedItem).UrlOriginal
+                            Trailer = MovieTrailer.Text,
+                            Votes = tempVotes,
+                            Writers =
+                                MovieWriters.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            Year = tempYear,
+                            SelectedBackdropImage = ((MovieDBImageInfo) MovieBackdropList.SelectedItem).UrlOriginal,
+                            SelectedPosterImage = ((MovieDBPosterImage) MoviePosterList.SelectedItem).UrlOriginal
                         };
                     break;
                 case 2:
+                    float.TryParse(TvShowEpisodeRating.Text, NumberStyles.Float, AppSettings.CInfo, out tempRating);
+                    int.TryParse(TvShowEpisodeRuntime.Text, NumberStyles.Integer, AppSettings.CInfo, out tempRuntime);
                     ResultEpisodeData = new EpisodeEntry
                         {
                             Title = TvShowEpisodeTitle.Text,
@@ -588,8 +614,8 @@ namespace VideoConvert.Windows.TheMovieDB
                             Code = "",
                             LastPlayed = "1969-12-31",
                             Aired = TvShowEpisodeFirstAired.Text,
-                            Rating = float.Parse(TvShowEpisodeRating.Text, AppSettings.CInfo),
-                            Runtime = int.Parse(TvShowEpisodeRuntime.Text, AppSettings.CInfo),
+                            Rating = tempRating,
+                            Runtime = tempRuntime,
                             Directors =
                                 TvShowEpisodeDirector.Text.Split(new[] {" / "}, StringSplitOptions.RemoveEmptyEntries)
                                                      .ToList(),
@@ -633,27 +659,98 @@ namespace VideoConvert.Windows.TheMovieDB
 
         private void DataSource_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (DataSource.SelectedIndex == 0)
+            switch (DataSource.SelectedIndex)
             {
-                SearchLanguage.ItemsSource = MovieDBLanguages.LangList;
-                SearchLanguage.SelectedValuePath = "Code";
-                SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastLanguage)
-                                                   ? AppSettings.MovieDBLastLanguage
-                                                   : "en";
-                
-                RatingCountry.ItemsSource = MovieDBCertCountries.CountryList;
-                RatingCountry.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastRatingCountry)
-                                                  ? AppSettings.MovieDBLastRatingCountry
-                                                  : "us";
+                case 0:
+                    SearchLanguage.ItemsSource = MovieDBLanguages.LangList;
+                    SearchLanguage.SelectedValuePath = "Code";
+                    SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastLanguage)
+                                                       ? AppSettings.MovieDBLastLanguage
+                                                       : "en";
+                    RatingCountry.ItemsSource = MovieDBCertCountries.CountryList;
+                    RatingCountry.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastRatingCountry)
+                                                      ? AppSettings.MovieDBLastRatingCountry
+                                                      : "us";
+                    break;
+                default:
+                    SearchLanguage.ItemsSource = _tvDbclient.Languages;
+                    SearchLanguage.SelectedValuePath = "Abbriviation";
+                    SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.TvDBPreferredLanguage)
+                                                       ? AppSettings.TvDBPreferredLanguage
+                                                       : "en";
+                    break;
+            }
+        }
+
+        private void ChangeMediaTypeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResultTabControl.SelectedIndex != 2) return;
+            MovieTitle.Text = TvShowTitle.Text + " - " + TvShowEpisodeTitle.Text;
+            MovieOriginalTitle.Text = TvShowEpisodeTitle.Text;
+            MovieGenre.Text = TvShowGenre.Text;
+            MovieRating.Text = TvShowEpisodeRating.Text;
+            MovieRuntime.Text = TvShowEpisodeRuntime.Text;
+            MovieYear.Text =
+                DateTime.ParseExact(TvShowEpisodeFirstAired.Text, "yyyy-MM-dd", AppSettings.CInfo)
+                        .Year.ToString("g");
+            MoviePlot.Text = TvShowEpisodePlot.Text;
+            MovieMPAARating.Text = TvShowMpaaRating.Text;
+            MovieImdbId.Text = TvShowEpisodeImdbId.Text;
+            MovieDirector.Text = TvShowEpisodeDirector.Text;
+            MovieWriters.Text = TvShowEpisodeWriter.Text;
+            MovieStudio.Text = TvShowNetwork.Text;
+
+            MovieBackdropList.ItemsSource = _backdropsList;
+
+            string episodeImage = ((DBTvShowEpisode) TvShowEpisodeNumber.SelectedItem).EpisodeImageUrl;
+
+            if (!string.IsNullOrEmpty(episodeImage))
+            {
+                _backdropsList.Add(new MovieDBImageInfo
+                    {
+                        Title = "Episode Image",
+                        UrlOriginal = episodeImage,
+                        UrlPreview = episodeImage
+                    });
+                MovieBackdropList.SelectedValue = episodeImage;
             }
             else
+                MovieBackdropList.SelectedIndex = TvShowFanartList.SelectedIndex;
+
+            MoviePosterList.ItemsSource = _postersList;
+            MoviePosterList.SelectedIndex = TvShowPosterList.SelectedIndex;
+
+            MovieCastListView.ItemsSource = _castList.Casts;
+
+            ResultTabControl.SelectedIndex = 1;
+        }
+
+        private void AddBackdropButton_Click(object sender, RoutedEventArgs e)
+        {
+            ImageAddWin addWin = new ImageAddWin {Owner = this};
+            if (addWin.ShowDialog() != true) return;
+
+            MovieDBImageInfo image = new MovieDBImageInfo
+                {
+                    Title = "User Image",
+                    UrlOriginal = addWin.ResultImage,
+                    UrlPreview = addWin.ResultPreview
+                };
+            _backdropsList.Add(image);
+        }
+
+        private void AddPosterButton_Click(object sender, RoutedEventArgs e)
+        {
+            ImageAddWin addWin = new ImageAddWin { Owner = this };
+            if (addWin.ShowDialog() != true) return;
+
+            MovieDBPosterImage image = new MovieDBPosterImage
             {
-                SearchLanguage.ItemsSource = _tvDbclient.Languages;
-                SearchLanguage.SelectedValuePath = "Abbriviation";
-                SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.TvDBPreferredLanguage)
-                                                   ? AppSettings.TvDBPreferredLanguage
-                                                   : "en";
-            }
+                Title = "User Image",
+                UrlOriginal = addWin.ResultImage,
+                UrlPreview = addWin.ResultPreview
+            };
+            _postersList.Add(image);
         }
     }
 }
