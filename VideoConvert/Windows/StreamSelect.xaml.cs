@@ -1273,6 +1273,9 @@ namespace VideoConvert.Windows
             {
                 if (dbInfoWindow.ShowDialog() != true) return;
 
+                if (dbInfoWindow.ResultMovieData != null || dbInfoWindow.ResultEpisodeData != null)
+                    FileTitle.Text = dbInfoWindow.SearchString;
+
                 if (dbInfoWindow.ResultMovieData != null)
                 {
                     _resultMovieData = dbInfoWindow.ResultMovieData;

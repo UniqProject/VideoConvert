@@ -212,5 +212,6 @@
         <Button x:Uid="OKButton" Content="OK" Height="23" HorizontalAlignment="Left" Margin="153,0,0,11" Name="OKButton" VerticalAlignment="Bottom" Width="113" Click="OKButton_Click" />
         <Button x:Uid="CancelButton" Content="Cancel" Height="23" Margin="0,0,153,11" Name="CancelButton" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="113" Click="CancelButton_Click" />
         <Button x:Uid="ChangeMediaTypeButton" Content="Tv Show -&gt; Movie" Height="23" HorizontalAlignment="Right" Margin="0,104,19,0" Name="ChangeMediaTypeButton" VerticalAlignment="Top" Width="158" Click="ChangeMediaTypeButton_Click" />
+        <Button x:Uid="GenerateTitleButton" Content="Generate Title" Height="23" HorizontalAlignment="Right" Margin="0,70,17,0" Name="GenerateTitleButton" VerticalAlignment="Top" Width="160" Click="GenerateTitleButton_Click" />
     </Grid>
 </Window>

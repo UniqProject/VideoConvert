@@ -6037,6 +6037,13 @@ VideoConvert.g.en-US.resources:dbinfowindow.baml,ChangeMediaTypeButton:System.Wi
 VideoConvert.g.en-US.resources:dbinfowindow.baml,ChangeMediaTypeButton:System.Windows.FrameworkElement.Margin,None,False,True,,"0,104,19,0"
 VideoConvert.g.en-US.resources:dbinfowindow.baml,ChangeMediaTypeButton:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:dbinfowindow.baml,ChangeMediaTypeButton:System.Windows.FrameworkElement.Width,None,False,True,,158
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.Controls.Button.$Content,Button,True,True,,
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.Controls.ContentControl.Content,Button,True,True,,Generate Title
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.FrameworkElement.Height,None,False,True,,23
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Right
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.FrameworkElement.Margin,None,False,True,,"0,70,17,0"
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:dbinfowindow.baml,GenerateTitleButton:System.Windows.FrameworkElement.Width,None,False,True,,160
 VideoConvert.g.en-US.resources:encodingwindow.baml,UserControl_1:VideoConvert.Windows.EncodingWindow.$Content,None,True,True,,#Grid_1;
 VideoConvert.g.en-US.resources:encodingwindow.baml,EncodingExpander:System.Windows.Controls.Expander.$Content,None,False,True,,#Grid_2;
 VideoConvert.g.en-US.resources:encodingwindow.baml,EncodingExpander:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoding...

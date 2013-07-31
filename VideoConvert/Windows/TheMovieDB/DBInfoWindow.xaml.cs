@@ -649,6 +649,7 @@ namespace VideoConvert.Windows.TheMovieDB
 
                     break;
             }
+            SearchString = MediaTitleInfo.Text;
             DialogResult = true;
         }
 
@@ -751,6 +752,26 @@ namespace VideoConvert.Windows.TheMovieDB
                 UrlPreview = addWin.ResultPreview
             };
             _postersList.Add(image);
+        }
+
+        private void GenerateTitleButton_Click(object sender, RoutedEventArgs e)
+        {
+            switch (ResultTabControl.SelectedIndex)
+            {
+                case 1:
+                    MediaTitleInfo.Text = MovieTitle.Text;
+                    break;
+                case 2:
+                    //Episode = ((DBTvShowEpisode) TvShowEpisodeNumber.SelectedItem).EpisodeNumber,
+                            //Season = ((DBTvShowSeason) TvShowSeason.SelectedItem).SeasonNumber,
+                    MediaTitleInfo.Text =
+                        AppSettings.TvDBParseString.Replace("%show%", TvShowTitle.Text)
+                            .Replace("%season%", ((DBTvShowSeason) TvShowSeason.SelectedItem).SeasonNumber.ToString("D2"))
+                            .Replace("%episode%",
+                                ((DBTvShowEpisode) TvShowEpisodeNumber.SelectedItem).EpisodeNumber.ToString("D2"))
+                            .Replace("%episode_name%", TvShowEpisodeTitle.Text);
+                    break;
+            }
         }
     }
 }
