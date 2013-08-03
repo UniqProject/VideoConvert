@@ -660,27 +660,35 @@ namespace VideoConvert.Windows.TheMovieDB
 
         private void DataSource_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            switch (DataSource.SelectedIndex)
+            try
             {
-                case 0:
-                    SearchLanguage.ItemsSource = MovieDBLanguages.LangList;
-                    SearchLanguage.SelectedValuePath = "Code";
-                    SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastLanguage)
-                                                       ? AppSettings.MovieDBLastLanguage
-                                                       : "en";
-                    RatingCountry.ItemsSource = MovieDBCertCountries.CountryList;
-                    RatingCountry.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastRatingCountry)
-                                                      ? AppSettings.MovieDBLastRatingCountry
-                                                      : "us";
-                    break;
-                default:
-                    SearchLanguage.ItemsSource = _tvDbclient.Languages;
-                    SearchLanguage.SelectedValuePath = "Abbriviation";
-                    SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.TvDBPreferredLanguage)
-                                                       ? AppSettings.TvDBPreferredLanguage
-                                                       : "en";
-                    break;
+                switch (DataSource.SelectedIndex)
+                {
+                    case 0:
+                        SearchLanguage.ItemsSource = MovieDBLanguages.LangList;
+                        SearchLanguage.SelectedValuePath = "Code";
+                        SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastLanguage)
+                                                           ? AppSettings.MovieDBLastLanguage
+                                                           : "en";
+                        RatingCountry.ItemsSource = MovieDBCertCountries.CountryList;
+                        RatingCountry.SelectedValue = !string.IsNullOrEmpty(AppSettings.MovieDBLastRatingCountry)
+                                                          ? AppSettings.MovieDBLastRatingCountry
+                                                          : "us";
+                        break;
+                    default:
+                        SearchLanguage.ItemsSource = _tvDbclient.Languages;
+                        SearchLanguage.SelectedValuePath = "Abbriviation";
+                        SearchLanguage.SelectedValue = !string.IsNullOrEmpty(AppSettings.TvDBPreferredLanguage)
+                                                           ? AppSettings.TvDBPreferredLanguage
+                                                           : "en";
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+            
         }
 
         private void ChangeMediaTypeButton_Click(object sender, RoutedEventArgs e)
