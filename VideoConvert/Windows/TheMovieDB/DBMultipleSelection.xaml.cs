@@ -51,5 +51,10 @@ namespace VideoConvert.Windows.TheMovieDB
 
             DialogResult = true;
         }
+
+        private void MovieResultList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            OKButton_Click(sender, e);
+        }
     }
 }

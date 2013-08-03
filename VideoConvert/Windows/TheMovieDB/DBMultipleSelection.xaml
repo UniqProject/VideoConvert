@@ -8,7 +8,7 @@
         <TabControl x:Uid="ResultsTabControl" Height="214" HorizontalAlignment="Left" Margin="6,6,0,0" Name="ResultsTabControl" VerticalAlignment="Top" Width="590" ItemContainerStyle="{StaticResource EmptyHeader}">
             <TabItem x:Uid="MovieTab" Header="Movie" Name="MovieTab">
                 <Grid x:Uid="Grid_2">
-                    <ListBox x:Uid="MovieResultList" Height="197" Margin="6,6,6,0" Name="MovieResultList" VerticalAlignment="Top">
+                    <ListBox x:Uid="MovieResultList" Height="197" Margin="6,6,6,0" Name="MovieResultList" VerticalAlignment="Top" MouseDoubleClick="MovieResultList_MouseDoubleClick">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:Uid="DataTemplate_1">
                                 <StackPanel x:Uid="StackPanel_1" FlowDirection="LeftToRight"  Orientation="Horizontal">
@@ -22,7 +22,7 @@
             </TabItem>
             <TabItem x:Uid="ShowTab" Name="ShowTab" Header="TV Show">
                 <Grid x:Uid="Grid_3">
-                    <ListBox x:Uid="ShowResultList" Height="197" Margin="6,6,6,0" Name="ShowResultList" VerticalAlignment="Top">
+                    <ListBox x:Uid="ShowResultList" Height="197" Margin="6,6,6,0" Name="ShowResultList" VerticalAlignment="Top" MouseDoubleClick="MovieResultList_MouseDoubleClick">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:Uid="DataTemplate_2">
                                 <StackPanel x:Uid="StackPanel_2" FlowDirection="LeftToRight"  Orientation="Horizontal">
