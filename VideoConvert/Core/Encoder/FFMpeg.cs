@@ -744,8 +744,8 @@ namespace VideoConvert.Core.Encoder
 
                 if (!resize.IsEmpty && (calculatedHeight < resize.Height || calculatedWidth < resize.Width))
                 {
-                    int posLeft = (int) Math.Ceiling((decimal) (resize.Width - calculatedWidth/2));
-                    int posTop = (int) Math.Ceiling((decimal) (resize.Height - calculatedHeight/2));
+                    int posLeft = (int) Math.Ceiling((decimal) (resize.Width - calculatedWidth)/2);
+                    int posTop = (int) Math.Ceiling((decimal) (resize.Height - calculatedHeight)/2);
                     filterArray.Add(string.Format("pad={0:D}:{1:D}:{2:D}:{3:D}", resize.Width, resize.Height,
                         posLeft > 0 ? posLeft : 0, posTop > 0 ? posTop : 0));
                 }
