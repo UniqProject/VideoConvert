@@ -504,6 +504,9 @@ namespace VideoConvert.Core.Encoder
                 DateTime ticks1 = new DateTime(eta.Ticks);
 
                 string encProgress = string.Format(_ac3EncProgressFmt, ticks1, remaining);
+
+                if (progress < -1)
+                    progress = -1;
                 _bw.ReportProgress(progress, encProgress);
             }
             else
