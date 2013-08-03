@@ -160,11 +160,12 @@ namespace VideoConvert.Core.Encoder
 
             if (videoInfo.FrameRateEnumerator > 0 && videoInfo.FrameRateDenominator > 0)
                 sb.AppendLine(string.Format(AppSettings.CInfo,
-                                            "FFVideoSource(\"{0:s}\",fpsnum={1:0},fpsden={2:0},threads=1)",
-                                            videoInfo.TempFile, videoInfo.FrameRateEnumerator,
-                                            videoInfo.FrameRateDenominator));
+                    "FFVideoSource(\"{0:s}\",fpsnum={1:0},fpsden={2:0},threads={3:0})",
+                    videoInfo.TempFile, videoInfo.FrameRateEnumerator,
+                    videoInfo.FrameRateDenominator, AppSettings.LimitDecoderThreads ? 1 : 0));
             else
-                sb.AppendLine(string.Format(AppSettings.CInfo, "FFVideoSource(\"{0:s}\",threads=1)", videoInfo.TempFile));
+                sb.AppendLine(string.Format(AppSettings.CInfo, "FFVideoSource(\"{0:s}\",threads={1:0})",
+                    videoInfo.TempFile, AppSettings.LimitDecoderThreads ? 1 : 0));
 
             string stereoVar = string.Empty;
 

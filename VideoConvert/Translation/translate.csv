@@ -591,6 +591,12 @@ VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
 VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.Margin,None,False,True,,"16,241,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,Use64BitEncoders:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
+VideoConvert.g.en-US.resources:settingswindow.baml,UseFfmpegScaling:System.Windows.Controls.CheckBox.$Content,CheckBox,True,True,,
+VideoConvert.g.en-US.resources:settingswindow.baml,UseFfmpegScaling:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Use ffmpeg builtin video scaling and cropping instead of AviSynth
+VideoConvert.g.en-US.resources:settingswindow.baml,UseFfmpegScaling:System.Windows.FrameworkElement.Height,None,False,True,,16
+VideoConvert.g.en-US.resources:settingswindow.baml,UseFfmpegScaling:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
+VideoConvert.g.en-US.resources:settingswindow.baml,UseFfmpegScaling:System.Windows.FrameworkElement.Margin,None,False,True,,"32,263,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,UseFfmpegScaling:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,CreateXbmcInfoFile:System.Windows.Controls.CheckBox.$Content,CheckBox,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,CreateXbmcInfoFile:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Create XBMC info file
 VideoConvert.g.en-US.resources:settingswindow.baml,CreateXbmcInfoFile:System.Windows.FrameworkElement.Height,None,False,True,,16
@@ -607,14 +613,14 @@ VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.ContentControl.Content,Label,True,True,,Autoupdate frequency:
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.Margin,None,False,True,,"16,346,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.Margin,None,False,True,,"16,372,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateHeader:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.Controls.ComboBox.$Content,ComboBox,True,True,,#ComboBoxItem_217;#ComboBoxItem_218;#ComboBoxItem_219;
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Margin,None,False,True,,"169,346,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Margin,None,False,True,,"169,372,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.FrameworkElement.Width,None,False,True,,200
 VideoConvert.g.en-US.resources:settingswindow.baml,AutoUpdateFrequency:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -628,7 +634,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ComboBoxItem_219:System.Windo
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Label.$Content,Label,True,True,,
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Height,None,False,True,,21
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"16,382,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.Margin,None,False,True,,"16,408,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Control.Padding,None,False,True,,0
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,LastUpdatedLabel:System.Windows.Controls.Control.VerticalContentAlignment,None,False,True,,Center
@@ -637,7 +643,7 @@ VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.
 VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.Controls.ContentControl.Content,CheckBox,True,True,,Show Changelog after update
 VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.Height,None,False,True,,16
 VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.HorizontalAlignment,None,False,True,,Left
-VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.Margin,None,False,True,,"16,409,0,0"
+VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.Margin,None,False,True,,"16,435,0,0"
 VideoConvert.g.en-US.resources:settingswindow.baml,ShowChangeLog:System.Windows.FrameworkElement.VerticalAlignment,None,False,True,,Top
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.Controls.GroupBox.$Content,None,False,True,,#Grid_43;
 VideoConvert.g.en-US.resources:settingswindow.baml,AviSynthOptions:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,AviSynth Options

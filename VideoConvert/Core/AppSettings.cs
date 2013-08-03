@@ -604,6 +604,12 @@ namespace VideoConvert.Core
             set { Settings.Default.UseFfmpegScaling = value; }
         }
 
+        public static bool LimitDecoderThreads
+        {
+            get { return Settings.Default.LimitDecoderThreads; }
+            set { Settings.Default.LimitDecoderThreads = value; }
+        }
+
         public static string AppPath
         {
             get
