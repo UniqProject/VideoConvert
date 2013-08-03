@@ -6,7 +6,7 @@
         <Label  x:Uid="MediaTitleInfoLabel" Content="Search Title:" Height="18" HorizontalAlignment="Left" Margin="12,12,0,0" Name="MediaTitleInfoLabel" VerticalAlignment="Top" Padding="0" VerticalContentAlignment="Center" />
         <TextBox  x:Uid="MediaTitleInfo" Height="23" HorizontalAlignment="Left" Margin="91,10,0,0" Name="MediaTitleInfo" VerticalAlignment="Top" Width="448" VerticalContentAlignment="Center" />
         <Label  x:Uid="DataSourceLabel" Content="Source:" Height="18" HorizontalAlignment="Left" Margin="12,39,0,0" Name="DataSourceLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox  x:Uid="DataSource" Height="23" HorizontalAlignment="Left" Margin="91,39,0,0" Name="DataSource" VerticalAlignment="Top" Width="367" SelectionChanged="DataSource_SelectionChanged">
+        <ComboBox  x:Uid="DataSource" Height="23" HorizontalAlignment="Left" Margin="91,39,0,0" Name="DataSource" VerticalAlignment="Top" Width="367" SelectionChanged="DataSource_SelectionChanged" SelectedIndex="{Binding Source={StaticResource Settings}, Path=Default.LastSelectedSource, Mode=TwoWay}">
             <ComboBoxItem  x:Uid="ComboBoxItem_1" Content="TheMovieDB" />
             <ComboBoxItem  x:Uid="ComboBoxItem_2" Content="TheTVDB" />
         </ComboBox>
