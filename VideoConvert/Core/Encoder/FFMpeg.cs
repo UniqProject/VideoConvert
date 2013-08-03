@@ -18,12 +18,14 @@
 //=============================================================================
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Documents;
 using VideoConvert.Core.CommandLine;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
@@ -663,17 +665,103 @@ namespace VideoConvert.Core.Encoder
         /// Generates decoding process which outputs yuv4mpeg data to stdout
         /// </summary>
         /// <param name="scriptName">Path to input AviSynth script</param>
+        /// <param name="useScaling"></param>
+        /// <param name="originalSize"></param>
+        /// <param name="fromAr"></param>
+        /// <param name="cropRect"></param>
+        /// <param name="resize"></param>
         /// <returns>Configured process</returns>
-        public static Process GenerateDecodeProcess(string scriptName)
+        public static Process GenerateDecodeProcess(string scriptName, bool useScaling, Size originalSize, float fromAr, Rectangle cropRect, Size resize)
         {
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
+
+            List<string> filterArray = new List<string>();
+
+            string filterChain = string.Empty;
+
+            if (useScaling)
+            {
+                if (!cropRect.IsEmpty)
+                {
+                    int temp;
+                    Math.DivRem(cropRect.X, 2, out temp);
+                    cropRect.X += temp;
+                    Math.DivRem(cropRect.Y, 2, out temp);
+                    cropRect.Y += temp;
+                    Math.DivRem(cropRect.Width, 2, out temp);
+                    cropRect.Width += temp;
+                    Math.DivRem(cropRect.Height, 2, out temp);
+                    cropRect.Height += temp;
+
+                    if ((cropRect.X > 0) || (cropRect.Y > 0) || (cropRect.Width < originalSize.Width) ||
+                        (cropRect.Height < originalSize.Height))
+                    {
+                        filterArray.Add(string.Format("crop={0:D}:{1:D}:{2:D}:{3:D}", cropRect.Width, cropRect.Height, cropRect.X, cropRect.Y));
+                    }
+                }
+                int calculatedWidth = originalSize.Width;
+                int calculatedHeight = originalSize.Height;
+
+                if (!resize.IsEmpty)
+                {
+                    float toAr = (float)Math.Round(resize.Width / (float)resize.Height, 3);
+                    fromAr = (float) Math.Round(fromAr, 3);
+                    int temp;
+                    if (fromAr > toAr) // source aspectratio higher than target aspectratio
+                    {
+
+                        calculatedWidth = resize.Width;
+                        calculatedHeight = (int) (calculatedWidth/fromAr);
+
+                        Math.DivRem(calculatedWidth, 2, out temp);
+                        calculatedWidth += temp;
+                        Math.DivRem(calculatedHeight, 2, out temp);
+                        calculatedHeight += temp;
+                    }
+                    else if (Math.Abs(fromAr - toAr) <= 0)  // source and target aspectratio equals
+                    {
+                        calculatedWidth = resize.Width;
+                        calculatedHeight = (int) (calculatedWidth/toAr);
+
+                        Math.DivRem(calculatedWidth, 2, out temp);
+                        calculatedWidth += temp;
+                        Math.DivRem(calculatedHeight, 2, out temp);
+                        calculatedHeight += temp;
+                    }
+                    else
+                    {
+                        calculatedHeight = resize.Height;
+                        calculatedWidth = (int) (calculatedHeight/toAr);
+
+                        Math.DivRem(calculatedWidth, 2, out temp);
+                        calculatedWidth += temp;
+                        Math.DivRem(calculatedHeight, 2, out temp);
+                        calculatedHeight += temp;
+                    }
+
+                    filterArray.Add(string.Format("scale={0:D}:{1:D}",calculatedWidth, calculatedHeight));
+                }
+
+                if (!resize.IsEmpty && (calculatedHeight < resize.Height || calculatedWidth < resize.Width))
+                {
+                    int posLeft = (int) Math.Ceiling((decimal) (resize.Width - calculatedWidth/2));
+                    int posTop = (int) Math.Ceiling((decimal) (resize.Height - calculatedHeight/2));
+                    filterArray.Add(string.Format("pad={0:D}:{1:D}:{2:D}:{3:D}", resize.Width, resize.Height,
+                        posLeft > 0 ? posLeft : 0, posTop > 0 ? posTop : 0));
+                }
+            }
+
+            if (filterArray.Count > 0)
+            {
+                filterChain = string.Format("-vf \"{0}\" ", string.Join(",", filterArray));
+            }
 
             ProcessStartInfo info = new ProcessStartInfo
                 {
                     FileName = localExecutable,
                     Arguments =
-                        String.Format(AppSettings.CInfo, "-i \"{0}\" -f yuv4mpegpipe -y \"{1}\"",
-                                      scriptName, AppSettings.DecodeNamedPipeFullName),
+                        String.Format(AppSettings.CInfo, "-i \"{0}\" {1} -f yuv4mpegpipe -y \"{2}\"",
+                                      scriptName, filterChain, AppSettings.DecodeNamedPipeFullName),
                     CreateNoWindow = true,
                     RedirectStandardOutput = false,
                     RedirectStandardError = true,

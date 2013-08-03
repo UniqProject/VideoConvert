@@ -339,7 +339,7 @@ namespace VideoConvert.Core.Encoder
             }
 
             return AviSynthGenerator.Generate(_jobInfo.VideoStream, changeFPS, targetFPS, resizeTo, StereoEncoding.None,
-                                              new StereoVideoInfo(), true, subFile, keepOnlyForced);
+                                              new StereoVideoInfo(), true, subFile, keepOnlyForced, false);
         }
     }
 }

@@ -141,70 +141,74 @@ namespace VideoConvert.Core.Encoder
                                                RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process(),
-                           decoder = FfMpeg.GenerateDecodeProcess(inputFile))
+                decoder = FfMpeg.GenerateDecodeProcess(inputFile,
+                    AppSettings.Use64BitEncoders && AppSettings.UseFfmpegScaling,
+                    new Size(_jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height), 
+                    _jobInfo.VideoStream.AspectRatio,
+                    _jobInfo.VideoStream.CropRect, resizeTo))
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                    {
-                        WorkingDirectory = AppSettings.DemuxLocation,
-                        Arguments = argument,
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardError = true,
-                        RedirectStandardInput = true
-                    };
+                {
+                    WorkingDirectory = AppSettings.DemuxLocation,
+                    Arguments = argument,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true
+                };
                 encoder.StartInfo = parameter;
 
                 encoder.ErrorDataReceived += (outputSender, outputEvent) =>
+                {
+                    string line = outputEvent.Data;
+
+                    if (string.IsNullOrEmpty(line)) return;
+
+                    Match result = frameInformation.Match(line);
+
+                    // ReSharper disable AccessToModifiedClosure
+                    TimeSpan eta = DateTime.Now.Subtract(startTime);
+                    // ReSharper restore AccessToModifiedClosure
+                    long secRemaining = 0;
+
+                    if (result.Success)
                     {
-                        string line = outputEvent.Data;
-
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = frameInformation.Match(line);
-
-                        // ReSharper disable AccessToModifiedClosure
-                        TimeSpan eta = DateTime.Now.Subtract(startTime);
-                        // ReSharper restore AccessToModifiedClosure
-                        long secRemaining = 0;
-
-                        if (result.Success)
+                        long current;
+                        Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
+                            AppSettings.CInfo, out current);
+                        long framesRemaining = _frameCount - current;
+                        float fps = 0f;
+                        if (eta.Seconds != 0)
                         {
-                            long current;
-                            Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
-                                           AppSettings.CInfo, out current);
-                            long framesRemaining = _frameCount - current;
-                            float fps = 0f;
-                            if (eta.Seconds != 0)
+                            //Frames per Second
+                            double codingFPS = Math.Round(current/eta.TotalSeconds, 2);
+
+                            if (codingFPS > 1)
                             {
-                                //Frames per Second
-                                double codingFPS = Math.Round(current/eta.TotalSeconds, 2);
-
-                                if (codingFPS > 1)
-                                {
-                                    secRemaining = framesRemaining/(int) codingFPS;
-                                    fps = (float) codingFPS;
-                                }
-                                else
-                                    secRemaining = 0;
+                                secRemaining = framesRemaining/(int) codingFPS;
+                                fps = (float) codingFPS;
                             }
-
-                            if (secRemaining > 0)
-                                remaining = new TimeSpan(0, 0, (int) secRemaining);
-
-                            DateTime ticks = new DateTime(eta.Ticks);
-
-                            string progress = string.Format(progressFormat,
-                                                            current, _frameCount,
-                                                            fps,
-                                                            remaining, ticks, pass);
-                            _bw.ReportProgress((int) (((float) current/_frameCount)*100),
-                                               progress);
+                            else
+                                secRemaining = 0;
                         }
-                        else
-                        {
-                            Log.InfoFormat("vpxenc: {0:s}", line);
-                        }
-                    };
+
+                        if (secRemaining > 0)
+                            remaining = new TimeSpan(0, 0, (int) secRemaining);
+
+                        DateTime ticks = new DateTime(eta.Ticks);
+
+                        string progress = string.Format(progressFormat,
+                            current, _frameCount,
+                            fps,
+                            remaining, ticks, pass);
+                        _bw.ReportProgress((int) (((float) current/_frameCount)*100),
+                            progress);
+                    }
+                    else
+                    {
+                        Log.InfoFormat("vpxenc: {0:s}", line);
+                    }
+                };
 
                 Log.InfoFormat("start parameter: vpxenc {0:s}", argument);
 
@@ -222,8 +226,8 @@ namespace VideoConvert.Core.Encoder
                 }
 
                 NamedPipeServerStream decodePipe = new NamedPipeServerStream(AppSettings.DecodeNamedPipeName,
-                                                                             PipeDirection.In, 1,
-                                                                             PipeTransmissionMode.Byte, PipeOptions.None);
+                    PipeDirection.In, 1,
+                    PipeTransmissionMode.Byte, PipeOptions.None);
 
                 try
                 {
@@ -246,16 +250,16 @@ namespace VideoConvert.Core.Encoder
                     decoder.BeginErrorReadLine();
 
                     Thread pipeReadThread = new Thread(() =>
+                    {
+                        try
                         {
-                            try
-                            {
-                                ReadThreadStart(decodePipe, encoder);
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error(ex);
-                            }
-                        });
+                            ReadThreadStart(decodePipe, encoder);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex);
+                        }
+                    });
                     pipeReadThread.Start();
                     pipeReadThread.Priority = ThreadPriority.BelowNormal;
                     encoder.Exited += (o, args) => pipeReadThread.Abort();
@@ -367,7 +371,8 @@ namespace VideoConvert.Core.Encoder
                                                                     _jobInfo.StereoVideoStream,
                                                                     false,
                                                                     subFile,
-                                                                    keepOnlyForced);
+                                                                    keepOnlyForced,
+                                                                    AppSettings.Use64BitEncoders && AppSettings.UseFfmpegScaling);
             if (!string.IsNullOrEmpty(AviSynthGenerator.StereoConfigFile))
                 _jobInfo.AviSynthStereoConfig = AviSynthGenerator.StereoConfigFile;
         }

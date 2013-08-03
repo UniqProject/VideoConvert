@@ -304,10 +304,12 @@ namespace VideoConvert.Core.Encoder
                                                                              PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                 decodePipe.BeginWaitForConnection(DecoderConnected, null);
 
-                Process decoder = FfMpeg.GenerateDecodeProcess(inputFile);
+                Process decoder = FfMpeg.GenerateDecodeProcess(inputFile,
+                    AppSettings.Use64BitEncoders && AppSettings.UseFfmpegScaling,
+                    new Size(_jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height), _jobInfo.VideoStream.AspectRatio,
+                    _jobInfo.VideoStream.CropRect, resizeTo);
                 try
                 {
-                    
                     decStarted = decoder.Start();
                 }
                 catch (Exception ex)
@@ -468,7 +470,8 @@ namespace VideoConvert.Core.Encoder
                                                                      StereoEncoding.None, new StereoVideoInfo(),
                                                                      false,
                                                                      subFile,
-                                                                     keepOnlyForced);
+                                                                     keepOnlyForced,
+                                                                     AppSettings.Use64BitEncoders && AppSettings.UseFfmpegScaling);
             else
             {
                 _jobInfo.AviSynthScript = AviSynthGenerator.Generate(_jobInfo.VideoStream,
@@ -479,7 +482,8 @@ namespace VideoConvert.Core.Encoder
                                                                      _jobInfo.StereoVideoStream,
                                                                      false,
                                                                      subFile,
-                                                                     keepOnlyForced);
+                                                                     keepOnlyForced,
+                                                                     AppSettings.Use64BitEncoders && AppSettings.UseFfmpegScaling);
                 if (!string.IsNullOrEmpty(AviSynthGenerator.StereoConfigFile))
                     _jobInfo.AviSynthStereoConfig = AviSynthGenerator.StereoConfigFile;
             }

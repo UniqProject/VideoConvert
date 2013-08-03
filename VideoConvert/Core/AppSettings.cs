@@ -592,6 +592,18 @@ namespace VideoConvert.Core
             set { Settings.Default.TvDBFallbackLanguage = value; }
         }
 
+        public static int LastSelectedSource
+        {
+            get { return Settings.Default.LastSelectedSource; }
+            set { Settings.Default.LastSelectedSource = value; }
+        }
+
+        public static bool UseFfmpegScaling
+        {
+            get { return Settings.Default.UseFfmpegScaling; }
+            set { Settings.Default.UseFfmpegScaling = value; }
+        }
+
         public static string AppPath
         {
             get

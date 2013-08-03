@@ -57,7 +57,7 @@ namespace VideoConvert.Core.Encoder
         /// <param name="subtitleOnlyForced">Defines whether only forced captions should be hardcoded</param>
         /// <returns>Path to AviSynth script</returns>
         public static string Generate(VideoInfo videoInfo, bool changeFps, float targetFps, Size resizeTo,
-                                      StereoEncoding stereoEncoding, StereoVideoInfo stereoVideoInfo, bool isDvdResolution, string subtitleFile, bool subtitleOnlyForced)
+                                      StereoEncoding stereoEncoding, StereoVideoInfo stereoVideoInfo, bool isDvdResolution, string subtitleFile, bool subtitleOnlyForced, bool skipScaling)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -212,7 +212,7 @@ namespace VideoConvert.Core.Encoder
             }
 
             // video cropping
-            if (!videoInfo.CropRect.IsEmpty)
+            if (!videoInfo.CropRect.IsEmpty && !skipScaling)
             {
                 int temp;
 
@@ -268,6 +268,7 @@ namespace VideoConvert.Core.Encoder
 
             int calculatedHeight = videoInfo.Height;
             int calculatedWidth = videoInfo.Width;
+
             int borderRight = 0;
             int borderLeft = 0;
             int borderBottom = 0;
@@ -275,21 +276,21 @@ namespace VideoConvert.Core.Encoder
             bool addBorders = false;
 
             // video resizing
-            if (!resizeTo.IsEmpty && (resizeTo.Height != videoInfo.Height || resizeTo.Width != videoInfo.Width))
+            if (!resizeTo.IsEmpty && (resizeTo.Height != videoInfo.Height || resizeTo.Width != videoInfo.Width) && !skipScaling)
             {
                 // aspect ratios
 
                 float toAr = (float) Math.Round(resizeTo.Width / (float)resizeTo.Height, 3);
+                float fromAr = videoInfo.AspectRatio;
+                float mod = 1f;
 
                 calculatedWidth = resizeTo.Width;
 
-                float mod = 1f;
-
-                if (videoInfo.AspectRatio > toAr) // source aspectratio higher than target aspectratio
+                if (fromAr > toAr) // source aspectratio higher than target aspectratio
                 {
                     if (isDvdResolution)
                     {
-                        calculatedHeight = (int)(calculatedWidth / videoInfo.AspectRatio);
+                        calculatedHeight = (int)(calculatedWidth / fromAr);
                         if (calculatedHeight > resizeTo.Height)
                             calculatedHeight = resizeTo.Height;
                         calculatedWidth = 720;
@@ -297,7 +298,7 @@ namespace VideoConvert.Core.Encoder
                     else
                     {
                         calculatedWidth = resizeTo.Width;
-                        calculatedHeight = (int)(calculatedWidth / videoInfo.AspectRatio);
+                        calculatedHeight = (int)(calculatedWidth / fromAr);
                     }
 
                     int temp;
@@ -317,11 +318,11 @@ namespace VideoConvert.Core.Encoder
                         borderBottom = borderHeight - borderTop;
                     }
                 }
-                else if (Math.Abs(videoInfo.AspectRatio - toAr) <= 0)  // source and target aspectratio equals
+                else if (Math.Abs(fromAr - toAr) <= 0)  // source and target aspectratio equals
                 {
                     if (isDvdResolution)
                     {
-                        calculatedHeight = (int)(calculatedWidth / videoInfo.AspectRatio);
+                        calculatedHeight = (int)(calculatedWidth / fromAr);
                         calculatedWidth = 720;
                         if (calculatedHeight > resizeTo.Height)
                             calculatedHeight = resizeTo.Height;
@@ -351,15 +352,15 @@ namespace VideoConvert.Core.Encoder
                 }
                 else
                 {
-                    if (videoInfo.AspectRatio > 1.4f && isDvdResolution)  // source aspectratio not 4:3, encoding for dvd resolution
+                    if (fromAr > 1.4f && isDvdResolution)  // source aspectratio not 4:3, encoding for dvd resolution
                     {
                         mod = 720f/resizeTo.Width;
 
-                        calculatedHeight = (int)(calculatedWidth / videoInfo.AspectRatio);
+                        calculatedHeight = (int)(calculatedWidth / fromAr);
                         if (calculatedHeight > resizeTo.Height)
                         {
                             calculatedHeight = resizeTo.Height;
-                            calculatedWidth = (int)(calculatedHeight * videoInfo.AspectRatio * mod);
+                            calculatedWidth = (int)(calculatedHeight * fromAr * mod);
                         }
                         else
                             calculatedWidth = 720;
@@ -367,7 +368,7 @@ namespace VideoConvert.Core.Encoder
                     else if (isDvdResolution)
                     {
                         calculatedHeight = resizeTo.Height;
-                        calculatedWidth = (int) (calculatedHeight*videoInfo.AspectRatio);
+                        calculatedWidth = (int) (calculatedHeight*fromAr);
                     }
                     else
                         calculatedHeight = resizeTo.Height;
@@ -415,7 +416,7 @@ namespace VideoConvert.Core.Encoder
             if (calculatedHeight != videoInfo.Height || calculatedWidth != videoInfo.Width ||
                 (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
                  stereoEncoding == StereoEncoding.HalfSideBySideRight
-                && useStereo))
+                && useStereo) && !skipScaling)
             {
                 if (calculatedHeight < videoInfo.Height || calculatedWidth < videoInfo.Width ||
                     (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
@@ -431,7 +432,7 @@ namespace VideoConvert.Core.Encoder
             }
 
             // add borders if needed
-            if (addBorders && (borderLeft > 0 || borderRight > 0 || borderTop > 0 || borderBottom > 0))
+            if (addBorders && (borderLeft > 0 || borderRight > 0 || borderTop > 0 || borderBottom > 0) && !skipScaling)
                 sb.AppendLine(string.Format(AppSettings.CInfo, "AddBorders({0:g},{1:g},{2:g},{3:g})",
                                             borderLeft,
                                             borderTop,

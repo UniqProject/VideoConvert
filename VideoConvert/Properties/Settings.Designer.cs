@@ -874,5 +874,17 @@ namespace VideoConvert.Properties {
                 this["LastSelectedSource"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseFfmpegScaling {
+            get {
+                return ((bool)(this["UseFfmpegScaling"]));
+            }
+            set {
+                this["UseFfmpegScaling"] = value;
+            }
+        }
     }
 }

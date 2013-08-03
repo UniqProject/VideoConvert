@@ -54,8 +54,6 @@
                             <CheckBox x:Uid="EnableSSIF" Content="Enable SSIF scanning" Height="16" HorizontalAlignment="Left" Margin="6,72,0,0" x:Name="EnableSSIF" VerticalAlignment="Top" IsChecked="{Binding Path=Default.EnableSSIF, Source={StaticResource Settings}, UpdateSourceTrigger=Explicit, Mode=TwoWay}" />
                         </Grid>
                     </GroupBox>
-                    <CheckBox x:Uid="DeleteCompletedJobs" Content="Remove completed jobs from list" Height="16" HorizontalAlignment="Left" Margin="16,197,0,0" x:Name="DeleteCompletedJobs" VerticalAlignment="Top" IsChecked="{Binding Path=Default.DeleteCompletedJobs, Source={StaticResource Settings}, UpdateSourceTrigger=Explicit, Mode=TwoWay}" />
-                    <CheckBox x:Uid="DeleteTemporaryFiles" Height="16" HorizontalAlignment="Left" Margin="16,219,0,0" x:Name="DeleteTemporaryFiles" VerticalAlignment="Top" Content="Remove temporary files after finish" IsChecked="{Binding Path=Default.DeleteTemporaryFiles, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" />
                     <Label x:Uid="ProcessPriorityLabel" Content="Process priority" Height="21" HorizontalAlignment="Left" Margin="16,133,0,0" x:Name="ProcessPriorityLabel" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" />
                     <ComboBox x:Uid="ProcessPriority" Height="21" HorizontalAlignment="Left" Margin="169,133,0,0" x:Name="ProcessPriority" VerticalAlignment="Top" Width="200" VerticalContentAlignment="Center" Padding="5,0" HorizontalContentAlignment="Center" SelectedIndex="{Binding Mode=TwoWay, UpdateSourceTrigger=Explicit, Path=Default.ProcessPriority, Source={StaticResource Settings}}">
                         <ComboBoxItem x:Uid="ComboBoxItem_1" Content="Realtime" />
@@ -65,12 +63,22 @@
                         <ComboBoxItem x:Uid="ComboBoxItem_5" Content="Lower" />
                         <ComboBoxItem x:Uid="ComboBoxItem_6" Content="Low" />
                     </ComboBox>
-                    
                     <Label x:Uid="LanguageLabel" Content="Language" Height="21" HorizontalAlignment="Left" Margin="16,158,0,0" x:Name="LanguageLabel" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" />
                     <ComboBox x:Uid="LanguageSelect" Height="21" HorizontalAlignment="Left" Margin="169,158,0,0" x:Name="LanguageSelect" VerticalAlignment="Top" Width="200" VerticalContentAlignment="Center" Padding="5,0" HorizontalContentAlignment="Center" SelectedValue="{Binding Path=Default.UseLanguage, Mode=TwoWay, UpdateSourceTrigger=Explicit, Source={StaticResource Settings}}" SelectedValuePath="LangCode" DisplayMemberPath="LangName" ItemsSource="{Binding Path=Langs}"/>
-                    <CheckBox x:Uid="UseHardwareRendering" Content="Use Hardware rendering" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.UseHardwareRendering, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="16,283,0,0" Name="UseHardwareRendering" VerticalAlignment="Top" />
+                    <CheckBox x:Uid="DeleteCompletedJobs" Content="Remove completed jobs from list" Height="16" HorizontalAlignment="Left" Margin="16,197,0,0" x:Name="DeleteCompletedJobs" VerticalAlignment="Top" IsChecked="{Binding Path=Default.DeleteCompletedJobs, Source={StaticResource Settings}, UpdateSourceTrigger=Explicit, Mode=TwoWay}" />
+                    <CheckBox x:Uid="DeleteTemporaryFiles" Height="16" HorizontalAlignment="Left" Margin="16,219,0,0" x:Name="DeleteTemporaryFiles" VerticalAlignment="Top" Content="Remove temporary files after finish" IsChecked="{Binding Path=Default.DeleteTemporaryFiles, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" />
                     <CheckBox x:Uid="Use64BitEncoders" Content="Use 64 bit encoders" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.Use64bitEncoders, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="16,241,0,0" Name="Use64BitEncoders" VerticalAlignment="Top" />
-                    <CheckBox x:Uid="CreateXbmcInfoFile" Content="Create XBMC info file" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.CreateXbmcInfoFile, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="16,261,0,0" Name="CreateXbmcInfoFile" VerticalAlignment="Top" />
+                    <CheckBox x:Uid="UseFfmpegScaling" Content="Use ffmpeg builtin video scaling and cropping instead of AviSynth" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.UseFfmpegScaling, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="32,263,0,0" Name="UseFfmpegScaling" VerticalAlignment="Top" IsEnabled="{Binding ElementName=Use64BitEncoders, Path=IsChecked}" />
+                    <CheckBox x:Uid="CreateXbmcInfoFile" Content="Create XBMC info file" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.CreateXbmcInfoFile, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="16,287,0,0" Name="CreateXbmcInfoFile" VerticalAlignment="Top" />
+                    <CheckBox x:Uid="UseHardwareRendering" Content="Use Hardware rendering" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.UseHardwareRendering, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="16,309,0,0" Name="UseHardwareRendering" VerticalAlignment="Top" />
+                    <Label x:Uid="AutoUpdateHeader" Content="Autoupdate frequency:" Height="21" HorizontalAlignment="Left" Margin="16,346,0,0" Name="AutoUpdateHeader" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                    <ComboBox x:Uid="AutoUpdateFrequency" Height="21" HorizontalAlignment="Left" Margin="169,346,0,0" Name="AutoUpdateFrequency" VerticalAlignment="Top" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" SelectedIndex="{Binding Path=Default.UpdateFrequency ,Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}">
+                        <ComboBoxItem x:Uid="ComboBoxItem_217" Content="At start" />
+                        <ComboBoxItem x:Uid="ComboBoxItem_218" Content="Daily" />
+                        <ComboBoxItem x:Uid="ComboBoxItem_219" Content="Weekly" />
+                    </ComboBox>
+                    <Label x:Uid="LastUpdatedLabel" Height="21" HorizontalAlignment="Left" Margin="16,382,0,0" Name="LastUpdatedLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Content="{Binding Path=Default.LastUpdateRun ,Source={StaticResource Settings}, Mode=OneWay}" ContentStringFormat="Last update: {0:dd/MM/yyyy HH:mm:ss}" />
+                    <CheckBox x:Uid="ShowChangeLog" Content="Show Changelog after update" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.ShowChangeLog, UpdateSourceTrigger=Explicit, Mode=TwoWay, Source={StaticResource Settings}}" Margin="16,409,0,0" Name="ShowChangeLogAfterUpdate" VerticalAlignment="Top" />
                     <GroupBox x:Uid="AviSynthOptions" Header="AviSynth Options" Height="145" HorizontalAlignment="Left" Margin="16,0,0,23" Name="AviSynthOptions" VerticalAlignment="Bottom" Width="762">
                         <Grid x:Uid="Grid_43">
                             <CheckBox x:Uid="UseAviSynthMT" Content="Generate multi-threaded (MT) AviSynth scripts" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.UseAviSynthMT, Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="7,6,0,0" Name="UseAviSynthMT" VerticalAlignment="Top" />
@@ -79,14 +87,6 @@
                             <TextBlock x:Uid="UseHQDeinterlaceWarning" FontWeight="Bold" Foreground="Red" Height="32" HorizontalAlignment="Left" Margin="27,86,0,0" MaxWidth="700" Name="UseHQDeinterlaceWarning" Padding="0" Text="Warning! This deinterlacer is very slow, using AviSynth-MT is recommended!" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" />
                         </Grid>
                     </GroupBox>
-                    <Label x:Uid="AutoUpdateHeader" Content="Autoupdate frequency:" Height="21" HorizontalAlignment="Left" Margin="16,320,0,0" Name="AutoUpdateHeader" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                    <ComboBox x:Uid="AutoUpdateFrequency" Height="21" HorizontalAlignment="Left" Margin="169,320,0,0" Name="AutoUpdateFrequency" VerticalAlignment="Top" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" SelectedIndex="{Binding Path=Default.UpdateFrequency ,Source={StaticResource Settings}, Mode=TwoWay, UpdateSourceTrigger=Explicit}">
-                        <ComboBoxItem x:Uid="ComboBoxItem_217" Content="At start" />
-                        <ComboBoxItem x:Uid="ComboBoxItem_218" Content="Daily" />
-                        <ComboBoxItem x:Uid="ComboBoxItem_219" Content="Weekly" />
-                    </ComboBox>
-                    <Label x:Uid="LastUpdatedLabel" Height="21" HorizontalAlignment="Left" Margin="16,356,0,0" Name="LastUpdatedLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Content="{Binding Path=Default.LastUpdateRun ,Source={StaticResource Settings}, Mode=OneWay}" ContentStringFormat="Last update: {0:dd/MM/yyyy HH:mm:ss}" />
-                    <CheckBox x:Uid="ShowChangeLog" Content="Show Changelog after update" Height="16" HorizontalAlignment="Left" IsChecked="{Binding Path=Default.ShowChangeLog, UpdateSourceTrigger=Explicit, Mode=TwoWay, Source={StaticResource Settings}}" Margin="16,383,0,0" Name="ShowChangeLogAfterUpdate" VerticalAlignment="Top" />
                 </Grid>
             </TabItem>
             <TabItem x:Uid="EncoderTab" Header="Encoder" x:Name="EncoderTab">
