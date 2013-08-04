@@ -35,6 +35,7 @@ using UpdateCore;
 using VideoConvert.Core;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
+using SevenZip;
 
 namespace VideoConvert.Windows
 {
@@ -89,7 +90,7 @@ namespace VideoConvert.Windows
                 Stream onlineUpdateFile;
                 try
                 {
-                    onlineUpdateFile = downloader.OpenRead(new Uri("http://www.jt-soft.de/videoconvert/updatefile.xml"));
+                    onlineUpdateFile = downloader.OpenRead(new Uri("http://www.jt-soft.de/videoconvert/updatefile_7z.xml"));
                 }
                 catch (WebException exception)
                 {
@@ -457,25 +458,18 @@ namespace VideoConvert.Windows
                         bw.ReportProgress(-1, unzippingStatus);
                         try
                         {
-                            using (ZipFile zFile = new ZipFile(lItem.FileName))
+                            using (SevenZipExtractor eFile = new SevenZipExtractor(lItem.FileName))
                             {
-                                foreach (ZipEntry entry in zFile)
+                                eFile.PreserveDirectoryStructure = true;
+                                eFile.FileExtractionStarted += (o, args) =>
                                 {
-                                    if (AppSettings.UpdaterPath == null) continue;
-
-                                    string outPath = Path.Combine(AppSettings.UpdaterPath, entry.Name);
-
-                                    if (entry.IsDirectory)
-                                        Directory.CreateDirectory(outPath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
-                                    else if (entry.IsFile)
+                                    if (args.FileInfo.IsDirectory)
                                     {
-                                        using (Stream zStream = zFile.GetInputStream(entry),
-                                                      outFile = new FileStream(outPath, FileMode.Create))
-                                        {
-                                            zStream.CopyTo(outFile);
-                                        }
+                                        string outPath = Path.Combine(AppSettings.UpdaterPath, args.FileInfo.FileName);
+                                        Directory.CreateDirectory(outPath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
                                     }
-                                }
+                                };
+                                eFile.ExtractArchive(AppSettings.UpdaterPath);
                             }
                             File.Delete(item.FileName);
                         }
@@ -601,7 +595,7 @@ namespace VideoConvert.Windows
                     {
                         Log.Error(startEx);
                     }
-                    
+                    Log.Info(updaterProcess.StartInfo.FileName + " " + updaterProcess.StartInfo.Arguments);
                     Log.Info("after start");
                     AppSettings.UpdateVersions = true;
                     AppSettings.SaveSettings();

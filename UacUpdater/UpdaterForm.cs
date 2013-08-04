@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ICSharpCode.SharpZipLib.Zip;
 using UacUpdater.Properties;
 using UpdateCore;
+using SevenZip;
 
 namespace UacUpdater
 {
@@ -143,36 +143,36 @@ namespace UacUpdater
                     
                 }
                 bwWorker.ReportProgress(-5, "Updating Package " + pInfo.PackageName + " Version " + pInfo.Version);
-                using (ZipFile zFile = new ZipFile(pInfo.PackageLocation))
+
+                try
                 {
-                    bwWorker.ReportProgress(-7, (int)zFile.Count);
-
-                    foreach (ZipEntry entry in zFile)
+                    using (SevenZipExtractor zFile = new SevenZipExtractor(pInfo.PackageLocation))
                     {
-                        bwWorker.ReportProgress(-8, (int)entry.ZipFileIndex);
-                        bwWorker.ReportProgress(-9, entry.Name);
+                        bwWorker.ReportProgress(-7, (int)zFile.FilesCount);
 
-                        string outPath = Path.Combine(pInfo.Destination, entry.Name);
-                        
-                        if (entry.IsDirectory && !Directory.Exists(outPath))
-                            Directory.CreateDirectory(outPath);
-                        else if (entry.IsFile)
+                        zFile.FileExtractionStarted += (o, args) =>
                         {
-                            using (Stream zStream = zFile.GetInputStream(entry),
-                                   outFile = new FileStream(outPath, FileMode.Create))
+                            bwWorker.ReportProgress(-8, args.FileInfo.Index);
+                            bwWorker.ReportProgress(-9, args.FileInfo.FileName);
+                        };
+                        zFile.ExtractArchive(pInfo.Destination);
+
+                        if (pInfo.WriteVersion)
+                        {
+                            using (StreamWriter str = new StreamWriter(Path.Combine(pInfo.Destination, "version"), false))
                             {
-                                zStream.CopyTo(outFile);
+                                str.Write(pInfo.Version);
                             }
                         }
                     }
-                    if (pInfo.WriteVersion)
-                    {
-                        using (StreamWriter str = new StreamWriter(Path.Combine(pInfo.Destination, "version"), false))
-                        {
-                            str.Write(pInfo.Version);
-                        }
-                    }
                 }
+                catch (Exception ex)
+                {
+                    
+                    
+                }
+                
+
                 File.Delete(pInfo.PackageLocation);
                 bwWorker.ReportProgress(-6);
             }

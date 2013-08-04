@@ -189,7 +189,7 @@ namespace VideoConvert.Windows
                 Stream onlineUpdateFile;
                 try
                 {
-                    onlineUpdateFile = downloader.OpenRead(new Uri("http://www.jt-soft.de/videoconvert/updatefile.xml"));
+                    onlineUpdateFile = downloader.OpenRead(new Uri("http://www.jt-soft.de/videoconvert/updatefile_7z.xml"));
                 }
                 catch (WebException exception)
                 {
