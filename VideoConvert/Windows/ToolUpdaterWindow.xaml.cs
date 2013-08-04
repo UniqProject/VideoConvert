@@ -29,7 +29,6 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using UpdateCore;
 using VideoConvert.Core;

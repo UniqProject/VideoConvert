@@ -402,10 +402,6 @@
       <Project>{FBD3EC1E-47E2-4D2D-81C9-D6506125A09A}</Project>
       <Name>ManagedWinapi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\SharpZipLib\src\ICSharpCode.SharpZLib.csproj">
-      <Project>{0E7413FF-EB9E-4714-ACF2-BE3A6A7B2FFD}</Project>
-      <Name>ICSharpCode.SharpZLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UpdateCore\UpdateCore.csproj">
       <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
       <Name>UpdateCore</Name>
@@ -586,7 +582,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" BuildVersion_IncrementBeforeBuild="False" />
+      <UserProperties BuildVersion_IncrementBeforeBuild="False" BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
