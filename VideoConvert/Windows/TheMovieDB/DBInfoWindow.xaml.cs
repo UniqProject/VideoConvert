@@ -113,7 +113,7 @@ namespace VideoConvert.Windows.TheMovieDB
             if (!string.IsNullOrEmpty(SearchString))
                 MediaTitleInfo.Text = SearchString;
 
-            DataSource.SelectedIndex = 0;
+            DataSource.SelectedIndex = AppSettings.LastSelectedSource;
         }
 
         private void MediaInfoLoadButton_Click(object sender, RoutedEventArgs e)
@@ -650,6 +650,7 @@ namespace VideoConvert.Windows.TheMovieDB
                     break;
             }
             SearchString = MediaTitleInfo.Text;
+            AppSettings.LastSelectedSource = DataSource.SelectedIndex;
             DialogResult = true;
         }
 
