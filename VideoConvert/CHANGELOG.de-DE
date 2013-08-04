@@ -1,4 +1,8 @@
-﻿- [new]     Erstellung von Sidecar-Dateien für XBMC Video-Datenbank möglich. Als Quelle dienen TheMovieDB.com
+﻿- [new]		ffmpeg Routinen zum Skalieren der Videos können nun optional verwendet werden.
+- [new]		Bessere kompression der Updatepakete.
+
+0.25.868.2257
+- [new]     Erstellung von Sidecar-Dateien für XBMC Video-Datenbank möglich. Als Quelle dienen TheMovieDB.com
             und TheTVDB.com.
 
 0.23.854.1240

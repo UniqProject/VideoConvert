@@ -71,5 +71,5 @@ using System.Windows;
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.25.934.1211")]
-[assembly: AssemblyFileVersion("0.25.934.1211")]
+[assembly: AssemblyVersion("0.25.934.1228")]
+[assembly: AssemblyFileVersion("0.25.934.1228")]

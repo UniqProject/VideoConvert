@@ -1,4 +1,8 @@
-﻿- [new]     Added support for creation of sidecar-files for XBMC video database. Data source is TheMovieDB.com
+﻿- [new]		optional ffmpeg video scaling now possible.
+- [new]		better compression of update packages.
+
+0.25.868.2257
+- [new]     Added support for creation of sidecar-files for XBMC video database. Data source is TheMovieDB.com
             and TheTVDB.com.
 
 0.23.854.1240
