@@ -206,9 +206,13 @@ namespace VideoConvert.Core.Encoder
 
                 string formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
 
+                string baseName;
+                if (string.IsNullOrEmpty(_jobInfo.TempInput))
+                    baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.JobName : _jobInfo.TempOutput;
+                else
+                    baseName = _jobInfo.TempInput;
                 item.TempFile =
-                    Processing.CreateTempFile(
-                        string.IsNullOrEmpty(_jobInfo.TempInput) ? _jobInfo.JobName : _jobInfo.TempInput, formattedExt);
+                    Processing.CreateTempFile(baseName, formattedExt);
 
                 sb.AppendFormat("-map 0:a:{0:0} -vn -c:a {1} -y \"{2}\" ", item.StreamKindId, acodec, item.TempFile);
 
