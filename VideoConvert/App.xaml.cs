@@ -18,8 +18,10 @@
 //=============================================================================
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -79,7 +81,23 @@ namespace VideoConvert
             if (Environment.OSVersion.Version.Major >= 6)
                 Log.InfoFormat("Process Elevated: {0:s}", elevated.ToString(Cinfo));
 
+            Extensions supExt = new Extensions();
+            CpuExtensions.GetExtensions(out supExt);
+            InspectCpuExtensions(supExt);
+
             ReconfigureRenderMode();
+        }
+
+        private void InspectCpuExtensions(Extensions supExt)
+        {
+            AppSettings.SupportedCpuExtensions = supExt;
+            List<string> ext = new List<string>();
+            foreach (FieldInfo field in supExt.GetType().GetFields())
+            {
+                if ((int)field.GetValue(supExt) == 1)
+                    ext.Add(field.Name);
+            }
+            Log.Info("Supported CPU Extensions: " + string.Join(", ", ext));
         }
 
         private void ReconfigureLanguage(string lang)

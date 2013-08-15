@@ -610,6 +610,8 @@ namespace VideoConvert.Core
             set { Settings.Default.LimitDecoderThreads = value; }
         }
 
+        public static Extensions SupportedCpuExtensions { get; set; }
+
         public static string AppPath
         {
             get
