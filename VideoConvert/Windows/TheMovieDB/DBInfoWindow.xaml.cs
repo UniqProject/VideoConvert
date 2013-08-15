@@ -186,10 +186,10 @@ namespace VideoConvert.Windows.TheMovieDB
                 if (selectWindow.ShowDialog() == true)
                     resultShow = selectWindow.TvdbSelectionResult;
             }
-            else
-                resultShow = searchResults.First();
+            else 
+                resultShow = searchResults.Count > 0 ? searchResults.First() : null;
 
-            if (resultShow.Id == 0) return;
+            if (resultShow == null || resultShow.Id == 0) return;
 
             TvdbSeries series = _tvDbclient.GetSeries(resultShow.Id, dbLang, true, true, true, true);
 
