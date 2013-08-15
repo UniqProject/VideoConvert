@@ -41,7 +41,7 @@ namespace VideoConvert.Core.Encoder
         private string BuildExecutable(bool optimized)
         {
             string fName = "oggenc2";
-            if (optimized && AppSettings.UseOptimizedEncoders && AppSettings.OggEncLancerInstalled)
+            if (optimized && AppSettings.UseOptimizedEncoders)
             {
                 if (AppSettings.SupportedCpuExtensions.SSE3 == 1)
                 {
@@ -106,12 +106,24 @@ namespace VideoConvert.Core.Encoder
 
                 if (started)
                 {
+                    
                     string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^OggEnc\s+?v([\w\d\.\(\)\s]+?)$",
+                    const string regexNonOptimized = @"^OggEnc\s+?v([\w\d\.\(\)\s]+?)$";
+                    const string regexOptimized = @"^OggEnc\s+?v([\d\.]*?)\s+?\(.+?based on (.+?)\s+?\[.+?\]\).*?$";
+
+                    Regex regObj = new Regex(regexNonOptimized,
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
+
                     if (result.Success)
                         verInfo = result.Groups[1].Value.Trim();
+                    else
+                    {
+                        regObj = new Regex(regexOptimized, RegexOptions.Singleline | RegexOptions.Multiline);
+                        result = regObj.Match(output);
+                        if (result.Success)
+                            verInfo = string.Format("{0} ({1})", result.Groups[1].Value, result.Groups[2].Value);
+                    }
 
                     encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
