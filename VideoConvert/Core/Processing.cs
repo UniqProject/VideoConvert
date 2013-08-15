@@ -638,7 +638,10 @@ namespace VideoConvert.Core
             AppSettings.LastHcEncVer = hcenc.GetVersionInfo(encPath);
 
             OggEnc ogg = new OggEnc();
-            AppSettings.LastOggEncVer = ogg.GetVersionInfo(encPath);
+            AppSettings.LastOggEncVer = ogg.GetVersionInfo(encPath,false);
+
+            if (AppSettings.UseOptimizedEncoders)
+                AppSettings.LastOggEncLancerVer = ogg.GetVersionInfo(encPath, true);
 
             NeroAACEnc aac = new NeroAACEnc();
             AppSettings.LastNeroAacEncVer = aac.GetVersionInfo(encPath);

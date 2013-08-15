@@ -898,5 +898,29 @@ namespace VideoConvert.Properties {
                 this["LimitDecoderThreads"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastOggEncLancerVer {
+            get {
+                return ((string)(this["LastOggEncLancerVer"]));
+            }
+            set {
+                this["LastOggEncLancerVer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseOptimizedEncoders {
+            get {
+                return ((bool)(this["UseOptimizedEncoders"]));
+            }
+            set {
+                this["UseOptimizedEncoders"] = value;
+            }
+        }
     }
 }

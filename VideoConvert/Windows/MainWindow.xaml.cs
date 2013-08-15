@@ -262,6 +262,10 @@ namespace VideoConvert.Windows
                     if (String.CompareOrdinal(updateFile.OggEnc.PackageVersion, AppSettings.LastOggEncVer) != 0)
                         needUpdate = true;
 
+                    if (String.CompareOrdinal(updateFile.OggEncLancer.PackageVersion, AppSettings.LastOggEncLancerVer) != 0 
+                        && AppSettings.UseOptimizedEncoders)
+                        needUpdate = true;
+
                     if (String.CompareOrdinal(updateFile.Lame.PackageVersion, AppSettings.LastLameVer) != 0)
                         needUpdate = true;
 

@@ -25,6 +25,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
 using log4net;
@@ -36,7 +37,27 @@ namespace VideoConvert.Core.Encoder
         private static readonly ILog Log = LogManager.GetLogger(typeof(OggEnc));
 
         private EncodeInfo _jobInfo;
-        private const string Executable = "oggenc2.exe";
+
+        private string BuildExecutable(bool optimized)
+        {
+            string fName = "oggenc2";
+            if (optimized && AppSettings.UseOptimizedEncoders && AppSettings.OggEncLancerInstalled)
+            {
+                if (AppSettings.SupportedCpuExtensions.SSE3 == 1)
+                {
+                    fName += "_SSE3";
+                    if (Environment.Is64BitOperatingSystem && AppSettings.Use64BitEncoders)
+                        fName += "_64";
+                }
+                else if (AppSettings.SupportedCpuExtensions.SSE2 == 1)
+                    fName += "_SSE2";
+                else if (AppSettings.SupportedCpuExtensions.SSE == 1)
+                    fName += "_SSE";
+            }
+            fName += ".exe";
+
+            return fName;
+        }
 
         private BackgroundWorker _bw;
 
@@ -45,16 +66,21 @@ namespace VideoConvert.Core.Encoder
             _jobInfo = job;
         }
 
-        public string GetVersionInfo()
+        public string GetVersionInfo(bool optimized)
         {
-            return GetVersionInfo(AppSettings.ToolsPath);
+            return GetVersionInfo(AppSettings.ToolsPath, optimized);
         }
 
-        public string GetVersionInfo(string encPath)
+        public string GetVersionInfo()
+        {
+            return GetVersionInfo(AppSettings.ToolsPath, true);
+        }
+
+        public string GetVersionInfo(string encPath, bool optimized)
         {
             string verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            string localExecutable = Path.Combine(encPath, BuildExecutable(optimized));
 
             using (Process encoder = new Process())
             {
@@ -168,7 +194,7 @@ namespace VideoConvert.Core.Encoder
             sb.AppendFormat(AppSettings.CInfo, "-o \"{0}\" ", outFile);
             sb.Append("--ignorelength - ");
 
-            string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
+            string localExecutable = Path.Combine(AppSettings.ToolsPath, BuildExecutable(AppSettings.UseOptimizedEncoders));
 
             Regex pipeObj = new Regex(@"^([\d\,\.]*?)%.*$", RegexOptions.Singleline | RegexOptions.Multiline);
             Regex encObj = new Regex(@"^.*Encoding\s*?\[.*\].*$", RegexOptions.Singleline | RegexOptions.Multiline);
@@ -248,7 +274,7 @@ namespace VideoConvert.Core.Encoder
                             Log.InfoFormat("oggenc: {0:s}", line);
                     };
 
-                Log.InfoFormat("oggenc2 {0:s}", encoderParameter.Arguments);
+                Log.InfoFormat("{0:s} {1:s}", localExecutable, encoderParameter.Arguments);
 
                 bool encStarted;
                 bool decStarted;

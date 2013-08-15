@@ -44,6 +44,8 @@ namespace UpdateCore
         public ToolInfo HcEnc { get; set; }
         [XmlElement("oggenc")]
         public ToolInfo OggEnc { get; set; }
+        [XmlElement("oggenc_lancer")]
+        public ToolInfo OggEncLancer { get; set; }
         [XmlElement("lame")]
         public ToolInfo Lame { get; set; }
         [XmlElement("vpxenc")]

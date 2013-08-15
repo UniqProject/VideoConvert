@@ -328,6 +328,19 @@ namespace VideoConvert.Windows
                                 Destination = AppSettings.ToolsPath
                             });
 
+                    if (String.CompareOrdinal(updateFile.OggEncLancer.PackageVersion, AppSettings.LastOggEncLancerVer) != 0 
+                        && AppSettings.UseOptimizedEncoders)
+                        _tempToolCollection.Add(new ToolVersions
+                        {
+                            ToolName = "OggEnc2 (Lancer)",
+                            LocalVersion = AppSettings.LastOggEncLancerVer,
+                            ServerVersion = updateFile.OggEncLancer.PackageVersion,
+                            FileName = Path.Combine(tempPath, updateFile.OggEncLancer.PackageName),
+                            DownloadUri = serverPathTools + updateFile.OggEncLancer.PackageName,
+                            DownloadType = AppType.Encoder,
+                            Destination = AppSettings.ToolsPath
+                        });
+
                     if (String.CompareOrdinal(updateFile.Lame.PackageVersion, AppSettings.LastLameVer) != 0)
                         _tempToolCollection.Add(new ToolVersions
                             {

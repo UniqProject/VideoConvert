@@ -315,6 +315,17 @@ namespace VideoConvert.Core
             get { return !String.IsNullOrEmpty(LastOggEncVer); }
         }
 
+        public static string LastOggEncLancerVer
+        {
+            get { return Settings.Default.LastOggEncLancerVer; }
+            set { Settings.Default.LastOggEncLancerVer = value; }
+        }
+
+        public static bool OggEncLancerInstalled
+        {
+            get { return !String.IsNullOrEmpty(LastOggEncLancerVer); }
+        }
+
         public static string LastNeroAacEncVer
         {
             get { return Settings.Default.LastNeroAacEncVer; }
@@ -428,6 +439,12 @@ namespace VideoConvert.Core
         {
             get { return Settings.Default.Use64bitEncoders; }
             set { Settings.Default.Use64bitEncoders = value; }
+        }
+
+        public static bool UseOptimizedEncoders
+        {
+            get { return Settings.Default.UseOptimizedEncoders; }
+            set { Settings.Default.UseOptimizedEncoders = value; }
         }
 
         public static bool UseHardwareRendering
