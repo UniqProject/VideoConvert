@@ -20,6 +20,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -398,21 +399,22 @@ namespace VideoConvert.Windows
         /// <returns></returns>
         private static EncodeInfo SetOutput(EncodeInfo input)
         {
-            input.OutputFile = Path.Combine(AppSettings.OutputLocation, input.JobName);
+            input.OutputFile = Path.Combine(AppSettings.OutputLocation,
+                Regex.Replace(input.JobName, @"[\\/:""*?<>|\r\n]+", ""));
 
             string inputFilePath = Path.GetDirectoryName(input.InputFile);
 
             if (string.IsNullOrEmpty(inputFilePath))
                 inputFilePath = input.InputFile;
 
-            string inFile = Path.Combine(inputFilePath,
-// ReSharper disable AssignNullToNotNullAttribute
-                                         Path.GetFileNameWithoutExtension(input.InputFile));
-// ReSharper restore AssignNullToNotNullAttribute
-
-            if (inFile == input.OutputFile)
+            if (input.InputFile != null)
             {
-                input.OutputFile += ".new";
+                string inFile = Path.Combine(inputFilePath, Path.GetFileNameWithoutExtension(input.InputFile));
+
+                if (inFile == input.OutputFile)
+                {
+                    input.OutputFile += ".new";
+                }
             }
 
             switch (input.EncodingProfile.OutFormat)
