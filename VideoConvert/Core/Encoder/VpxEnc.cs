@@ -110,7 +110,7 @@ namespace VideoConvert.Core.Encoder
             string inputFile = _jobInfo.AviSynthScript;
             string outFile =
                 Processing.CreateTempFile(
-                    string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.JobName : _jobInfo.TempOutput, "encoded.webm");
+                    string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput, "encoded.webm");
 
             _frameCount = _jobInfo.VideoStream.FrameCount;
 

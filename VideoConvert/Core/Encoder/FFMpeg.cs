@@ -208,7 +208,7 @@ namespace VideoConvert.Core.Encoder
 
                 string baseName;
                 if (string.IsNullOrEmpty(_jobInfo.TempInput))
-                    baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.JobName : _jobInfo.TempOutput;
+                    baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
                 else
                     baseName = _jobInfo.TempInput;
                 item.TempFile =

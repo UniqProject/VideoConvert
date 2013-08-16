@@ -142,7 +142,7 @@ namespace VideoConvert.Core.Encoder
             string inputFile = _jobInfo.AviSynthScript;
             string outFile =
                 Processing.CreateTempFile(
-                    string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.JobName : _jobInfo.TempOutput, "encoded.264");
+                    string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput, "encoded.264");
 
             int targetBitrate = 0;
             if (_jobInfo.EncodingProfile.TargetFileSize > 0)

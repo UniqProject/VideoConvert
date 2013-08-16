@@ -29,6 +29,7 @@ namespace VideoConvert.Core
     public class EncodeInfo:IFormattable
     {
         public string                   JobName { get; set; }
+        public string                   BaseName { get; set; }
         public string                   InputFile { get; set; }
         public InputType                Input { get; set; }
         public string                   FormattedInput { get { return Processing.StringValueOf(Input); } }
@@ -72,6 +73,7 @@ namespace VideoConvert.Core
         public EncodeInfo()
         {
             JobName = string.Empty;
+            BaseName = string.Empty;
             InputFile = string.Empty;
             Input = InputType.InputUndefined;
             OutputFile = string.Empty;
@@ -125,6 +127,7 @@ namespace VideoConvert.Core
             string result = string.Empty;
 
             result += string.Format(AppSettings.CInfo, "JobName:            {0:s} {1:s}", JobName, Environment.NewLine);
+            result += string.Format(AppSettings.CInfo, "BaseName:           {0:s} {1:s}", BaseName, Environment.NewLine);
             result += string.Format(AppSettings.CInfo, "InputFile:          {0:s} {1:s}", InputFile, Environment.NewLine);
             result += string.Format(AppSettings.CInfo, "InputType:          {0:s} {1:s}", Input.ToString(),
                                     Environment.NewLine);

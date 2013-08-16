@@ -399,8 +399,8 @@ namespace VideoConvert.Windows
         /// <returns></returns>
         private static EncodeInfo SetOutput(EncodeInfo input)
         {
-            input.OutputFile = Path.Combine(AppSettings.OutputLocation,
-                Regex.Replace(input.JobName, @"[\\/:""*?<>|\r\n]+", ""));
+            input.BaseName = Regex.Replace(input.JobName, @"[\\/:""*?<>|\r\n]+", "");
+            input.OutputFile = Path.Combine(AppSettings.OutputLocation, input.BaseName);
 
             string inputFilePath = Path.GetDirectoryName(input.InputFile);
 

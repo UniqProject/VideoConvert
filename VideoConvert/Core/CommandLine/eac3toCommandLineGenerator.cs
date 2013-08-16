@@ -54,7 +54,7 @@ namespace VideoConvert.Core.CommandLine
                 jobInfo.VideoStream.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
                                                    ? Processing.CreateTempFile(
                                                        string.IsNullOrEmpty(jobInfo.TempOutput)
-                                                           ? jobInfo.JobName
+                                                           ? jobInfo.BaseName
                                                            : jobInfo.TempOutput, "demuxed.mkv")
                                                    : Processing.CreateTempFile(jobInfo.TempInput, "demuxed.mkv");
             }
@@ -112,7 +112,7 @@ namespace VideoConvert.Core.CommandLine
                         item.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
                                             ? Processing.CreateTempFile(
                                                 string.IsNullOrEmpty(jobInfo.TempOutput)
-                                                    ? jobInfo.JobName
+                                                    ? jobInfo.BaseName
                                                     : jobInfo.TempOutput, formattedExt)
                                             : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
                         break;
@@ -139,7 +139,7 @@ namespace VideoConvert.Core.CommandLine
                         item.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
                                             ? Processing.CreateTempFile(
                                                 string.IsNullOrEmpty(jobInfo.TempOutput)
-                                                    ? jobInfo.JobName
+                                                    ? jobInfo.BaseName
                                                     : jobInfo.TempOutput, formattedExt)
                                             : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
                         break;
