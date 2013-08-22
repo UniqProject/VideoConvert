@@ -102,8 +102,8 @@ namespace VideoConvert.Core.Encoder
                 if (started)
                 {
                     string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*?DVDAuthor::dvdauthor, version ([\d\.]+)\.$",
-                                             RegexOptions.Singleline | RegexOptions.Multiline);
+                    Regex regObj = new Regex(@"^.*DVDAuthor::dvdauthor, version ([\d\.]*)\..+?$",
+                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
@@ -139,6 +139,13 @@ namespace VideoConvert.Core.Encoder
             XmlDocument outSubFile = new XmlDocument();
             XmlDeclaration decl = outSubFile.CreateXmlDeclaration("1.0", "UTF-8", "yes");
             XmlElement xn = outSubFile.CreateElement("dvdauthor");
+
+            XmlAttribute format = outSubFile.CreateAttribute("format");
+            format.Value = _jobInfo.EncodingProfile.SystemType == 0 ? "pal" : "ntsc";
+
+            if (xn.Attributes != null)
+                xn.Attributes.Append(format);
+
             outSubFile.AppendChild(decl);
             outSubFile.AppendChild(xn);
             xn.AppendChild(outSubFile.CreateElement("vmgm"));
