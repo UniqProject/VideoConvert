@@ -229,7 +229,13 @@ namespace VideoConvert.Core.Encoder
                 string streamID;
 
                 if (_jobInfo.Input == InputType.InputDvd)
-                    streamID = string.Format("#0x{0:X}", item.StreamId);
+                {
+                    int dvdStreamId = item.StreamId;
+                    if (String.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg1") == 0 ||
+                        String.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg2") == 0)
+                        dvdStreamId += 256;
+                    streamID = string.Format("#0x{0:X}", dvdStreamId);
+                }
                 else
                     streamID = string.Format("0:a:{0:0}", item.StreamKindId);
 
@@ -256,7 +262,7 @@ namespace VideoConvert.Core.Encoder
                 sb.AppendFormat("-map {0} -c:v copy -y \"{1}\" ", streamID, _jobInfo.VideoStream.TempFile);
 
                 hasStreams = true;
-                /*
+                
                 for (int i = 0; i < _jobInfo.SubtitleStreams.Count; i++)
                 {
                     SubtitleInfo item = _jobInfo.SubtitleStreams[i];
@@ -269,18 +275,17 @@ namespace VideoConvert.Core.Encoder
                         baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
                     else
                         baseName = _jobInfo.TempInput;
-                    item.TempFile =
-                        Processing.CreateTempFile(baseName, formattedExt);
+
+                    item.TempFile = Processing.CreateTempFile(baseName, formattedExt);
 
 
-                    if (_jobInfo.Input == InputType.InputDvd)
-                        streamID = string.Format("#0x{0:X}", item.StreamId);
-                    else
-                        streamID = string.Format("0:s:{0:0}", item.StreamKindId);
+                    streamID = _jobInfo.Input == InputType.InputDvd
+                        ? string.Format("#0x{0:X}", item.StreamId)
+                        : string.Format("0:s:{0:0}", item.StreamKindId);
 
                     sb.AppendFormat("-map {0} -c:s copy -y \"{1}\" ", streamID, item.TempFile);
                 }
-                 * */
+                
             }
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
