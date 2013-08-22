@@ -143,8 +143,7 @@ namespace VideoConvert.Core.Encoder
             XmlAttribute format = outSubFile.CreateAttribute("format");
             format.Value = _jobInfo.EncodingProfile.SystemType == 0 ? "pal" : "ntsc";
 
-            if (xn.Attributes != null)
-                xn.Attributes.Append(format);
+            xn.Attributes.Append(format);
 
             outSubFile.AppendChild(decl);
             outSubFile.AppendChild(xn);
