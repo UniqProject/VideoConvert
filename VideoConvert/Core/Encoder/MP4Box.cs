@@ -63,7 +63,8 @@ namespace VideoConvert.Core.Encoder
                         Arguments = "-version",
                         CreateNoWindow = true,
                         UseShellExecute = false,
-                        RedirectStandardOutput = true
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
                     };
                 encoder.StartInfo = parameter;
 
@@ -81,6 +82,8 @@ namespace VideoConvert.Core.Encoder
                 if (started)
                 {
                     string output = encoder.StandardOutput.ReadToEnd();
+                    if (string.IsNullOrEmpty(output))
+                        output = encoder.StandardError.ReadToEnd();
                     Regex regObj = new Regex(@"^MP4Box.+?version ([\d\w\.\-\ \(\)]+)\s*$",
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
