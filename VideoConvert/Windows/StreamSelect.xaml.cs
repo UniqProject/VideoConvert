@@ -1011,7 +1011,9 @@ namespace VideoConvert.Windows
                 else if (dataType == typeof (SubtitleInfo))
                 {
                     SubtitleInfo sub = (SubtitleInfo) item.Data;
-                    if ((sub.Format == "PGS" || sub.Format == "VobSub") && (_bdInfo != null && !_bdInfo.Is3D))
+                    bool isBD = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
+                                JobInfo.Input == InputType.InputHddvd;
+                    if ((sub.Format == "PGS" || sub.Format == "VobSub") && ((isBD && _bdInfo != null && !_bdInfo.Is3D) || !isBD))
                         // don't extract subtitles on 3d blurays, because eac3to can't handle them
                         JobInfo.SubtitleStreams.Add(sub);
                 }

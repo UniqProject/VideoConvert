@@ -507,11 +507,11 @@ namespace VideoConvert.Windows
                 case InputType.InputBluRay:
                 case InputType.InputAvchd:
                 case InputType.InputHddvd:
-                case InputType.InputDvd:
                     eac3Toenc.SetJob(job);
                     _worker.DoWork += eac3Toenc.DoDemux;
                     Log.Info("eac3toEncoder.DoDemux()");
                     break;
+                case InputType.InputDvd:
                 case InputType.InputAvi:
                 case InputType.InputFlash:
                 case InputType.InputMp4:

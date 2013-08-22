@@ -55,7 +55,7 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
 
-        private readonly Regex _demuxReg = new Regex(@"^size=\s+?(\d+)[\w\s]+?time=([\d\.\:]+).+$",
+        private readonly Regex _demuxReg = new Regex(@"^.*size=\s+?(\d+)[\w\s]+?time=([\d\.\:]+).+$",
                                                    RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly string _demuxProgressFormat = Processing.GetResourceString("ffmpeg_demuxing_progress");
 
@@ -167,11 +167,19 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
 
-            string inputFile = string.IsNullOrEmpty(_jobInfo.TempInput) ? _jobInfo.InputFile : _jobInfo.TempInput;
+            string inputFile;
+            if (_jobInfo.Input == InputType.InputDvd)
+                inputFile = _jobInfo.DumpOutput;
+            else
+                inputFile = string.IsNullOrEmpty(_jobInfo.TempInput) ? _jobInfo.InputFile : _jobInfo.TempInput;
             _jobInfo.VideoStream.TempFile = inputFile;
             try
             {
                 _jobInfo.MediaInfo = Processing.GetMediaInfo(inputFile);
+                if (_jobInfo.Input == InputType.InputDvd)
+                {
+                    _jobInfo.VideoStream = VideoHelper.GetStreamInfo(_jobInfo.MediaInfo, _jobInfo.VideoStream, false);
+                }
             }
             catch (TimeoutException ex)
             {
@@ -179,6 +187,10 @@ namespace VideoConvert.Core.Encoder
             }
             
             StringBuilder sb = new StringBuilder();
+
+            if (_jobInfo.Input == InputType.InputDvd)
+                sb.Append("-fflags genpts ");
+
             sb.AppendFormat("-i \"{0}\" ", inputFile);
 
             bool hasStreams = false;
@@ -214,12 +226,63 @@ namespace VideoConvert.Core.Encoder
                 item.TempFile =
                     Processing.CreateTempFile(baseName, formattedExt);
 
-                sb.AppendFormat("-map 0:a:{0:0} -vn -c:a {1} -y \"{2}\" ", item.StreamKindId, acodec, item.TempFile);
+                string streamID;
+
+                if (_jobInfo.Input == InputType.InputDvd)
+                    streamID = string.Format("#0x{0:X}", item.StreamId);
+                else
+                    streamID = string.Format("0:a:{0:0}", item.StreamKindId);
+
+                sb.AppendFormat("-map {0} -c:a {1} -y \"{2}\" ", streamID, acodec, item.TempFile);
 
                 hasStreams = true;
                 _jobInfo.AudioStreams[i] = item;
             }
-            
+
+            if (_jobInfo.Input == InputType.InputDvd)
+            {
+                string formattedExt = "demuxed.mkv";
+
+                string baseName;
+                if (string.IsNullOrEmpty(_jobInfo.TempInput))
+                    baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
+                else
+                    baseName = _jobInfo.TempInput;
+
+                _jobInfo.VideoStream.TempFile =
+                    Processing.CreateTempFile(baseName, formattedExt);
+
+                string streamID = string.Format("#0x{0:X}", _jobInfo.VideoStream.StreamId + 479);
+                sb.AppendFormat("-map {0} -c:v copy -y \"{1}\" ", streamID, _jobInfo.VideoStream.TempFile);
+
+                hasStreams = true;
+                /*
+                for (int i = 0; i < _jobInfo.SubtitleStreams.Count; i++)
+                {
+                    SubtitleInfo item = _jobInfo.SubtitleStreams[i];
+
+                    string ext = StreamFormat.GetFormatExtension(item.Format, "", false);
+
+                    formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+
+                    if (string.IsNullOrEmpty(_jobInfo.TempInput))
+                        baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
+                    else
+                        baseName = _jobInfo.TempInput;
+                    item.TempFile =
+                        Processing.CreateTempFile(baseName, formattedExt);
+
+
+                    if (_jobInfo.Input == InputType.InputDvd)
+                        streamID = string.Format("#0x{0:X}", item.StreamId);
+                    else
+                        streamID = string.Format("0:s:{0:0}", item.StreamKindId);
+
+                    sb.AppendFormat("-map {0} -c:s copy -y \"{1}\" ", streamID, item.TempFile);
+                }
+                 * */
+            }
+
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
             if (hasStreams)
             {
@@ -270,8 +333,12 @@ namespace VideoConvert.Core.Encoder
                         _jobInfo.ExitCode = encoder.ExitCode;
 
                         if (_jobInfo.ExitCode == 0)
-                            _jobInfo.VideoStream.TempFile = inputFile;
-
+                        {
+                            if (_jobInfo.Input == InputType.InputDvd)
+                                _jobInfo.TempFiles.Add(inputFile);
+                            else
+                                _jobInfo.VideoStream.TempFile = inputFile;
+                        }
                         Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                     }
                 }
