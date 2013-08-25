@@ -42,7 +42,19 @@ namespace VideoConvert.Core.Encoder
         private const string Executable = "x264.exe";
         private const string Executable64 = "x264_64.exe";
 
-        long _frameCount;
+        private long _frameCount;
+        private DateTime _startTime = DateTime.Now;
+        private TimeSpan _remaining = new TimeSpan(0, 0, 0);
+        private readonly string _progressFormat = Processing.GetResourceString("x264_encoding_progress");
+        private string _pass = string.Empty;
+        private readonly Regex _frameInformation = 
+            new Regex(@"^\D?([\d]+).*frames: ([\d\.]+) fps, ([\d\.]+).*$",
+                      RegexOptions.Singleline | RegexOptions.Multiline);
+
+        private readonly Regex _fullFrameInformation =
+            new Regex(@"^\[[\d\.]+?%\] ([\d]+?)/([\d]+?) frames, ([\d\.]+?) fps, ([\d\.]+?) kb/s.*$",
+                      RegexOptions.Singleline | RegexOptions.Multiline);
+
         private BackgroundWorker _bw;
 
         public void SetJob(EncodeInfo job)
@@ -118,12 +130,6 @@ namespace VideoConvert.Core.Encoder
 
             string passStr = Processing.GetResourceString("x264_pass");
             string status = Processing.GetResourceString("x264_encoding_status");
-            string progressFormat = Processing.GetResourceString("x264_encoding_progress");
-
-            //progress vars
-            DateTime startTime = DateTime.Now;
-            TimeSpan remaining = new TimeSpan(0, 0, 0);
-            // end progress
 
             bool use64BitEncoder = AppSettings.Use64BitEncoders &&
                                    AppSettings.X26464Installed &&
@@ -149,13 +155,12 @@ namespace VideoConvert.Core.Encoder
                 targetBitrate = Processing.CalculateVideoBitrate(_jobInfo);
 
             int encodeMode = encProfile.EncodingMode;
-            string pass = string.Empty;
             if ((encodeMode == 2) || (encodeMode == 3))
-                pass = string.Format(" {1} {0:0}; ", _jobInfo.StreamId, passStr);
+                _pass = string.Format(" {1} {0:0}; ", _jobInfo.StreamId, passStr);
 
             _frameCount = _jobInfo.VideoStream.FrameCount;
 
-            _bw.ReportProgress(-10, status + pass.Replace("; ", string.Empty));
+            _bw.ReportProgress(-10, status + _pass.Replace("; ", string.Empty));
             _bw.ReportProgress(0, status);
 
             string argument = X264CommandLineGenerator.Generate(encProfile,
@@ -175,12 +180,6 @@ namespace VideoConvert.Core.Encoder
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, use64BitEncoder ? Executable64 : Executable);
 
-            Regex frameInformation = new Regex(@"^\D?([\d]+).*frames: ([\d\.]+) fps, ([\d\.]+).*$",
-                                             RegexOptions.Singleline | RegexOptions.Multiline);
-            Regex fullFrameInformation =
-                new Regex(@"^\[[\d\.]+?%\] ([\d]+?)/([\d]+?) frames, ([\d\.]+?) fps, ([\d\.]+?) kb/s.*$",
-                          RegexOptions.Singleline | RegexOptions.Multiline);
-
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
@@ -194,105 +193,7 @@ namespace VideoConvert.Core.Encoder
                     };
                 encoder.StartInfo = parameter;
 
-                DateTime time = startTime;
-                encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match frameMatch = frameInformation.Match(line);
-                        Match fullFrameMatch = fullFrameInformation.Match(line);
-
-                        TimeSpan eta = DateTime.Now.Subtract(time);
-
-                        long current;
-                        long framesRemaining;
-                        long secRemaining = 0;
-
-                        float encBitrate;
-                        float fps;
-                        DateTime ticks;
-                        double codingFPS;
-                        if (frameMatch.Success)
-                        {
-                            Int64.TryParse(frameMatch.Groups[1].Value, NumberStyles.Number,
-                                           AppSettings.CInfo, out current);
-                            framesRemaining = _frameCount - current;
-
-                            if (eta.Seconds != 0)
-                            {
-                                //Frames per Second
-                                codingFPS = Math.Round(current/eta.TotalSeconds, 2);
-
-                                if (codingFPS > 1)
-                                    secRemaining = framesRemaining/(int) codingFPS;
-                                else
-                                    secRemaining = 0;
-                            }
-
-                            if (secRemaining > 0)
-                                remaining = new TimeSpan(0, 0, (int) secRemaining);
-
-                            ticks = new DateTime(eta.Ticks);
-
-                            Single.TryParse(frameMatch.Groups[2].Value, NumberStyles.Number,
-                                            AppSettings.CInfo, out fps);
-                            Single.TryParse(frameMatch.Groups[3].Value, NumberStyles.Number,
-                                            AppSettings.CInfo, out encBitrate);
-
-                            string progress = string.Format(progressFormat,
-                                                            current, _frameCount,
-                                                            fps,
-                                                            encBitrate,
-                                                            remaining, ticks, pass);
-                            _bw.ReportProgress((int) (((float) current/_frameCount)*100),
-                                               progress);
-
-                        }
-                        else if (fullFrameMatch.Success)
-                        {
-                            Int64.TryParse(fullFrameMatch.Groups[1].Value, NumberStyles.Number,
-                                           AppSettings.CInfo, out current);
-                            Int64.TryParse(fullFrameMatch.Groups[2].Value, NumberStyles.Number,
-                                           AppSettings.CInfo, out _frameCount);
-
-                            framesRemaining = _frameCount - current;
-
-                            if (eta.Seconds != 0)
-                            {
-                                //Frames per Second
-                                codingFPS = Math.Round(current/eta.TotalSeconds, 2);
-
-                                if (codingFPS > 1)
-                                    secRemaining = framesRemaining/(int) codingFPS;
-                                else
-                                    secRemaining = 0;
-                            }
-
-                            if (secRemaining > 0)
-                                remaining = new TimeSpan(0, 0, (int) secRemaining);
-
-                            ticks = new DateTime(eta.Ticks);
-
-                            Single.TryParse(fullFrameMatch.Groups[3].Value, NumberStyles.Number,
-                                            AppSettings.CInfo, out fps);
-                            Single.TryParse(fullFrameMatch.Groups[4].Value, NumberStyles.Number,
-                                            AppSettings.CInfo, out encBitrate);
-
-                            string progress = string.Format(progressFormat,
-                                                            current, _frameCount,
-                                                            fps,
-                                                            encBitrate,
-                                                            remaining, ticks, pass);
-                            _bw.ReportProgress((int) (((float) current/_frameCount)*100),
-                                               progress);
-                        }
-                        else
-                        {
-                            Log.InfoFormat("x264: {0:s}", line);
-                        }
-                    };
+                encoder.ErrorDataReceived += OnDataReceived;
                 
                 Log.InfoFormat("start parameter: x264 {0:s}", argument);
 
@@ -304,9 +205,18 @@ namespace VideoConvert.Core.Encoder
                                                                              PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                 decodePipe.BeginWaitForConnection(DecoderConnected, null);
 
+                Size originalSize = new Size(_jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height);
+                if (_jobInfo.VideoStream.Width < _jobInfo.VideoStream.Height*_jobInfo.VideoStream.AspectRatio)
+                {
+                    originalSize.Width = (int)(_jobInfo.VideoStream.Height*_jobInfo.VideoStream.AspectRatio);
+                    int temp;
+                    Math.DivRem(originalSize.Width, 2, out temp);
+                    originalSize.Width += temp;
+                }
+
                 Process decoder = FfMpeg.GenerateDecodeProcess(inputFile,
                     AppSettings.Use64BitEncoders && AppSettings.UseFfmpegScaling,
-                    new Size(_jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height), _jobInfo.VideoStream.AspectRatio,
+                    originalSize, _jobInfo.VideoStream.AspectRatio,
                     _jobInfo.VideoStream.CropRect, resizeTo);
                 try
                 {
@@ -331,7 +241,7 @@ namespace VideoConvert.Core.Encoder
                     _jobInfo.ExitCode = -1;
                 }
 
-                startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
                 if (started && decStarted)
                 {
@@ -425,6 +335,105 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
             e.Result = _jobInfo;
+        }
+
+        private void OnDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match frameMatch = _frameInformation.Match(line);
+            Match fullFrameMatch = _fullFrameInformation.Match(line);
+
+            TimeSpan eta = DateTime.Now.Subtract(_startTime);
+
+            long current;
+            long framesRemaining;
+            long secRemaining = 0;
+
+            float encBitrate;
+            float fps;
+            DateTime ticks;
+            double codingFPS;
+            if (frameMatch.Success)
+            {
+                Int64.TryParse(frameMatch.Groups[1].Value, NumberStyles.Number,
+                               AppSettings.CInfo, out current);
+                framesRemaining = _frameCount - current;
+
+                if (eta.Seconds != 0)
+                {
+                    //Frames per Second
+                    codingFPS = Math.Round(current / eta.TotalSeconds, 2);
+
+                    if (codingFPS > 1)
+                        secRemaining = framesRemaining / (int)codingFPS;
+                    else
+                        secRemaining = 0;
+                }
+
+                if (secRemaining > 0)
+                    _remaining = new TimeSpan(0, 0, (int)secRemaining);
+
+                ticks = new DateTime(eta.Ticks);
+
+                Single.TryParse(frameMatch.Groups[2].Value, NumberStyles.Number,
+                                AppSettings.CInfo, out fps);
+                Single.TryParse(frameMatch.Groups[3].Value, NumberStyles.Number,
+                                AppSettings.CInfo, out encBitrate);
+
+                string progress = string.Format(_progressFormat,
+                                                current, _frameCount,
+                                                fps,
+                                                encBitrate,
+                                                _remaining, ticks, _pass);
+                _bw.ReportProgress((int)(((float)current / _frameCount) * 100),
+                                   progress);
+
+            }
+            else if (fullFrameMatch.Success)
+            {
+                Int64.TryParse(fullFrameMatch.Groups[1].Value, NumberStyles.Number,
+                               AppSettings.CInfo, out current);
+                Int64.TryParse(fullFrameMatch.Groups[2].Value, NumberStyles.Number,
+                               AppSettings.CInfo, out _frameCount);
+
+                framesRemaining = _frameCount - current;
+
+                if (eta.Seconds != 0)
+                {
+                    //Frames per Second
+                    codingFPS = Math.Round(current / eta.TotalSeconds, 2);
+
+                    if (codingFPS > 1)
+                        secRemaining = framesRemaining / (int)codingFPS;
+                    else
+                        secRemaining = 0;
+                }
+
+                if (secRemaining > 0)
+                    _remaining = new TimeSpan(0, 0, (int)secRemaining);
+
+                ticks = new DateTime(eta.Ticks);
+
+                Single.TryParse(fullFrameMatch.Groups[3].Value, NumberStyles.Number,
+                                AppSettings.CInfo, out fps);
+                Single.TryParse(fullFrameMatch.Groups[4].Value, NumberStyles.Number,
+                                AppSettings.CInfo, out encBitrate);
+
+                string progress = string.Format(_progressFormat,
+                                                current, _frameCount,
+                                                fps,
+                                                encBitrate,
+                                                _remaining, ticks, _pass);
+                _bw.ReportProgress((int)(((float)current / _frameCount) * 100),
+                                   progress);
+            }
+            else
+            {
+                Log.InfoFormat("x264: {0:s}", line);
+            }
         }
 
         private static void DecoderConnected(IAsyncResult ar)

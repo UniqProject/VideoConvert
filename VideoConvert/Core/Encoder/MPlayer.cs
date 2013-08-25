@@ -35,6 +35,10 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "mplayer.exe";
 
+        private readonly string _progressFormat = Processing.GetResourceString("mplayer_dump_progress");
+        private readonly Regex _regObj = new Regex(@"^dump: .*\(~([\d\.]+?)%\)$", 
+                                                   RegexOptions.Singleline | RegexOptions.Multiline);
+
         private BackgroundWorker _bw;
 
         public void SetJob(EncodeInfo job)
@@ -108,12 +112,9 @@ namespace VideoConvert.Core.Encoder
             string argument = string.Empty;
 
             string status = Processing.GetResourceString("mplayer_dump_status");
-            string progressFormat = Processing.GetResourceString("mplayer_dump_progress");
-
+            
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
-
-            Regex regObj = new Regex(@"^dump: .*\(~([\d\.]+?)%\)$", RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process())
             {
@@ -159,27 +160,7 @@ namespace VideoConvert.Core.Encoder
 
                 encoder.StartInfo = parameter;
 
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = regObj.Match(line);
-                        if (result.Success)
-                        {
-                            float tempProgress;
-                            Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
-                                            out tempProgress);
-                            int progress = (int) Math.Round(tempProgress, 0);
-
-                            string progressStr = string.Format(progressFormat, _jobInfo.TrackId, _jobInfo.InputFile,
-                                                               progress);
-                            _bw.ReportProgress(progress, progressStr);
-                        }
-                        else
-                            Log.InfoFormat("mplayer: {0:s}", line);
-                    };
+                encoder.OutputDataReceived += OnDataReceived;
 
                 Log.InfoFormat("mplayer {0:s}", argument);
 
@@ -220,6 +201,28 @@ namespace VideoConvert.Core.Encoder
 
             e.Result = _jobInfo;
 
+        }
+
+        private void OnDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _regObj.Match(line);
+            if (result.Success)
+            {
+                float tempProgress;
+                Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                                out tempProgress);
+                int progress = (int)Math.Round(tempProgress, 0);
+
+                string progressStr = string.Format(_progressFormat, _jobInfo.TrackId, _jobInfo.InputFile,
+                                                   progress);
+                _bw.ReportProgress(progress, progressStr);
+            }
+            else
+                Log.InfoFormat("mplayer: {0:s}", line);
         }
 
         /*

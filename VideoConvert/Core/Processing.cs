@@ -40,7 +40,7 @@ namespace VideoConvert.Core
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(Processing));
 
-        public static MediaInfo mediaInfo;
+        public static MediaInfo MyMediaInfo;
 
         private static InputType CheckFolderStructure(string pathToFile)
         {
@@ -832,6 +832,112 @@ namespace VideoConvert.Core
             }
 
             return fIsElevated;
-        } 
+        }
+
+        public static bool SubtitleNeedConversion(OutputType outputType, string format)
+        {
+            switch (outputType)
+            {
+                case OutputType.OutputAvchd:
+                case OutputType.OutputBluRay:
+                case OutputType.OutputM2Ts:
+                case OutputType.OutputTs:
+                    if (format.ToLowerInvariant() == "pgs")
+                        return false;
+                    return true;
+                case OutputType.OutputMatroska:
+                case OutputType.OutputWebM:
+                    return false;
+                case OutputType.OutputMp4:
+                    if (format.ToLowerInvariant() == "ssa" || format.ToLowerInvariant() == "ass")
+                        return true;
+                    return false;
+            }
+
+            return false;
+        }
+
+        private static bool SubtitleConversionSupported(OutputType outputType, string format)
+        {
+            switch (outputType)
+            {
+                case OutputType.OutputMp4:
+                    if (format.ToLowerInvariant() == "pgs" || format.ToLowerInvariant() == "vobsub")
+                        return false;
+                    return true;
+                case OutputType.OutputMatroska:
+                case OutputType.OutputAvchd:
+                case OutputType.OutputBluRay:
+                case OutputType.OutputDvd:
+                case OutputType.OutputM2Ts:
+                case OutputType.OutputTs:
+                    return true;
+            }
+            return false;
+        }
+
+        public static void CheckSubtitles(EncodeInfo encodingJob)
+        {
+            // WebM Format has no support for subtitles
+            if (encodingJob.EncodingProfile.OutFormat == OutputType.OutputWebM)
+                encodingJob.SubtitleStreams.Clear();
+
+            foreach (SubtitleInfo info in encodingJob.SubtitleStreams)
+            {
+                info.NeedConversion = SubtitleNeedConversion(encodingJob.EncodingProfile.OutFormat, info.Format) ||
+                                      (info.KeepOnlyForcedCaptions && !info.HardSubIntoVideo);
+                info.FormatSupported = SubtitleConversionSupported(encodingJob.EncodingProfile.OutFormat, info.Format);
+            }
+
+            encodingJob.SubtitleStreams.RemoveAll(info => !info.FormatSupported);
+        }
+
+        public static void CheckStreamLimit(EncodeInfo encodingJob)
+        {
+            // rearrange default audio stream
+            AudioInfo defaultAudioItem = encodingJob.AudioStreams.Find(info => info.MkvDefault);
+            if (defaultAudioItem != null)
+            {
+                encodingJob.AudioStreams.Remove(defaultAudioItem);
+                encodingJob.AudioStreams.Insert(0, defaultAudioItem);
+            }
+
+            // rearrange default subtitle stream
+            SubtitleInfo defaultSubtitleItem = encodingJob.SubtitleStreams.Find(info => info.MkvDefault);
+            if (defaultSubtitleItem != null)
+            {
+                encodingJob.SubtitleStreams.Remove(defaultSubtitleItem);
+                encodingJob.SubtitleStreams.Insert(0, defaultSubtitleItem);
+            }
+
+            switch (encodingJob.EncodingProfile.OutFormat)
+            {
+                case OutputType.OutputWebM:
+                    // WebM has no support for subtitles
+                    encodingJob.SubtitleStreams.Clear();
+                    // WebM supports max one audio stream per file
+                    AudioInfo firstIndex = encodingJob.AudioStreams.First();
+                    if (firstIndex != null)
+                        encodingJob.AudioStreams.RemoveAll(info => info != firstIndex);
+                    break;
+                case OutputType.OutputDvd:
+                    int audioCount = encodingJob.AudioStreams.Count;
+                    int subtitleCount = encodingJob.SubtitleStreams.Count;
+                    int chapterCount = encodingJob.Chapters.Count;
+
+                    // DVD supports max 8 audio streams
+                    if (audioCount > 8)
+                        encodingJob.AudioStreams.RemoveRange(8, audioCount - 8);
+
+                    // DVD supports max 32 subtitle streams
+                    if (subtitleCount > 32)
+                        encodingJob.SubtitleStreams.RemoveRange(32, subtitleCount - 32);
+
+                    // DVD supports max 99 chapter markers
+                    if (chapterCount > 99)
+                        encodingJob.Chapters.RemoveRange(99, chapterCount - 99);
+                    break;
+            }
+        }
     }
 }

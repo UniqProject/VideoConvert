@@ -217,6 +217,9 @@ namespace VideoConvert.Windows
                     case EncodingStep.EncodeAudio:
                         DoEncodeAudio(job);
                         break;
+                    case EncodingStep.DemuxSubtitle:
+                        DoDemuxSubtitle(job);
+                        break;
                     case EncodingStep.ProcessSubtitle:
                         DoProcessSubtitle(job);
                         break;
@@ -453,9 +456,21 @@ namespace VideoConvert.Windows
         private void DoProcessSubtitle(EncodeInfo job)
         {
             BdSup2SubTool subtool = new BdSup2SubTool();
-            subtool.SetJob(job);
-            _worker.DoWork += subtool.DoProcess;
-            Log.Info("BDSup2SubTool.DoProcess()");
+            TextSubtitleConverter converter = new TextSubtitleConverter();
+            switch (job.EncodingProfile.OutFormat)
+            {
+                case OutputType.OutputMp4:
+                    converter.SetJob(job);
+                    _worker.DoWork += converter.DoProcess;
+                    Log.Info("TextSubtitleConverter.DoProcess()");
+                    break;
+                default:
+                    subtool.SetJob(job);
+                    _worker.DoWork += subtool.DoProcess;
+                    Log.Info("BDSup2SubTool.DoProcess()");
+                    break;
+            }
+            
         }
 
         private void DoEncodeAudio(EncodeInfo job)
@@ -528,6 +543,14 @@ namespace VideoConvert.Windows
             }
         }
 
+        private void DoDemuxSubtitle(EncodeInfo job)
+        {
+            MkvMerge mkvMerge = new MkvMerge();
+            mkvMerge.SetJob(job);
+            _worker.DoWork += mkvMerge.DemuxSubtitle;
+            Log.Info("mkvMerge.DemuxSubtitle()");
+        }
+
         private void DoDump(EncodeInfo job)
         {
             switch (job.Input)
@@ -551,6 +574,7 @@ namespace VideoConvert.Windows
 
         private static void DetermineNextStep(ref EncodeInfo job)
         {
+            int nextIndex;
             switch (job.NextStep)
             {
                 case EncodingStep.NotSet:
@@ -610,15 +634,6 @@ namespace VideoConvert.Windows
                         GetSubOrVideoStep(job);
                     break;
 
-                case EncodingStep.ProcessSubtitle:
-                    if (job.SubtitleStreams.Count - 1 > job.StreamId &&
-                        job.EncodingProfile.OutFormat == OutputType.OutputDvd &&
-                        AppSettings.JavaInstalled)
-                        job.StreamId++;
-                    else
-                        GetSubOrVideoStep(job);
-                    break;
-
                 case EncodingStep.IndexVideo:
                     if (job.EncodingProfile.AutoCropResize &&
                         !job.EncodingProfile.KeepInputResolution &&
@@ -657,10 +672,26 @@ namespace VideoConvert.Windows
                     }
                     if (job.StreamId < encodingPasses)
                         job.StreamId++;
-                    else if (job.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                        job.NextStep = EncodingStep.PreMuxResult;
                     else
-                        job.NextStep = EncodingStep.MuxResult;
+                        GetSubOrVideoStep(job);
+                    break;
+
+                case EncodingStep.DemuxSubtitle:
+                    nextIndex = job.SubtitleStreams.FindIndex(job.StreamId, info => info.RawStream == false);
+
+                    if (job.SubtitleStreams.Count - 1 > job.StreamId && nextIndex > -1)
+                        job.StreamId = nextIndex;
+                    else
+                        GetSubOrVideoStep(job);
+                    break;
+
+                case EncodingStep.ProcessSubtitle:
+                    nextIndex = job.SubtitleStreams.FindIndex(job.StreamId, info => info.NeedConversion);
+                    if (job.SubtitleStreams.Count - 1 > job.StreamId &&
+                        AppSettings.JavaInstalled && AppSettings.BDSup2SubInstalled && nextIndex > -1)
+                        job.StreamId = nextIndex;
+                    else
+                        GetSubOrVideoStep(job);
                     break;
 
                 case EncodingStep.PreMuxResult:
@@ -706,39 +737,36 @@ namespace VideoConvert.Windows
         {
             if (job.VideoStream != null)
             {
-                switch (job.NextStep)
+                switch (job.CompletedStep)
                 {
                     case EncodingStep.Demux:
                     case EncodingStep.EncodeAudio:
-                        SubtitleInfo sub =
-                            job.SubtitleStreams.FirstOrDefault(
-                                subInfo =>
-                                !subInfo.HardSubIntoVideo && subInfo.KeepOnlyForcedCaptions &&
-                                (subInfo.Format.Equals("VobSub") || subInfo.Format.Equals("PGS")));
+                    case EncodingStep.EncodeVideo:
+                    case EncodingStep.DemuxSubtitle:
+                        SubtitleInfo sub = job.SubtitleStreams.FirstOrDefault(subInfo => subInfo.NeedConversion);
+                        int demuxSubtitleIndex = job.SubtitleStreams.FindIndex(info => info.RawStream == false);
 
-                        if (job.EncodingProfile.OutFormat == OutputType.OutputDvd &&
-                            AppSettings.JavaInstalled &&
-                            job.SubtitleStreams.Count > 0)
+                        if (job.VideoProfile.Type != ProfileType.Copy && !job.VideoStream.Encoded)
+                            job.NextStep = EncodingStep.IndexVideo;
+                        else if (demuxSubtitleIndex > -1)
                         {
-                            job.NextStep = EncodingStep.ProcessSubtitle;
-                            job.StreamId = 0;
+                            job.NextStep = EncodingStep.DemuxSubtitle;
+                            job.StreamId = demuxSubtitleIndex;
                         }
-                        else if (AppSettings.JavaInstalled && sub != null)
+                        else if (((AppSettings.JavaInstalled && AppSettings.BDSup2SubInstalled) ||
+                                  job.EncodingProfile.OutFormat == OutputType.OutputMp4) && sub != null)
                         {
                             job.NextStep = EncodingStep.ProcessSubtitle;
                             job.StreamId = job.SubtitleStreams.IndexOf(sub);
                         }
-                        else if (job.VideoProfile.Type != ProfileType.Copy)
-                            job.NextStep = EncodingStep.IndexVideo;
                         else if (job.EncodingProfile.OutFormat == OutputType.OutputDvd)
                             job.NextStep = EncodingStep.PreMuxResult;
                         else
                             job.NextStep = EncodingStep.MuxResult;
                         break;
+
                     case EncodingStep.ProcessSubtitle:
-                        if (job.VideoProfile.Type != ProfileType.Copy)
-                            job.NextStep = EncodingStep.IndexVideo;
-                        else if (job.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                        if (job.EncodingProfile.OutFormat == OutputType.OutputDvd)
                             job.NextStep = EncodingStep.PreMuxResult;
                         else
                             job.NextStep = EncodingStep.MuxResult;
@@ -747,7 +775,9 @@ namespace VideoConvert.Windows
             }
             else
             {
-                job.NextStep = job.EncodingProfile.OutFormat == OutputType.OutputDvd ? EncodingStep.PreMuxResult : EncodingStep.MuxResult;
+                job.NextStep = job.EncodingProfile.OutFormat == OutputType.OutputDvd
+                    ? EncodingStep.PreMuxResult
+                    : EncodingStep.MuxResult;
             }
         }
 
@@ -763,17 +793,18 @@ namespace VideoConvert.Windows
 
                 encodingSteps++; // demux
 
-                encodingSteps += job.AudioStreams.Count(aud => job.AudioProfile.Type == ProfileType.AC3 ||
-                                                               job.AudioProfile.Type == ProfileType.OGG ||
-                                                               job.AudioProfile.Type == ProfileType.MP3 ||
-                                                               job.AudioProfile.Type == ProfileType.AAC ||
-                                                               job.AudioProfile.Type == ProfileType.FLAC);
-
                 encodingSteps +=
-                    job.SubtitleStreams.Count(sub => job.EncodingProfile.OutFormat == OutputType.OutputDvd ||
-                                                     (sub.KeepOnlyForcedCaptions &&
-                                                      !sub.HardSubIntoVideo &&
-                                                      (sub.Format.Equals("VobSub") || sub.Format.Equals("PGS"))));
+                    job.AudioStreams.Count(
+                        aud =>
+                            job.AudioProfile.Type == ProfileType.AC3 || job.AudioProfile.Type == ProfileType.OGG ||
+                            job.AudioProfile.Type == ProfileType.MP3 || job.AudioProfile.Type == ProfileType.AAC ||
+                            job.AudioProfile.Type == ProfileType.FLAC);
+
+                // demux subtitles
+                encodingSteps += job.SubtitleStreams.Count(sub => sub.RawStream == false);
+
+                // process subtitles
+                encodingSteps += job.SubtitleStreams.Count(sub => sub.NeedConversion);
 
                 if (job.VideoStream != null)
                 {

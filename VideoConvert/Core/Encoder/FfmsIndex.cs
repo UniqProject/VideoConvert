@@ -34,6 +34,10 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "ffmsindex.exe";
 
+        private readonly string _progressFmt = Processing.GetResourceString("ffmsindex_indexing_progress");
+        private readonly Regex _regObj = new Regex(@"^.*Indexing, please wait\.\.\. ([\d]+)%.*$",
+                                                   RegexOptions.Singleline | RegexOptions.Multiline);
+        
         private BackgroundWorker _bw;
 
         public void SetJob(EncodeInfo job)
@@ -99,15 +103,11 @@ namespace VideoConvert.Core.Encoder
             _bw = (BackgroundWorker)sender;
 
             string status = Processing.GetResourceString("ffmsindex_indexing_status");
-            string progressFmt = Processing.GetResourceString("ffmsindex_indexing_progress");
 
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
 
             string localExecutable = Path.Combine(AppSettings.AppPath, "AvsPlugins", Executable);
-
-            Regex regObj = new Regex(@"^.*Indexing, please wait\.\.\. ([\d]+)%.*$",
-                                     RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process())
             {
@@ -122,22 +122,7 @@ namespace VideoConvert.Core.Encoder
                     };
                 encoder.StartInfo = parameter;
 
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = regObj.Match(line);
-                        if (result.Success)
-                        {
-                            string progress = string.Format(progressFmt,
-                                                            result.Groups[1].Value);
-                            _bw.ReportProgress(Convert.ToInt32(result.Groups[1].Value),
-                                               progress);
-                        }
-                        else
-                            Log.InfoFormat("ffmsindex: {0:s}", line);
-                    };
+                encoder.OutputDataReceived += OnOutputDataReceived;
 
                 Log.InfoFormat("ffmsindex {0:s}", parameter.Arguments);
 
@@ -180,6 +165,21 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private void OnOutputDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _regObj.Match(line);
+            if (result.Success)
+            {
+                string progress = string.Format(_progressFmt, result.Groups[1].Value);
+                _bw.ReportProgress(Convert.ToInt32(result.Groups[1].Value), progress);
+            }
+            else
+                Log.InfoFormat("ffmsindex: {0:s}", line);
         }
     }
 }

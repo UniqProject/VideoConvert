@@ -30,6 +30,7 @@ using System.Xml;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
+using VideoConvert.Core.Subtitles;
 
 namespace VideoConvert.Core.Encoder
 {
@@ -148,9 +149,24 @@ namespace VideoConvert.Core.Encoder
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("-jar \"{0}\" ", localExecutable);
 
-            int targetRes = _jobInfo.EncodingProfile.SystemType == 0 ? 576 : 480;
+            int targetRes = -1;
+
+            if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                targetRes = _jobInfo.EncodingProfile.SystemType == 0 ? 576 : 480;
 
             string inFile = sub.TempFile;
+
+            TextSubtitle textSub = null;
+            switch (sub.Format)
+            {
+                case "SSA":
+                case "ASS":
+                    textSub = SSAReader.ReadFile(inFile);
+                    break;
+                case "UTF-8":
+                    textSub = SRTReader.ReadFile(inFile);
+                    break;
+            }
 
             string inFileDir = Path.GetDirectoryName(inFile);
             if (string.IsNullOrEmpty(inFileDir))
@@ -172,12 +188,35 @@ namespace VideoConvert.Core.Encoder
 
             string outFile = Path.Combine(outPath, inFileFullName);
 
+            if (textSub != null)
+            {
+                string xmlFile = Path.ChangeExtension(outFile, "xml");
+                if (BDNExport.WriteBDNXmlFile(textSub, xmlFile, _jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height,
+                    _jobInfo.VideoStream.FPS))
+                {
+                    sub.Format = "XML";
+                    _jobInfo.TempFiles.Add(inFile);
+                    sub.TempFile = xmlFile;
+                    inFile = xmlFile;
+                }
+            }
+
             if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
                 outFile = Path.ChangeExtension(outFile, "processed.xml");
             else if (sub.KeepOnlyForcedCaptions)
                 outFile = Path.ChangeExtension(outFile, "forced.sup");
+            else if (sub.Format == "XML" || sub.Format == "VobSub")
+                outFile = Path.ChangeExtension(outFile, "sup");
 
-            sb.AppendFormat(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\" /fps:keep /palmode:keep ", inFile, outFile);
+            float targetFPS = _jobInfo.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
+                        ? _jobInfo.VideoStream.FPS * 2
+                        : _jobInfo.VideoStream.FPS;
+            string fpsMode = "keep";
+
+            if (Math.Abs(targetFPS - _jobInfo.VideoStream.FPS) > 0)
+                fpsMode = targetFPS.ToString("0.000", AppSettings.CInfo);
+
+            sb.AppendFormat(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\" /fps:{2} /palmode:keep ", inFile, outFile, fpsMode);
 
             if (sub.KeepOnlyForcedCaptions)
                 sb.AppendFormat("/forced+ ");
@@ -232,6 +271,9 @@ namespace VideoConvert.Core.Encoder
                 if (_jobInfo.ExitCode == 0)
                 {
                     _jobInfo.TempFiles.Add(inFile);
+                    if (sub.Format == "VobSub")
+                        _jobInfo.TempFiles.Add(Path.ChangeExtension(inFile, "sub"));
+
                     if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
                     {
                         _jobInfo.TempFiles.Add(outFile);
@@ -240,7 +282,11 @@ namespace VideoConvert.Core.Encoder
                         sub.TempFile = GenerateSpuMuxSubtitle(outFile);
                     }
                     else
+                    {
                         sub.TempFile = outFile;
+                        sub.Format = "PGS";
+                    }
+                    sub.NeedConversion = false;
                 }
             }
 

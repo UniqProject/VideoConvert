@@ -24,6 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
 using log4net;
 using System.Text;
@@ -38,6 +39,11 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "mkvmerge.exe";
         private const string Defaultparams = "--ui-language en ";
+
+        private readonly string _demuxProgressFormat = Processing.GetResourceString("mkvmerge_demuxing_progress");
+        private readonly string _muxProgressFormat = Processing.GetResourceString("mkvmerge_muxing_progress");
+        private readonly Regex _regObj = new Regex(@"^.?Progress: ([\d]+?)%.*$",
+                                                   RegexOptions.Singleline | RegexOptions.Multiline);
 
         private BackgroundWorker _bw;
 
@@ -102,6 +108,97 @@ namespace VideoConvert.Core.Encoder
             return verInfo;
         }
 
+        public void DemuxSubtitle(object sender, DoWorkEventArgs e)
+        {
+            _bw = (BackgroundWorker)sender;
+
+            string localExecutable = Path.Combine(AppSettings.ToolsPath, "mkvextract.exe");
+            string status = Processing.GetResourceString("mkvmerge_demuxing_status");
+
+            _bw.ReportProgress(-10, status);
+            _bw.ReportProgress(0, status);
+
+            SubtitleInfo sub = _jobInfo.SubtitleStreams[_jobInfo.StreamId];
+            string input = sub.TempFile;
+            string ext = StreamFormat.GetFormatExtension(sub.Format, "", true);
+            string formattedExt = string.Format("raw.{0}", ext);
+
+            sub.TempFile = Processing.CreateTempFile(sub.TempFile, formattedExt);
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("{0} tracks \"{1}\" 0:\"{2}\" ", Defaultparams, input, sub.TempFile);
+
+            using (Process encoder = new Process())
+            {
+                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                {
+                    WorkingDirectory = AppSettings.DemuxLocation,
+                    Arguments = sb.ToString(),
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
+                };
+
+                encoder.StartInfo = parameter;
+
+                encoder.OutputDataReceived += OnDemuxDataReceived;
+
+                Log.InfoFormat("mkvextract {0:s}", parameter.Arguments);
+
+                bool started;
+                try
+                {
+                    started = encoder.Start();
+                }
+                catch (Exception ex)
+                {
+                    started = false;
+                    Log.ErrorFormat("mkvmerge exception: {0}", ex);
+                    _jobInfo.ExitCode = -1;
+                }
+
+                if (started)
+                {
+                    encoder.PriorityClass = AppSettings.GetProcessPriority();
+                    encoder.BeginOutputReadLine();
+
+                    while (!encoder.HasExited)
+                    {
+                        if (_bw.CancellationPending)
+                            encoder.Kill();
+                        Thread.Sleep(200);
+                    }
+                    encoder.WaitForExit(10000);
+                    encoder.CancelOutputRead();
+
+                    _jobInfo.ExitCode = encoder.ExitCode;
+                    Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
+                    if (_jobInfo.ExitCode < 2)
+                    {
+                        if (_jobInfo.ExitCode == 1)
+                        {
+                            string warningStr = Processing.GetResourceString("process_finish_warnings");
+                            _bw.ReportProgress(-10, warningStr);
+                            _jobInfo.ExitCode = 0;
+                        }
+
+                        _jobInfo.TempFiles.Add(input);
+                        sub.RawStream = true;
+                        if (sub.Format == "VobSub")
+                        {
+                            _jobInfo.TempFiles.Add(sub.TempFile);
+                            sub.TempFile = Path.ChangeExtension(sub.TempFile, "idx");
+                        }
+                    }
+                }
+            }
+
+            _bw.ReportProgress(100);
+            _jobInfo.CompletedStep = _jobInfo.NextStep;
+
+            e.Result = _jobInfo;
+        }
+
         public void DoEncode(object sender, DoWorkEventArgs e)
         {
             _bw = (BackgroundWorker)sender;
@@ -119,7 +216,6 @@ namespace VideoConvert.Core.Encoder
             string chapterLongName = Processing.GetResourceString("mkvmerge_chapter_format_long_name");
             string chapterShortTime = Processing.GetResourceString("mkvmerge_chapter_format_short_time");
             string chapterShortName = Processing.GetResourceString("mkvmerge_chapter_format_short_name");
-            string progressFormat = Processing.GetResourceString("mkvmerge_muxing_progress");
 
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
@@ -337,7 +433,6 @@ namespace VideoConvert.Core.Encoder
             sb.AppendFormat(AppSettings.CInfo, "{0:s} --compression -1:none {1:s}", chapterString, streamOrder);
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
-            Regex regObj = new Regex(@"^.?Progress: ([\d]+?)%.*$", RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process())
             {
@@ -352,24 +447,7 @@ namespace VideoConvert.Core.Encoder
 
                 encoder.StartInfo = parameter;
 
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = regObj.Match(line);
-                        if (result.Success)
-                        {
-                            int progress;
-                            Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
-                            string progressStatus = string.Format(progressFormat,
-                                                                  Path.GetFileName(_jobInfo.OutputFile),
-                                                                  progress);
-                            _bw.ReportProgress(progress, progressStatus);
-                        }
-                        else
-                            Log.InfoFormat("mkvmerge: {0:s}", line);
-                    };
+                encoder.OutputDataReceived += OnMuxDataReceived;
 
                 Log.InfoFormat("mkvmerge {0:s}", parameter.Arguments);
 
@@ -422,6 +500,44 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private void OnDemuxDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _regObj.Match(line);
+            if (result.Success)
+            {
+                int progress;
+                Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
+                string progressStatus = string.Format(_demuxProgressFormat,
+                                                      Path.GetFileName(_jobInfo.OutputFile),
+                                                      progress);
+                _bw.ReportProgress(progress, progressStatus);
+            }
+            else
+                Log.InfoFormat("mkvextract: {0:s}", line);
+        }
+
+        private void OnMuxDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _regObj.Match(line);
+            if (result.Success)
+            {
+                int progress;
+                Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo, out progress);
+                string progressStatus = string.Format(_muxProgressFormat,
+                                                      Path.GetFileName(_jobInfo.OutputFile),
+                                                      progress);
+                _bw.ReportProgress(progress, progressStatus);
+            }
+            else
+                Log.InfoFormat("mkvmerge: {0:s}", line);
         }
     }
 }

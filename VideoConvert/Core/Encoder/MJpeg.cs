@@ -129,12 +129,7 @@ namespace VideoConvert.Core.Encoder
 
                 encoder.StartInfo = parameter;
 
-                encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-                        if (!string.IsNullOrEmpty(line))
-                            Log.InfoFormat("mplex: {0:s}", line);
-                    };
+                encoder.ErrorDataReceived += OnDataReceived;
 
                 Log.InfoFormat("mplex {0:s}", parameter.Arguments);
 
@@ -185,6 +180,13 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private void OnDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (!string.IsNullOrEmpty(line))
+                Log.InfoFormat("mplex: {0:s}", line);
         }
     }
 }

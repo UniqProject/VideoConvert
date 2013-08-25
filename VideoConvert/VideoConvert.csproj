@@ -121,6 +121,7 @@
     <Compile Include="Core\Encoder\NeroAACEnc.cs" />
     <Compile Include="Core\Encoder\OggEnc.cs" />
     <Compile Include="Core\Encoder\SpuMux.cs" />
+    <Compile Include="Core\Encoder\TextSubtitleConverter.cs" />
     <Compile Include="Core\Encoder\TsMuxeR.cs" />
     <Compile Include="Core\Encoder\VpxEnc.cs" />
     <Compile Include="Core\Encoder\X264.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Core\Subtitles\BDNExport.cs" />
     <Compile Include="Core\Subtitles\PNGImage.cs" />
     <Compile Include="Core\Subtitles\SRTReader.cs" />
+    <Compile Include="Core\Subtitles\SRTWriter.cs" />
     <Compile Include="Core\Subtitles\SSAReader.cs" />
     <Compile Include="Core\Subtitles\SubCaption.cs" />
     <Compile Include="Core\Subtitles\SubtitleStyle.cs" />
@@ -583,7 +585,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" BuildVersion_IncrementBeforeBuild="False" />
+      <UserProperties BuildVersion_IncrementBeforeBuild="False" BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

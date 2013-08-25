@@ -38,6 +38,10 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "lame.exe";
 
+        private DateTime _startTime;
+        private readonly string _encProgressFmt = Processing.GetResourceString("lame_encoding_audio_progress");
+        private readonly Regex _pipeObj = new Regex(@"^([\d\,\.]*?)%.*$", RegexOptions.Singleline | RegexOptions.Multiline);
+
         private BackgroundWorker _bw;
 
         public void SetJob(EncodeInfo job)
@@ -104,8 +108,7 @@ namespace VideoConvert.Core.Encoder
             _bw = (BackgroundWorker)sender;
 
             string status = Processing.GetResourceString("lame_encoding_audio_status");
-            string encProgressFmt = Processing.GetResourceString("lame_encoding_audio_progress");
-
+            
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
 
@@ -178,9 +181,7 @@ namespace VideoConvert.Core.Encoder
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
 
-            Regex pipeObj = new Regex(@"^([\d\,\.]*?)%.*$", RegexOptions.Singleline | RegexOptions.Multiline);
-
-            DateTime startTime = DateTime.Now;
+            _startTime = DateTime.Now;
 
             using (Process encoder = new Process(),
                            decoder = BePipe.GenerateProcess(inputFile))
@@ -196,62 +197,10 @@ namespace VideoConvert.Core.Encoder
                         RedirectStandardInput = true
                     };
                 encoder.StartInfo = encoderParameter;
-
                 decoder.StartInfo.RedirectStandardError = true;
 
-                DateTime time = startTime;
-
-                decoder.ErrorDataReceived += (o, args) =>
-                    {
-                        string line = args.Data;
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = pipeObj.Match(line);
-                        if (result.Success)
-                        {
-                            float temp;
-
-                            string tempProgress = result.Groups[1].Value.Replace(",", ".");
-
-                            Single.TryParse(tempProgress, NumberStyles.Number,
-                                            AppSettings.CInfo, out temp);
-                            int progress = (int) Math.Floor(temp);
-                            float progressRemaining = 100 - temp;
-
-                            TimeSpan eta = DateTime.Now.Subtract(time);
-                            long secRemaining = 0;
-                            if (eta.Seconds != 0)
-                            {
-                                double speed = Math.Round(temp/eta.TotalSeconds, 6);
-
-                                if (speed > 0)
-                                    secRemaining =
-                                        (long) Math.Round(progressRemaining/speed, 0);
-                                else
-                                    secRemaining = 0;
-                            }
-                            if (secRemaining < 0)
-                                secRemaining = 0;
-
-                            TimeSpan remaining = new TimeSpan(0, 0, (int) secRemaining);
-                            DateTime ticks1 = new DateTime(eta.Ticks);
-
-                            string encProgress = string.Format(encProgressFmt, ticks1,
-                                                               remaining);
-                            _bw.ReportProgress(progress, encProgress);
-                        }
-                        else
-                            Log.InfoFormat("bepipe: {0:s}", line);
-                    };
-
-                encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Log.InfoFormat("lame: {0:s}", line);
-                    };
+                decoder.ErrorDataReceived += OnDecoderOnErrorDataReceived;
+                encoder.ErrorDataReceived += OnEncoderOnErrorDataReceived;
 
                 Log.InfoFormat("lame {0:s}", encoderParameter.Arguments);
 
@@ -331,6 +280,58 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
             e.Result = _jobInfo;
+        }
+
+        private void OnEncoderOnErrorDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+
+            if (string.IsNullOrEmpty(line)) return;
+
+            Log.InfoFormat("lame: {0:s}", line);
+        }
+
+        private void OnDecoderOnErrorDataReceived(object o, DataReceivedEventArgs args)
+        {
+            string line = args.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _pipeObj.Match(line);
+            if (result.Success)
+            {
+                float temp;
+
+                string tempProgress = result.Groups[1].Value.Replace(",", ".");
+
+                Single.TryParse(tempProgress, NumberStyles.Number,
+                                AppSettings.CInfo, out temp);
+                int progress = (int)Math.Floor(temp);
+                float progressRemaining = 100 - temp;
+
+                TimeSpan eta = DateTime.Now.Subtract(_startTime);
+                long secRemaining = 0;
+                if (eta.Seconds != 0)
+                {
+                    double speed = Math.Round(temp / eta.TotalSeconds, 6);
+
+                    if (speed > 0)
+                        secRemaining =
+                            (long)Math.Round(progressRemaining / speed, 0);
+                    else
+                        secRemaining = 0;
+                }
+                if (secRemaining < 0)
+                    secRemaining = 0;
+
+                TimeSpan remaining = new TimeSpan(0, 0, (int)secRemaining);
+                DateTime ticks1 = new DateTime(eta.Ticks);
+
+                string encProgress = string.Format(_encProgressFmt, ticks1,
+                                                   remaining);
+                _bw.ReportProgress(progress, encProgress);
+            }
+            else
+                Log.InfoFormat("bepipe: {0:s}", line);
         }
     }
 }

@@ -364,12 +364,14 @@ namespace VideoConvert.Windows
             bool? retValue = streamSelection.ShowDialog();
             if (retValue != true) return;
 
-            inJob = SetOutput(inJob);
-            inJob = SetInOutTemp(inJob);
+            Processing.CheckSubtitles(inJob);
+            Processing.CheckStreamLimit(inJob);
+            SetOutput(inJob);
+            SetInOutTemp(inJob);
             JobCollection.Add(inJob);
         }
 
-        private static EncodeInfo SetInOutTemp(EncodeInfo inJob)
+        private static void SetInOutTemp(EncodeInfo inJob)
         {
             string asciiFile = Processing.GetAsciiFileName(inJob.InputFile);
             if (string.CompareOrdinal(inJob.InputFile, asciiFile) != 0)
@@ -388,8 +390,6 @@ namespace VideoConvert.Windows
 
                 inJob.TempOutput = Processing.CreateTempFile(string.IsNullOrEmpty(inJob.TempInput) ? asciiFile : inJob.TempInput, fExt);
             }
-
-            return inJob;
         }
 
         /// <summary>
@@ -397,7 +397,7 @@ namespace VideoConvert.Windows
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        private static EncodeInfo SetOutput(EncodeInfo input)
+        private static void SetOutput(EncodeInfo input)
         {
             input.BaseName = Regex.Replace(input.JobName, @"[\\/:""*?<>|\r\n]+", "");
             input.OutputFile = Path.Combine(AppSettings.OutputLocation, input.BaseName);
@@ -448,7 +448,6 @@ namespace VideoConvert.Windows
             Log.InfoFormat("Output Format {0}", input.EncodingProfile.OutFormatStr);
             Log.Info("Job Details");
             Log.Info(Environment.NewLine + input);
-            return input;
         }
 
         private void ViewControlSizeChanged(object sender, SizeChangedEventArgs e)

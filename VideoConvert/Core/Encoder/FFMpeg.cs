@@ -25,7 +25,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows.Documents;
 using VideoConvert.Core.CommandLine;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
@@ -55,7 +54,7 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
 
-        private readonly Regex _demuxReg = new Regex(@"^.*size=\s+?(\d+)[\w\s]+?time=([\d\.\:]+).+$",
+        private readonly Regex _demuxReg = new Regex(@"^.*size=\s*?(\d+)[\w\s]+?time=([\d\.\:]+).+$",
                                                    RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly string _demuxProgressFormat = Processing.GetResourceString("ffmpeg_demuxing_progress");
 
@@ -162,6 +161,10 @@ namespace VideoConvert.Core.Encoder
         {
             _bw = (BackgroundWorker)sender;
 
+            bool use64BitEncoder = AppSettings.Use64BitEncoders &&
+                                   AppSettings.Ffmpeg64Installed &&
+                                   Environment.Is64BitOperatingSystem;
+
             string status = Processing.GetResourceString("ffmpeg_demuxing_status");
 
             _bw.ReportProgress(-10, status);
@@ -189,17 +192,32 @@ namespace VideoConvert.Core.Encoder
             StringBuilder sb = new StringBuilder();
 
             if (_jobInfo.Input == InputType.InputDvd)
-                sb.Append("-fflags genpts ");
+                sb.Append("-probesize 2147483647 -analyzeduration 2147483647 -fflags genpts ");
 
             sb.AppendFormat("-i \"{0}\" ", inputFile);
 
-            bool hasStreams = false;
+            string baseName;
+            string ext;
 
-            for (int i = 0; i < _jobInfo.AudioStreams.Count; i++)
+            string formattedExt = "demuxed.video.mkv";
+
+            if (string.IsNullOrEmpty(_jobInfo.TempInput))
+                baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
+            else
+                baseName = _jobInfo.TempInput;
+
+            _jobInfo.VideoStream.TempFile =
+                Processing.CreateTempFile(baseName, formattedExt);
+
+            string streamID = _jobInfo.Input == InputType.InputDvd
+                ? string.Format("#0x{0:X}", _jobInfo.VideoStream.StreamId + 479)
+                : string.Format("0:v:{0:0}", _jobInfo.VideoStream.StreamKindID);
+
+            sb.AppendFormat("-map {0} -c:v copy -y \"{1}\" ", streamID, _jobInfo.VideoStream.TempFile);
+
+            foreach (AudioInfo item in _jobInfo.AudioStreams)
             {
-                AudioInfo item = _jobInfo.AudioStreams[i];
-
-                string ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
+                ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
 
                 string acodec;
 
@@ -216,17 +234,14 @@ namespace VideoConvert.Core.Encoder
                         break;
                 }
 
-                string formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+                formattedExt = string.Format("demuxed.audio.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
 
-                string baseName;
                 if (string.IsNullOrEmpty(_jobInfo.TempInput))
                     baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
                 else
                     baseName = _jobInfo.TempInput;
                 item.TempFile =
                     Processing.CreateTempFile(baseName, formattedExt);
-
-                string streamID;
 
                 if (_jobInfo.Input == InputType.InputDvd)
                 {
@@ -240,116 +255,89 @@ namespace VideoConvert.Core.Encoder
                     streamID = string.Format("0:a:{0:0}", item.StreamKindId);
 
                 sb.AppendFormat("-map {0} -c:a {1} -y \"{2}\" ", streamID, acodec, item.TempFile);
-
-                hasStreams = true;
-                _jobInfo.AudioStreams[i] = item;
             }
 
-            if (_jobInfo.Input == InputType.InputDvd)
+            foreach (SubtitleInfo item in _jobInfo.SubtitleStreams)
             {
-                string formattedExt = "demuxed.mkv";
+                ext = "mkv";
 
-                string baseName;
+                formattedExt = string.Format("demuxed.subtitle.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+
                 if (string.IsNullOrEmpty(_jobInfo.TempInput))
                     baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
                 else
                     baseName = _jobInfo.TempInput;
 
-                _jobInfo.VideoStream.TempFile =
-                    Processing.CreateTempFile(baseName, formattedExt);
+                item.TempFile = Processing.CreateTempFile(baseName, formattedExt);
 
-                string streamID = string.Format("#0x{0:X}", _jobInfo.VideoStream.StreamId + 479);
-                sb.AppendFormat("-map {0} -c:v copy -y \"{1}\" ", streamID, _jobInfo.VideoStream.TempFile);
+                item.RawStream = false;
 
-                hasStreams = true;
-                
-                for (int i = 0; i < _jobInfo.SubtitleStreams.Count; i++)
-                {
-                    SubtitleInfo item = _jobInfo.SubtitleStreams[i];
+                streamID = _jobInfo.Input == InputType.InputDvd
+                    ? string.Format("#0x{0:X}", item.StreamId)
+                    : string.Format("0:s:{0:0}", item.StreamKindId);
 
-                    string ext = StreamFormat.GetFormatExtension(item.Format, "", false);
+                string codec = "copy";
+                if (item.Format == "VobSub")
+                    codec = "dvd_subtitle";
 
-                    formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
-
-                    if (string.IsNullOrEmpty(_jobInfo.TempInput))
-                        baseName = string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.BaseName : _jobInfo.TempOutput;
-                    else
-                        baseName = _jobInfo.TempInput;
-
-                    item.TempFile = Processing.CreateTempFile(baseName, formattedExt);
-
-
-                    streamID = _jobInfo.Input == InputType.InputDvd
-                        ? string.Format("#0x{0:X}", item.StreamId)
-                        : string.Format("0:s:{0:0}", item.StreamKindId);
-
-                    sb.AppendFormat("-map {0} -c:s copy -y \"{1}\" ", streamID, item.TempFile);
-                }
-                
+                sb.AppendFormat("-map {0} -c:s {1} -y \"{2}\" ", streamID, codec, item.TempFile);
             }
 
-            string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
-            if (hasStreams)
+            string localExecutable = Path.Combine(AppSettings.ToolsPath, use64BitEncoder ? Executable64 : Executable);
+            using (Process encoder = new Process())
             {
-                using (Process encoder = new Process())
+                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
                 {
-                    ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                        {
-                            WorkingDirectory = AppSettings.DemuxLocation,
-                            Arguments = sb.ToString(),
-                            CreateNoWindow = true,
-                            UseShellExecute = false,
-                            RedirectStandardError = true
-                        };
-                    encoder.StartInfo = parameter;
-                    encoder.ErrorDataReceived += DemuxOnErrorDataReceived;
+                    WorkingDirectory = AppSettings.DemuxLocation,
+                    Arguments = sb.ToString(),
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardError = true
+                };
+                encoder.StartInfo = parameter;
+                encoder.ErrorDataReceived += DemuxOnErrorDataReceived;
 
-                    Log.InfoFormat("ffmpeg {0:s}", parameter.Arguments);
+                Log.InfoFormat("ffmpeg {0:s}", parameter.Arguments);
 
-                    bool started;
-                    try
+                bool started;
+                try
+                {
+                    started = encoder.Start();
+                }
+                catch (Exception ex)
+                {
+                    started = false;
+                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
+                    _jobInfo.ExitCode = -1;
+                }
+
+                if (started)
+                {
+                    encoder.PriorityClass = AppSettings.GetProcessPriority();
+                    encoder.BeginErrorReadLine();
+
+                    _bw.ReportProgress(-1, status);
+
+                    while (!encoder.HasExited)
                     {
-                        started = encoder.Start();
+                        if (_bw.CancellationPending)
+                            encoder.Kill();
+                        Thread.Sleep(200);
                     }
-                    catch (Exception ex)
+
+                    encoder.WaitForExit(10000);
+                    encoder.CancelErrorRead();
+
+                    _jobInfo.ExitCode = encoder.ExitCode;
+
+                    if (_jobInfo.ExitCode == 0)
                     {
-                        started = false;
-                        Log.ErrorFormat("ffmpeg exception: {0}", ex);
-                        _jobInfo.ExitCode = -1;
+                        if (_jobInfo.Input == InputType.InputDvd)
+                            _jobInfo.TempFiles.Add(inputFile);
                     }
-
-                    if (started)
-                    {
-                        encoder.PriorityClass = AppSettings.GetProcessPriority();
-                        encoder.BeginErrorReadLine();
-
-                        _bw.ReportProgress(-1, status);
-
-                        while (!encoder.HasExited)
-                        {
-                            if (_bw.CancellationPending)
-                                encoder.Kill();
-                            Thread.Sleep(200);
-                        }
-
-                        encoder.WaitForExit(10000);
-                        encoder.CancelErrorRead();
-
-                        _jobInfo.ExitCode = encoder.ExitCode;
-
-                        if (_jobInfo.ExitCode == 0)
-                        {
-                            if (_jobInfo.Input == InputType.InputDvd)
-                                _jobInfo.TempFiles.Add(inputFile);
-                            else
-                                _jobInfo.VideoStream.TempFile = inputFile;
-                        }
-                        Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
-                    }
+                    Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                 }
             }
-            else
-                _jobInfo.ExitCode = 0;
 
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
@@ -604,7 +592,11 @@ namespace VideoConvert.Core.Encoder
 
             string inputFile = AviSynthGenerator.GenerateCropDetect(_jobInfo.VideoStream.TempFile,
                                                                     _jobInfo.VideoStream.FPS,
-                                                                    _jobInfo.VideoStream.Length, out _cropDetectFrames);
+                                                                    _jobInfo.VideoStream.Length,
+                                                                    new Size(_jobInfo.VideoStream.Width,
+                                                                        _jobInfo.VideoStream.Height),
+                                                                    _jobInfo.VideoStream.AspectRatio,
+                                                                    out _cropDetectFrames);
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
 

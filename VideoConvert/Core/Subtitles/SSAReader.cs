@@ -1,9 +1,29 @@
-﻿using System;
+﻿//============================================================================
+// VideoConvert - Fast Video & Audio Conversion Tool
+// Copyright © 2012 JT-Soft
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//=============================================================================
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using log4net;
 
@@ -29,12 +49,39 @@ namespace VideoConvert.Core.Subtitles
             }
             if (string.IsNullOrEmpty(lines)) return result;
 
-            List<string> textCaps = lines.Split(new[] {"\r\n\r\n", "\n\n"}, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> textLines = lines.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> textCaps = new List<string>();
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (string line in textLines)
+            {
+                if (line.Trim().StartsWith("["))
+                {
+                    if (sb.Length > 0)
+                    {
+                        textCaps.Add(sb.ToString());
+                        sb.Clear();
+                    }
+                    sb.AppendLine(line.Trim());
+                }
+                else
+                {
+                    sb.AppendLine(line.Trim());
+                }
+            }
+
+            if (sb.Length > 0)
+                textCaps.Add(sb.ToString());
+            sb.Clear();
+
+            //textCaps = lines.Split(new[] {"\r\n\r\n", "\n\n"}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             if (!textCaps.Any()) return result;
 
             string sInfo = textCaps[0];
             if (!sInfo.Any()) return result;
+            sInfo = Regex.Replace(sInfo, "^;.*$|^Title.*$", "", RegexOptions.Multiline);
 
             bool isAdvancedScript = false;
             try

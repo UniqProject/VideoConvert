@@ -49,6 +49,8 @@
     <system:String x:Uid="mkvmerge_chapter_format_short_time"   x:Key="mkvmerge_chapter_format_short_time">CHAPTER{0:00}={1:s}</system:String>
     <system:String x:Uid="mkvmerge_chapter_format_short_name"   x:Key="mkvmerge_chapter_format_short_name">CHAPTER{0:00}NAME=Chapter {0:g}</system:String>
     <system:String x:Uid="mkvmerge_muxing_progress"             x:Key="mkvmerge_muxing_progress">Muxing output file "{0}" @ {1:g}%</system:String>
+    <system:String x:Uid="mkvmerge_demuxing_status"             x:Key="mkvmerge_demuxing_status">Demuxing subtitle stream</system:String>
+    <system:String x:Uid="mkvmerge_demuxing_progress"           x:Key="mkvmerge_demuxing_progress">Demuxing subtitle stream from "{0}" @ {1:0}%</system:String>
     <system:String x:Uid="mplayer_dump_status"                  x:Key="mplayer_dump_status">Dumping DVD title</system:String>
     <system:String x:Uid="mplayer_dump_progress"                x:Key="mplayer_dump_progress">Dumping DVD title: "{0:g}" from disc "{1}" @ {2:g}%</system:String>
     <system:String x:Uid="spumux_muxing_status"                 x:Key="spumux_muxing_status">Muxing subtitles</system:String>
@@ -105,4 +107,6 @@
     <system:String x:Uid="process_finish_warnings"              x:Key="process_finish_warnings">Process finished with 1 or more warnings</system:String>
     <system:String x:Uid="infowriter_images_status"             x:Key="infowriter_images_status">Download and write images</system:String>
     <system:String x:Uid="infowriter_info_status"               x:Key="infowriter_info_status">Writing info file</system:String>
+    <system:String x:Uid="subtitleconverter_read"               x:Key="subtitleconverter_read">Reading text subtitle</system:String>
+    <system:String x:Uid="subtitleconverter_write"              x:Key="subtitleconverter_write">Writing text subtitle</system:String>
 </ResourceDictionary>

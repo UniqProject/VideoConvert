@@ -37,6 +37,13 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "mp4box.exe";
 
+        private readonly string _progressFormat = Processing.GetResourceString("mp4box_muxing_progress");
+        private readonly string _importFormat = Processing.GetResourceString("mp4box_import_format");
+        private readonly Regex _importingReg = new Regex(@"^Importing ([\w-\d]*|ISO File): \|.+?\| \((\d+?)\/\d+?\)$",
+                                                         RegexOptions.Singleline | RegexOptions.Multiline);
+        private readonly Regex _progressReg = new Regex(@"^ISO File Writing: \|.+?\| \((\d+?)\/\d+?\)$",
+                                                        RegexOptions.Singleline | RegexOptions.Multiline);
+
         private BackgroundWorker _bw;
 
         public void SetJob(EncodeInfo job)
@@ -113,9 +120,7 @@ namespace VideoConvert.Core.Encoder
             int vidStream;
 
             string status = Processing.GetResourceString("mp4box_muxing_status");
-            string progressFormat = Processing.GetResourceString("mp4box_muxing_progress");
             string chapterName = Processing.GetResourceString("mp4box_chapter_format");
-            string importFormat = Processing.GetResourceString("mp4box_import_format");
 
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
@@ -136,8 +141,8 @@ namespace VideoConvert.Core.Encoder
             string fpsStr = string.Empty;
             if (_jobInfo.VideoStream.IsRawStream)
             {
-                if (_jobInfo.VideoStream.FrameRateEnumerator == 0)
-                    fpsStr = string.Format(":fps={0:0.000}", fps);
+                if (_jobInfo.VideoStream.FrameRateEnumerator == 0 || AppSettings.LastMp4BoxVer.StartsWith("0.5"))
+                    fpsStr = string.Format(AppSettings.CInfo, ":fps={0:0.000}", fps);
                 else
                     fpsStr = string.Format(":fps={0:g}/{1:g}",
                                            _jobInfo.VideoStream.FrameRateEnumerator,
@@ -165,6 +170,29 @@ namespace VideoConvert.Core.Encoder
                                 item.TempFile,
                                 itemlang,
                                 delayString);
+            }
+
+            foreach (SubtitleInfo item in _jobInfo.SubtitleStreams)
+            {
+                if (item.Format.ToLowerInvariant() != "utf-8") continue;
+                if (!File.Exists(item.TempFile)) continue;
+
+                string itemlang = item.LangCode;
+
+                if ((itemlang == "xx") || (string.IsNullOrEmpty(itemlang)))
+                    itemlang = "und";
+
+                string delayString = string.Empty;
+
+                if (item.Delay != 0)
+                    delayString = string.Format(AppSettings.CInfo, ":delay={0:#}", item.Delay);
+
+                sb.AppendFormat(AppSettings.CInfo,
+                                "-add \"{0}#lang={1:s}{2:s}:name={3:s}\" -keep-sys ",
+                                item.TempFile,
+                                itemlang,
+                                delayString,
+                                Helpers.LanguageHelper.GetLanguage(itemlang).FullLang);
             }
 
             string chapterString = string.Empty;
@@ -335,10 +363,6 @@ namespace VideoConvert.Core.Encoder
             
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
-            Regex importingReg = new Regex(@"^Importing ([\w-\d]*|ISO File): \|.+?\| \((\d+?)\/\d+?\)$",
-                                           RegexOptions.Singleline | RegexOptions.Multiline);
-            Regex progressReg = new Regex(@"^ISO File Writing: \|.+?\| \((\d+?)\/\d+?\)$",
-                                          RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process())
             {
@@ -348,41 +372,14 @@ namespace VideoConvert.Core.Encoder
                         Arguments = sb.ToString(),
                         CreateNoWindow = true,
                         UseShellExecute = false,
-                        RedirectStandardOutput = true
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
                     };
 
                 encoder.StartInfo = parameter;
 
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match progressResult = progressReg.Match(line);
-                        Match importResult = importingReg.Match(line);
-                        if (progressResult.Success)
-                        {
-                            int progress;
-                            Int32.TryParse(progressResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
-                                           out progress);
-                            string progressStatus = string.Format(progressFormat,
-                                                                  Path.GetFileName(_jobInfo.OutputFile),
-                                                                  progress);
-                            _bw.ReportProgress(progress, progressStatus);
-                        }
-                        else if (importResult.Success)
-                        {
-                            int progress;
-                            Int32.TryParse(importResult.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
-                                           out progress);
-                            string progressStatus = string.Format(importFormat,
-                                                                  importResult.Groups[1].Value,
-                                                                  progress);
-                            _bw.ReportProgress(0, progressStatus);
-                        }
-                        else
-                            Log.InfoFormat("mp4box: {0:s}", line);
-                    };
+                encoder.OutputDataReceived += OnDataReceived;
+                encoder.ErrorDataReceived += OnDataReceived;
 
                 Log.InfoFormat("mp4box {0:s}", parameter.Arguments);
 
@@ -402,6 +399,7 @@ namespace VideoConvert.Core.Encoder
                 {
                     encoder.PriorityClass = AppSettings.GetProcessPriority();
                     encoder.BeginOutputReadLine();
+                    encoder.BeginErrorReadLine();
 
                     while (!encoder.HasExited)
                     {
@@ -412,6 +410,7 @@ namespace VideoConvert.Core.Encoder
 
                     encoder.WaitForExit(10000);
                     encoder.CancelOutputRead();
+                    encoder.CancelErrorRead();
 
                     _jobInfo.ExitCode = encoder.ExitCode;
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
@@ -433,6 +432,37 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private void OnDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match progressResult = _progressReg.Match(line);
+            Match importResult = _importingReg.Match(line);
+            if (progressResult.Success)
+            {
+                int progress;
+                Int32.TryParse(progressResult.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                               out progress);
+                string progressStatus = string.Format(_progressFormat,
+                                                      Path.GetFileName(_jobInfo.OutputFile),
+                                                      progress);
+                _bw.ReportProgress(progress, progressStatus);
+            }
+            else if (importResult.Success)
+            {
+                int progress;
+                Int32.TryParse(importResult.Groups[2].Value, NumberStyles.Number, AppSettings.CInfo,
+                               out progress);
+                string progressStatus = string.Format(_importFormat,
+                                                      importResult.Groups[1].Value,
+                                                      progress);
+                _bw.ReportProgress(0, progressStatus);
+            }
+            else
+                Log.InfoFormat("mp4box: {0:s}", line);
         }
 
         private static XmlElement CreateTimeEntry(XmlDocument xmlDocument, DateTime dateTime, string chapterName, int chapterNum)

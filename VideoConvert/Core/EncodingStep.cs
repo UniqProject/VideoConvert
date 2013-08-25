@@ -26,6 +26,7 @@ namespace VideoConvert.Core
         Dump,
         Demux,
         EncodeAudio,
+        DemuxSubtitle,
         ProcessSubtitle,
         IndexVideo,
         GetCropRect,

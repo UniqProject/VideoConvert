@@ -237,6 +237,7 @@ namespace VideoConvert.Windows
                     vid.StreamId = 0;
                 else
                     vid.StreamId = videoPid == 0 ? streamIndex : videoPid;
+                vid.StreamKindID = clip.StreamKindID;
                 vid.FPS = clip.FrameRate;
                 vid.PicSize = clip.VideoSize;
                 vid.Interlaced = clip.ScanType == "Interlaced";
@@ -250,6 +251,7 @@ namespace VideoConvert.Windows
                 Single.TryParse(clip.DisplayAspectRatio, NumberStyles.Number, AppSettings.CInfo, out vid.AspectRatio);
                 vid.FrameRateEnumerator = clip.FrameRateEnumerator;
                 vid.FrameRateDenominator = clip.FrameRateDenominator;
+                vid.FrameMode = clip.FormatFrameMode;
 
                 CreateNode(videoTree, videoStreamTitle, vid);
             }
@@ -1013,7 +1015,7 @@ namespace VideoConvert.Windows
                     SubtitleInfo sub = (SubtitleInfo) item.Data;
                     bool isBD = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
                                 JobInfo.Input == InputType.InputHddvd;
-                    if ((sub.Format == "PGS" || sub.Format == "VobSub") && ((isBD && _bdInfo != null && !_bdInfo.Is3D) || !isBD))
+                    if ((sub.Format == "PGS" || sub.Format == "VobSub" || sub.Format == "UTF-8" || sub.Format == "ASS" || sub.Format == "SSA") && ((isBD && _bdInfo != null && !_bdInfo.Is3D) || !isBD))
                         // don't extract subtitles on 3d blurays, because eac3to can't handle them
                         JobInfo.SubtitleStreams.Add(sub);
                 }

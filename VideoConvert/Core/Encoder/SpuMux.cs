@@ -139,7 +139,7 @@ namespace VideoConvert.Core.Encoder
                     FileStream writeStream = new FileStream(outFile, FileMode.Create, FileAccess.ReadWrite,
                                                             FileShare.Read);
 
-                    encoder.ErrorDataReceived += (s, ea) => Log.InfoFormat("spumux: {0:s}", ea.Data);
+                    encoder.ErrorDataReceived += OnDataReceived;
 
                     bool started;
                     try
@@ -225,6 +225,11 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
             e.Result = _jobInfo;
+        }
+
+        private void OnDataReceived(object s, DataReceivedEventArgs ea)
+        {
+            Log.InfoFormat("spumux: {0:s}", ea.Data);
         }
 
         private void GetTempImages(string inFile)

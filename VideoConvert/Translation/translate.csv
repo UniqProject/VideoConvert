@@ -345,6 +345,8 @@ VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_chapter_format_long
 VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_chapter_format_short_time:System.String.$Content,None,True,True,,CHAPTER{0:00}={1:s}
 VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_chapter_format_short_name:System.String.$Content,None,True,True,,CHAPTER{0:00}NAME=Chapter {0:g}
 VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_muxing_progress:System.String.$Content,None,True,True,,Muxing output file &quot;{0}&quot; @ {1:g}%
+VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_demuxing_status:System.String.$Content,None,True,True,,Demuxing subtitle stream
+VideoConvert.g.en-US.resources:stringresources.baml,mkvmerge_demuxing_progress:System.String.$Content,None,True,True,,Demuxing subtitle stream from &quot;{0}&quot; @ {1:0}%
 VideoConvert.g.en-US.resources:stringresources.baml,mplayer_dump_status:System.String.$Content,None,True,True,,Dumping DVD title
 VideoConvert.g.en-US.resources:stringresources.baml,mplayer_dump_progress:System.String.$Content,None,True,True,,Dumping DVD title: &quot;{0:g}&quot; from disc &quot;{1}&quot; @ {2:g}%
 VideoConvert.g.en-US.resources:stringresources.baml,spumux_muxing_status:System.String.$Content,None,True,True,,Muxing subtitles
@@ -401,6 +403,8 @@ VideoConvert.g.en-US.resources:stringresources.baml,total_progress_time:System.S
 VideoConvert.g.en-US.resources:stringresources.baml,process_finish_warnings:System.String.$Content,None,True,True,,Process finished with 1 or more warnings
 VideoConvert.g.en-US.resources:stringresources.baml,infowriter_images_status:System.String.$Content,None,True,True,,Download and write images
 VideoConvert.g.en-US.resources:stringresources.baml,infowriter_info_status:System.String.$Content,None,True,True,,Writing info file
+VideoConvert.g.en-US.resources:stringresources.baml,subtitleconverter_read:System.String.$Content,None,True,True,,Reading text subtitle
+VideoConvert.g.en-US.resources:stringresources.baml,subtitleconverter_write:System.String.$Content,None,True,True,,Writing text subtitle
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,UserControl_1:VideoConvert.Windows.ToolUpdaterWindow.$Content,None,True,True,,#Grid_1;
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,ToolUpdaterExpander:System.Windows.Controls.Expander.$Content,None,False,True,,#Grid_2;
 VideoConvert.g.en-US.resources:toolupdaterwindow.baml,ToolUpdaterExpander:System.Windows.Controls.HeaderedContentControl.Header,Label,True,True,,Encoder Update

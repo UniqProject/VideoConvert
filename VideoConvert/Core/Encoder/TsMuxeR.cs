@@ -27,7 +27,6 @@ using log4net;
 using System.Text;
 using System.Drawing;
 using System.Threading;
-using System.Linq;
 
 namespace VideoConvert.Core.Encoder
 {
@@ -38,6 +37,9 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "tsmuxer.exe";
         private readonly string _defaultparams = string.Empty;
+
+        private readonly string _progressFormat = Processing.GetResourceString("tsmuxer_muxing_progress");
+        private readonly Regex _regObj = new Regex(@"^.*?([\d\.]+?)% complete.*$", RegexOptions.Singleline | RegexOptions.Multiline);
 
         private BackgroundWorker _bw;
 
@@ -106,59 +108,30 @@ namespace VideoConvert.Core.Encoder
             _bw = (BackgroundWorker)sender;
 
             string status = Processing.GetResourceString("tsmuxer_muxing_status");
-            string progressFormat = Processing.GetResourceString("tsmuxer_muxing_progress");
-
+            
             _bw.ReportProgress(-10, status);
             _bw.ReportProgress(0, status);
 
-            Regex regObj = new Regex(@"^.*?([\d\.]+?)% complete.*$", RegexOptions.Singleline | RegexOptions.Multiline);
+            string metaFile = GenerateCommandLine();
+            _jobInfo.TempFiles.Add(metaFile);
+            string outFile = !string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.TempOutput : _jobInfo.OutputFile;
+
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
 
             using (Process encoder = new Process())
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
-                    {
-                        WorkingDirectory = AppSettings.DemuxLocation
-                    };
-
-                string metaFile = GenerateCommandLine();
-
-                _jobInfo.TempFiles.Add(metaFile);
-
-                string outFile = !string.IsNullOrEmpty(_jobInfo.TempOutput) ? _jobInfo.TempOutput : _jobInfo.OutputFile;
-
-                parameter.Arguments = string.Format(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\"", metaFile, outFile);
-                parameter.CreateNoWindow = true;
-                parameter.UseShellExecute = false;
-                parameter.RedirectStandardOutput = true;
+                {
+                    WorkingDirectory = AppSettings.DemuxLocation,
+                    Arguments = string.Format(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\"", metaFile, outFile),
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
+                };
 
                 encoder.StartInfo = parameter;
 
-                encoder.OutputDataReceived += (outputSender, outputEvent) =>
-                    {
-                        string line = outputEvent.Data;
-                        if (string.IsNullOrEmpty(line)) return;
-
-                        Match result = regObj.Match(line);
-                        if (result.Success)
-                        {
-                            float tempProgress;
-                            Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
-                                            out tempProgress);
-
-                            int progress = Convert.ToInt32(Math.Ceiling(tempProgress));
-
-                            string progressStr = string.Format(progressFormat,
-                                                               _jobInfo.OutputFile,
-                                                               progress);
-                            _bw.ReportProgress(progress, progressStr);
-
-                        }
-                        else
-                        {
-                            Log.InfoFormat("tsMuxeR: {0:s}", line);
-                        }
-                    };
+                encoder.OutputDataReceived += OnDataReceived;
 
                 Log.InfoFormat("tsMuxeR: {0:s}", parameter.Arguments);
 
@@ -205,6 +178,31 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private void OnDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _regObj.Match(line);
+            if (result.Success)
+            {
+                float tempProgress;
+                Single.TryParse(result.Groups[1].Value, NumberStyles.Number, AppSettings.CInfo,
+                    out tempProgress);
+
+                int progress = Convert.ToInt32(Math.Ceiling(tempProgress));
+
+                string progressStr = string.Format(_progressFormat,
+                                                   _jobInfo.OutputFile,
+                                                   progress);
+                _bw.ReportProgress(progress, progressStr);
+            }
+            else
+            {
+                Log.InfoFormat("tsMuxeR: {0:s}", line);
+            }
         }
 
         private string GenerateCommandLine()
@@ -305,6 +303,10 @@ namespace VideoConvert.Core.Encoder
                     break;
             }
 
+            float fps = _jobInfo.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
+                        ? _jobInfo.VideoStream.FPS * 2
+                        : _jobInfo.VideoStream.FPS;
+
             switch (sourceVidCodec)
             {
                 case "VC-1":
@@ -338,7 +340,8 @@ namespace VideoConvert.Core.Encoder
                 if (codec != "V_MPEG-2")
                 {
                     meta.AppendFormat(AppSettings.CInfo, "{0:s}, {1:s}, fps={2:#.###}, insertSEI, contSPS, ", codec,
-                                      inFile, _jobInfo.VideoStream.FPS);
+                                        inFile,
+                                        fps);
 
                     meta.AppendFormat(AppSettings.CInfo, "track={0:g}, lang={1:s}", vidStream, "und");
                 }
@@ -399,75 +402,62 @@ namespace VideoConvert.Core.Encoder
                 meta.AppendLine();
             }
 
-            foreach (SubtitleInfo item in _jobInfo.SubtitleStreams.Where(item => !item.HardSubIntoVideo && File.Exists(item.TempFile)))
+            foreach (SubtitleInfo item in _jobInfo.SubtitleStreams)
             {
-                string itemlang = item.LangCode;
-                if ((itemlang == "xx") || (string.IsNullOrEmpty(itemlang)))
-                    itemlang = "und";
-
-                switch (item.Format.ToLower())
+                if (!item.HardSubIntoVideo && File.Exists(item.TempFile))
                 {
-                    case "pgs":
-                        codec = "S_HDMV/PGS";
-                        break;
-                    case "utf-8":
-                        codec = "S_TEXT/UTF8";
-                        break;
+                    string itemlang = item.LangCode;
+                    if ((itemlang == "xx") || (string.IsNullOrEmpty(itemlang)))
+                        itemlang = "und";
 
-                    default:
-                        _bw.ReportProgress(-10, subtitleNotSupported);
-                        continue;
+                    switch (item.Format.ToLower())
+                    {
+                        case "pgs":
+                            codec = "S_HDMV/PGS";
+                            break;
+                        case "utf-8":
+                            codec = "S_TEXT/UTF8";
+                            break;
+
+                        default:
+                            _bw.ReportProgress(-10, subtitleNotSupported);
+                            continue;
+                    }
+
+                    string tempFile = string.Empty;
+                    int subId = -1;
+
+                    if (!string.IsNullOrEmpty(item.TempFile))
+                    {
+                        tempFile = string.Format("\"{0}\"", item.TempFile);
+                        subId = 1;
+                    }
+
+                    string delayString = string.Empty;
+                    if (item.Delay != int.MinValue)
+                        delayString = string.Format(AppSettings.CInfo, "timeshift={0:#}ms,", item.Delay);
+
+                    if (codec == "S_TEXT/UTF8")
+                        meta.AppendFormat(AppSettings.CInfo,
+                            "{0:s}, {1:s},{2:s}font-name=\"{3:s}\",font-size={4:#},font-color={5:s},bottom-offset={6:g}," +
+                            "font-border={7:g},text-align=center,video-width={8:g},video-height={9:g},fps={10:#.###}, track={11:g}, lang={12:s}",
+                            codec, tempFile, delayString, AppSettings.TSMuxeRSubtitleFont.Source,
+                            AppSettings.TSMuxeRSubtitleFontSize,
+                            string.Format("0x00{0:x}{1:x}{2:x}", AppSettings.TSMuxeRSubtitleColor.R,
+                                AppSettings.TSMuxeRSubtitleColor.G, AppSettings.TSMuxeRSubtitleColor.B),
+                            AppSettings.TSMuxeRBottomOffset, AppSettings.TSMuxerSubtitleAdditionalBorder,
+                            _jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height, fps, subId,
+                            itemlang);
+                    else
+                        meta.AppendFormat(AppSettings.CInfo,
+                            "{0:s}, {1:s},{2:s}bottom-offset={3:g},font-border={4:g},text-align=center,video-width={5:g}," +
+                            "video-height={6:g},fps={7:#.###}, track={8:g}, lang={9:s}", codec, tempFile, delayString,
+                            AppSettings.TSMuxeRBottomOffset, AppSettings.TSMuxerSubtitleAdditionalBorder,
+                            _jobInfo.VideoStream.Width, _jobInfo.VideoStream.Height, fps, subId,
+                            itemlang);
+
+                    meta.AppendLine();
                 }
-
-                string tempFile = string.Empty;
-                int subId = -1;
-
-                if (!string.IsNullOrEmpty(item.TempFile))
-                {
-                    tempFile = string.Format("\"{0}\"", item.TempFile);
-                    subId = 1;
-                }
-
-                string delayString = string.Empty;
-                if (item.Delay != int.MinValue)
-                    delayString = string.Format(AppSettings.CInfo, "timeshift={0:#}ms,", item.Delay);
-
-                if (codec == "S_TEXT/UTF8")
-                    meta.AppendFormat(AppSettings.CInfo,
-                                      "{0:s}, {1:s},{2:s}font-name=\"{3:s}\",font-size={4:#},font-color={5:s},bottom-offset={6:g}," +
-                                      "font-border={7:g},text-align=center,video-width={8:g},video-height={9:g},fps={10:#.###}, track={11:g}, lang={12:s}",
-                                      codec,
-                                      tempFile,
-                                      delayString,
-                                      AppSettings.TSMuxeRSubtitleFont.Source,
-                                      AppSettings.TSMuxeRSubtitleFontSize,
-                                      string.Format("0x00{0:x}{1:x}{2:x}",
-                                                    AppSettings.TSMuxeRSubtitleColor.R,
-                                                    AppSettings.TSMuxeRSubtitleColor.G,
-                                                    AppSettings.TSMuxeRSubtitleColor.B),
-                                      AppSettings.TSMuxeRBottomOffset,
-                                      AppSettings.TSMuxerSubtitleAdditionalBorder,
-                                      _jobInfo.VideoStream.Width,
-                                      _jobInfo.VideoStream.Height,
-                                      _jobInfo.VideoStream.FPS,
-                                      subId,
-                                      itemlang);
-                else
-                    meta.AppendFormat(AppSettings.CInfo,
-                                      "{0:s}, {1:s},{2:s}bottom-offset={3:g},font-border={4:g},text-align=center,video-width={5:g}," +
-                                      "video-height={6:g},fps={7:#.###}, track={8:g}, lang={9:s}",
-                                      codec,
-                                      tempFile,
-                                      delayString,
-                                      AppSettings.TSMuxeRBottomOffset,
-                                      AppSettings.TSMuxerSubtitleAdditionalBorder,
-                                      _jobInfo.VideoStream.Width,
-                                      _jobInfo.VideoStream.Height,
-                                      _jobInfo.VideoStream.FPS,
-                                      subId,
-                                      itemlang);
-
-                meta.AppendLine();
             }
 
             string metaFile = Processing.CreateTempFile("meta");

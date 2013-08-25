@@ -49,6 +49,7 @@ namespace VideoConvert.Core.Helpers
                 vStream.Length = mi.Video[0].DurationTime.TimeOfDay.TotalSeconds;
                 vStream.PicSize = mi.Video[0].VideoSize;
                 vStream.StreamSize = Processing.GetFileSize(vStream.TempFile);
+                vStream.FrameMode = mi.Video[0].FormatFrameMode;
             }
             return vStream;
         }

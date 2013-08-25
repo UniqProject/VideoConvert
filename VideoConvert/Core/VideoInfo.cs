@@ -47,6 +47,7 @@ namespace VideoConvert.Core
         public int VtsId;
 
         public int TrackId;
+        public int StreamKindID;
         public string TempFile;
         public bool Interlaced;
         public VideoFormat PicSize;
@@ -65,6 +66,7 @@ namespace VideoConvert.Core
         public Rectangle CropRect;
         public int FrameRateEnumerator;
         public int FrameRateDenominator;
+        public string FrameMode;
 
         public VideoInfo()
         {
@@ -74,6 +76,7 @@ namespace VideoConvert.Core
             StreamId = int.MinValue;
             VtsId = int.MinValue;
             TrackId = int.MinValue;
+            StreamKindID = int.MinValue;
             TempFile = string.Empty;
             Interlaced = false;
             PicSize = VideoFormat.Unknown;
@@ -92,6 +95,7 @@ namespace VideoConvert.Core
             CropRect = new Rectangle();
             FrameRateEnumerator = int.MinValue;
             FrameRateDenominator = int.MinValue;
+            FrameMode = string.Empty;
         }
 
         /// <summary>

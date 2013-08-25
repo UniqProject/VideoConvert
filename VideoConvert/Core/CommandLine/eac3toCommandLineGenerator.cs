@@ -55,8 +55,8 @@ namespace VideoConvert.Core.CommandLine
                                                    ? Processing.CreateTempFile(
                                                        string.IsNullOrEmpty(jobInfo.TempOutput)
                                                            ? jobInfo.BaseName
-                                                           : jobInfo.TempOutput, "demuxed.mkv")
-                                                   : Processing.CreateTempFile(jobInfo.TempInput, "demuxed.mkv");
+                                                           : jobInfo.TempOutput, "demuxed.video.mkv")
+                                                   : Processing.CreateTempFile(jobInfo.TempInput, "demuxed.video.mkv");
             }
 
             sb.AppendFormat("\"{0}\" {1:g}:\"{2}\" ", inputFile, jobInfo.VideoStream.StreamId + startstream,
@@ -79,10 +79,8 @@ namespace VideoConvert.Core.CommandLine
                 startstream++;
 
             // process all audio streams
-            for (int i = 0; i < jobInfo.AudioStreams.Count; i++)
+            foreach (AudioInfo item in jobInfo.AudioStreams)
             {
-                AudioInfo item = jobInfo.AudioStreams[i];
-
                 // get file extension for selected stream based on format and format profile
                 ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
                 string core = string.Empty;
@@ -101,7 +99,7 @@ namespace VideoConvert.Core.CommandLine
                         ext = "ac3";
                     }
                 }
-                formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+                formattedExt = string.Format("demuxed.audio.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
 
                 switch (jobInfo.Input)
                 {
@@ -110,25 +108,22 @@ namespace VideoConvert.Core.CommandLine
                         break;
                     default:
                         item.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
-                                            ? Processing.CreateTempFile(
-                                                string.IsNullOrEmpty(jobInfo.TempOutput)
-                                                    ? jobInfo.BaseName
-                                                    : jobInfo.TempOutput, formattedExt)
-                                            : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
+                            ? Processing.CreateTempFile(
+                                string.IsNullOrEmpty(jobInfo.TempOutput)
+                                    ? jobInfo.BaseName
+                                    : jobInfo.TempOutput, formattedExt)
+                            : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
                         break;
                 }
 
                 sb.AppendFormat("{0:g}:\"{1}\" {2} ", item.Id + startstream, item.TempFile, core);
-                jobInfo.AudioStreams[i] = item;
             }
 
             // process all subtitle streams
-            for (int i = 0; i < jobInfo.SubtitleStreams.Count; i++)
+            foreach (SubtitleInfo item in jobInfo.SubtitleStreams)
             {
-                SubtitleInfo item = jobInfo.SubtitleStreams[i];
-
                 ext = StreamFormat.GetFormatExtension(item.Format, String.Empty, false);
-                formattedExt = string.Format("demuxed.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+                formattedExt = string.Format("demuxed.subtitle.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
 
                 switch (jobInfo.Input)
                 {
@@ -137,16 +132,16 @@ namespace VideoConvert.Core.CommandLine
                         break;
                     default:
                         item.TempFile = string.IsNullOrEmpty(jobInfo.TempInput)
-                                            ? Processing.CreateTempFile(
-                                                string.IsNullOrEmpty(jobInfo.TempOutput)
-                                                    ? jobInfo.BaseName
-                                                    : jobInfo.TempOutput, formattedExt)
-                                            : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
+                            ? Processing.CreateTempFile(
+                                string.IsNullOrEmpty(jobInfo.TempOutput)
+                                    ? jobInfo.BaseName
+                                    : jobInfo.TempOutput, formattedExt)
+                            : Processing.CreateTempFile(jobInfo.TempInput, formattedExt);
                         break;
                 }
 
                 sb.AppendFormat("{0:g}:\"{1}\" ", item.Id + startstream, item.TempFile);
-                jobInfo.SubtitleStreams[i] = item;
+                item.RawStream = true;
             }
 
             // add logfile to tempfiles list for deletion

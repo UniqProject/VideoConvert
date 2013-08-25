@@ -71,8 +71,10 @@ namespace VideoConvert.Core.Helpers
                                                     new StreamFormat("flac", "flac", "flac"),
                                                     new StreamFormat("vorbis", "ogg", "flac"),
                                                     new StreamFormat("utf-8", "srt", "srt"),
+                                                    new StreamFormat("ssa", "ssa", "ssa"),
+                                                    new StreamFormat("ass", "ass", "ass"),
                                                     new StreamFormat("pgs", "sup", "sup"),
-                                                    new StreamFormat("vobsub", "sup", "sup")
+                                                    new StreamFormat("vobsub", "sup", "vobsub")
                                                 };
 
             return formatList;

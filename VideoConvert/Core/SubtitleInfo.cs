@@ -38,6 +38,9 @@ namespace VideoConvert.Core
         public bool KeepOnlyForcedCaptions;
         public bool HardSubIntoVideo;
         public bool MkvDefault;
+        public bool RawStream;
+        public bool NeedConversion;
+        public bool FormatSupported;
 
         public SubtitleInfo()
         {
@@ -53,6 +56,9 @@ namespace VideoConvert.Core
             KeepOnlyForcedCaptions = false;
             HardSubIntoVideo = false;
             MkvDefault = false;
+            RawStream = false;
+            NeedConversion = false;
+            FormatSupported = true;
         }
 
         /// <summary>

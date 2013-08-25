@@ -18,15 +18,14 @@
 //=============================================================================
 
 using System;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Media;
 using VideoConvert.Core.Profiles;
 using log4net;
 using System.Text;
 using System.Collections.Generic;
+using Size = System.Drawing.Size;
 
 namespace VideoConvert.Core.Encoder
 {
@@ -559,9 +558,11 @@ namespace VideoConvert.Core.Encoder
         /// <param name="inputFile">Path to source file</param>
         /// <param name="targetFps">Sets framerate of the source file</param>
         /// <param name="streamLength">Sets duration of the source file, in seconds</param>
+        /// <param name="videoSize"></param>
+        /// <param name="aspectRatio"></param>
         /// <param name="frameCount">Calculated amount of frames</param>
         /// <returns>Path to AviSynth script</returns>
-        public static string GenerateCropDetect(string inputFile, float targetFps, double streamLength, out int frameCount)
+        public static string GenerateCropDetect(string inputFile, float targetFps, double streamLength, Size videoSize, float aspectRatio, out int frameCount)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -600,13 +601,22 @@ namespace VideoConvert.Core.Encoder
                 frameCount += (endFrame - frame);
             }
 
-            string concString = frameList.Aggregate("combined=", (current, frameStr) => current + (frameStr + "+"));
+            string concString = "combined=" + string.Join("+", frameList);
 
-            if (concString.EndsWith("+"))
-                concString = concString.Remove(concString.Length - 1);
-            
             sb.AppendLine(concString);
-            sb.AppendLine("return combined");
+
+            if (videoSize.Height*aspectRatio > videoSize.Width)
+            {
+                videoSize.Width = (int)(videoSize.Height * aspectRatio);
+                int temp;
+                Math.DivRem(videoSize.Width, 2, out temp);
+                videoSize.Width += temp;
+            }
+
+            sb.AppendLine(string.Format(AppSettings.CInfo,
+                                        "BicubicResize(combined,{0:g},{1:g})",
+                                        videoSize.Width,
+                                        videoSize.Height));
 
             return WriteScript(sb.ToString());
         }

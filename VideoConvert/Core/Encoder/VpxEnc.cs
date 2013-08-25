@@ -1,4 +1,23 @@
-﻿using System;
+﻿//============================================================================
+// VideoConvert - Fast Video & Audio Conversion Tool
+// Copyright © 2012 JT-Soft
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//=============================================================================
+
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -22,7 +41,14 @@ namespace VideoConvert.Core.Encoder
         private EncodeInfo _jobInfo;
         private const string Executable = "vpxenc.exe";
 
-        long _frameCount;
+        private long _frameCount;
+        private DateTime _startTime;
+        private TimeSpan _remaining = new TimeSpan(0, 0, 0);
+        private string _pass = string.Empty;
+
+        private readonly string _progressFormat = Processing.GetResourceString("vp8_encoding_progress");
+        private readonly Regex _frameInformation = new Regex(@"^.*Pass\s\d\/\d frame \s*\d*\/(\d*).*$",
+                                           RegexOptions.Singleline | RegexOptions.Multiline);
         private BackgroundWorker _bw;
 
         public void SetJob(EncodeInfo job)
@@ -90,12 +116,6 @@ namespace VideoConvert.Core.Encoder
 
             string passStr = Processing.GetResourceString("vp8_pass");
             string status = Processing.GetResourceString("vp8_encoding_status");
-            string progressFormat = Processing.GetResourceString("vp8_encoding_progress");
-
-            //progress vars
-            DateTime startTime = DateTime.Now;
-            TimeSpan remaining = new TimeSpan(0, 0, 0);
-            // end progress
 
             VP8Profile encProfile = (VP8Profile)_jobInfo.VideoProfile;
 
@@ -119,11 +139,10 @@ namespace VideoConvert.Core.Encoder
                 targetBitrate = Processing.CalculateVideoBitrate(_jobInfo);
 
             int encodeMode = encProfile.EncodingMode;
-            string pass = string.Empty;
             if (encodeMode == 1)
-                pass = string.Format(" {1} {0:0}; ", _jobInfo.StreamId, passStr);
+                _pass = string.Format(" {1} {0:0}; ", _jobInfo.StreamId, passStr);
 
-            _bw.ReportProgress(-10, status + pass.Replace("; ", string.Empty));
+            _bw.ReportProgress(-10, status + _pass.Replace("; ", string.Empty));
             _bw.ReportProgress(0, status);
 
             string argument = VP8CommandLineGenerator.Generate(encProfile,
@@ -136,9 +155,6 @@ namespace VideoConvert.Core.Encoder
                                                                 outFile);
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
-
-            Regex frameInformation = new Regex(@"^.*Pass\s\d\/\d frame \s*\d*\/(\d*).*$",
-                                               RegexOptions.Singleline | RegexOptions.Multiline);
 
             using (Process encoder = new Process(),
                 decoder = FfMpeg.GenerateDecodeProcess(inputFile,
@@ -158,57 +174,7 @@ namespace VideoConvert.Core.Encoder
                 };
                 encoder.StartInfo = parameter;
 
-                encoder.ErrorDataReceived += (outputSender, outputEvent) =>
-                {
-                    string line = outputEvent.Data;
-
-                    if (string.IsNullOrEmpty(line)) return;
-
-                    Match result = frameInformation.Match(line);
-
-                    // ReSharper disable AccessToModifiedClosure
-                    TimeSpan eta = DateTime.Now.Subtract(startTime);
-                    // ReSharper restore AccessToModifiedClosure
-                    long secRemaining = 0;
-
-                    if (result.Success)
-                    {
-                        long current;
-                        Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
-                            AppSettings.CInfo, out current);
-                        long framesRemaining = _frameCount - current;
-                        float fps = 0f;
-                        if (eta.Seconds != 0)
-                        {
-                            //Frames per Second
-                            double codingFPS = Math.Round(current/eta.TotalSeconds, 2);
-
-                            if (codingFPS > 1)
-                            {
-                                secRemaining = framesRemaining/(int) codingFPS;
-                                fps = (float) codingFPS;
-                            }
-                            else
-                                secRemaining = 0;
-                        }
-
-                        if (secRemaining > 0)
-                            remaining = new TimeSpan(0, 0, (int) secRemaining);
-
-                        DateTime ticks = new DateTime(eta.Ticks);
-
-                        string progress = string.Format(progressFormat,
-                            current, _frameCount,
-                            fps,
-                            remaining, ticks, pass);
-                        _bw.ReportProgress((int) (((float) current/_frameCount)*100),
-                            progress);
-                    }
-                    else
-                    {
-                        Log.InfoFormat("vpxenc: {0:s}", line);
-                    }
-                };
+                encoder.ErrorDataReceived += OnDataReceived;
 
                 Log.InfoFormat("start parameter: vpxenc {0:s}", argument);
 
@@ -240,7 +206,7 @@ namespace VideoConvert.Core.Encoder
                     _jobInfo.ExitCode = -1;
                 }
 
-                startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
                 if (started && decStarted)
                 {
@@ -337,6 +303,56 @@ namespace VideoConvert.Core.Encoder
             _bw.ReportProgress(100);
             _jobInfo.CompletedStep = _jobInfo.NextStep;
             e.Result = _jobInfo;
+        }
+
+        private void OnDataReceived(object outputSender, DataReceivedEventArgs outputEvent)
+        {
+            string line = outputEvent.Data;
+
+            if (string.IsNullOrEmpty(line)) return;
+
+            Match result = _frameInformation.Match(line);
+
+            TimeSpan eta = DateTime.Now.Subtract(_startTime);
+            long secRemaining = 0;
+
+            if (result.Success)
+            {
+                long current;
+                Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
+                    AppSettings.CInfo, out current);
+                long framesRemaining = _frameCount - current;
+                float fps = 0f;
+                if (eta.Seconds != 0)
+                {
+                    //Frames per Second
+                    double codingFPS = Math.Round(current / eta.TotalSeconds, 2);
+
+                    if (codingFPS > 1)
+                    {
+                        secRemaining = framesRemaining / (int)codingFPS;
+                        fps = (float)codingFPS;
+                    }
+                    else
+                        secRemaining = 0;
+                }
+
+                if (secRemaining > 0)
+                    _remaining = new TimeSpan(0, 0, (int)secRemaining);
+
+                DateTime ticks = new DateTime(eta.Ticks);
+
+                string progress = string.Format(_progressFormat,
+                    current, _frameCount,
+                    fps,
+                    _remaining, ticks, _pass);
+                _bw.ReportProgress((int)(((float)current / _frameCount) * 100),
+                    progress);
+            }
+            else
+            {
+                Log.InfoFormat("vpxenc: {0:s}", line);
+            }
         }
 
         private void ReadThreadStart(NamedPipeServerStream decodePipe, Process encoder)
