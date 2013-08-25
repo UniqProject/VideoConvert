@@ -1,15 +1,15 @@
-﻿- [new]		Unterstützung für Text-Untertitel hinzugefügt.
-- [new]		Unterstützung für Untertitle in MP4 Containern hinzugefügt.
-- [new]		Ab sofort können speziell optimierte encoder verwendet werden, je nachdem welche Befehlssätze
-			die CPU unterstützt.
-- [change]	Benutze ffmpeg anstatt eac3to zum demultiplexen von DVD-Titeln.
-- [fix]		Problem behoben, welches für falsche Bildrateninformationen bei 720p BD und AVCHD Ausgabe
-			verantwortlich war.
-- [fix]		Problem behoben, welches dazu führte, dass manchmal Bildteile abgeschnitten wurden.
+﻿- [new]     Unterstützung für Text-Untertitel hinzugefügt.
+- [new]     Unterstützung für Untertitle in MP4 Containern hinzugefügt.
+- [new]     Ab sofort können speziell optimierte encoder verwendet werden, je nachdem welche Befehlssätze
+            die CPU unterstützt.
+- [change]  Benutze ffmpeg anstatt eac3to zum demultiplexen von DVD-Titeln.
+- [fix]     Problem behoben, welches für falsche Bildrateninformationen bei 720p BD und AVCHD Ausgabe
+            verantwortlich war.
+- [fix]     Problem behoben, welches dazu führte, dass manchmal Bildteile abgeschnitten wurden.
 
 0.25.934.1211
-- [new]		ffmpeg Routinen zum Skalieren der Videos können nun optional verwendet werden.
-- [new]		Bessere kompression der Updatepakete.
+- [new]     ffmpeg Routinen zum Skalieren der Videos können nun optional verwendet werden.
+- [new]     Bessere kompression der Updatepakete.
 
 0.25.868.2257
 - [new]     Erstellung von Sidecar-Dateien für XBMC Video-Datenbank möglich. Als Quelle dienen TheMovieDB.com

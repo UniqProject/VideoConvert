@@ -39,48 +39,48 @@
             <TabItem x:Uid="FrameTypePage" Header="Frame-Type" x:Name="FrameTypePage">
                 <Grid x:Uid="Grid_2">
                     <GroupBox x:Uid="H264FeaturesGroup" Header="H.264 Features" HorizontalAlignment="Left" Margin="6,6,0,0" x:Name="H264FeaturesGroup" VerticalAlignment="Top" Width="276">
-                    	<Grid x:Uid="Grid_3">
+                        <Grid x:Uid="Grid_3">
                             <CheckBox x:Uid="UseDeblocking" Content="Deblocking" x:Name="UseDeblocking" HorizontalAlignment="Left" Height="16" Margin="6,6,0,0" VerticalAlignment="Top"/>
-                    		<Label x:Uid="DeblockingStrengthLabel" Content="Deblocking Strength" HorizontalAlignment="Left" x:Name="DeblockingStrengthLabel" Padding="0" VerticalContentAlignment="Center"  IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" Height="20" Margin="6,28,0,0" VerticalAlignment="Top"/>
-                    		<xctk:IntegerUpDown x:Uid="DeblockingStrength" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="150,28,0,0" Maximum="6" Minimum="-6" x:Name="DeblockingStrength" Value="-1" Width="108" IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" Height="20" VerticalAlignment="Top" />
-                    		<Label x:Uid="DeblockingThresholdLabel" Content="Deblocking Threshold" Height="20" HorizontalAlignment="Left" x:Name="DeblockingThresholdLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center"  IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" Margin="6,54,0,0"/>
-                    		<xctk:IntegerUpDown x:Uid="DeblockingThreshold" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="150,54,0,0" Maximum="6" Minimum="-6" x:Name="DeblockingThreshold" Value="-1" VerticalAlignment="Top" Width="108" IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" />
-                    		<CheckBox x:Uid="UseCABAC" Content="CABAC" Height="16" x:Name="UseCABAC" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,80,0,0" />
-                    	</Grid>
+                            <Label x:Uid="DeblockingStrengthLabel" Content="Deblocking Strength" HorizontalAlignment="Left" x:Name="DeblockingStrengthLabel" Padding="0" VerticalContentAlignment="Center"  IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" Height="20" Margin="6,28,0,0" VerticalAlignment="Top"/>
+                            <xctk:IntegerUpDown x:Uid="DeblockingStrength" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="150,28,0,0" Maximum="6" Minimum="-6" x:Name="DeblockingStrength" Value="-1" Width="108" IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" Height="20" VerticalAlignment="Top" />
+                            <Label x:Uid="DeblockingThresholdLabel" Content="Deblocking Threshold" Height="20" HorizontalAlignment="Left" x:Name="DeblockingThresholdLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center"  IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" Margin="6,54,0,0"/>
+                            <xctk:IntegerUpDown x:Uid="DeblockingThreshold" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="150,54,0,0" Maximum="6" Minimum="-6" x:Name="DeblockingThreshold" Value="-1" VerticalAlignment="Top" Width="108" IsEnabled="{Binding IsChecked, ElementName=UseDeblocking}" />
+                            <CheckBox x:Uid="UseCABAC" Content="CABAC" Height="16" x:Name="UseCABAC" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,80,0,0" />
+                        </Grid>
                     </GroupBox>
                     <GroupBox x:Uid="GopSizeGroup" Header="GOP Size" HorizontalAlignment="Left" Margin="6,139,0,0" x:Name="GopSizeGroup" VerticalAlignment="Top" Width="276">
-                    	<Grid x:Uid="Grid_4">
-                    		<Label x:Uid="GOPCalculationLabel" Content="GOP calculation" HorizontalAlignment="Left" Margin="6,7,0,0" x:Name="GOPCalculationLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
-                    		<ComboBox x:Uid="GOPCalculation" HorizontalContentAlignment="Center" Margin="120,6,0,0" x:Name="GOPCalculation" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="138" Height="21" VerticalAlignment="Top">
+                        <Grid x:Uid="Grid_4">
+                            <Label x:Uid="GOPCalculationLabel" Content="GOP calculation" HorizontalAlignment="Left" Margin="6,7,0,0" x:Name="GOPCalculationLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
+                            <ComboBox x:Uid="GOPCalculation" HorizontalContentAlignment="Center" Margin="120,6,0,0" x:Name="GOPCalculation" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="138" Height="21" VerticalAlignment="Top">
                                 <ComboBoxItem x:Uid="ComboBoxItem_1" Content="Fixed" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_2" Content="FPS-Based" />
                             </ComboBox>
                             <Label x:Uid="MaxGOPSizeLabel" Content="Maximum GOP Size (0=Infinite)" HorizontalAlignment="Left" x:Name="MaxGOPSizeLabel" Padding="0" VerticalContentAlignment="Center" Margin="6,33,0,0" Height="19" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="MaxGOPSize" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="178,33,0,0" Maximum="999" Minimum="0" x:Name="MaxGOPSize" Value="0" Width="80" Height="20" VerticalAlignment="Top" />
-                    		<Label x:Uid="MinGOPSizeLabel" Content="Minimum GOP Size" Height="20" HorizontalAlignment="Left" x:Name="MinGOPSizeLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,59,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="MinGOPSize" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="178,59,0,0" Maximum="999" Minimum="0" x:Name="MinGOPSize" Value="0" VerticalAlignment="Top" Width="80" />
-                    		<CheckBox x:Uid="UseOpenGOP" Content="Open GOP" Height="16" Margin="6,85,0,0" x:Name="UseOpenGOP" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    	</Grid>
+                            <xctk:IntegerUpDown x:Uid="MaxGOPSize" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="178,33,0,0" Maximum="999" Minimum="0" x:Name="MaxGOPSize" Value="0" Width="80" Height="20" VerticalAlignment="Top" />
+                            <Label x:Uid="MinGOPSizeLabel" Content="Minimum GOP Size" Height="20" HorizontalAlignment="Left" x:Name="MinGOPSizeLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,59,0,0" />
+                            <xctk:IntegerUpDown x:Uid="MinGOPSize" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="178,59,0,0" Maximum="999" Minimum="0" x:Name="MinGOPSize" Value="0" VerticalAlignment="Top" Width="80" />
+                            <CheckBox x:Uid="UseOpenGOP" Content="Open GOP" Height="16" Margin="6,85,0,0" x:Name="UseOpenGOP" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        </Grid>
                     </GroupBox>
                     <GroupBox x:Uid="SlicingGroup" Header="Slicing" HorizontalAlignment="Left" Margin="6,276,0,0" x:Name="SlicingGroup" Width="276" Height="110" VerticalAlignment="Top">
-                    	<Grid x:Uid="Grid_5">
-                    		<Label x:Uid="NumSlicesLabel" Content="Number of Slices by Frame" HorizontalAlignment="Left" x:Name="NumSlicesLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,6,0,0" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="NumSlices" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="178,6,0,0" Minimum="0" x:Name="NumSlices" Value="0" Width="80" Maximum="100" Height="20" VerticalAlignment="Top" />
-                    		<Label x:Uid="MaxSliceSizeBytesLabel" Content="Max Size (in bytes)" Height="20" HorizontalAlignment="Left" x:Name="MaxSliceSizeBytesLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,32,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="MaxSliceSizeBytes" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="178,32,0,0" Maximum="250" Minimum="0" x:Name="MaxSliceSizeBytes" Value="0" VerticalAlignment="Top" Width="80" />
-                    		<Label x:Uid="MaxSliceSizeBlocksLabel" Content="Max Size (in macroblocks)" Height="20" HorizontalAlignment="Left" x:Name="MaxSliceSizeBlocksLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,58,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="MaxSliceSizeBlocks" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="178,58,0,0" Maximum="100" Minimum="0" x:Name="MaxSliceSizeBlocks" Value="0" VerticalAlignment="Top" Width="80" />
-                    	</Grid>
+                        <Grid x:Uid="Grid_5">
+                            <Label x:Uid="NumSlicesLabel" Content="Number of Slices by Frame" HorizontalAlignment="Left" x:Name="NumSlicesLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,6,0,0" VerticalAlignment="Top" />
+                            <xctk:IntegerUpDown x:Uid="NumSlices" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="178,6,0,0" Minimum="0" x:Name="NumSlices" Value="0" Width="80" Maximum="100" Height="20" VerticalAlignment="Top" />
+                            <Label x:Uid="MaxSliceSizeBytesLabel" Content="Max Size (in bytes)" Height="20" HorizontalAlignment="Left" x:Name="MaxSliceSizeBytesLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,32,0,0" />
+                            <xctk:IntegerUpDown x:Uid="MaxSliceSizeBytes" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="178,32,0,0" Maximum="250" Minimum="0" x:Name="MaxSliceSizeBytes" Value="0" VerticalAlignment="Top" Width="80" />
+                            <Label x:Uid="MaxSliceSizeBlocksLabel" Content="Max Size (in macroblocks)" Height="20" HorizontalAlignment="Left" x:Name="MaxSliceSizeBlocksLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,58,0,0" />
+                            <xctk:IntegerUpDown x:Uid="MaxSliceSizeBlocks" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="178,58,0,0" Maximum="100" Minimum="0" x:Name="MaxSliceSizeBlocks" Value="0" VerticalAlignment="Top" Width="80" />
+                        </Grid>
                     </GroupBox>
                     <GroupBox x:Uid="BFramesGroup" Header="B-Frames" Margin="288,6,6,0" x:Name="BFramesGroup" VerticalAlignment="Top">
-                    	<Grid x:Uid="Grid_6">
-                    		<CheckBox x:Uid="UseWeightedPred" Content="Weighted Prediction for B-Frames" HorizontalAlignment="Left" x:Name="UseWeightedPred" Height="16" Margin="6,6,0,0" VerticalAlignment="Top" />
-                    		<Label x:Uid="NumBFramesLabel" Content="Number of B-Frames" HorizontalAlignment="Left" x:Name="NumBFramesLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,28,0,0" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="NumBFrames" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="204,28,0,0" Maximum="16" Minimum="0" x:Name="NumBFrames" Value="0" Width="80" Height="20" VerticalAlignment="Top" ValueChanged="NumBFramesValueChanged" />
-                    		<Label x:Uid="BFrameBiasLabel" Content="B-Frame bias" Height="20" HorizontalAlignment="Left" x:Name="BFrameBiasLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,54,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="BFrameBias" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="204,54,0,0" Maximum="100" Minimum="0" x:Name="BFrameBias" Value="0" VerticalAlignment="Top" Width="80" />
-                    		<Label x:Uid="AdaptiveBFramesLabel" Content="Adaptive B-Frames" Height="20" HorizontalAlignment="Left" x:Name="AdaptiveBFramesLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,80,0,0" />
-                    		<ComboBox x:Uid="AdaptiveBFrames" Height="21" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="184,82,0,0" x:Name="AdaptiveBFrames" Padding="5,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="100">
+                        <Grid x:Uid="Grid_6">
+                            <CheckBox x:Uid="UseWeightedPred" Content="Weighted Prediction for B-Frames" HorizontalAlignment="Left" x:Name="UseWeightedPred" Height="16" Margin="6,6,0,0" VerticalAlignment="Top" />
+                            <Label x:Uid="NumBFramesLabel" Content="Number of B-Frames" HorizontalAlignment="Left" x:Name="NumBFramesLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,28,0,0" VerticalAlignment="Top" />
+                            <xctk:IntegerUpDown x:Uid="NumBFrames" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="204,28,0,0" Maximum="16" Minimum="0" x:Name="NumBFrames" Value="0" Width="80" Height="20" VerticalAlignment="Top" ValueChanged="NumBFramesValueChanged" />
+                            <Label x:Uid="BFrameBiasLabel" Content="B-Frame bias" Height="20" HorizontalAlignment="Left" x:Name="BFrameBiasLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,54,0,0" />
+                            <xctk:IntegerUpDown x:Uid="BFrameBias" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="204,54,0,0" Maximum="100" Minimum="0" x:Name="BFrameBias" Value="0" VerticalAlignment="Top" Width="80" />
+                            <Label x:Uid="AdaptiveBFramesLabel" Content="Adaptive B-Frames" Height="20" HorizontalAlignment="Left" x:Name="AdaptiveBFramesLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,80,0,0" />
+                            <ComboBox x:Uid="AdaptiveBFrames" Height="21" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="184,82,0,0" x:Name="AdaptiveBFrames" Padding="5,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="100">
                                 <ComboBoxItem x:Uid="ComboBoxItem_3" Content="0-Off" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_4" Content="1-Fast" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_5" Content="2-Optimal" />
@@ -94,19 +94,19 @@
                         </Grid>
                     </GroupBox>
                     <GroupBox x:Uid="FrameTypeOtherGroup" Header="Other" Margin="288,174,6,0" x:Name="FrameTypeOtherGroup" VerticalAlignment="Top">
-                    	<Grid x:Uid="Grid_7">
-                    		<Label x:Uid="NumRefLabel" Content="Number of Reference Frames" HorizontalAlignment="Left" x:Name="NumRefLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,6,0,0" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="NumRef" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="204,6,0,0" Maximum="16" Minimum="0" x:Name="NumRef" Value="0" Width="80" Height="20" VerticalAlignment="Top" ValueChanged="NumRefValueChanged" />
+                        <Grid x:Uid="Grid_7">
+                            <Label x:Uid="NumRefLabel" Content="Number of Reference Frames" HorizontalAlignment="Left" x:Name="NumRefLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,6,0,0" VerticalAlignment="Top" />
+                            <xctk:IntegerUpDown x:Uid="NumRef" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="204,6,0,0" Maximum="16" Minimum="0" x:Name="NumRef" Value="0" Width="80" Height="20" VerticalAlignment="Top" ValueChanged="NumRefValueChanged" />
                             <Label x:Uid="NumExtraIFramesLabel" Content="Number of Extra I-Frames" HorizontalAlignment="Left" x:Name="NumExtraIFramesLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,32,0,0" VerticalAlignment="Top" IsEnabled="{Binding ElementName=UseAdaptiveIFrameDecision, Path=IsChecked}" />
-                    		<xctk:IntegerUpDown x:Uid="NumExtraIFrames" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="204,32,0,0" Maximum="100" Minimum="0" x:Name="NumExtraIFrames" Value="0" Width="80" Height="20" VerticalAlignment="Top" IsEnabled="{Binding ElementName=UseAdaptiveIFrameDecision, Path=IsChecked}" />
-                    		<Label x:Uid="PFrameWeightedPredictionLabel" Content="P-Frame Weighted Prediction" HorizontalAlignment="Left" Margin="6,58,0,0" x:Name="PFrameWeightedPredictionLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
-                    		<ComboBox x:Uid="PFrameWeightedPrediction" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="184,58,0,0" x:Name="PFrameWeightedPrediction" Padding="5,0" VerticalContentAlignment="Center" Width="100" Height="21" VerticalAlignment="Top">
+                            <xctk:IntegerUpDown x:Uid="NumExtraIFrames" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="204,32,0,0" Maximum="100" Minimum="0" x:Name="NumExtraIFrames" Value="0" Width="80" Height="20" VerticalAlignment="Top" IsEnabled="{Binding ElementName=UseAdaptiveIFrameDecision, Path=IsChecked}" />
+                            <Label x:Uid="PFrameWeightedPredictionLabel" Content="P-Frame Weighted Prediction" HorizontalAlignment="Left" Margin="6,58,0,0" x:Name="PFrameWeightedPredictionLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
+                            <ComboBox x:Uid="PFrameWeightedPrediction" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="184,58,0,0" x:Name="PFrameWeightedPrediction" Padding="5,0" VerticalContentAlignment="Center" Width="100" Height="21" VerticalAlignment="Top">
                                 <ComboBoxItem x:Uid="ComboBoxItem_9" Content="Disabled" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_10" Content="Blind" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_11" Content="Smart" />
                             </ComboBox>
                             <Label x:Uid="InterlacedModeLabel" Content="Interlaced Mode" Height="20" HorizontalAlignment="Left" x:Name="InterlacedModeLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,85,0,0" />
-                    		<ComboBox x:Uid="InterlacedMode" Height="21" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="184,85,0,0" x:Name="InterlacedMode" Padding="5,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="100">
+                            <ComboBox x:Uid="InterlacedMode" Height="21" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="184,85,0,0" x:Name="InterlacedMode" Padding="5,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="100">
                                 <ComboBoxItem x:Uid="ComboBoxItem_12" Content="Auto" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_13" Content="None" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_14" Content="TFF" />
@@ -124,82 +124,82 @@
                                 <ComboBoxItem x:Uid="ComboBoxItem_23" Content="Euro" />
                             </ComboBox>
                             <CheckBox x:Uid="UseAdaptiveIFrameDecision" Content="Adaptive I-Frame Decision" Height="16" HorizontalAlignment="Left" x:Name="UseAdaptiveIFrameDecision" VerticalAlignment="Top" Margin="6,139,0,0" />
-                    	</Grid>
+                        </Grid>
                     </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem x:Uid="RateControlPage" Header="Rate Control" x:Name="RateControlPage">
                 <Grid x:Uid="Grid_8">
                     <GroupBox x:Uid="QuantizersGroup" Header="Quantizers" HorizontalAlignment="Left" Margin="6,6,0,0" x:Name="QuantizersGroup" VerticalAlignment="Top" Width="321">
-                    	<Grid x:Uid="Grid_9">
-                    		<Label x:Uid="QuantizerMinMaxDeltaLabel" Content="Min/Max/Delta" HorizontalAlignment="Left" x:Name="QuantizerMinMaxDeltaLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,6,0,0" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerMin" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="111,6,0,0" Maximum="51" Minimum="0" x:Name="QuantizerMin" Value="0" Width="60" Height="20" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerMax" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="177,6,0,0" Maximum="69" Minimum="0" x:Name="QuantizerMax" Value="0" Width="60" Height="20" VerticalAlignment="Top" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerDelta" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="243,6,0,0" Maximum="51" Minimum="0" x:Name="QuantizerDelta" Value="0" Width="60" Height="20" VerticalAlignment="Top" />
-                    		<Label x:Uid="QuantizerRatioLabel" Content="Quantizers Ratio (I:P / P:B)" HorizontalAlignment="Left" x:Name="QuantizerRatioLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,32,0,0" VerticalAlignment="Top" />
-                    		<xctk:DoubleUpDown x:Uid="QuantizerRatioIP" CultureInfo="en-US" HorizontalAlignment="Left" Increment="0.1" Margin="177,32,0,0" Maximum="10" Minimum="1" x:Name="QuantizerRatioIP" Value="1.4" Width="60" FormatString="0.0" Height="20" VerticalAlignment="Top" />
-                    		<xctk:DoubleUpDown x:Uid="QuantizersRatioPB" CultureInfo="en-US" HorizontalAlignment="Left" Increment="0.1" Margin="243,32,0,0" Maximum="10" Minimum="1" x:Name="QuantizersRatioPB" Value="1.3" Width="60" FormatString="0.0" Height="20" VerticalAlignment="Top" />
-                    		<Label x:Uid="QuantizerDeadZoneLabel" Content="Deadzone (Inter / Intra)" Height="20" HorizontalAlignment="Left" x:Name="QuantizerDeadZoneLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,58,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerDeadZoneInter" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="177,58,0,0" Maximum="100" Minimum="0" x:Name="QuantizerDeadZoneInter" Value="21" VerticalAlignment="Top" Width="60" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerDeadZoneIntra" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,58,0,0" Maximum="100" Minimum="0" x:Name="QuantizerDeadZoneIntra" Value="11" VerticalAlignment="Top" Width="60" />
-                    		<Label x:Uid="QuantizerChromaQPOffsetLabel" Content="Chroma QP Offset" Height="20" HorizontalAlignment="Left" x:Name="QuantizerChromaQPOffsetLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,84,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerChromaQPOffset" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,84,0,0" Maximum="12" Minimum="0" x:Name="QuantizerChromaQPOffset" Value="0" VerticalAlignment="Top" Width="60" />
-                    		<Label x:Uid="QuantizerCreditsLabel" Content="Credits Quantizer" Height="20" HorizontalAlignment="Left" x:Name="QuantizerCreditsLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,110,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="QuantizerCredits" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,110,0,0" Maximum="51" Minimum="0" x:Name="QuantizerCredits" Value="0" VerticalAlignment="Top" Width="60" />
-                    	</Grid>
+                        <Grid x:Uid="Grid_9">
+                            <Label x:Uid="QuantizerMinMaxDeltaLabel" Content="Min/Max/Delta" HorizontalAlignment="Left" x:Name="QuantizerMinMaxDeltaLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,6,0,0" VerticalAlignment="Top" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerMin" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="111,6,0,0" Maximum="51" Minimum="0" x:Name="QuantizerMin" Value="0" Width="60" Height="20" VerticalAlignment="Top" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerMax" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="177,6,0,0" Maximum="69" Minimum="0" x:Name="QuantizerMax" Value="0" Width="60" Height="20" VerticalAlignment="Top" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerDelta" CultureInfo="en-US" HorizontalAlignment="Left" Increment="1" Margin="243,6,0,0" Maximum="51" Minimum="0" x:Name="QuantizerDelta" Value="0" Width="60" Height="20" VerticalAlignment="Top" />
+                            <Label x:Uid="QuantizerRatioLabel" Content="Quantizers Ratio (I:P / P:B)" HorizontalAlignment="Left" x:Name="QuantizerRatioLabel" Padding="0" VerticalContentAlignment="Center" Height="20" Margin="6,32,0,0" VerticalAlignment="Top" />
+                            <xctk:DoubleUpDown x:Uid="QuantizerRatioIP" CultureInfo="en-US" HorizontalAlignment="Left" Increment="0.1" Margin="177,32,0,0" Maximum="10" Minimum="1" x:Name="QuantizerRatioIP" Value="1.4" Width="60" FormatString="0.0" Height="20" VerticalAlignment="Top" />
+                            <xctk:DoubleUpDown x:Uid="QuantizersRatioPB" CultureInfo="en-US" HorizontalAlignment="Left" Increment="0.1" Margin="243,32,0,0" Maximum="10" Minimum="1" x:Name="QuantizersRatioPB" Value="1.3" Width="60" FormatString="0.0" Height="20" VerticalAlignment="Top" />
+                            <Label x:Uid="QuantizerDeadZoneLabel" Content="Deadzone (Inter / Intra)" Height="20" HorizontalAlignment="Left" x:Name="QuantizerDeadZoneLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,58,0,0" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerDeadZoneInter" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="177,58,0,0" Maximum="100" Minimum="0" x:Name="QuantizerDeadZoneInter" Value="21" VerticalAlignment="Top" Width="60" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerDeadZoneIntra" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,58,0,0" Maximum="100" Minimum="0" x:Name="QuantizerDeadZoneIntra" Value="11" VerticalAlignment="Top" Width="60" />
+                            <Label x:Uid="QuantizerChromaQPOffsetLabel" Content="Chroma QP Offset" Height="20" HorizontalAlignment="Left" x:Name="QuantizerChromaQPOffsetLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,84,0,0" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerChromaQPOffset" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,84,0,0" Maximum="12" Minimum="0" x:Name="QuantizerChromaQPOffset" Value="0" VerticalAlignment="Top" Width="60" />
+                            <Label x:Uid="QuantizerCreditsLabel" Content="Credits Quantizer" Height="20" HorizontalAlignment="Left" x:Name="QuantizerCreditsLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,110,0,0" />
+                            <xctk:IntegerUpDown x:Uid="QuantizerCredits" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,110,0,0" Maximum="51" Minimum="0" x:Name="QuantizerCredits" Value="0" VerticalAlignment="Top" Width="60" />
+                        </Grid>
                     </GroupBox>
                     <GroupBox x:Uid="RateControlGroup" Header="Rate Control" Margin="6,176,8,0" x:Name="RateControlGroup" VerticalAlignment="Top">
-                    	<Grid x:Uid="Grid_10">
-                    		<Label x:Uid="VBVBuffSizeLabel" Content="VBV Buffer Size" Height="20" HorizontalAlignment="Left" x:Name="VBVBuffSizeLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,6,0,0" d:LayoutOverrides="VerticalAlignment" />
-                    		<xctk:IntegerUpDown x:Uid="VBVBuffSize" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="233,6,0,0" Maximum="100000" Minimum="0" x:Name="VBVBuffSize" Value="100000" Width="70" VerticalAlignment="Top" />
-                    		<Label x:Uid="VBVMaxRateLabel" Content="VBV Maximum Bitrate" Height="20" HorizontalAlignment="Left" x:Name="VBVMaxRateLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,32,0,0" d:LayoutOverrides="VerticalAlignment" />
-                    		<xctk:IntegerUpDown x:Uid="VBVMaxRate" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="233,32,0,0" Maximum="100000" Minimum="0" x:Name="VBVMaxRate" Value="100000" Width="70" VerticalAlignment="Top" />
-                    		<Label x:Uid="VBVInitialBufferLabel" Content="VBV Initial Buffer" Height="20" HorizontalAlignment="Left" x:Name="VBVInitialBufferLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,58,0,0" d:LayoutOverrides="VerticalAlignment" />
-                    		<xctk:DoubleUpDown x:Uid="VBVInitialBuffer" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.1" Margin="243,58,0,0" Maximum="1" Minimum="0" x:Name="VBVInitialBuffer" Value="0.9" Width="60" VerticalAlignment="Top" />
-                    		<Label x:Uid="BitrateVarianceLabel" Content="Bitrate Variance" Height="20" HorizontalAlignment="Left" x:Name="BitrateVarianceLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,84,0,0" />
-                    		<xctk:DoubleUpDown x:Uid="BitrateVariance" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.1" Maximum="100" Minimum="0.1" x:Name="BitrateVariance" Value="1" VerticalAlignment="Top" Width="60" Margin="243,84,0,0" />
-                    		<Label x:Uid="QuantizerCompressionLabel" Content="Quantizer Compression" Height="20" HorizontalAlignment="Left" x:Name="QuantizerCompressionLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,110,0,0" />
-                    		<xctk:DoubleUpDown x:Uid="QuantizerCompression" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.1" Margin="243,110,0,0" Maximum="1" Minimum="0" x:Name="QuantizerCompression" Value="0.6" VerticalAlignment="Top" Width="60" />
-                    		<Label x:Uid="TempBlurFrameComplexityLabel" Content="Temp. Blur of est. Frame Complexity" Height="20" HorizontalAlignment="Left" x:Name="TempBlurFrameComplexityLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,136,0,0" />
-                    		<xctk:IntegerUpDown x:Uid="TempBlurFrameComplexity" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,136,0,0" Maximum="999" Minimum="0" x:Name="TempBlurFrameComplexity" Value="0" Width="60" VerticalAlignment="Top" d:LayoutOverrides="VerticalAlignment" />
-                    		<Label x:Uid="TempBlurQuantLabel" Content="Temp. Blur of Quant after CC" Height="20" HorizontalAlignment="Left" x:Name="TempBlurQuantLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,162,0,0" />
-                    		<xctk:DoubleUpDown x:Uid="TempBlurQuant" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.5" Margin="243,162,0,0" Maximum="99" Minimum="0" x:Name="TempBlurQuant" Value="0" VerticalAlignment="Top" Width="60" />
+                        <Grid x:Uid="Grid_10">
+                            <Label x:Uid="VBVBuffSizeLabel" Content="VBV Buffer Size" Height="20" HorizontalAlignment="Left" x:Name="VBVBuffSizeLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,6,0,0" d:LayoutOverrides="VerticalAlignment" />
+                            <xctk:IntegerUpDown x:Uid="VBVBuffSize" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="233,6,0,0" Maximum="100000" Minimum="0" x:Name="VBVBuffSize" Value="100000" Width="70" VerticalAlignment="Top" />
+                            <Label x:Uid="VBVMaxRateLabel" Content="VBV Maximum Bitrate" Height="20" HorizontalAlignment="Left" x:Name="VBVMaxRateLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,32,0,0" d:LayoutOverrides="VerticalAlignment" />
+                            <xctk:IntegerUpDown x:Uid="VBVMaxRate" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="233,32,0,0" Maximum="100000" Minimum="0" x:Name="VBVMaxRate" Value="100000" Width="70" VerticalAlignment="Top" />
+                            <Label x:Uid="VBVInitialBufferLabel" Content="VBV Initial Buffer" Height="20" HorizontalAlignment="Left" x:Name="VBVInitialBufferLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,58,0,0" d:LayoutOverrides="VerticalAlignment" />
+                            <xctk:DoubleUpDown x:Uid="VBVInitialBuffer" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.1" Margin="243,58,0,0" Maximum="1" Minimum="0" x:Name="VBVInitialBuffer" Value="0.9" Width="60" VerticalAlignment="Top" />
+                            <Label x:Uid="BitrateVarianceLabel" Content="Bitrate Variance" Height="20" HorizontalAlignment="Left" x:Name="BitrateVarianceLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,84,0,0" />
+                            <xctk:DoubleUpDown x:Uid="BitrateVariance" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.1" Maximum="100" Minimum="0.1" x:Name="BitrateVariance" Value="1" VerticalAlignment="Top" Width="60" Margin="243,84,0,0" />
+                            <Label x:Uid="QuantizerCompressionLabel" Content="Quantizer Compression" Height="20" HorizontalAlignment="Left" x:Name="QuantizerCompressionLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,110,0,0" />
+                            <xctk:DoubleUpDown x:Uid="QuantizerCompression" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.1" Margin="243,110,0,0" Maximum="1" Minimum="0" x:Name="QuantizerCompression" Value="0.6" VerticalAlignment="Top" Width="60" />
+                            <Label x:Uid="TempBlurFrameComplexityLabel" Content="Temp. Blur of est. Frame Complexity" Height="20" HorizontalAlignment="Left" x:Name="TempBlurFrameComplexityLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,136,0,0" />
+                            <xctk:IntegerUpDown x:Uid="TempBlurFrameComplexity" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="243,136,0,0" Maximum="999" Minimum="0" x:Name="TempBlurFrameComplexity" Value="0" Width="60" VerticalAlignment="Top" d:LayoutOverrides="VerticalAlignment" />
+                            <Label x:Uid="TempBlurQuantLabel" Content="Temp. Blur of Quant after CC" Height="20" HorizontalAlignment="Left" x:Name="TempBlurQuantLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,162,0,0" />
+                            <xctk:DoubleUpDown x:Uid="TempBlurQuant" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Left" Increment="0.5" Margin="243,162,0,0" Maximum="99" Minimum="0" x:Name="TempBlurQuant" Value="0" VerticalAlignment="Top" Width="60" />
                             <Label x:Uid="NumFramesLookaheadLabel" Content="Number of Frames for Lookahead" Height="20" HorizontalAlignment="Left" Margin="313,10,0,0" Name="NumFramesLookaheadLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                             <xctk:IntegerUpDown x:Uid="NumFramesLookahead" CultureInfo="en-US" Height="20" HorizontalAlignment="Left" Increment="1" Margin="504,10,0,0" Maximum="250" Minimum="0" Name="NumFramesLookahead" Value="0" VerticalAlignment="Top" Width="60" />
                             <CheckBox x:Uid="UseMBTree" Content="Use MB-Tree" HorizontalAlignment="Left" Margin="313,60,0,0" Name="UseMBTree" VerticalAlignment="Top" />
                         </Grid>
                     </GroupBox>
-                	<GroupBox x:Uid="AdaptiveQuantizersGroup" x:Name="AdaptiveQuantizersGroup" Header="Adaptive Quantizers" HorizontalAlignment="Right" Margin="0,6,8,0" VerticalAlignment="Top" Width="263">
-                		<Grid x:Uid="Grid_11" d:LayoutOverrides="Height">
-                			<Label x:Uid="AdaptiveQuantizersModeLabel" Content="Mode" HorizontalAlignment="Left" Margin="6,7,0,0" x:Name="AdaptiveQuantizersModeLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
+                    <GroupBox x:Uid="AdaptiveQuantizersGroup" x:Name="AdaptiveQuantizersGroup" Header="Adaptive Quantizers" HorizontalAlignment="Right" Margin="0,6,8,0" VerticalAlignment="Top" Width="263">
+                        <Grid x:Uid="Grid_11" d:LayoutOverrides="Height">
+                            <Label x:Uid="AdaptiveQuantizersModeLabel" Content="Mode" HorizontalAlignment="Left" Margin="6,7,0,0" x:Name="AdaptiveQuantizersModeLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
                             <ComboBox x:Uid="AdaptiveQuantizersMode" HorizontalContentAlignment="Center" Margin="0,6,6,0" x:Name="AdaptiveQuantizersMode" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="190" Height="21" VerticalAlignment="Top" SelectionChanged="AdaptiveQuantizersModeSelectionChanged">
                                 <ComboBoxItem x:Uid="ComboBoxItem_24" Content="Disabled" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_25" Content="Variance AQ (Complexity Mask)" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_26" Content="Auto-Variance AQ (experimental)" />
                             </ComboBox>
                             <Label x:Uid="AdaptiveQuantizersStrengthLabel" Content="Strength" Height="20" HorizontalAlignment="Left" x:Name="AdaptiveQuantizersStrengthLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="6,33,0,0" />
-                			<xctk:DoubleUpDown x:Uid="AdaptiveQuantizersStrength" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Right" Increment="0.1" Maximum="2" Minimum="0" x:Name="AdaptiveQuantizersStrength" Value="1" VerticalAlignment="Top" Width="60" Margin="0,33,6,0" />
-                		</Grid>
-                	</GroupBox>
-                	<GroupBox x:Uid="QuantizerMatricesGroup" x:Name="QuantizerMatricesGroup" Header="Quantizer Matrices" HorizontalAlignment="Right" Margin="0,94,8,0" VerticalAlignment="Top" Width="263">
-                		<Grid x:Uid="Grid_12">
+                            <xctk:DoubleUpDown x:Uid="AdaptiveQuantizersStrength" CultureInfo="en-US" FormatString="0.0" Height="20" HorizontalAlignment="Right" Increment="0.1" Maximum="2" Minimum="0" x:Name="AdaptiveQuantizersStrength" Value="1" VerticalAlignment="Top" Width="60" Margin="0,33,6,0" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox x:Uid="QuantizerMatricesGroup" x:Name="QuantizerMatricesGroup" Header="Quantizer Matrices" HorizontalAlignment="Right" Margin="0,94,8,0" VerticalAlignment="Top" Width="263">
+                        <Grid x:Uid="Grid_12">
                             <ComboBox x:Uid="QuantizerMatrix" HorizontalContentAlignment="Center" Margin="6,6,6,5.04" x:Name="QuantizerMatrix" Padding="5,0" VerticalContentAlignment="Center" >
                                 <ComboBoxItem x:Uid="ComboBoxItem_27" Content="Flat (None)" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_28" Content="JVT" />
                             </ComboBox>
                         </Grid>
-                	</GroupBox>
+                    </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem x:Uid="AnalysisPage" Header="Analysis" x:Name="AnalysisPage">
-            	<Grid x:Uid="Grid_13" >
-            		<GroupBox x:Uid="MotionEstimationGroup" x:Name="MotionEstimationGroup" Header="Motion Estimation" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="321">
-            			<Grid x:Uid="Grid_14">
-            				<CheckBox x:Uid="UseChromaMotionEstimation" x:Name="UseChromaMotionEstimation" Content="Chroma Motion Estimation" HorizontalAlignment="Left" Height="16" Margin="6,6,0,0" VerticalAlignment="Top" />
-            				<Label x:Uid="MotionEstimationRangeLabel" Content="Motion Estimation Range" Height="20" HorizontalAlignment="Left" x:Name="MotionEstimationRangeLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,28,0,0" d:LayoutOverrides="VerticalAlignment" />
-            				<xctk:IntegerUpDown x:Uid="MotionEstimationRange" CultureInfo="en-US" HorizontalAlignment="Right" Increment="1" Margin="0,28,6,0" Maximum="64" Minimum="4" x:Name="MotionEstimationRange" Value="4" Width="60" Height="20" VerticalAlignment="Top" />
-            				<Label x:Uid="MotionEstimationAlgorithmLabel" Content="Motion Estimation Algorithm" HorizontalAlignment="Left" Margin="6,55,0,0" x:Name="MotionEstimationAlgorithmLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
-            				<ComboBox x:Uid="MotionEstimationAlgorithm" HorizontalContentAlignment="Center" Margin="0,54,6,0" x:Name="MotionEstimationAlgorithm" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="138" Height="21" VerticalAlignment="Top">
+                <Grid x:Uid="Grid_13" >
+                    <GroupBox x:Uid="MotionEstimationGroup" x:Name="MotionEstimationGroup" Header="Motion Estimation" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="321">
+                        <Grid x:Uid="Grid_14">
+                            <CheckBox x:Uid="UseChromaMotionEstimation" x:Name="UseChromaMotionEstimation" Content="Chroma Motion Estimation" HorizontalAlignment="Left" Height="16" Margin="6,6,0,0" VerticalAlignment="Top" />
+                            <Label x:Uid="MotionEstimationRangeLabel" Content="Motion Estimation Range" Height="20" HorizontalAlignment="Left" x:Name="MotionEstimationRangeLabel" Padding="0" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="6,28,0,0" d:LayoutOverrides="VerticalAlignment" />
+                            <xctk:IntegerUpDown x:Uid="MotionEstimationRange" CultureInfo="en-US" HorizontalAlignment="Right" Increment="1" Margin="0,28,6,0" Maximum="64" Minimum="4" x:Name="MotionEstimationRange" Value="4" Width="60" Height="20" VerticalAlignment="Top" />
+                            <Label x:Uid="MotionEstimationAlgorithmLabel" Content="Motion Estimation Algorithm" HorizontalAlignment="Left" Margin="6,55,0,0" x:Name="MotionEstimationAlgorithmLabel" Padding="0" VerticalContentAlignment="Center" Height="20" VerticalAlignment="Top" />
+                            <ComboBox x:Uid="MotionEstimationAlgorithm" HorizontalContentAlignment="Center" Margin="0,54,6,0" x:Name="MotionEstimationAlgorithm" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="138" Height="21" VerticalAlignment="Top">
                                 <ComboBoxItem x:Uid="ComboBoxItem_29" Content="Diamond" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_30" Content="Hexagon" />
                                 <ComboBoxItem x:Uid="ComboBoxItem_31" Content="Multi Hex" />
@@ -222,7 +222,7 @@
                                 <ComboBoxItem x:Uid="ComboBoxItem_45" Content="11 - Full RD: disable all early terminations" />
                             </ComboBox>
                         </Grid>
-            		</GroupBox>
+                    </GroupBox>
                     <GroupBox x:Uid="AnalysisExtraGroup" Header="Extra" HorizontalAlignment="Left" Margin="6,146,0,0" Name="AnalysisExtraGroup" VerticalAlignment="Top" Width="321">
                         <Grid x:Uid="Grid_15">
                             <Label x:Uid="MVPredictionModLabel" Content="MV Prediction Mod" Height="20" HorizontalAlignment="Left" Margin="6,6,0,0" Name="MVPredictionModLabel" Padding="0" VerticalAlignment="Top" VerticalContentAlignment="Center" />

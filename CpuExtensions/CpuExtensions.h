@@ -12,21 +12,20 @@
 
 
 typedef struct Extensions {
-	int x64;
-	int MMX;
-	int SSE;
-	int SSE2;
-	int SSE3;
-	int SSSE3;
-	int SSE41;
-	int SSE42;
-	int SSE4a;
-	int AVX;
-	int AVX2;
-	int XOP;
-	int FMA3;
-	int FMA4;
+    int x64;
+    int MMX;
+    int SSE;
+    int SSE2;
+    int SSE3;
+    int SSSE3;
+    int SSE41;
+    int SSE42;
+    int SSE4a;
+    int AVX;
+    int AVX2;
+    int XOP;
+    int FMA3;
+    int FMA4;
 }*ExtensionsPtr;
 
 CPUEXTENSIONS_API void GetExtensions(Extensions* result);
-
