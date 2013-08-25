@@ -126,7 +126,7 @@ namespace VideoConvert.Windows
             fontLoader.DoWork += (bwSender, args) =>
                 {
                     BackgroundWorker bw = (BackgroundWorker) bwSender;
-                    foreach (FontFamily item in Fonts.SystemFontFamilies)
+                    foreach (FontFamily item in Fonts.SystemFontFamilies.OrderBy(family => family.Source))
                         bw.ReportProgress(-1, item);
                 };
             fontLoader.ProgressChanged += (o, args) =>
