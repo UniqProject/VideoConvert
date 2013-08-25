@@ -1,5 +1,7 @@
 ﻿- [new]		Unterstützung für Text-Untertitel hinzugefügt.
 - [new]		Unterstützung für Untertitle in MP4 Containern hinzugefügt.
+- [new]		Ab sofort können speziell optimierte encoder verwendet werden, je nachdem welche Befehlssätze
+			die CPU unterstützt.
 - [change]	Benutze ffmpeg anstatt eac3to zum demultiplexen von DVD-Titeln.
 - [fix]		Problem behoben, welches für falsche Bildrateninformationen bei 720p BD und AVCHD Ausgabe
 			verantwortlich war.

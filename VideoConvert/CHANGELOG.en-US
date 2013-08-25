@@ -1,5 +1,6 @@
 ﻿- [new]		Added support for text subtitles.
 - [new]		Added support for subtitles in MP4 container.
+- [new]		Make use of optimized encoders, depending on supported extensions of used CPU.
 - [change]	Use ffmpeg instead of eac3to for demuxing DVD-titles.
 - [fix]		Fixed a bug, which was responsible for wrong framerate in 720p BD and AVCHD output.
 - [fix]		Fixed a bug, which was responsible for cropping visible picture parts.
