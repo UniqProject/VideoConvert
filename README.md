@@ -23,7 +23,7 @@ HCEnc (http://www.bitburners.com/hc-encoder/)<br>
 oggenc (http://www.vorbis.com/)<br>
 lame (http://lame.sourceforge.net/)<br>
 vpxenc (http://code.google.com/p/webm/)<br>
-bdsup2sub (http://forum.doom9.org/showthread.php?t=145277)<br>
+bdsup2sub (http://github.com/mjuhasz/BDSup2Sub)<br>
 bdinfo (http://www.cinemasquid.com/blu-ray/tools/bdinfo)<br>
 <br>
 and many avisynth plugins (list to follow)...
