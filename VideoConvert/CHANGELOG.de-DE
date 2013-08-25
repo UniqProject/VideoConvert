@@ -1,4 +1,9 @@
-﻿- [new]     Unterstützung für Text-Untertitel hinzugefügt.
+﻿- [update]  MediaInfo Bibliothek auf Version 0.7.64 aktualisiert
+- [change]  Unterstützung für BDSup2Sub v5.1.1. Unterstützung für ältere Versionen entfällt hierdurch.
+
+
+0.30.955.2124
+- [new]     Unterstützung für Text-Untertitel hinzugefügt.
 - [new]     Unterstützung für Untertitle in MP4 Containern hinzugefügt.
 - [new]     Ab sofort können speziell optimierte encoder verwendet werden, je nachdem welche Befehlssätze
             die CPU unterstützt.

@@ -1,4 +1,8 @@
-﻿- [new]     Added support for text subtitles.
+﻿- [update]  Updated MediaInfo library to 0.7.64.
+- [change]  Support for BDSup2Sub v5.1.1 added. Support for older versions dropped.
+
+0.30.955.2124
+- [new]     Added support for text subtitles.
 - [new]     Added support for subtitles in MP4 container.
 - [new]     Make use of optimized encoders, depending on supported extensions of used CPU.
 - [change]  Use ffmpeg instead of eac3to for demuxing DVD-titles.
