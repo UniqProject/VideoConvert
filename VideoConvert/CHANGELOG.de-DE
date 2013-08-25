@@ -1,4 +1,12 @@
-﻿- [new]		ffmpeg Routinen zum Skalieren der Videos können nun optional verwendet werden.
+﻿- [new]		Unterstützung für Text-Untertitel hinzugefügt.
+- [new]		Unterstützung für Untertitle in MP4 Containern hinzugefügt.
+- [change]	Benutze ffmpeg anstatt eac3to zum demultiplexen von DVD-Titeln.
+- [fix]		Problem behoben, welches für falsche Bildrateninformationen bei 720p BD und AVCHD Ausgabe
+			verantwortlich war.
+- [fix]		Problem behoben, welches dazu führte, dass manchmal Bildteile abgeschnitten wurden.
+
+0.25.934.1211
+- [new]		ffmpeg Routinen zum Skalieren der Videos können nun optional verwendet werden.
 - [new]		Bessere kompression der Updatepakete.
 
 0.25.868.2257
