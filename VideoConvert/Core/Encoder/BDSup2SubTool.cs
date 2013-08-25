@@ -44,7 +44,7 @@ namespace VideoConvert.Core.Encoder
         /// <summary>
         /// Executable filename
         /// </summary>
-        private const string Executable = "BDSup2Sub400.jar";
+        private const string Executable = "BDSup2Sub.jar";
 
         private EncodeInfo _jobInfo;
         private BackgroundWorker _bw;
@@ -83,7 +83,7 @@ namespace VideoConvert.Core.Encoder
             {
                 ProcessStartInfo parameter = new ProcessStartInfo(javaPath)
                     {
-                        Arguments = string.Format("-jar \"{0}\" /?", localExecutable),
+                        Arguments = string.Format("-jar \"{0}\" -V", localExecutable),
                         CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardError = false,
@@ -106,7 +106,7 @@ namespace VideoConvert.Core.Encoder
                 if (started)
                 {
                     string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^BDSup2Sub\s*?([\d\.]*?)\s-.*$",
+                    Regex regObj = new Regex(@"^BDSup2Sub\s*?([\d\.]*).?$",
                                              RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
@@ -216,13 +216,13 @@ namespace VideoConvert.Core.Encoder
             if (Math.Abs(targetFPS - _jobInfo.VideoStream.FPS) > 0)
                 fpsMode = targetFPS.ToString("0.000", AppSettings.CInfo);
 
-            sb.AppendFormat(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\" /fps:{2} /palmode:keep ", inFile, outFile, fpsMode);
+            sb.AppendFormat(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\" --fps-target {2} --palette-mode keep ", inFile, outFile, fpsMode);
 
             if (sub.KeepOnlyForcedCaptions)
-                sb.AppendFormat("/forced+ ");
+                sb.AppendFormat("--forced-only ");
 
             if (_jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                sb.AppendFormat(AppSettings.CInfo, " /res:{0:0} ", targetRes);
+                sb.AppendFormat(AppSettings.CInfo, " --resolution {0:0} ", targetRes);
 
             using (Process encoder = new Process())
             {
