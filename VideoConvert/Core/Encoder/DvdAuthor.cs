@@ -102,7 +102,7 @@ namespace VideoConvert.Core.Encoder
                 if (started)
                 {
                     string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*DVDAuthor::dvdauthor, version ([\d\.]*)\..+?$",
+                    Regex regObj = new Regex(@"^.*DVDAuthor::dvdauthor, version ([\d\.\+]*)\..+?$",
                                               RegexOptions.Singleline | RegexOptions.Multiline);
                     Match result = regObj.Match(output);
                     if (result.Success)
