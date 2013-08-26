@@ -1,4 +1,7 @@
-﻿- [update]  MediaInfo Bibliothek auf Version 0.7.64 aktualisiert
+﻿- [fix]     DVD encoding funktioniert wieder korrekt.
+
+0.31.955.2230
+- [update]  MediaInfo Bibliothek auf Version 0.7.64 aktualisiert
 - [change]  Unterstützung für BDSup2Sub v5.1.1. Unterstützung für ältere Versionen entfällt hierdurch.
 
 
