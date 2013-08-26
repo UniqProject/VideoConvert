@@ -35,7 +35,7 @@ namespace VideoConvert.Core.Encoder
         private BackgroundWorker _bw;
 
         private const string Executable = "mplex.exe";
-        private const string Defaultparams = "-f 8 -r 0 -V -v 0";
+        private const string Defaultparams = "-f 8 -r 0 -V -v 1";
 
         public void SetJob(EncodeInfo job)
         {

@@ -18,6 +18,7 @@
 //=============================================================================
 
 using System;
+using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using VideoConvert.Core.Helpers;
@@ -216,7 +217,7 @@ namespace VideoConvert.Core.Encoder
             if (Math.Abs(targetFPS - _jobInfo.VideoStream.FPS) > 0)
                 fpsMode = targetFPS.ToString("0.000", AppSettings.CInfo);
 
-            sb.AppendFormat(AppSettings.CInfo, "\"{0:s}\" \"{1:s}\" --fps-target {2} --palette-mode keep ", inFile, outFile, fpsMode);
+            sb.AppendFormat(AppSettings.CInfo, "\"{0:s}\" --output \"{1:s}\" --fps-target {2} --palette-mode keep ", inFile, outFile, fpsMode);
 
             if (sub.KeepOnlyForcedCaptions)
                 sb.AppendFormat("--forced-only ");
@@ -271,6 +272,10 @@ namespace VideoConvert.Core.Encoder
                 if (_jobInfo.ExitCode == 0)
                 {
                     _jobInfo.TempFiles.Add(inFile);
+                    if (sub.Format == "XML")
+                    {
+                        GetTempImages(inFile);
+                    }
                     if (sub.Format == "VobSub")
                         _jobInfo.TempFiles.Add(Path.ChangeExtension(inFile, "sub"));
 
@@ -280,6 +285,7 @@ namespace VideoConvert.Core.Encoder
                         _bw.ReportProgress(-1, createSubtitle);
 
                         sub.TempFile = GenerateSpuMuxSubtitle(outFile);
+                        sub.Format = "SpuMux";
                     }
                     else
                     {
@@ -294,6 +300,28 @@ namespace VideoConvert.Core.Encoder
             _jobInfo.CompletedStep = _jobInfo.NextStep;
 
             e.Result = _jobInfo;
+        }
+
+        private void GetTempImages(string inFile)
+        {
+            XmlDocument inSubFile = new XmlDocument();
+            inSubFile.Load(inFile);
+            XmlNodeList spuList = inSubFile.SelectNodes("//Graphic");
+
+            if (spuList != null)
+                foreach (XmlNode spu in spuList)
+                {
+                    string fileName = spu.InnerText;
+
+                    if (string.IsNullOrEmpty(Path.GetDirectoryName(fileName)))
+                    {
+                        string filePath = Path.GetDirectoryName(inFile);
+                        if (string.IsNullOrEmpty(filePath))
+                            filePath = string.Empty;
+                        fileName = Path.Combine(filePath, fileName);
+                    }
+                    _jobInfo.TempFiles.Add(fileName);
+                }
         }
 
         private readonly Regex _readCaptions = new Regex(@"^#>\s+?(\d*?)\s\(.*$",

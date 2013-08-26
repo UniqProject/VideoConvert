@@ -125,7 +125,7 @@ namespace VideoConvert.Core.Encoder
                             RedirectStandardOutput = true,
                             RedirectStandardInput = true,
                             Arguments =
-                                string.Format("-s{0:0} \"{1}\"", _jobInfo.StreamId,
+                                string.Format("-s {0:0} \"{1}\"", _jobInfo.StreamId,
                                               sub.TempFile)
                         };
 

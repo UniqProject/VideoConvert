@@ -852,6 +852,8 @@ namespace VideoConvert.Core
                     if (format.ToLowerInvariant() == "ssa" || format.ToLowerInvariant() == "ass")
                         return true;
                     return false;
+                case OutputType.OutputDvd:
+                    return true;
             }
 
             return false;

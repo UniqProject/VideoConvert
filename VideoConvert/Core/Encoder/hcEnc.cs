@@ -263,6 +263,9 @@ namespace VideoConvert.Core.Encoder
                     Log.InfoFormat("Exit Code: {0:g}", _jobInfo.ExitCode);
                     if (_jobInfo.ExitCode == 0)
                     {
+                        _jobInfo.VideoStream.IsRawStream = false;
+                        _jobInfo.VideoStream.Encoded = true;
+
                         _jobInfo.TempFiles.Add(inputFile);
                         _jobInfo.VideoStream.TempFile = outFile;
                         _jobInfo.TempFiles.Add(_jobInfo.AviSynthScript);
