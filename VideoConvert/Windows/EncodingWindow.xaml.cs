@@ -854,7 +854,7 @@ namespace VideoConvert.Windows
                     {
                         encodingSteps++;   // premux streams for dvdauthor
                         if (job.SubtitleStreams.Count > 0)
-                            encodingSteps += 2;    // premux subtitles
+                            encodingSteps += job.SubtitleStreams.Count;    // premux subtitles
                     }
 
                 } // end if videostream != null
