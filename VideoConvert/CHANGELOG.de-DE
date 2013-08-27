@@ -1,4 +1,10 @@
-﻿- [fix]     DVD encoding funktioniert wieder korrekt.
+﻿- [fix]     Crash durch eine fehlende DLL-Datei behoben.
+- [fix]     Die Gesamtfortschrittsanzeige bei DVD encoding mit mehreren Untertiteln wird wieder korrekt
+            angezeigt.
+- [change]  Benutzung von nightly builds von dvdauthor ab jetzt möglich.
+
+0.32.956.1017
+- [fix]     DVD encoding funktioniert wieder korrekt.
 
 0.31.955.2230
 - [update]  MediaInfo Bibliothek auf Version 0.7.64 aktualisiert

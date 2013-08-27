@@ -1,4 +1,9 @@
-﻿- [fix]     DVD encoding works correctly again.
+﻿- [fix]     Crash because of missing dll file fixed.
+- [fix]     Fix overall progressbar for dvd encoding with subtitles.
+- [change]  Version detection for dvdauthor git compile added.
+
+0.32.956.1017
+- [fix]     DVD encoding works correctly again.
 
 0.31.955.2230
 - [update]  Updated MediaInfo library to 0.7.64.
