@@ -19,33 +19,44 @@
 
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace Converters
 {
-    public class DateTimeConverter : IValueConverter
+    [ValueConversion(typeof(Boolean), typeof(Visibility))]
+    public class BooleanToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value,
-                           Type targetType,
-                           object parameter,
-                           CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            if (value != null)
+            // Paramater is a boolean which inverts the output.
+            var param = System.Convert.ToBoolean(parameter, CultureInfo.InvariantCulture);
+
+            if (value == null)
             {
-                return ((DateTime) value).ToString("dd.MM.yyyy HH:mm:ss", culture);
+                return Visibility.Collapsed;
             }
-            else
+
+            if (value is Boolean)
             {
-                return String.Empty;
+                if (param)
+                {
+                    return (bool)value ? Visibility.Collapsed : Visibility.Visible;
+                }
+                else
+                {
+                    return (bool)value ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
+
+            return value;
         }
 
-        public object ConvertBack(object value,
-                                  Type targetType,
-                                  object parameter,
-                                  CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            return DateTime.Parse(value.ToString());
+            return null;
         }
     }
 }
