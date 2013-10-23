@@ -247,14 +247,6 @@
       <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
       <Name>Converters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\libs\Caliburn.Metro\Caliburn.Metro.Core\Caliburn.Metro.Core.csproj">
-      <Project>{3e257c20-b95a-40c5-881e-9f3d834ccb4e}</Project>
-      <Name>Caliburn.Metro.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\libs\Caliburn.Metro\Caliburn.Metro\Caliburn.Metro.csproj">
-      <Project>{88f9ee49-e99f-4dfd-9b7b-4c52fad007bb}</Project>
-      <Name>Caliburn.Metro</Name>
-    </ProjectReference>
     <ProjectReference Include="..\libs\Caliburn.Micro\src\Caliburn.Micro.Platform\Caliburn.Micro.Platform.NET45.csproj">
       <Project>{ef2c0c7d-3ffe-4884-9aac-7622fee66809}</Project>
       <Name>Caliburn.Micro.Platform.NET45</Name>
@@ -334,7 +326,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="Both" BuildVersion_DetectChanges="True" />
+      <UserProperties BuildVersion_DetectChanges="True" BuildVersion_BuildAction="Both" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

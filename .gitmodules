@@ -8,3 +8,6 @@
 [submodule "libs/Caliburn.Metro"]
 	path = libs/Caliburn.Metro
 	url = https://github.com/ziyasal/Caliburn.Metro.git
+[submodule "libs/log4net"]
+	path = libs/log4net
+	url = https://github.com/apache/log4net.git
