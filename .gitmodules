@@ -1,0 +1,4 @@
+[submodule "libs/Caliburn.Micro"]
+	path = libs/Caliburn.Micro
+	url = https://git01.codeplex.com/caliburnmicro
+	branch = 1.x-maintenance
