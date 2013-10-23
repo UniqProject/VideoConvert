@@ -2,3 +2,6 @@
 	path = libs/Caliburn.Micro
 	url = https://git01.codeplex.com/caliburnmicro
 	branch = 1.x-maintenance
+[submodule "libs/MahApps.Metro"]
+	path = libs/MahApps.Metro
+	url = https://github.com/MahApps/MahApps.Metro.git
