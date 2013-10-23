@@ -81,15 +81,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Caliburn.Metro">
-      <HintPath>..\packages\Caliburn.Metro.0.4.0\lib\net45\Caliburn.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Caliburn.Metro.Core">
-      <HintPath>..\packages\Caliburn.Metro.0.4.0\lib\net45\Caliburn.Metro.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Caliburn.Micro">
-      <HintPath>..\packages\Caliburn.Micro.1.5.2\lib\net45\Caliburn.Micro.dll</HintPath>
-    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.2.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
@@ -99,9 +90,6 @@
     <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.0.11.1.20-ALPHA\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="SevenZipSharp">
       <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
@@ -259,6 +247,26 @@
       <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
       <Name>Converters</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libs\Caliburn.Metro\Caliburn.Metro.Core\Caliburn.Metro.Core.csproj">
+      <Project>{3e257c20-b95a-40c5-881e-9f3d834ccb4e}</Project>
+      <Name>Caliburn.Metro.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Caliburn.Metro\Caliburn.Metro\Caliburn.Metro.csproj">
+      <Project>{88f9ee49-e99f-4dfd-9b7b-4c52fad007bb}</Project>
+      <Name>Caliburn.Metro</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Caliburn.Micro\src\Caliburn.Micro.Platform\Caliburn.Micro.Platform.NET45.csproj">
+      <Project>{ef2c0c7d-3ffe-4884-9aac-7622fee66809}</Project>
+      <Name>Caliburn.Micro.Platform.NET45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\MahApps.Metro\MahApps.Metro.Resources\MahApps.Metro.Resources.csproj">
+      <Project>{e708ac99-605b-42a0-8d20-abca8fe42dd2}</Project>
+      <Name>MahApps.Metro.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\MahApps.Metro\MahApps.Metro\MahApps.Metro.NET45.csproj">
+      <Project>{942d11c4-29f5-46c4-8c14-4b976d56c637}</Project>
+      <Name>MahApps.Metro.NET45</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UpdateCore\UpdateCore.csproj">
       <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
       <Name>UpdateCore</Name>
@@ -326,7 +334,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_DetectChanges="True" BuildVersion_BuildAction="Both" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="Both" BuildVersion_DetectChanges="True" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
