@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5E57C453-7D99-48E0-BCAC-71BF7790C2DF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VideoConvert.Interop</RootNamespace>
+    <AssemblyName>VideoConvert.Interop</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\VideoConvert.Interop.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collections\SerializableDictionary.cs" />
+    <Compile Include="DataProviders\SystemFonts.cs" />
+    <Compile Include="DataProviders\TvdbLang.cs" />
+    <Compile Include="EventArgs\EncodeCompletedEventArgs.cs" />
+    <Compile Include="EventArgs\EncodeProgressEventArgs.cs" />
+    <Compile Include="EventArgs\SettingChangedEventArgs.cs" />
+    <Compile Include="Exceptions\GeneralApplicationException.cs" />
+    <Compile Include="Model\ApiKeys.cs" />
+    <Compile Include="Model\AudioInfo.cs" />
+    <Compile Include="Model\CpuExtensions.cs" />
+    <Compile Include="Model\DAR.cs" />
+    <Compile Include="Model\EncodeInfo.cs" />
+    <Compile Include="Model\EncodingStep.cs" />
+    <Compile Include="Model\EpisodeEntry.cs" />
+    <Compile Include="Model\IMDB\ImdbAKAEntry.cs" />
+    <Compile Include="Model\IMDB\ImdbApiVersion.cs" />
+    <Compile Include="Model\IMDB\ImdbClient.cs" />
+    <Compile Include="Model\IMDB\ImdbMovieData.cs" />
+    <Compile Include="Model\IMDB\ImdbReleaseDateEntry.cs" />
+    <Compile Include="Model\InputType.cs" />
+    <Compile Include="Model\MediaInfo\MediaInfoContainer.cs" />
+    <Compile Include="Model\MediaInfo\MediaInfoDLL.cs" />
+    <Compile Include="Model\MediaInfo\MediaInfoList.cs" />
+    <Compile Include="Model\MovieEntry.cs" />
+    <Compile Include="Model\OutputType.cs" />
+    <Compile Include="Model\Profiles\AACProfile.cs" />
+    <Compile Include="Model\Profiles\AC3Profile.cs" />
+    <Compile Include="Model\Profiles\EncoderProfile.cs" />
+    <Compile Include="Model\Profiles\hcEncProfile.cs" />
+    <Compile Include="Model\Profiles\MP3Profile.cs" />
+    <Compile Include="Model\Profiles\Mpeg2VideoProfile.cs" />
+    <Compile Include="Model\Profiles\OggProfile.cs" />
+    <Compile Include="Model\Profiles\ProfileType.cs" />
+    <Compile Include="Model\Profiles\QuickSelectProfile.cs" />
+    <Compile Include="Model\Profiles\StreamCopyProfile.cs" />
+    <Compile Include="Model\Profiles\VP8Profile.cs" />
+    <Compile Include="Model\Profiles\x264Profile.cs" />
+    <Compile Include="Model\Profiles\XmlProfiles.cs" />
+    <Compile Include="Model\StreamTreeNode.cs" />
+    <Compile Include="Model\Subtitles\ImageHolder.cs" />
+    <Compile Include="Model\Subtitles\SubCaption.cs" />
+    <Compile Include="Model\Subtitles\SubtitleStyle.cs" />
+    <Compile Include="Model\Subtitles\TextSubtitle.cs" />
+    <Compile Include="Utilities\AudioHelper.cs" />
+    <Compile Include="Utilities\LanguageHelper.cs" />
+    <Compile Include="Utilities\SettingsConstants.cs" />
+    <Compile Include="Model\StereoEncoding.cs" />
+    <Compile Include="Model\StereoVideoInfo.cs" />
+    <Compile Include="Model\StreamFormat.cs" />
+    <Compile Include="Model\SubtitleInfo.cs" />
+    <Compile Include="Model\TheMovieDB\DBTvShowEpisode.cs" />
+    <Compile Include="Model\TheMovieDB\DBTvShowSeason.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBBannerImage.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBCast.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBCastList.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBCertCountries.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBCertCountry.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBImageInfo.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBLanguage.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBLanguages.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBPosterImage.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBSeasonBannerImage.cs" />
+    <Compile Include="Model\TheMovieDB\MovieDBSeasonPosterImage.cs" />
+    <Compile Include="Model\TheMovieDB\TMDbSerializer.cs" />
+    <Compile Include="Model\VideoFormat.cs" />
+    <Compile Include="Model\VideoInfo.cs" />
+    <Compile Include="Model\x264\x264Device.cs" />
+    <Compile Include="Model\x264\X264Preset.cs" />
+    <Compile Include="Model\x264\x264Settings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\DirSecurity.cs" />
+    <Compile Include="Utilities\FileSystemHelper.cs" />
+    <Compile Include="Utilities\GenHelper.cs" />
+    <Compile Include="Utilities\NativeMethods.cs" />
+    <Compile Include="Utilities\Subtitles\BDNExport.cs" />
+    <Compile Include="Utilities\Subtitles\PNGImage.cs" />
+    <Compile Include="Utilities\Subtitles\SRTReader.cs" />
+    <Compile Include="Utilities\Subtitles\SRTWriter.cs" />
+    <Compile Include="Utilities\Subtitles\SSAReader.cs" />
+    <Compile Include="Utilities\VideoHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LICENSE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MediaInfo.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\VideoConvertLibraries\tvdblib.0.80\Library\src\TvdbLib\TvdbLib.csproj">
+      <Project>{23C34CF0-4E66-4F02-9EDC-83F292C6005C}</Project>
+      <Name>TvdbLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,562 @@
+﻿<UserControl x:Class="VideoConvertWPF.Views.OptionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:myconverters="clr-namespace:Converters;assembly=Converters"
+             xmlns:theMovieDb="clr-namespace:VideoConvert.Interop.Model.TheMovieDB;assembly=VideoConvert.Interop"
+             xmlns:setHandler="clr-namespace:VideoConvert.Interop.DataProviders;assembly=VideoConvert.Interop"
+             xmlns:controls="clr-namespace:VideoConvertWPF.Controls"
+             Name="OptionsViewWin"
+             d:DesignHeight="680" 
+             d:DesignWidth="1015"
+             mc:Ignorable="d" 
+             micro:Message.Attach="[Event Loaded] = [Action Load]" 
+             TextOptions.TextFormattingMode="Display">
+    <UserControl.Resources>
+        <ObjectDataProvider MethodName="get_SortedLangList" 
+                            ObjectType="{x:Type theMovieDb:MovieDBLanguages}"
+                            x:Key="MovieDbLangs" IsAsynchronous="True"/>
+
+        <ObjectDataProvider MethodName="get_CountryList"
+                            ObjectType="{x:Type theMovieDb:MovieDBCertCountries}"
+                            x:Key="MovieDbCertCountries" IsAsynchronous="True"/>
+
+        <ObjectDataProvider ObjectType="{x:Type setHandler:TvdbLang}"
+                            x:Key="TvDbLangList"
+                            MethodName="get_Languages" IsAsynchronous="True" />
+
+        <ObjectDataProvider ObjectType="{x:Type setHandler:SystemFonts}"
+                            MethodName="get_SystemFontFamilies"
+                            x:Key="SysFontFamilies" IsAsynchronous="True" />
+        <xctk:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <myconverters:StringLengthVisiblityConverter x:Key="StringLengthVisiblityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" MinHeight="33" />
+        </Grid.RowDefinitions>
+        
+        <TabControl Grid.Row="0" Margin="0" Name="OptionsTabControl" SelectedIndex="{Binding SelectedTab}" 
+                    BorderThickness="0 0 0 0" >
+            <TabItem Header="General" Name="GeneralTabItem">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" TextOptions.TextFormattingMode="Display">
+                    <StackPanel Orientation="Vertical" Margin="0,0,10,0">
+                        <StackPanel x:Name="General" Orientation="Vertical" Margin="10,10,0,0">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="General" FontSize="16" />
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <StackPanel Orientation="Vertical" Margin="0,0,20,0" HorizontalAlignment="Left">
+                                    <TextBlock Text="BDInfo Library" FontSize="14" Margin="0,0,0,10" TextOptions.TextFormattingMode="Display"/>
+                                    <StackPanel Orientation="Vertical" Margin="20,0,0,0" >
+                                        <CheckBox x:Uid="KeepOrder" Content="Keep original stream ordering" 
+            							    x:Name="KeepOrder" IsChecked="{Binding KeepStreamOrder}" />
+                                        <CheckBox x:Uid="FilterLoops" Content="Filter playlists that contain loops" 
+            							    x:Name="FilterLoops" IsChecked="{Binding FilterLoopingPlaylists}" />
+                                        <CheckBox x:Uid="FilterShort" Content="Filter short playlists" x:Name="FilterShort"
+            								    IsChecked="{Binding FilterShortPlaylists}" />
+                                        <StackPanel Orientation="Horizontal" Margin="50,3,0,3">
+                                            <Label x:Uid="FilterShortLessLabel" Content="Minimal playlist length in sec" 
+            								    x:Name="FilterShortLessLabel" VerticalAlignment="Center" TextOptions.TextFormattingMode="Display"/>
+                                            <TextBox x:Uid="FilterShortValue" Height="23" Margin="6,0,0,0" x:Name="FilterShortValue"
+            								    VerticalAlignment="Center" Width="55" 
+            								    IsEnabled="{Binding IsChecked, ElementName=FilterShort}" 
+            								    Text="{Binding FilterShortPlaylistsValue}" HorizontalContentAlignment="Center"
+            								    VerticalContentAlignment="Center" TextOptions.TextFormattingMode="Display"/>
+                                        </StackPanel>
+                                        <CheckBox x:Uid="EnableSSIF" Content="Enable SSIF scanning" x:Name="EnableSSIF"
+            							    IsChecked="{Binding EnableSSIFScan}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <StackPanel Orientation="Vertical" >
+                                        <TextBlock Text="System" FontSize="14" Margin="0,0,0,10" TextOptions.TextFormattingMode="Display"/>
+                                        <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Process priority" MinWidth="200" Margin="0,0,0,5" 
+            								        x:Name="ProcessPriorityLabel" VerticalAlignment="Center" Padding="0" />
+                                                <ComboBox Margin="0,0,0,5" x:Name="ProcessPriority" VerticalAlignment="Center" 
+            								        Width="200" VerticalContentAlignment="Center" Padding="10,3"  
+            								        HorizontalContentAlignment="Stretch" SelectedIndex="{Binding ProcessPriority}">
+                                                    <ComboBoxItem Content="Realtime" />
+                                                    <ComboBoxItem Content="High" />
+                                                    <ComboBoxItem Content="Higher" />
+                                                    <ComboBoxItem Content="Normal" IsSelected="True" />
+                                                    <ComboBoxItem Content="Lower" />
+                                                    <ComboBoxItem Content="Low" />
+                                                </ComboBox>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Language" MinWidth="200"  Margin="0" x:Name="LanguageLabel" 
+            								        VerticalAlignment="Center" Padding="0"/>
+                                                <ComboBox Margin="0" x:Name="LanguageSelect" VerticalAlignment="Center" 
+            								        Width="200" VerticalContentAlignment="Center" Padding="10,3" 
+            								        HorizontalContentAlignment="Stretch" SelectedValuePath="LangCode" 
+            								        DisplayMemberPath="LangName" />
+                                            </StackPanel>
+                                            <CheckBox Content="Use Hardware rendering" IsChecked="{Binding UseHardwareRendering}"
+            							        x:Name="HardwareRenderingEnable"  />
+                                            <CheckBox Content="Show Changelog after update" IsChecked="{Binding ShowChangeLog}"
+            							        x:Name="ShowChangeLogAfterUpdate" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                        <TextBlock Text="Auto update" FontSize="14" Margin="0,0,0,10"/>
+                                        <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Autoupdate frequency:" MinWidth="200" Margin="0,0,0,5" 
+            								x:Name="AutoUpdateHeader" Padding="0" VerticalAlignment="Center" TextOptions.TextFormattingMode="Display" />
+                                                <ComboBox Margin="0,0,0,5" x:Name="AutoUpdateFrequency" VerticalAlignment="Center"
+            								Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+            								SelectedIndex="{Binding UpdateFrequency}" Padding="10,3"  >
+                                                    <ComboBoxItem Content="At start" />
+                                                    <ComboBoxItem Content="Daily" />
+                                                    <ComboBoxItem Content="Weekly" />
+                                                </ComboBox>
+                                            </StackPanel>
+                                            <TextBlock Height="21" Margin="0" x:Name="LastUpdatedLabel" Padding="0"
+            							Text="{Binding LastUpdateRun, FallbackValue='', StringFormat=Last update: \{0:dd/MM/yyyy HH:mm:ss\}}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0" HorizontalAlignment="Left">
+                                <TextBlock Text="Encode process" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <CheckBox Content="Remove completed jobs from list" x:Name="DeleteCompletedJobsControl"
+            							IsChecked="{Binding DeleteCompletedJobs}" />
+                                    <CheckBox x:Name="DeleteTemporaryFilesControl" Content="Remove temporary files after finish"
+            							IsChecked="{Binding DeleteTemporaryFiles}" />
+                                    <CheckBox Content="Use 64 bit encoders" IsChecked="{Binding Use64BitEncoders}" 
+            							x:Name="Use64BitEncodersControl"  />
+                                    <CheckBox Content="Use ffmpeg builtin video scaling and cropping instead of AviSynth" 
+            							IsChecked="{Binding UseFfmpegScaling}" Margin="36,1,0,1" x:Name="UseFfmpegScalingControl" 
+            							IsEnabled="{Binding Use64BitEncoders}" />
+                                    <CheckBox Content="Use optimized encoders" IsChecked="{Binding UseOptimizedEncoders}"
+            							x:Name="UseOptimizedEncodersControl" />
+                                    <CheckBox Content="Limit decoder threads" IsChecked="{Binding LimitDecoderThreads}"
+            							x:Name="LimitDecoderThreadsControl" />
+                                    <CheckBox Content="Create XBMC info file after encoding" 
+            							IsChecked="{Binding CreateXbmcInfoFile}" x:Name="CreateXbmcInfoFileControl" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Encoder &amp; Output" Name="EncoderTabItem" >
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Name="Output" Orientation="Vertical" Margin="10,10,0,0">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="Directories" FontSize="16" />
+                            </Border>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Temporary files Directory" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="130" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Height="23" Name="DemuxLocation" Text="{Binding DemuxLocation}"
+                                                 VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+                                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" 
+                                                Name="SelectDemuxLocation" VerticalAlignment="Center"
+                                                micro:Message.Attach="[Event Click] = [Action SelectTempLocation]" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,20">
+                                <TextBlock Text="Output Directory" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="130" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Height="23" HorizontalAlignment="Stretch" Name="OutputLocation"
+                                                 Text="{Binding OutputLocation}" VerticalAlignment="Center" />
+                                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" 
+                                                Name="BrowseOutputLocation" VerticalAlignment="Center"
+                                                micro:Message.Attach="[Event Click] = [Action SelectOutputLocation]" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Name="Encoder" Orientation="Vertical" Margin="10,10,0,0">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="Encoder" FontSize="16" />
+                            </Border>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,20">
+                                <TextBlock Text="Encoder Directory" FontSize="14" Margin="0,0,0,10" />
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="130" />
+                                            <ColumnDefinition Width="130" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Height="23" HorizontalAlignment="Stretch" Name="EncoderPath"
+                                                 Text="{Binding ToolsPath}" VerticalAlignment="Center" />
+                                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" 
+                                                Name="SelectEncoderPath" VerticalAlignment="Center" 
+                                                micro:Message.Attach="[Event Click] = [Action SelectEncoderLocation]"/>
+                                        <Button Grid.Column="2" Content="Check installed" HorizontalAlignment="Stretch" 
+                                                Name="ReloadEncoders" VerticalAlignment="Center" IsEnabled="{Binding ReloadButtonEnabled}"
+                                                micro:Message.Attach="[Event Click] = [Action ReloadEncoders]"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,20">
+                                <TextBlock Text="Java Directory" FontSize="14" Margin="0,0,0,10" />
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="130" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Height="23" HorizontalAlignment="Stretch" Name="JavaPath"
+                                                 Text="{Binding JavaInstallPath}" VerticalAlignment="Center" />
+                                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch"
+                                                Name="JavaPathSelection" VerticalAlignment="Center"
+                                                micro:Message.Attach="[Event Click] = [Action SelectJavaLocation]"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,20" Height="Auto" CanVerticallyScroll="True">
+                                <TextBlock Text="Installed Encoder" FontSize="14" Margin="0,0,0,10" />
+                                <StackPanel Margin="20,0,0,0">
+                                    <ItemsControl ItemsSource="{Binding EncoderList}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Visibility="{Binding Path=Value, Converter={StaticResource StringLengthVisiblityConverter}}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="150" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                                               Text="{Binding Path=Key}" FontWeight="DemiBold" />
+                                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Margin="5,0" Text="version" />
+                                                    <TextBlock Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                                               Text="{Binding Path=Value}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="XBMC info writer" Name="XbmcTabItem">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel x:Name="MovieDbSettings" Orientation="Vertical" Margin="10,10,0,0">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="TheMovieDB.com settings" FontSize="16" />
+                            </Border>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Search" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Preferred Language:" HorizontalAlignment="Stretch"
+            								x:Name="MovieDbPreferredSearchLangLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" DisplayMemberPath="Name" HorizontalAlignment="Stretch" 
+            								Margin="10,0" x:Name="MovieDbPreferredSearchLanguage" SelectedValuePath="Code" 
+            								VerticalAlignment="Top" HorizontalContentAlignment="Stretch" 
+            								ItemsSource="{Binding Source={StaticResource MovieDbLangs}}"
+            								SelectedValue="{Binding MovieDBLastLanguage, FallbackValue=en}"
+            								Padding="10,3"  />
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Fallback Language:" HorizontalAlignment="Stretch" 
+            								x:Name="MovieDbFallbackSearchLangLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" DisplayMemberPath="Name" HorizontalAlignment="Stretch"
+            								x:Name="MovieDbFallbackSearchLanguage" SelectedValuePath="Code" VerticalAlignment="Center"
+            								Margin="10,0" HorizontalContentAlignment="Stretch" Padding="10,3" 
+            								ItemsSource="{Binding Source={StaticResource MovieDbLangs}}"
+            								SelectedValue="{Binding MovieDBLastFallbackLanguage, FallbackValue=en}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Certification" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Preferred Certification Country:" HorizontalAlignment="Stretch"
+            								x:Name="MovieDbCertCountryLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" DisplayMemberPath="CountryName" HorizontalAlignment="Stretch"
+            								Margin="10,0" x:Name="MovieDbCertCountry" SelectedValuePath="CountryName"
+            								VerticalAlignment="Center" HorizontalContentAlignment="Stretch" Padding="10,3" 
+            								ItemsSource="{Binding Source={StaticResource MovieDbCertCountries}}"
+            								SelectedValue="{Binding MovieDBLastRatingCountry, FallbackValue=us}"/>
+                                    </Grid>
+                                    <Border BorderThickness="0 0 0 1" Margin="0,0,0,3" BorderBrush="LightGray">
+                                        <Grid Margin="0,0,0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="350"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Preferred Certification Prefix:" HorizontalAlignment="Stretch" 
+            									x:Name="MovieDbPreferredCertPrefixLabel" VerticalAlignment="Center" />
+                                            <TextBox Grid.Column="1" HorizontalAlignment="Stretch" x:Name="MovieDbPreferredCertPrefix"
+            									VerticalAlignment="Center" Text="{Binding MovieDBPreferredCertPrefix, FallbackValue='Rated '}" 
+            									Margin="10,0" VerticalContentAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Fallback Certification Country:" HorizontalAlignment="Stretch" 
+            								x:Name="MovieDbFallbackCertCountryLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" DisplayMemberPath="CountryName" HorizontalAlignment="Stretch"
+            								x:Name="MovieDbFallbackCertCountry" SelectedValuePath="CountryName" VerticalAlignment="Center"
+            								Margin="10,0" HorizontalContentAlignment="Stretch" Padding="10,3" 
+            								ItemsSource="{Binding Source={StaticResource MovieDbCertCountries}}"
+            								SelectedValue="{Binding MovieDBLastFallbackRatingCountry, FallbackValue=us}"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Fallback Certification Prefix:" HorizontalAlignment="Stretch" 
+            								x:Name="MovieDbFallbackCertPrefixLabel" VerticalAlignment="Center" />
+                                        <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,0" x:Name="MovieDbFallbackCertPrefix"
+            								VerticalAlignment="Center" Text="{Binding MovieDBFallbackCertPrefix, FallbackValue='Rated '}"
+            								VerticalContentAlignment="Center" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Rating Source" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Select your preferred rating source" HorizontalAlignment="Stretch" 
+            								x:Name="MovieDbRatingSourceLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"  x:Name="MovieDbRatingSource" 
+            								VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="10,0"
+            								SelectedIndex="{Binding MovieDBRatingSrc, FallbackValue=0}"
+            								HorizontalContentAlignment="Stretch" Padding="10,3"  >
+                                            <ComboBoxItem x:Name="TheMovieDbItem" Content="TheMovieDB" />
+                                            <ComboBoxItem x:Name="ImdbItem" Content="IMDB" />
+                                        </ComboBox>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel x:Name="TvDbSettings" Orientation="Vertical" Margin="10,10,0,0">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="TheTVDB.com settings" FontSize="16" />
+                            </Border>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Cache Path" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="130" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" HorizontalAlignment="Stretch" x:Name="TvDbCachePath" 
+            								Text="{Binding TvDBCachePath}" VerticalAlignment="Center"
+            								VerticalContentAlignment="Center" />
+                                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" x:Name="TvDbCachePathLocateBtn"
+            								VerticalAlignment="Center" Margin="1,0,10,0" 
+            								micro:Message.Attach="[Event Click] = [Action SelectTvDbCachePath]"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Title Parse string" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <TextBox HorizontalAlignment="Stretch" Margin="0,0,10,0" x:Name="TvDbParseString" 
+            							VerticalAlignment="Center" VerticalContentAlignment="Center"
+            							Text="{Binding TvDBParseString, FallbackValue=%show% - S%season%E%episode% - %episode_name%}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Search Language" FontSize="14" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Preferred search Language:" HorizontalAlignment="Stretch"
+            								x:Name="TvDbPreferredSearchLangLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" DisplayMemberPath="Name" HorizontalAlignment="Stretch" 
+            								HorizontalContentAlignment="Stretch" Margin="10,0" x:Name="TvDbPreferredSearchLanguage"
+            								SelectedValuePath="Abbriviation" VerticalAlignment="Center"
+            								ItemsSource="{Binding Source={StaticResource TvDbLangList}}"
+            								SelectedValue="{Binding TvDBPreferredLanguage, FallbackValue=en}" Padding="10,3" />
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Fallback search Language:" HorizontalAlignment="Stretch" 
+            								x:Name="TvDbFallbackSearchLangLabel" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" DisplayMemberPath="Name" HorizontalAlignment="Stretch" 
+            								HorizontalContentAlignment="Stretch" Margin="10,0" x:Name="TvDbFallbackSearchLanguage"
+            								SelectedValuePath="Abbriviation" VerticalAlignment="Center"
+            								ItemsSource="{Binding Source={StaticResource TvDbLangList}}"
+            								SelectedValue="{Binding TvDBFallbackLanguage, FallbackValue=en}" Padding="10,3" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="tsMuxeR &amp; subtitles" Name="TsMuxerTabItem">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel x:Name="TsMuxerSettings" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="tsMuxeR settings" FontSize="16" SnapsToDevicePixels="True" />
+                            </Border>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="General" FontSize="14" Margin="0,0,0,10" SnapsToDevicePixels="True" />
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <CheckBox Content="Use async I/O" x:Name="TsMuxeRUseAsyncIo" 
+            							IsChecked="{Binding TSMuxeRUseAsyncIO}" />
+                                    <CheckBox Content="Blu-Ray Audio PES" x:Name="TsMuxeRBlurayAudioPes"
+            							IsChecked="{Binding TSMuxeRBlurayAudioPES}" />
+                                    <CheckBox Content="Add picture timing info for video tracks" x:Name="TsMuxeRVideoTimingInfo"
+            							IsChecked="{Binding TSMuxeRVideoTimingInfo}" />
+                                    <CheckBox Content="Continually insert SPS/PPS for video tracks" x:Name="TsMuxeRAddVideoPps" 
+            							IsChecked="{Binding TSMuxeRAddVideoPPS}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel x:Name="SubtitleSettings" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left">
+                            <Border BorderThickness="0 0 0 1" BorderBrush="LightGray">
+                                <TextBlock Text="Subtitle settings" FontSize="16" SnapsToDevicePixels="True" />
+                            </Border>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Font" FontSize="14" Margin="0,0,0,10" SnapsToDevicePixels="True" />
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Used font" Height="21" HorizontalAlignment="Stretch" 
+            								x:Name="SubtitleFontDetailsLabel" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                                        <ComboBox Grid.Column="1" x:Name="SubtitleFontSwitcher" VerticalAlignment="Center" 
+            								HorizontalAlignment="Stretch" Margin="10,0"
+            								SelectedValuePath="Source"
+            								SelectedValue="{Binding TSMuxeRSubtitleFont, FallbackValue=Microsoft Sans Serif}" 
+            								ItemsSource="{Binding Source={StaticResource SysFontFamilies}}" SnapsToDevicePixels="True" />
+                                    </Grid>
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="45" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Font Size" HorizontalAlignment="Stretch" x:Name="SubtitleFontSizeLabel" 
+            								VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Value, ElementName=SubtitleFontSizeSelect}" Margin="10,0,0,0" 
+            								x:Name="SubtitleFontSizeHumanReadable" Padding="0" VerticalAlignment="Center" 
+            								TextAlignment="Center" HorizontalAlignment="Stretch" />
+                                        <Slider Grid.Column="2" x:Name="SubtitleFontSizeSelect" VerticalAlignment="Center" 
+            								TickPlacement="Both" AutoToolTipPlacement="TopLeft" Maximum="150" Margin="10,0"
+            								HorizontalAlignment="Stretch" LargeChange="10" SmallChange="1" TickFrequency="10"
+            								Minimum="8" IsMoveToPointEnabled="True" Value="{Binding TSMuxeRSubtitleFontSize, FallbackValue=24}" SnapsToDevicePixels="True" />
+                                    </Grid>
+                                    <Grid Margin="0,0,0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Font Color" HorizontalAlignment="Stretch" x:Name="SubtitleFontColorLabel" 
+            								VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                                        <xctk:ColorPicker Grid.Column="1" x:Name="SubtitleFontColorPicker" Margin="10,0" VerticalAlignment="Center"
+            								DisplayColorAndName="True" ShowRecentColors="True" 
+            								SelectedColor="{Binding TSMuxeRSubtitleColor, FallbackValue=#FFFFFFFF}" SnapsToDevicePixels="True" >
+                                            
+                                        </xctk:ColorPicker>
+                                    </Grid>
+                                    <TextBlock Text="Preview" x:Name="SubtitlePreview" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+            							FontSize="{Binding Value, ElementName=SubtitleFontSizeSelect}"
+            							Foreground="{Binding SelectedColor, Converter={StaticResource ColorToSolidColorBrushConverter}, ElementName=SubtitleFontColorPicker}" 
+            							Background="#FF0078FF" TextAlignment="Center"
+            							FontFamily="{Binding SelectedValue, ElementName=SubtitleFontSwitcher}" SnapsToDevicePixels="True" TextOptions.TextHintingMode="Animated" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                                <TextBlock Text="Offsets" FontSize="14" Margin="0,0,0,10" SnapsToDevicePixels="True" />
+                                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Addition border in pixels" HorizontalAlignment="Stretch" 
+            								x:Name="SubtitleAdditionalBorderLabel" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                                        <xctk:IntegerUpDown Grid.Column="1" x:Name="SubtitleAdditionalBorder" Increment="1" Maximum="1999" 
+            								Minimum="0" Margin="10,0" CultureInfo="en-US" HorizontalAlignment="Stretch" 
+            								Value="{Binding TSMuxerSubtitleAdditionalBorder, FallbackValue=2}" 
+            								SnapsToDevicePixels="True" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="350"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Vertical position, bottom offset in pixels" HorizontalAlignment="Stretch" 
+            								x:Name="SubtileBottomOffsetLabel" VerticalAlignment="Center" />
+                                        <xctk:IntegerUpDown Grid.Column="1" x:Name="SubtitleBottomOffset" Increment="1" Maximum="1999" Minimum="0"
+            								Margin="10,0" CultureInfo="en-US" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+            								Value="{Binding TSMuxeRBottomOffset, FallbackValue=24}" SnapsToDevicePixels="True" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        <!--  StatusPanel  -->
+        <controls:StatusPanel x:Name="LoadingPanel"
+                              Height="80"
+                              VerticalAlignment="Bottom"
+                              Panel.ZIndex="10"
+                              IsLoading="{Binding ShowStatusWindow}"
+                              Message="{Binding StatusLabel}"
+                              SubMessage="Please Wait ..." Grid.Row="0" />
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" >
+            <Button Content="Close" IsDefault="True" micro:Message.Attach="[Event Click] = [Action Close]"
+                    HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="100" />
+        </StackPanel>
+    </Grid>
+</UserControl>

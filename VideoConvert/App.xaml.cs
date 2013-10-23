@@ -25,13 +25,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using VideoConvert.Core;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 using log4net.Filter;
 using log4net.Layout;
+using VideoConvert.Core;
 using System.Windows.Media;
 using System.Windows.Interop;
 
@@ -125,7 +125,7 @@ namespace VideoConvert
         internal static void ReconfigureLogger()
         {
 
-            string logFile = Path.Combine(AppSettings.AppSettingsPath, "ErrorLog.txt");
+            string logFile = Path.Combine(AppSettings.AppSettingsPath, "ErrorLog.xml");
             
             if (Log.Logger.Repository.Configured)
             {
@@ -168,6 +168,22 @@ namespace VideoConvert
 
             layout.ActivateOptions();
 
+            XmlLayoutSchemaLog4j xmlLayout = new XmlLayoutSchemaLog4j(true);
+            RollingFileAppender fileAppender = new RollingFileAppender
+            {
+                PreserveLogFileNameExtension = true,
+                StaticLogFileName = false,
+                DatePattern = "yyyyMMdd",
+                RollingStyle = RollingFileAppender.RollingMode.Date,
+                ImmediateFlush = true,
+                File = logFile,
+                Encoding = new UTF8Encoding(true),
+                Layout = xmlLayout
+            };
+
+            fileAppender.AddFilter(filter);
+            fileAppender.ActivateOptions();
+
             FileAppender file = new FileAppender
                 {
                     Layout = layout,
@@ -180,7 +196,7 @@ namespace VideoConvert
 
             file.ActivateOptions();
 
-            BasicConfigurator.Configure(file);
+            BasicConfigurator.Configure(fileAppender);
 
             if (AppSettings.UseDebug)
             {

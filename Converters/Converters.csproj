@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -42,10 +45,14 @@
     <Compile Include="Int32ToBooleanConverter.cs" />
     <Compile Include="Int32ToBooleanInvertedConverter.cs" />
     <Compile Include="Int32ToVisibilityConverter.cs" />
+    <Compile Include="ObjectTypeToVisibilityConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringLengthToBooleanConverter.cs" />
     <Compile Include="StringLengthVisiblityConverter.cs" />
     <Compile Include="XmbcDateConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,48 @@
+﻿<controls:MetroWindow x:Class="VideoConvertWPF.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
+        xmlns:converters="clr-namespace:Converters;assembly=Converters"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="{Binding Path=WindowTitle}"
+        Width="1015"
+        Height="680"
+        MinWidth="1015"
+        MinHeight="670"
+        AllowDrop="True"
+        micro:Message.Attach="[Event Loaded] = [Action Load]"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True"
+        WindowStartupLocation="CenterScreen"
+        TextOptions.TextFormattingMode="Display"
+        ResizeMode="CanMinimize"
+        Icon="/VideoConvertWPF;component/Resources/Videos-Library-icon.png"  >
+    <Window.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/styles/controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TreeView.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo RenderOptions.ClearTypeHint="Enabled" />
+    </Window.TaskbarItemInfo>
+    <controls:MetroWindow.WindowCommands>
+        <controls:WindowCommands>
+            <Button Content="About" micro:Message.Attach="ShowAbout"/>
+        </controls:WindowCommands>
+    </controls:MetroWindow.WindowCommands>
+    <Grid>
+        <controls:MetroContentControl x:Name="MainViewModel" Visibility="{Binding ShowMainView, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}"/>
+        <controls:MetroContentControl x:Name="OptionsViewModel" Visibility="{Binding ShowOptions, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}"/>
+        <controls:MetroContentControl x:Name="ChangeLogViewModel" Visibility="{Binding ShowChangelog, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}" />
+        <controls:MetroContentControl x:Name="AboutViewModel" Visibility="{Binding ShowAboutView, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}" />
+    </Grid>
+</controls:MetroWindow>

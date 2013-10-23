@@ -1,9 +1,18 @@
-﻿using System;
-using System.Xml.Serialization;
-using UpdateCore.VersionInfo;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UpdateFileInfo.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the UpdateCore source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace UpdateCore
 {
+    using System;
+    using System.Xml.Serialization;
+    using VersionInfo;
+
     [XmlRoot("VideoConvertUpdateFile")]
     public class UpdateFileInfo : IDisposable
     {
@@ -48,6 +57,8 @@ namespace UpdateCore
         public ToolInfo OggEncLancer { get; set; }
         [XmlElement("lame")]
         public ToolInfo Lame { get; set; }
+        [XmlElement("lame_64")]
+        public ToolInfo Lame64 { get; set; }
         [XmlElement("vpxenc")]
         public ToolInfo VpxEnc { get; set; }
         [XmlElement("bdsup2sub")]
@@ -74,6 +85,7 @@ namespace UpdateCore
             HcEnc = new ToolInfo();
             OggEnc = new ToolInfo();
             Lame = new ToolInfo();
+            Lame64 = new ToolInfo();
             VpxEnc = new ToolInfo();
             BDSup2Sub = new ToolInfo();
         }

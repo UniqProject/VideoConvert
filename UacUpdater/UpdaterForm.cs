@@ -1,16 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-using UacUpdater.Properties;
-using UpdateCore;
-using SevenZip;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UpdaterForm.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the UacUpdater source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace UacUpdater
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Windows.Forms;
+    using Properties;
+    using SevenZip;
+    using UpdateCore;
+
     public partial class UpdaterForm : Form
     {
         private readonly string _updateFile;
@@ -21,7 +30,7 @@ namespace UacUpdater
         {
             InitializeComponent();
             string[] parameters = Environment.GetCommandLineArgs();
-            if (parameters.Count() >= 3)
+            if (parameters.Length >= 3)
             {
                 _updateFile = parameters.GetValue(1) as string;
                 _mainAppFile = parameters.GetValue(2) as string;

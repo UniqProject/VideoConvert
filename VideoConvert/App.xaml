@@ -24,9 +24,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:my="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=WPFToolkit.Extended"
-             xmlns:converters="clr-namespace:Converters;assembly=Converters" xmlns:core="clr-namespace:VideoConvert.Properties"
-             mc:Ignorable="d" x:Class="VideoConvert.App"
+    xmlns:converters="clr-namespace:Converters;assembly=Converters" xmlns:core="clr-namespace:VideoConvert.Properties"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d" x:Class="VideoConvert.App"
              StartupUri="Windows\MainWindow.xaml" Startup="ApplicationStartup" Exit="ApplicationExit"
              DispatcherUnhandledException="ApplicationDispatcherUnhandledException">
     <Application.Resources>
@@ -36,8 +36,8 @@
         <converters:StringLengthToBooleanConverter x:Uid="src:StringLengthToBooleanConverter_1" x:Key="StringLengthToBooleanConverter" />
         <converters:XmbcDateConverter x:Uid="converters:XmbcDateConverter_1" x:Key="XmbcDateConverter" />
         <core:Settings x:Uid="properties:Settings" x:Key="Settings"/>
-        <my:InverseBoolConverter x:Uid="my:InverseBoolConverter_1" x:Key="InverseBoolConverter" />
-        <my:ColorToSolidColorBrushConverter x:Uid="my:ColorToSolidColorBrushConverter_1" x:Key="ColorToSolidColorBrushConverter1" />
+        <xctk:InverseBoolConverter x:Uid="my:InverseBoolConverter_1" x:Key="InverseBoolConverter" />
+        <xctk:ColorToSolidColorBrushConverter x:Uid="my:ColorToSolidColorBrushConverter_1" x:Key="ColorToSolidColorBrushConverter1" />
         <ResourceDictionary x:Key="StringRes" x:Uid="ResourceDictionary_1">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary x:Uid="ResourceDictionary_2" Source="StringResources.xaml" />

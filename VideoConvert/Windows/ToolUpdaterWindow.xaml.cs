@@ -30,11 +30,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using log4net;
+using SevenZip;
 using UpdateCore;
 using VideoConvert.Core;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
-using SevenZip;
 
 namespace VideoConvert.Windows
 {

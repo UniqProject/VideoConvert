@@ -1,10 +1,19 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Updater.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the UpdateCore source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace UpdateCore
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Xml;
+    using System.Xml.Serialization;
+
     public class Updater
     {
         private static List<PackageInfo> _updateList;

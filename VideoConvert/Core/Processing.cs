@@ -652,6 +652,9 @@ namespace VideoConvert.Core
             VpxEnc vpxEnc = new VpxEnc();
             AppSettings.LastVpxEncVer = vpxEnc.GetVersionInfo(encPath);
 
+            XvidEnc xvidEnc = new XvidEnc();
+            string myVer = xvidEnc.GetVersionInfo(encPath);
+
             if (!String.IsNullOrEmpty(javaPath))
             {
                 BdSup2SubTool bdSup2Sub = new BdSup2SubTool();

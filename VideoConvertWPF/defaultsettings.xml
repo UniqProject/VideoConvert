@@ -1,0 +1,299 @@
+<?xml version="1.0"?>
+<dictionary>
+  <item>
+    <key>
+      <string>FirstStart</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>UseDebug</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">false</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>KeepStreamOrder</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>FilterLoopingPlaylists</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>FilterShortPlaylists</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>FilterShortPlaylistsValue</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">300</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>EnableSSIF</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>ProcessPriority</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">5</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>UseHardwareRendering</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>ShowChangeLog</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>UpdateFrequency</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">0</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>DeleteCompletedJobs</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>DeleteTemporaryFiles</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>Use64bitEncoders</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>UseFfmpegScaling</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">false</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>UseOptimizedEncoders</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>LimitDecoderThreads</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">false</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>CreateXbmcInfoFile</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBLastLanguage</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">en</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBLastFallbackLanguage</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">en</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBLastRatingCountry</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">us</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBPreferredCertPrefix</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">Rated </anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBLastFallbackRatingCountry</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">us</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBFallbackCertPrefix</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">Rated </anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>MovieDBRatingSource</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">0</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>TvDBParseString</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">%show% - S%season%E%episode% - %episode_name%</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>TvDBPreferredLanguage</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">en</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>TvDBFallbackLanguage</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">en</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRUseAsyncIO</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRBlurayAudioPES</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRVideoTimingInfo</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRAddVideoPPS</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:boolean" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">true</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRSubtitleFont</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">Microsoft Sans Serif</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRSubtitleFontSize</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">24</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRSubtitleColor</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:string" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">#FFFFFFFF</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxerSubtitleAdditionalBorder</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">2</anyType>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>tsMuxeRBottomOffset</string>
+    </key>
+    <value>
+      <anyType xmlns:q1="http://www.w3.org/2001/XMLSchema" d4p1:type="q1:int" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance">24</anyType>
+    </value>
+  </item>
+</dictionary>

@@ -1,4 +1,13 @@
-﻿namespace UpdateCore
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PackageInfo.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the UpdateCore source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace UpdateCore
 {
     public class PackageInfo
     {

@@ -76,7 +76,37 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="ManagedWinapi, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ManagedWinapi.0.3\ManagedWinapi.dll</HintPath>
+    </Reference>
+    <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -89,6 +119,24 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -125,6 +173,7 @@
     <Compile Include="Core\Encoder\TsMuxeR.cs" />
     <Compile Include="Core\Encoder\VpxEnc.cs" />
     <Compile Include="Core\Encoder\X264.cs" />
+    <Compile Include="Core\Encoder\XvidEnc.cs" />
     <Compile Include="Core\EncodingStep.cs" />
     <Compile Include="Core\Helpers\AudioHelper.cs" />
     <Compile Include="Core\Helpers\DAR.cs" />
@@ -336,6 +385,7 @@
     <None Include="LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -380,10 +430,6 @@
       <Project>{8762FBAD-B3B1-4ECF-97EF-AEB634BDD0AC}</Project>
       <Name>CheckBoxTreeViewLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\SevenZipSharp\SevenZip\SevenZip2010.csproj">
-      <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
-      <Name>SevenZip2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\VideoConvertLibraries\TMDbLib\TMDbLib\TMDbLib.csproj">
       <Project>{C0006F17-212A-474F-983E-7DA2F91E0233}</Project>
       <Name>TMDbLib</Name>
@@ -400,44 +446,15 @@
       <Project>{CE009BFA-5EF6-4153-B2A1-2FA79698A9AE}</Project>
       <Name>DirectShowLib-2008</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\log4net-1.2.11\src\log4net.vs2010.csproj">
-      <Project>{181FE707-E161-4722-9F38-6AAAB6FAA106}</Project>
-      <Name>log4net.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\ManagedWinapi\ManagedWinapi.csproj">
-      <Project>{FBD3EC1E-47E2-4D2D-81C9-D6506125A09A}</Project>
-      <Name>ManagedWinapi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UpdateCore\UpdateCore.csproj">
       <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
       <Name>UpdateCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\WPFToolKit\Release\v1.6.0\ExtendedWPFToolkitSolution\Src\WPFToolkit.Extended\WPFToolkit.Extended.csproj">
-      <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
-      <Name>WPFToolkit.Extended</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\BLURAY-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\btn_donate_LG.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\DVD-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Videos-1-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Videos-Library-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\x264_fire.gif" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images\" />
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="Shell\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AvsPlugins\AddGrainC.dll">
@@ -570,13 +587,20 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="profiles.xml" />
+    <Resource Include="Resources\Apps-system-software-update-icon.png" />
     <Resource Include="Resources\blue-bar.png" />
+    <Resource Include="Resources\BLURAY-icon.png" />
+    <Resource Include="Resources\btn_donate_LG.gif" />
     <Resource Include="Resources\configure.png" />
     <Resource Include="Resources\db_add.png" />
+    <Resource Include="Resources\DVD-icon.png" />
     <Resource Include="Resources\edit_add.png" />
     <Resource Include="Resources\editcut.png" />
     <Resource Include="Resources\editdelete.png" />
     <Resource Include="Resources\run.png" />
+    <Resource Include="Resources\Videos-1-icon.png" />
+    <Resource Include="Resources\Videos-Library-icon.png" />
+    <Resource Include="Resources\x264_fire.gif" />
     <Content Include="WriteChangeLog.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

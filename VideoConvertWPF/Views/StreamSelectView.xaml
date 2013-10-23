@@ -1,0 +1,194 @@
+﻿<UserControl x:Class="VideoConvertWPF.Views.StreamSelectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
+             xmlns:converters="clr-namespace:Converters;assembly=Converters"
+             xmlns:metroConverters="http://metro.mahapps.com/winfx/xaml/shared"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             d:DesignHeight="500" 
+             d:DesignWidth="1015"
+             mc:Ignorable="d" 
+             micro:Message.Attach="[Event Loaded] = [Action Load]" 
+             TextOptions.TextFormattingMode="Display">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TreeView.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:ObjectTypeToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
+            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MetroTreeViewItem}" x:Key="MetroCheckBoxTreeViewItem">
+                <Setter Property="ItemsSource" Value="{Binding Children}" />
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                            <ControlTemplate.Resources>
+                                <metroConverters:TreeViewMarginConverter Length="12" x:Key="LengthConverter" />
+                            </ControlTemplate.Resources>
+                            <StackPanel>
+                                <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Padding="{TemplateBinding Padding}" MinHeight="{TemplateBinding MinHeight}">
+                                    <Grid Margin="{Binding Converter={StaticResource LengthConverter}, RelativeSource={x:Static RelativeSource.TemplatedParent}}" VerticalAlignment="Stretch">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="19" />
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
+                                                                  IsChecked="{Binding Path=IsExpanded, RelativeSource={x:Static RelativeSource.TemplatedParent}, Mode=TwoWay}" ClickMode="Press" />
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <CheckBox Margin="0,2,4,0" x:Name="PART_CheckedCheckBox" IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                                            <ContentPresenter x:Name="PART_Header" Content="{Binding Name, Mode=TwoWay}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <ItemsPresenter x:Name="ItemsHost">
+                                    <ItemsPresenter.LayoutTransform>
+                                        <ScaleTransform ScaleY="1" />
+                                    </ItemsPresenter.LayoutTransform>
+                                </ItemsPresenter>
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsExpanded" Value="False">
+                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"></Setter>
+                                </Trigger>
+                                <Trigger Property="HasItems" Value="False">
+                                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                                </Trigger>
+                                <Trigger SourceName="Border" Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource AccentColor3}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Foreground" Value="{DynamicResource BlackColorBrush}"></Setter>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentColorBrush}" />
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Foreground" Value="{DynamicResource GrayBrush5}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsEnabled" Value="False" />
+                                        <Condition Property="IsSelected" Value="True" />
+                                    </MultiTrigger.Conditions>
+                                    <MultiTrigger.Setters>
+                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush5}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource WhiteBrush}" />
+                                    </MultiTrigger.Setters>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True" />
+                                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="Border" Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource AccentColor2}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="130" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="115" />
+            <ColumnDefinition Width="115" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="185*" />
+            <RowDefinition Height="185*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="1" Grid.Row="0" Text="Title:" HorizontalAlignment="Stretch" Margin="10,0,0,0" Name="FileTitleLabel"
+                   VerticalAlignment="Center" SnapsToDevicePixels="True" />
+        
+        <TextBox Grid.Column="2" Grid.Row="0" Height="23" Name="FileTitle" VerticalAlignment="Center" FontWeight="DemiBold"
+                 Margin="10,0" controls:TextboxHelper.Watermark="Bitte Titel eingeben" Text="{Binding JobTitle}"
+                 controls:TextboxHelper.ClearTextButton="True" SnapsToDevicePixels="True" />
+        
+        <TextBlock Text="Encoding profile:" HorizontalAlignment="Stretch" Margin="10,0" Name="EncodingProfileLabel"
+                   Padding="0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" SnapsToDevicePixels="True" />
+        
+        <ComboBox DisplayMemberPath="Name" Height="21" HorizontalContentAlignment="Stretch"
+                  ItemsSource="{Binding Profiles}"
+                  Margin="10,0" Name="EncodingProfile" Padding="5,0" SelectedValuePath="Name" 
+                  SelectedValue="{Binding SelectedProfileName}" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                  SelectedItem="{Binding SelectedProfile}" Grid.Row="1" Grid.Column="2" FontWeight="DemiBold" SnapsToDevicePixels="True" />
+        
+        <TextBlock Text="Select Title:" Height="18" HorizontalAlignment="Stretch" Margin="10,0" Name="SelectedTitleLabel"
+                   Padding="0" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" SnapsToDevicePixels="True" />
+        
+        <ComboBox DisplayMemberPath="Name" Height="21" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Tree}"
+                  Margin="10,0" Name="SelectedTitle" Padding="5,0" SelectedIndex="{Binding SelectedIndex}" 
+                  SelectedValuePath="Name" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="DemiBold"
+                  SelectedItem="{Binding SelectedTitleInfo}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
+
+        <Button micro:Message.Attach="[Event Click] = [Action ClickOK]" Content="OK"  HorizontalAlignment="Stretch"
+                Margin="10,0" Name="OkButton" VerticalAlignment="Center" Grid.Column="3" Grid.Row="0" SnapsToDevicePixels="True" />
+
+        <Button Content="Cancel"  HorizontalAlignment="Stretch" IsCancel="True" Margin="10,0" Name="CancelButton"
+                VerticalAlignment="Center" Grid.Column="4" Grid.Row="0" SnapsToDevicePixels="True" />
+
+        <Button micro:Message.Attach="[Event Click] = [Action ClickMediaInfo]" Content="Media Info" 
+                HorizontalAlignment="Stretch" Margin="10,0" Name="XbmcMediaInfo" VerticalAlignment="Center" 
+                Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" SnapsToDevicePixels="True" />
+
+        <GroupBox Header="Stream Info" Margin="10,0" Name="FileInfoGroup" VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch" Grid.Row="3" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Column="1" SnapsToDevicePixels="True">
+            <Grid>
+                <TreeView HorizontalAlignment="Stretch" ItemsSource="{Binding SelectedTitleInfo.Children}" Name="TitleInfo" 
+                          micro:Message.Attach="[Event SelectedItemChanged] = [Action SetSelectedItem($this.SelectedItem)]" 
+                          HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource MetroCheckBoxTreeViewItem}" />
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Header="Audio settings" HorizontalAlignment="Stretch" Margin="10,0" Name="AudioOptionGroup"
+                  Visibility="{Binding SelectedNodeData, Converter={StaticResource ObjectToVisibilityConverter}, ConverterParameter=AudioInfo}"
+                  Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="3" VerticalAlignment="Stretch" SnapsToDevicePixels="True">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="MKV/WebM-only options" HorizontalAlignment="Stretch" Margin="15,10,0,0" 
+                           Name="AudioMkvOptionsLabel" FontWeight="Bold" TextWrapping="Wrap" SnapsToDevicePixels="True" />
+                
+                <CheckBox Content="Make stream default" HorizontalAlignment="Stretch" Margin="10,3,0,0"
+                          Name="AudioMKVDefault" IsChecked="{Binding MatroskaDefault}" SnapsToDevicePixels="True" />
+            </StackPanel>
+        </GroupBox>
+        
+        <GroupBox Header="Subtitle settings" HorizontalAlignment="Stretch" Margin="10,0" Name="SubtitleOptionGroup" VerticalAlignment="Stretch" 
+                  Visibility="{Binding SelectedNodeData, Converter={StaticResource ObjectToVisibilityConverter}, ConverterParameter=SubtitleInfo}"
+                  Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="3" SnapsToDevicePixels="True">
+            <StackPanel Orientation="Vertical">
+                <CheckBox Content="Keep only forced captions" HorizontalAlignment="Stretch" Margin="10,3,0,0" 
+                          Name="KeepOnlyForcedCaptions" IsChecked="{Binding KeepOnlyForced}" SnapsToDevicePixels="True" />
+                
+                <CheckBox Content="Render into video" HorizontalAlignment="Stretch" Margin="10,3,0,0" 
+                          Name="HardSubIntoVideo" IsChecked="{Binding HardcodeIntoVideo}" SnapsToDevicePixels="True" />
+                
+                <TextBlock Text="MKV-only options" HorizontalAlignment="Stretch" Margin="15,10,0,0"  
+                           Name="SubMkvOptionsLabel" FontWeight="Bold" TextWrapping="Wrap" SnapsToDevicePixels="True" />
+                
+                <CheckBox Content="Make stream default" HorizontalAlignment="Stretch" Margin="10,3,0,0" 
+                          Name="SubMKVDefault" IsChecked="{Binding MatroskaDefault}" SnapsToDevicePixels="True" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

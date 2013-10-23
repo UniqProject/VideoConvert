@@ -18,8 +18,27 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =============================================================================
 -->
-<Window x:Uid="MainForm" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" x:Class="VideoConvert.Windows.MainWindow" mc:Ignorable="d" Title="VideoConvert" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" FontFamily="Verdana" Loaded="WindowLoaded" Icon="/VideoConvert;component/Videos-Library.ico" WindowStyle="SingleBorderWindow" Width="1024" SnapsToDevicePixels="True" VerticalAlignment="Top" SizeToContent="Height" SizeChanged="MainFormSizeChanged" d:DesignHeight="422"
+<Window x:Uid="MainForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+        x:Class="VideoConvert.Windows.MainWindow" 
+        mc:Ignorable="d" 
+        Title="VideoConvert" 
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="CanMinimize" 
+        FontFamily="Verdana" 
+        Loaded="WindowLoaded" 
+        Icon="/VideoConvert;component/Videos-Library.ico" 
+        WindowStyle="SingleBorderWindow" 
+        Width="1024" 
+        SnapsToDevicePixels="True" 
+        VerticalAlignment="Top" 
+        SizeToContent="Height" 
+        SizeChanged="MainFormSizeChanged" 
+        d:DesignHeight="422"
         Name="MainForm">
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo x:Uid="TaskbarItemInfo_1" RenderOptions.ClearTypeHint="Enabled" />
@@ -54,31 +73,31 @@
             </ToolBar>
         </ToolBarTray>
         <GroupBox x:Uid="InputFilesGroup" Height="240" Margin="0,118,0,0" x:Name="InputFilesGroup" VerticalAlignment="Top" Header="File List">
-<Grid x:Uid="Grid_1">
-<ListView x:Uid="FileList" Margin="6,6,6,5" x:Name="FileList" BorderThickness="0.5" ItemsSource="{Binding JobCollection}">
-<ListView.View>
-<GridView x:Uid="GridView_1" AllowsColumnReorder="False" RenderOptions.ClearTypeHint="Auto">
-<GridViewColumn x:Uid="GridViewColumn_1" Header="Name" Width="240" DisplayMemberBinding="{Binding JobName}" />
-<GridViewColumn x:Uid="GridViewColumn_2" Header="Format" Width="135" DisplayMemberBinding="{Binding FormattedInput}" />
-<GridViewColumn x:Uid="GridViewColumn_3" Header="Source" Width="425" DisplayMemberBinding="{Binding InputFile}" />
-<GridViewColumn x:Uid="GridViewColumn_4" Header="Output format" Width="135" DisplayMemberBinding="{Binding EncodingProfile.OutFormatStr}" />
-</GridView>
-</ListView.View>
-</ListView>
+            <Grid x:Uid="Grid_1">
+                <ListView x:Uid="FileList" Margin="6,6,6,5" x:Name="FileList" BorderThickness="0.5" ItemsSource="{Binding JobCollection}">
+                    <ListView.View>
+                            <GridView x:Uid="GridView_1" AllowsColumnReorder="False" RenderOptions.ClearTypeHint="Auto">
+                            <GridViewColumn x:Uid="GridViewColumn_1" Header="Name" Width="240" DisplayMemberBinding="{Binding JobName}" />
+                            <GridViewColumn x:Uid="GridViewColumn_2" Header="Format" Width="135" DisplayMemberBinding="{Binding FormattedInput}" />
+                            <GridViewColumn x:Uid="GridViewColumn_3" Header="Source" Width="425" DisplayMemberBinding="{Binding InputFile}" />
+                            <GridViewColumn x:Uid="GridViewColumn_4" Header="Output format" Width="135" DisplayMemberBinding="{Binding EncodingProfile.OutFormatStr}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </Grid>
-</GroupBox>
+        </GroupBox>
         <StatusBar x:Uid="AppStatus" HorizontalAlignment="Stretch" Margin="0" Name="AppStatus" Height="23" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#20FFFFFF">
-<StatusBarItem x:Uid="StatusItemHeader" Name="StatusItemHeader">
-<StatusBarItem.Content>
-<Label x:Uid="Label_1" Padding="0">
-<Hyperlink x:Uid="StatusItemLink" Name="StatusItemLink" Foreground="Black">
-<TextBlock x:Uid="StatusItem" Name="StatusItem">
-</TextBlock>
-</Hyperlink>
-</Label>
-</StatusBarItem.Content>
-</StatusBarItem>
-</StatusBar>
-<Grid x:Uid="ViewControl" HorizontalAlignment="Center" Margin="0,364,0,12" Name="ViewControl" Width="1002" MinHeight="5" SizeChanged="ViewControlSizeChanged" />
+            <StatusBarItem x:Uid="StatusItemHeader" Name="StatusItemHeader">
+                <StatusBarItem.Content>
+                    <Label x:Uid="Label_1" Padding="0">
+                        <Hyperlink x:Uid="StatusItemLink" Name="StatusItemLink" Foreground="Black">
+                            <TextBlock x:Uid="StatusItem" Name="StatusItem">
+                            </TextBlock>
+                        </Hyperlink>
+                    </Label>
+                </StatusBarItem.Content>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid x:Uid="ViewControl" HorizontalAlignment="Center" Margin="0,364,0,12" Name="ViewControl" Width="1002" MinHeight="5" SizeChanged="ViewControlSizeChanged" />
     </Grid>
 </Window>

@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="VideoConvertWPF.Controls.StatusPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="boolTovisibility" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <DockPanel Background="Black" Opacity="0.85"
+               Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, 
+                            Path=IsLoading, Mode=OneWay, Converter={StaticResource boolTovisibility}}">
+
+        <controls:ProgressRing DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Top"
+                     Height="45" Margin="18,10" IsActive="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, 
+                            Path=IsLoading, Mode=OneWay, FallbackValue=True}"/>
+
+        <StackPanel VerticalAlignment="Top">
+            <TextBlock SnapsToDevicePixels="True" VerticalAlignment="Top" FontSize="16" Margin="0,11,0,0" HorizontalAlignment="Left"
+                       FontWeight="Bold"
+                       Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Message}" 
+                       Foreground="LightBlue" />
+
+            <TextBlock SnapsToDevicePixels="True" VerticalAlignment="Top" FontSize="12" Margin="0,5" HorizontalAlignment="Left"
+                       Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=SubMessage}" 
+                       Foreground="LightBlue" />
+        </StackPanel>
+    </DockPanel>
+</UserControl>

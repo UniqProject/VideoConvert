@@ -42,9 +42,7 @@ namespace VideoConvert.Windows
         private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
 
         private readonly ObservableCollection<EncodeInfo> _jobCollection = new ObservableCollection<EncodeInfo>();
-
         public ObservableCollection<EncodeInfo> JobCollection { get { return _jobCollection; } }
-
 
         private string _lastDir;
 

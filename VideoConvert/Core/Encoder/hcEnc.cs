@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ManagedWinapi.Windows;
 using VideoConvert.Core.CommandLine;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Core.Profiles;
@@ -28,13 +29,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using ManagedWinapi.Windows;
 using System.Threading;
 using System.Globalization;
 using System.Drawing;
 
 namespace VideoConvert.Core.Encoder
 {
+    using ManagedWinapi.Hooks;
+
     class HcEnc
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(HcEnc));
@@ -122,7 +124,7 @@ namespace VideoConvert.Core.Encoder
 
             string inputFile = _jobInfo.VideoStream.TempFile;
             string outFile = Processing.CreateTempFile(inputFile, "encoded.m2v");
-
+            
             _jobInfo.AviSynthScript = GenerateAviSynthFile();
 
             string localExecutable = Path.Combine(AppSettings.ToolsPath, Executable);
@@ -182,6 +184,7 @@ namespace VideoConvert.Core.Encoder
                     SystemWindow mainWin = new SystemWindow(encoder.MainWindowHandle) {VisibilityFlag = false};
 
                     SystemWindow processedFrames = FindWindowByDialogId(1028, mainWin.AllChildWindows);
+                    
                     SystemWindow averageFps = FindWindowByDialogId(1061, mainWin.AllChildWindows);
                     SystemWindow pass = FindWindowByDialogId(1013, mainWin.AllChildWindows);
                     SystemWindow info = FindWindowByDialogId(1053, mainWin.AllChildWindows);
