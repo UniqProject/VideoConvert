@@ -928,7 +928,7 @@ namespace VideoConvertWPF.ViewModels
 
         private void CreateEncoderList()
         {
-            Version bdVersion = Assembly.GetAssembly(typeof(BDInfo.TSCodecAC3)).GetName().Version;
+            Version bdVersion = Assembly.GetAssembly(typeof(BDInfoLib.BDROM.TSCodecAC3)).GetName().Version;
             MediaInfo mi = new MediaInfo();
             string miVer = mi.Option("Info_Version");
             mi.Close();

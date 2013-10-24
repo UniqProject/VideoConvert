@@ -17,7 +17,7 @@ namespace VideoConvertWPF.ViewModels
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Text;
-    using BDInfo;
+    using BDInfoLib.BDROM;
     using Caliburn.Micro;
     using Interfaces;
     using SharpDvdInfo;
