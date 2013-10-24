@@ -2,39 +2,52 @@
 	path = libs/Caliburn.Micro
 	url = https://git01.codeplex.com/caliburnmicro
 	branch = 1.x-maintenance
+	ignore = dirty
 [submodule "libs/MahApps.Metro"]
 	path = libs/MahApps.Metro
 	url = https://github.com/MahApps/MahApps.Metro.git
+	ignore = dirty
 [submodule "libs/Caliburn.Metro"]
 	path = libs/Caliburn.Metro
 	url = https://github.com/ziyasal/Caliburn.Metro.git
+	ignore = dirty
 [submodule "libs/log4net"]
 	path = libs/log4net
 	url = https://github.com/apache/log4net.git
+	ignore = dirty
 [submodule "libs/Castle.Core"]
 	path = libs/Castle.Core
 	url = https://github.com/castleproject/Core.git
+	ignore = dirty
 [submodule "libs/Castle.Windsor"]
 	path = libs/Castle.Windsor
 	url = https://github.com/castleproject/Windsor.git
+	ignore = dirty
 [submodule "libs/BDInfo"]
 	path = libs/BDInfo
 	url = https://github.com/UniqProject/BDInfo.git
+	ignore = dirty
 [submodule "libs/SevenZipSharp"]
 	path = libs/SevenZipSharp
 	url = https://github.com/UniqProject/SevenZipSharp.git
+	ignore = dirty
 [submodule "libs/DirectShowLib"]
 	path = libs/DirectShowLib
 	url = https://github.com/theonlylawislove/DirectShow.NET
+	ignore = dirty
 [submodule "libs/TMDbLib"]
 	path = libs/TMDbLib
 	url = https://github.com/LordMike/TMDbLib.git
+	ignore = dirty
 [submodule "libs/RestSharp"]
 	path = libs/RestSharp
 	url = https://github.com/restsharp/RestSharp.git
+	ignore = dirty
 [submodule "libs/TVDbLib"]
 	path = libs/TVDbLib
 	url = https://github.com/UniqProject/TVDbLib.git
+	ignore = dirty
 [submodule "libs/SharpDvdInfo"]
 	path = libs/SharpDvdInfo
 	url = https://github.com/UniqProject/SharpDvdInfo.git
+	ignore = dirty
