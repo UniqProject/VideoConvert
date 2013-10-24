@@ -11,3 +11,9 @@
 [submodule "libs/log4net"]
 	path = libs/log4net
 	url = https://github.com/apache/log4net.git
+[submodule "libs/Castle.Core"]
+	path = libs/Castle.Core
+	url = https://github.com/castleproject/Core.git
+[submodule "libs/Castle.Windsor"]
+	path = libs/Castle.Windsor
+	url = https://github.com/castleproject/Windsor.git
