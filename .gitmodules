@@ -23,3 +23,6 @@
 [submodule "libs/SevenZipSharp"]
 	path = libs/SevenZipSharp
 	url = https://github.com/UniqProject/SevenZipSharp.git
+[submodule "libs/DirectShowLib"]
+	path = libs/DirectShowLib
+	url = https://github.com/theonlylawislove/DirectShow.NET
