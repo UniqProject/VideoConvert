@@ -35,3 +35,6 @@
 [submodule "libs/TVDbLib"]
 	path = libs/TVDbLib
 	url = https://github.com/UniqProject/TVDbLib.git
+[submodule "libs/SharpDvdInfo"]
+	path = libs/SharpDvdInfo
+	url = https://github.com/UniqProject/SharpDvdInfo.git
