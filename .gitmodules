@@ -32,3 +32,6 @@
 [submodule "libs/RestSharp"]
 	path = libs/RestSharp
 	url = https://github.com/restsharp/RestSharp.git
+[submodule "libs/TVDbLib"]
+	path = libs/TVDbLib
+	url = https://github.com/UniqProject/TVDbLib.git
