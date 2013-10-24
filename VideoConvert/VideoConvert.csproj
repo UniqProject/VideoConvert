@@ -95,17 +95,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="ManagedWinapi, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ManagedWinapi.0.3\ManagedWinapi.dll</HintPath>
-    </Reference>
-    <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -422,29 +414,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VideoConvertLibraries\BDInfo\BDInfo\BDInfo.csproj">
-      <Project>{3209AF1D-4762-4960-9DE5-13E90E77EE96}</Project>
-      <Name>BDInfo</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\VideoConvertLibraries\CheckBoxTreeViewLibrary\CheckBoxTreeViewLibrary.csproj">
       <Project>{8762FBAD-B3B1-4ECF-97EF-AEB634BDD0AC}</Project>
       <Name>CheckBoxTreeViewLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\TMDbLib\TMDbLib\TMDbLib.csproj">
-      <Project>{C0006F17-212A-474F-983E-7DA2F91E0233}</Project>
-      <Name>TMDbLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\tvdblib.0.80\Library\src\TvdbLib\TvdbLib.csproj">
-      <Project>{23C34CF0-4E66-4F02-9EDC-83F292C6005C}</Project>
-      <Name>TvdbLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Converters\Converters.csproj">
       <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
       <Name>Converters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\DirectShowLib\src\DirectShowLib-2008.csproj">
-      <Project>{CE009BFA-5EF6-4153-B2A1-2FA79698A9AE}</Project>
-      <Name>DirectShowLib-2008</Name>
     </ProjectReference>
     <ProjectReference Include="..\UpdateCore\UpdateCore.csproj">
       <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
@@ -612,7 +588,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_IncrementBeforeBuild="False" BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
+      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" BuildVersion_IncrementBeforeBuild="False" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

@@ -35,16 +35,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.2.1\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -106,12 +96,23 @@
     <None Include="LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VideoConvertLibraries\DirectShowLib\src\DirectShowLib-2008.csproj">
-      <Project>{CE009BFA-5EF6-4153-B2A1-2FA79698A9AE}</Project>
-      <Name>DirectShowLib-2008</Name>
+    <ProjectReference Include="..\libs\Castle.Core\src\Castle.Core\Castle.Core.csproj">
+      <Project>{e4fa5b53-7d36-429e-8e5c-53d5479242ba}</Project>
+      <Name>Castle.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Castle.Windsor\src\Castle.Windsor\Castle.Windsor.csproj">
+      <Project>{60efcb9b-e3ff-46a5-a2d2-d9f0ef75d5fe}</Project>
+      <Name>Castle.Windsor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\DirectShowLib\src\DirectShowLib-2012.csproj">
+      <Project>{d623a98b-9ddd-4035-8495-faf4c641046d}</Project>
+      <Name>DirectShowLib-2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\log4net\src\log4net.vs2010.csproj">
+      <Project>{181fe707-e161-4722-9f38-6aaab6faa106}</Project>
+      <Name>log4net.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\VideoConvert.Interop\VideoConvert.Interop.csproj">
       <Project>{5E57C453-7D99-48E0-BCAC-71BF7790C2DF}</Project>
@@ -129,7 +130,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
+      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

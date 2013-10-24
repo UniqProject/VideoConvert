@@ -81,26 +81,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.2.1\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="SevenZipSharp">
-      <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Caliburn.Micro.1.5.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -154,10 +138,6 @@
     <Page Include="Controls\StatusPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AboutView.xaml">
       <SubType>Designer</SubType>
@@ -228,28 +208,39 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VideoConvertLibraries\BDInfo\BDInfo\BDInfo.csproj">
-      <Project>{3209AF1D-4762-4960-9DE5-13E90E77EE96}</Project>
-      <Name>BDInfo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\DirectShowLib\src\DirectShowLib-2008.csproj">
-      <Project>{CE009BFA-5EF6-4153-B2A1-2FA79698A9AE}</Project>
-      <Name>DirectShowLib-2008</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VideoConvertLibraries\SharpDvdInfo\SharpDvdInfo.csproj">
-      <Project>{B713C29E-0E52-4B04-B4AD-AF714449A79C}</Project>
-      <Name>SharpDvdInfo</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Converters\Converters.csproj">
       <Project>{435F38C9-9448-4CB0-93A9-AA681B2D73B8}</Project>
       <Name>Converters</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libs\BDInfo\BDInfo\BDInfoLib.csproj">
+      <Project>{cf10debe-9a1b-4cd6-b566-e6013c1e6cb9}</Project>
+      <Name>BDInfoLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Caliburn.Metro\Caliburn.Metro.Core\Caliburn.Metro.Core.csproj">
+      <Project>{3e257c20-b95a-40c5-881e-9f3d834ccb4e}</Project>
+      <Name>Caliburn.Metro.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Caliburn.Metro\Caliburn.Metro\Caliburn.Metro.csproj">
+      <Project>{88f9ee49-e99f-4dfd-9b7b-4c52fad007bb}</Project>
+      <Name>Caliburn.Metro</Name>
+    </ProjectReference>
     <ProjectReference Include="..\libs\Caliburn.Micro\src\Caliburn.Micro.Platform\Caliburn.Micro.Platform.NET45.csproj">
       <Project>{ef2c0c7d-3ffe-4884-9aac-7622fee66809}</Project>
       <Name>Caliburn.Micro.Platform.NET45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Castle.Core\src\Castle.Core\Castle.Core.csproj">
+      <Project>{e4fa5b53-7d36-429e-8e5c-53d5479242ba}</Project>
+      <Name>Castle.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Castle.Windsor\src\Castle.Windsor\Castle.Windsor.csproj">
+      <Project>{60efcb9b-e3ff-46a5-a2d2-d9f0ef75d5fe}</Project>
+      <Name>Castle.Windsor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\log4net\src\log4net.vs2010.csproj">
+      <Project>{181fe707-e161-4722-9f38-6aaab6faa106}</Project>
+      <Name>log4net.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\libs\MahApps.Metro\MahApps.Metro.Resources\MahApps.Metro.Resources.csproj">
       <Project>{e708ac99-605b-42a0-8d20-abca8fe42dd2}</Project>
@@ -258,6 +249,10 @@
     <ProjectReference Include="..\libs\MahApps.Metro\MahApps.Metro\MahApps.Metro.NET45.csproj">
       <Project>{942d11c4-29f5-46c4-8c14-4b976d56c637}</Project>
       <Name>MahApps.Metro.NET45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\SharpDvdInfo\SharpDvdInfo.csproj">
+      <Project>{cbd3f86c-cf61-442d-9a71-fd092e571ffa}</Project>
+      <Name>SharpDvdInfo</Name>
     </ProjectReference>
     <ProjectReference Include="..\UpdateCore\UpdateCore.csproj">
       <Project>{76293F99-97DB-451B-A965-64D7893F5A9D}</Project>
@@ -279,7 +274,6 @@
     <None Include="defaultsettings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Resource Include="Resources\Entypo-license.txt" />
     <Content Include="WriteChangeLog.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -326,7 +320,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_DetectChanges="True" BuildVersion_BuildAction="Both" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="Both" BuildVersion_DetectChanges="True" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
