@@ -17,3 +17,9 @@
 [submodule "libs/Castle.Windsor"]
 	path = libs/Castle.Windsor
 	url = https://github.com/castleproject/Windsor.git
+[submodule "libs/BDInfo"]
+	path = libs/BDInfo
+	url = https://github.com/UniqProject/BDInfo.git
+[submodule "libs/SevenZipSharp"]
+	path = libs/SevenZipSharp
+	url = https://github.com/UniqProject/SevenZipSharp.git
