@@ -29,3 +29,6 @@
 [submodule "libs/TMDbLib"]
 	path = libs/TMDbLib
 	url = https://github.com/LordMike/TMDbLib.git
+[submodule "libs/RestSharp"]
+	path = libs/RestSharp
+	url = https://github.com/restsharp/RestSharp.git
