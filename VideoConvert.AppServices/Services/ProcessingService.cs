@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The Main Processing Service
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -29,16 +29,28 @@ namespace VideoConvert.AppServices.Services
     using Muxer;
     using Utilities;
 
+    /// <summary>
+    /// The Main Processing Service
+    /// </summary>
     public class ProcessingService : IProcessingService
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ProcessingService));
         private readonly IAppConfigService _configService;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="configService"></param>
         public ProcessingService(IAppConfigService configService)
         {
             this._configService = configService;
         }
 
+        /// <summary>
+        /// Check folder structure
+        /// </summary>
+        /// <param name="pathToFile">Path to Folder</param>
+        /// <returns><see cref="InputType"/></returns>
         public InputType CheckFolderStructure(string pathToFile)
         {
             string dvdCheck = Path.Combine(pathToFile, "VIDEO_TS\\VIDEO_TS.IFO");
@@ -89,6 +101,11 @@ namespace VideoConvert.AppServices.Services
             return InputType.InputUndefined;
         }
 
+        /// <summary>
+        /// Determines Media Type of the input file
+        /// </summary>
+        /// <param name="pathToFile">Path to input file</param>
+        /// <returns><see cref="InputType"/></returns>
         public InputType CheckFileType(string pathToFile)
         {
 
@@ -219,6 +236,11 @@ namespace VideoConvert.AppServices.Services
             return Path.GetExtension(pathToFile) == ".avs" ? InputType.InputAviSynth : InputType.InputUndefined;
         }
 
+        /// <summary>
+        /// Detect the type of input
+        /// </summary>
+        /// <param name="pathToFile">Path to input file/directory</param>
+        /// <returns><see cref="InputType"/></returns>
         public InputType DetectInputType(string pathToFile)
         {
             DirectoryInfo dir = new DirectoryInfo(pathToFile);
@@ -248,10 +270,10 @@ namespace VideoConvert.AppServices.Services
         }
 
         /// <summary>
-        /// check if audio stream is dvd compatible
+        /// Check if audio stream is DVD compatible
         /// </summary>
-        /// <param name="aud"></param>
-        /// <returns>true if stream is dvd compatible, false otherwise</returns>
+        /// <param name="aud"><see cref="AudioInfo"/></param>
+        /// <returns>true if stream is DVD compatible, false otherwise</returns>
         public bool CheckAudioDvdCompatible(AudioInfo aud)
         {
             string ext = StreamFormat.GetFormatExtension(aud.Format, aud.FormatProfile, false);
@@ -303,10 +325,10 @@ namespace VideoConvert.AppServices.Services
         }
 
         /// <summary>
-        /// reserved for future development
+        /// Check if audio stream is Blu-Ray compatible
         /// </summary>
-        /// <param name="aud"></param>
-        /// <returns></returns>
+        /// <param name="aud"><see cref="AudioInfo"/></param>
+        /// <returns>true if stream is Blu-Ray compatible, false otherwise</returns>
         public bool CheckAudioBluRayCompatible(AudioInfo aud)
         {
             string ext = StreamFormat.GetFormatExtension(aud.Format, aud.FormatProfile, false);
@@ -324,7 +346,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Gets the Description for enum Types
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value"><see cref="Enum"/></param>
         /// <returns>string containing the description</returns>
         public string StringValueOf(Enum value)
         {
@@ -336,6 +358,11 @@ namespace VideoConvert.AppServices.Services
 
 
         // TODO: Get App Versions
+        /// <summary>
+        /// Read encoder versions
+        /// </summary>
+        /// <param name="encPath">Location of encoder executables</param>
+        /// <param name="javaPath">Path to java.exe</param>
         public void GetAppVersions(string encPath = "", string javaPath = "")
         {
             if (String.IsNullOrEmpty(encPath))
@@ -419,6 +446,9 @@ namespace VideoConvert.AppServices.Services
             _configService.UpdateVersions = false;
         }
 
+        /// <summary>
+        /// Read Updater version
+        /// </summary>
         public void GetUpdaterVersion()
         {
             try
@@ -434,6 +464,9 @@ namespace VideoConvert.AppServices.Services
             }
         }
 
+        /// <summary>
+        /// Get version of avisynth plugins archive
+        /// </summary>
         public void GetAviSynthPluginsVer()
         {
             string verFile = Path.Combine(_configService.AvsPluginsPath, "version");
@@ -446,50 +479,11 @@ namespace VideoConvert.AppServices.Services
             }
         }
 
-        public void CopyStreamToStream(Stream source, Stream destination, int buffersize,
-                                              Action<Stream, Stream, Exception> completed)
-        {
-            //byte[] buffer = new byte[0x2500];
-            byte[] buffer = new byte[buffersize];
-            AsyncOperation asyncOp = AsyncOperationManager.CreateOperation(null);
-
-            Action<Exception> done = e =>
-                {
-                    if (completed != null)
-                        asyncOp.Post(delegate { completed(source, destination, e); }, null);
-                };
-
-            AsyncCallback[] rc = { null };
-            rc[0] = readResult =>
-                        {
-                            try
-                            {
-                                int read = source.EndRead(readResult);
-                                if (read > 0)
-                                {
-                                    destination.BeginWrite(buffer, 0, read, writeResult =>
-                                                                                {
-                                                                                    try
-                                                                                    {
-                                                                                        destination.EndWrite(writeResult);
-                                                                                        source.BeginRead(
-                                                                                            buffer, 0, buffer.Length,
-                                                                                            rc[0], null);
-                                                                                    }
-                                                                                    catch (Exception exc)
-                                                                                    {
-                                                                                        done(exc);
-                                                                                    }
-                                                                                }, null);
-                                }
-                                else done(null);
-                            }
-                            catch (Exception exc) { done(exc); }
-                        };
-
-            source.BeginRead(buffer, 0, buffer.Length, rc[0], null);
-        }
-
+        /// <summary>
+        /// Checks if the Application process has elevated rights
+        /// </summary>
+        /// <returns>true if the process is elevated, false otherwise</returns>
+        /// <exception cref="Win32Exception"><see cref="Win32Exception"/></exception>
         public bool IsProcessElevated()
         {
             bool fIsElevated;
@@ -549,6 +543,12 @@ namespace VideoConvert.AppServices.Services
             return fIsElevated;
         }
 
+        /// <summary>
+        /// Check if subtitle needs to be converted for given output type
+        /// </summary>
+        /// <param name="outputType">Target <see cref="OutputType"/></param>
+        /// <param name="format">subtitle format</param>
+        /// <returns>true if conversion is needed</returns>
         public bool SubtitleNeedConversion(OutputType outputType, string format)
         {
             switch (outputType)
@@ -574,6 +574,12 @@ namespace VideoConvert.AppServices.Services
             return false;
         }
 
+        /// <summary>
+        /// Checks if subtitle conversion is supported for given output type
+        /// </summary>
+        /// <param name="outputType">Target <see cref="OutputType"/></param>
+        /// <param name="format">subtitle format</param>
+        /// <returns>true if conversion is supported</returns>
         public bool SubtitleConversionSupported(OutputType outputType, string format)
         {
             switch (outputType)
@@ -593,6 +599,10 @@ namespace VideoConvert.AppServices.Services
             return false;
         }
 
+        /// <summary>
+        /// Check if subtitles conversion is needed / supported for given Job
+        /// </summary>
+        /// <param name="encodingJob"><see cref="EncodeInfo"/> to check</param>
         public void CheckSubtitles(EncodeInfo encodingJob)
         {
             if (encodingJob.EncodingProfile == null) return;
@@ -611,6 +621,10 @@ namespace VideoConvert.AppServices.Services
             encodingJob.SubtitleStreams.RemoveAll(info => !info.FormatSupported);
         }
 
+        /// <summary>
+        /// Check given Job for <see cref="OutputType"/> stream limits
+        /// </summary>
+        /// <param name="encodingJob"><see cref="EncodeInfo"/> to check</param>
         public void CheckStreamLimit(EncodeInfo encodingJob)
         {
             if (encodingJob.EncodingProfile == null) return;
