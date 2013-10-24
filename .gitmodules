@@ -26,3 +26,6 @@
 [submodule "libs/DirectShowLib"]
 	path = libs/DirectShowLib
 	url = https://github.com/theonlylawislove/DirectShow.NET
+[submodule "libs/TMDbLib"]
+	path = libs/TMDbLib
+	url = https://github.com/LordMike/TMDbLib.git
