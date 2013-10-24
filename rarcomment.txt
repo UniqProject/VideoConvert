@@ -1,5 +1,0 @@
-;Der folgende Kommentar enthält SFX-Skriptbefehle
-
-Setup=".\MKV Remux.exe"
-Silent=2
-Overwrite=1
