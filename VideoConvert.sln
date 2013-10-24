@@ -34,9 +34,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7BAF86
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoConvert.Interop", "VideoConvert.Interop\VideoConvert.Interop.csproj", "{5E57C453-7D99-48E0-BCAC-71BF7790C2DF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4971A3DC-687D-46FB-BE4C-1E59A1D144C6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{D77F7C94-3AA8-465F-A0C3-5F5E1B66D776}"
+	ProjectSection(SolutionItems) = preProject
+		libs\FixDependencies.patch = libs\FixDependencies.patch
+		libs\readme.txt = libs\readme.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MahApps.Metro.NET45", "libs\MahApps.Metro\MahApps.Metro\MahApps.Metro.NET45.csproj", "{942D11C4-29F5-46C4-8C14-4B976D56C637}"
 EndProject
