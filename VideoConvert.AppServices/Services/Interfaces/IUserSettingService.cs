@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The User Settings Service Interface
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,7 +12,16 @@ namespace VideoConvert.AppServices.Services.Interfaces
     using System.Collections.Specialized;
     using Interop.EventArgs;
 
+    /// <summary>
+    /// The Setting Event Handler
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void SettingEventHandler(object sender, SettingChangedEventArgs e);
+
+    /// <summary>
+    /// The User Settings Service Interface
+    /// </summary>
     public interface IUserSettingService
     {
         /// <summary>

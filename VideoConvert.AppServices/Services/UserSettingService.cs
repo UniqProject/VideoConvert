@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The User Settings Service
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -19,6 +19,9 @@ namespace VideoConvert.AppServices.Services
     using Interop.EventArgs;
     using Interop.Exceptions;
 
+    /// <summary>
+    /// The User Settings Service
+    /// </summary>
     public class UserSettingService : IUserSettingService
     {
         /// <summary>

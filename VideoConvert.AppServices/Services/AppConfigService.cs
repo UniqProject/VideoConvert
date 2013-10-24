@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The Application Config Service
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -21,6 +21,9 @@ namespace VideoConvert.AppServices.Services
     using Interop.Utilities;
     using log4net;
 
+    /// <summary>
+    /// The Application Config Service
+    /// </summary>
     public class AppConfigService : IAppConfigService, INotifyPropertyChanged
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(AppConfigService));
