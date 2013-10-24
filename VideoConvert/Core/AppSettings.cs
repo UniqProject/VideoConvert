@@ -23,7 +23,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media;
-using BDInfo;
+using BDInfoLib;
 using VideoConvert.Core.Helpers;
 using VideoConvert.Properties;
 using log4net;

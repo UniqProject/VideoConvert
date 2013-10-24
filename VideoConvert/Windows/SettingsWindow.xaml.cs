@@ -87,7 +87,7 @@ namespace VideoConvert.Windows
             #region get BDInfo version
             try
             {
-                Assembly ass = Assembly.GetAssembly(typeof(BDInfo.TSCodecAC3));
+                Assembly ass = Assembly.GetAssembly(typeof(BDInfoLib.BDROM.TSCodecAC3));
                 AssemblyName asname = ass.GetName();
                 Version ver = asname.Version;
                 BDInfoVer.Content = string.Format("{0:g}.{1:g}.{2:g}", ver.Major, ver.Minor, ver.Build);

@@ -402,7 +402,7 @@ namespace VideoConvert.Windows.TheMovieDB
                                   ? string.Join(" / ", searchResult.Genres.ConvertAll(input => input.Name))
                                   : string.Empty;
 
-            MovieRuntime.Text = searchResult.Runtime.ToString("g");
+            MovieRuntime.Text = searchResult.Runtime.GetValueOrDefault().ToString("g");
 
             if (AppSettings.MovieDBRatingSource == 0)
             {
@@ -417,7 +417,7 @@ namespace VideoConvert.Windows.TheMovieDB
                 MovieVotes.Text = movieData.RatingCount.ToString("g");
             }
 
-            MovieYear.Text = searchResult.ReleaseDate.Year.ToString("g");
+            MovieYear.Text = searchResult.ReleaseDate.GetValueOrDefault().Year.ToString("g");
             MovieTagline.Text = searchResult.Tagline;
             MoviePlot.Text = searchResult.Overview;
 
