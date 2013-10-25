@@ -51,3 +51,6 @@
 	path = libs/SharpDvdInfo
 	url = https://github.com/UniqProject/SharpDvdInfo.git
 	ignore = dirty
+[submodule "libs/Json.NET"]
+	path = libs/Json.NET
+	url = https://github.com/JamesNK/Newtonsoft.Json.git
