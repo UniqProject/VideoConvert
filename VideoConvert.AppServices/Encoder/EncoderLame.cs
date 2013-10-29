@@ -367,6 +367,10 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     this.EncodeProcess.Kill();
                 }
+                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
+                {
+                    this.DecodeProcess.Kill();
+                }
             }
             catch (Exception exc)
             {
