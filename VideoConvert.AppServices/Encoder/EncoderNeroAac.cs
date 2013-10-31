@@ -238,6 +238,7 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                this.DecodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
