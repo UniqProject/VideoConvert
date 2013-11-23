@@ -143,6 +143,13 @@ namespace VideoConvert.AppServices.Muxer
             return verInfo;
         }
 
+        /// <summary>
+        /// Execute a mkvmerge demux process.
+        /// This should only be called from the UI thread.
+        /// </summary>
+        /// <param name="encodeQueueTask">
+        /// The encodeQueueTask.
+        /// </param>
         public void Start(EncodeInfo encodeQueueTask)
         {
             try

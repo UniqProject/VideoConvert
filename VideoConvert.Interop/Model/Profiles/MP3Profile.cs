@@ -9,17 +9,45 @@
 
 namespace VideoConvert.Interop.Model.Profiles
 {
-    public class MP3Profile : EncoderProfile
+    /// <summary>
+    /// Encoding profile for MP3 audio
+    /// </summary>
+    public class Mp3Profile : EncoderProfile
     {
+        /// <summary>
+        /// Number of output channels
+        /// </summary>
         public int OutputChannels { get; set; }
+
+        /// <summary>
+        /// Target sample rate
+        /// </summary>
         public int SampleRate { get; set; }
+
+        /// <summary>
+        /// Encoding mode
+        /// </summary>
         public int EncodingMode { get; set; }
+
+        /// <summary>
+        /// Target bitrate
+        /// </summary>
         public int Bitrate { get; set; }
+
+        /// <summary>
+        /// Target quality setting
+        /// </summary>
         public int Quality { get; set; }
+
+        /// <summary>
+        /// Encoding preset
+        /// </summary>
         public string Preset { get; set; }
 
-
-        public MP3Profile()
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Mp3Profile()
         {
             Type = ProfileType.MP3;
 

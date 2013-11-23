@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IEncoderFfmpegAC3.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+// <copyright file="IEncoderOggEnc.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
@@ -13,12 +13,12 @@ namespace VideoConvert.AppServices.Encoder.Interfaces
     using Interop.Model;
 
     /// <summary>
-    /// IEncoderFfmpegAC3 interface
+    /// IEncoderOggEnc interface
     /// </summary>
-    public interface IEncoderFfmpegAc3
+    public interface IEncoderOggEnc
     {
         /// <summary>
-        /// Execute a ffmpeg demux process.
+        /// Execute a OggEnc process.
         /// This should only be called from the UI thread.
         /// </summary>
         /// <param name="encodeQueueTask">

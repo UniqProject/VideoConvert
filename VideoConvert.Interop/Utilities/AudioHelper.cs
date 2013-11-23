@@ -25,8 +25,8 @@ namespace VideoConvert.Interop.Utilities
             switch (aProfile.Type)
             {
                 case ProfileType.AC3:
-                    sampleRate = ((AC3Profile)aProfile).SampleRate;
-                    channelOrder = ((AC3Profile)aProfile).OutputChannels;
+                    sampleRate = ((Ac3Profile)aProfile).SampleRate;
+                    channelOrder = ((Ac3Profile)aProfile).OutputChannels;
                     break;
                 case ProfileType.FLAC:
                     break;

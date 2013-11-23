@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Special encoding parameter tuning for devices
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,6 +11,9 @@ namespace VideoConvert.Interop.Model.x264
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Special encoding parameter tuning for devices
+    /// </summary>
     public class X264Device
     {
         private readonly string _strName;
@@ -24,6 +27,10 @@ namespace VideoConvert.Interop.Model.x264
         private readonly int _iMaxWidth;
         private readonly int _iMaxHeight;
 
+        /// <summary>
+        /// Creates a list of supported devices
+        /// </summary>
+        /// <returns></returns>
         public static List<X264Device> CreateDeviceList()
         {
             List<X264Device> x264DeviceList = new List<X264Device>
@@ -56,77 +63,129 @@ namespace VideoConvert.Interop.Model.x264
             return x264DeviceList;
         }
 
-        public X264Device(int _iID, string strName, int iProfile, int iLevel, int _iVBVBufsize, int _iVBVMaxrate, int iBframes, int iReframes, int iMaxWidth, int iMaxHeight)
+        /// <summary>
+        /// Initialize a device tuning
+        /// </summary>
+        /// <param name="_iID">ID</param>
+        /// <param name="strName">Device Name</param>
+        /// <param name="iProfile">AVC-Profile</param>
+        /// <param name="iLevel">AVC-Level</param>
+        /// <param name="iVBVBufsize">VBV Buffer size</param>
+        /// <param name="iVBVMaxrate">Max VBV bitrate</param>
+        /// <param name="iBframes">Number of B-Frames</param>
+        /// <param name="iReframes">Number of ref-Frames</param>
+        /// <param name="iMaxWidth">Max Width</param>
+        /// <param name="iMaxHeight">Max Height</param>
+        public X264Device(int _iID, string strName, int iProfile, int iLevel, int iVBVBufsize, int iVBVMaxrate, int iBframes, int iReframes, int iMaxWidth, int iMaxHeight)
         {
             this._iID = _iID;
-            _strName = strName;
-            _iProfile = iProfile;
-            _iLevel = iLevel;
-            this._iVBVBufsize = _iVBVBufsize;
-            this._iVBVMaxrate = _iVBVMaxrate;
-            _iBframes = iBframes;
-            _iReframes = iReframes;
-            _iMaxWidth = iMaxWidth;
-            _iMaxHeight = iMaxHeight;
-            BluRay = false;
-            BPyramid = -1;
-            MaxGOP = -1;
+            this._strName = strName;
+            this._iProfile = iProfile;
+            this._iLevel = iLevel;
+            this._iVBVBufsize = iVBVBufsize;
+            this._iVBVMaxrate = iVBVMaxrate;
+            this._iBframes = iBframes;
+            this._iReframes = iReframes;
+            this._iMaxWidth = iMaxWidth;
+            this._iMaxHeight = iMaxHeight;
+            this.BluRay = false;
+            this.BPyramid = -1;
+            this.MaxGOP = -1;
         }
 
+        /// <summary>
+        /// Device ID
+        /// </summary>
         public int ID
         {
             get { return _iID; }
         }
 
+        /// <summary>
+        /// Device Name
+        /// </summary>
         public string Name
         {
             get { return _strName; }
         }
 
+        /// <summary>
+        /// AVC Profile
+        /// </summary>
         public int Profile
         {
             get { return _iProfile; }
         }
 
+        /// <summary>
+        /// AVC Level
+        /// </summary>
         public int Level
         {
             get { return _iLevel; }
         }
 
+        /// <summary>
+        /// VBV Buffer size
+        /// </summary>
         public int VBVBufsize
         {
             get { return _iVBVBufsize; }
         }
 
+        /// <summary>
+        /// Max VBV bitrate
+        /// </summary>
         public int VBVMaxrate
         {
             get { return _iVBVMaxrate; }
         }
 
+        /// <summary>
+        /// Number of B-Frames
+        /// </summary>
         public int BFrames
         {
             get { return _iBframes; }
         }
 
+        /// <summary>
+        /// Number of ref-frames
+        /// </summary>
         public int ReferenceFrames
         {
             get { return _iReframes; }
         }
 
+        /// <summary>
+        /// Max Height
+        /// </summary>
         public int Height
         {
             get { return _iMaxHeight; }
         }
 
+        /// <summary>
+        /// Max Width
+        /// </summary>
         public int Width
         {
             get { return _iMaxWidth; }
         }
 
+        /// <summary>
+        /// Max GOP size
+        /// </summary>
         public int MaxGOP { get; set; }
 
+        /// <summary>
+        /// Blu-Ray compatibility
+        /// </summary>
         public bool BluRay { get; set; }
 
+        /// <summary>
+        /// B-Pyramid
+        /// </summary>
         public int BPyramid { get; set; }
 
         public override string ToString()

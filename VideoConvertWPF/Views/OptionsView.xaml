@@ -17,11 +17,11 @@
              TextOptions.TextFormattingMode="Display">
     <UserControl.Resources>
         <ObjectDataProvider MethodName="get_SortedLangList" 
-                            ObjectType="{x:Type theMovieDb:MovieDBLanguages}"
+                            ObjectType="{x:Type theMovieDb:MovieDbLanguages}"
                             x:Key="MovieDbLangs" IsAsynchronous="True"/>
 
         <ObjectDataProvider MethodName="get_CountryList"
-                            ObjectType="{x:Type theMovieDb:MovieDBCertCountries}"
+                            ObjectType="{x:Type theMovieDb:MovieDbCertCountries}"
                             x:Key="MovieDbCertCountries" IsAsynchronous="True"/>
 
         <ObjectDataProvider ObjectType="{x:Type setHandler:TvdbLang}"

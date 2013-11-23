@@ -3,22 +3,46 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Encoding profile for AAC audio
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.Interop.Model.Profiles
 {
-    public class AACProfile : EncoderProfile
+    /// <summary>
+    /// Encoding profile for AAC audio
+    /// </summary>
+    public class AacProfile : EncoderProfile
     {
+        /// <summary>
+        /// Output channel count
+        /// </summary>
         public int OutputChannels { get; set; }
+
+        /// <summary>
+        /// Target sample rate
+        /// </summary>
         public int SampleRate { get; set; }
+
+        /// <summary>
+        /// Encoding mode
+        /// </summary>
         public int EncodingMode { get; set; }
+
+        /// <summary>
+        /// Target bitrate
+        /// </summary>
         public int Bitrate { get; set; }
+
+        /// <summary>
+        /// Target quality
+        /// </summary>
         public float Quality { get; set; }
 
-
-        public AACProfile()
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public AacProfile()
         {
             Type = ProfileType.AAC;
 

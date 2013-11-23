@@ -33,15 +33,15 @@ namespace VideoConvert.Interop.Model.Profiles
 
         [XmlArray("VP8Profiles")]
         [XmlArrayItem("VP8Profile")]
-        public List<VP8Profile> VP8Profiles { get; set; }
+        public List<Vp8Profile> VP8Profiles { get; set; }
 
         [XmlArray("AC3Profiles")]
         [XmlArrayItem("AC3Profile")]
-        public List<AC3Profile> AC3Profiles { get; set; }
+        public List<Ac3Profile> AC3Profiles { get; set; }
 
         [XmlArray("MP3Profiles")]
         [XmlArrayItem("MP3Profile")]
-        public List<MP3Profile> MP3Profiles { get; set; }
+        public List<Mp3Profile> MP3Profiles { get; set; }
 
         [XmlArray("OGGProfiles")]
         [XmlArrayItem("OGGProfile")]
@@ -49,6 +49,6 @@ namespace VideoConvert.Interop.Model.Profiles
 
         [XmlArray("AACProfiles")]
         [XmlArrayItem("AACProfile")]
-        public List<AACProfile> AACProfiles { get; set; }
+        public List<AacProfile> AACProfiles { get; set; }
     }
 }

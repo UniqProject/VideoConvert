@@ -67,7 +67,7 @@ namespace VideoConvert.AppServices.Encoder
         private readonly Regex _bePipeReg = new Regex(@"^([\d\,\.]*?)%.*$",
                                                       RegexOptions.Singleline | RegexOptions.Multiline);
 
-        private MP3Profile _encProfile;
+        private Mp3Profile _encProfile;
         private AudioInfo _audio;
         private string _outputFile;
         private NamedPipeServerStream _encodePipe;
@@ -395,7 +395,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             StringBuilder sb = new StringBuilder();
 
-            this._encProfile = this._currentTask.AudioProfile as MP3Profile;
+            this._encProfile = this._currentTask.AudioProfile as Mp3Profile;
 
             if (this._encProfile == null) return string.Empty;
 

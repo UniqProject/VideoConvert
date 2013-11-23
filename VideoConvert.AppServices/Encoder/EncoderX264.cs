@@ -18,6 +18,7 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading;
+    using DarLib;
     using Decoder;
     using Interfaces;
     using Interop.EventArgs;

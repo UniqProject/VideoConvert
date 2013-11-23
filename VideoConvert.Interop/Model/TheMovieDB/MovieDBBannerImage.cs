@@ -3,14 +3,20 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Banner image for TheMovieDB
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.Interop.Model.TheMovieDB
 {
+    /// <summary>
+    /// Banner image for TheMovieDB
+    /// </summary>
     public class MovieDBBannerImage : MovieDBPosterImage
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public MovieDBBannerImage()
         {
             Aspect = "banner";

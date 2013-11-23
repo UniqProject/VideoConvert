@@ -18,13 +18,13 @@ namespace VideoConvertWPF.ViewModels
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Windows;
     using System.Windows.Forms;
     using System.Windows.Threading;
     using Caliburn.Micro;
     using Interfaces;
+    using Newtonsoft.Json;
     using UpdateCore;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;
@@ -103,7 +103,15 @@ namespace VideoConvertWPF.ViewModels
 
         public void Shutdown()
         {
-            
+            JsonSerializer jSer = new JsonSerializer();
+            using (
+                StreamWriter sWriter =
+                    new StreamWriter(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
+            {
+                JsonWriter writer = new JsonTextWriter(sWriter);
+                jSer.Serialize(writer, this.JobCollection);
+                writer.Flush();
+            }
         }
 
         public override void OnLoad()
@@ -112,6 +120,28 @@ namespace VideoConvertWPF.ViewModels
             
             JobCollection = new ObservableCollection<EncodeInfo>();
             JobCollection.CollectionChanged += JobCollectionChanged;
+
+            try
+            {
+                JsonSerializer jSer = new JsonSerializer();
+                using (
+                    StreamReader sReader =
+                        new StreamReader(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
+                {
+                    JsonReader reader = new JsonTextReader(sReader);
+                    List<EncodeInfo> importList = jSer.Deserialize<List<EncodeInfo>>(reader);
+                    foreach (EncodeInfo encodeInfo in importList)
+                    {
+                        AddJob(encodeInfo);
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+            
 
             CheckUpdate();
 
@@ -398,14 +428,26 @@ namespace VideoConvertWPF.ViewModels
                 _processingService.CheckStreamLimit(inJob);
                 SetOutput(inJob);
                 SetInOutTemp(inJob);
-                JobCollection.Add(inJob);
-                this.NotifyOfPropertyChange(()=>this.JobCollection);
+                AddJob(inJob);
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
             }
             
+        }
+
+        private void AddJob(EncodeInfo inJob)
+        {
+            try
+            {
+                JobCollection.Add(inJob);
+                this.NotifyOfPropertyChange(() => this.JobCollection);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
         }
 
         private void SetOutput(EncodeInfo input)

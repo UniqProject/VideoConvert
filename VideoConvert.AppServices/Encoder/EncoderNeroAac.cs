@@ -356,7 +356,7 @@ namespace VideoConvert.AppServices.Encoder
 
             this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
 
-            int outChannels = ((AACProfile)this._currentTask.AudioProfile).OutputChannels;
+            int outChannels = ((AacProfile)this._currentTask.AudioProfile).OutputChannels;
             switch (outChannels)
             {
                 case 1:
@@ -366,7 +366,7 @@ namespace VideoConvert.AppServices.Encoder
                     outChannels = 1;
                     break;
             }
-            int outSampleRate = ((AACProfile)this._currentTask.AudioProfile).SampleRate;
+            int outSampleRate = ((AacProfile)this._currentTask.AudioProfile).SampleRate;
             switch (outSampleRate)
             {
                 case 1:
@@ -389,9 +389,9 @@ namespace VideoConvert.AppServices.Encoder
                     break;
             }
 
-            int encMode = ((AACProfile)this._currentTask.AudioProfile).EncodingMode;
-            int bitrate = ((AACProfile)this._currentTask.AudioProfile).Bitrate * 1000;
-            float quality = ((AACProfile)this._currentTask.AudioProfile).Quality;
+            int encMode = ((AacProfile)this._currentTask.AudioProfile).EncodingMode;
+            int bitrate = ((AacProfile)this._currentTask.AudioProfile).Bitrate * 1000;
+            float quality = ((AacProfile)this._currentTask.AudioProfile).Quality;
 
             AviSynthGenerator avs = new AviSynthGenerator(this._appConfig);
 

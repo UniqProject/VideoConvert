@@ -26,7 +26,6 @@ namespace VideoConvertWPF.ViewModels
         public IAppConfigService ConfigService { get; set; }
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(MainViewModel));
-        private string _langCode;
         private string _changeLogText;
 
         public string LangCode

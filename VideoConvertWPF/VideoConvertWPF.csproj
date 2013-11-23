@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VideoConvertWPF</RootNamespace>
     <AssemblyName>VideoConvertWPF</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -237,6 +237,10 @@
     <ProjectReference Include="..\libs\Castle.Windsor\src\Castle.Windsor\Castle.Windsor.csproj">
       <Project>{60efcb9b-e3ff-46a5-a2d2-d9f0ef75d5fe}</Project>
       <Name>Castle.Windsor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libs\Json.NET\Src\Newtonsoft.Json\Newtonsoft.Json.Net40.csproj">
+      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
+      <Name>Newtonsoft.Json.Net40</Name>
     </ProjectReference>
     <ProjectReference Include="..\libs\log4net\src\log4net.vs2010.csproj">
       <Project>{181fe707-e161-4722-9f38-6aaab6faa106}</Project>

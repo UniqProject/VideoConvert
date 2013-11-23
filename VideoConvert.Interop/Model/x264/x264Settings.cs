@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The x264 Settings
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,13 +11,33 @@ namespace VideoConvert.Interop.Model.x264
 {
     using System;
 
+    /// <summary>
+    /// The x264 Settings
+    /// </summary>
     public class X264Settings
     {
+        /// <summary>
+        /// Get default number of ref-frames for given parameters
+        /// </summary>
+        /// <param name="oPreset">encoding preset</param>
+        /// <param name="oTuningMode">tuning mode</param>
+        /// <param name="oDevice">target device</param>
+        /// <returns>number of ref frames</returns>
         public static int GetDefaultNumberOfRefFrames(int oPreset, int oTuningMode, X264Device oDevice)
         {
             return GetDefaultNumberOfRefFrames(oPreset, oTuningMode, oDevice, -1, -1, -1);
         }
 
+        /// <summary>
+        /// Get default number of ref-frames for given parameters
+        /// </summary>
+        /// <param name="oPreset">encoding preset</param>
+        /// <param name="oTuningMode">tuning mode</param>
+        /// <param name="oDevice">target device</param>
+        /// <param name="iLevel">AVC-Level</param>
+        /// <param name="hRes">horizontal resolution</param>
+        /// <param name="vRes">vertical resolution</param>
+        /// <returns>number of ref frames</returns>
         public static int GetDefaultNumberOfRefFrames(int oPreset, int oTuningMode, X264Device oDevice, int iLevel, int hRes, int vRes)
         {
             int iDefaultSetting = 1;
@@ -54,6 +74,13 @@ namespace VideoConvert.Interop.Model.x264
             return iDefaultSetting;
         }
 
+        /// <summary>
+        /// Get maximum ref frames for given AVC-level
+        /// </summary>
+        /// <param name="level">AVC-Level</param>
+        /// <param name="hRes">horizontal resolution</param>
+        /// <param name="vRes">vertical resolution</param>
+        /// <returns>number of ref frames</returns>
         public static int GetMaxRefForLevel(int level, int hRes, int vRes)
         {
             if (level < 0 || hRes <= 0 || vRes <= 0 || level >= 15)  // Unrestricted/Autoguess
@@ -115,6 +142,14 @@ namespace VideoConvert.Interop.Model.x264
             return Math.Min(maxRef, 16);
         }
 
+        /// <summary>
+        /// Get default number of B-frames for given parameters
+        /// </summary>
+        /// <param name="oPresetLevel">encoding preset</param>
+        /// <param name="oTuningMode">tuning mode</param>
+        /// <param name="oAVCProfile">AVC-Profile</param>
+        /// <param name="oDevice">Target device</param>
+        /// <returns>number of b-frames</returns>
         public static int GetDefaultNumberOfBFrames(int oPresetLevel, int oTuningMode, int oAVCProfile, X264Device oDevice)
         {
             int iDefaultSetting = 0;
@@ -145,6 +180,14 @@ namespace VideoConvert.Interop.Model.x264
             return iDefaultSetting;
         }
 
+        /// <summary>
+        /// Get default weightp value for given parameters
+        /// </summary>
+        /// <param name="oPresetLevel">encoding preset</param>
+        /// <param name="oTuningMode">tuning mode</param>
+        /// <param name="oAVCProfile">AVC-Profile</param>
+        /// <param name="bBlurayCompat">bluray compatibility</param>
+        /// <returns>weightp value</returns>
         public static int GetDefaultNumberOfWeightp(int oPresetLevel, int oTuningMode, int oAVCProfile, bool bBlurayCompat)
         {
             if (oAVCProfile == 0) // baseline
@@ -169,6 +212,12 @@ namespace VideoConvert.Interop.Model.x264
             return bBlurayCompat ? Math.Min(iDefaultSetting, 1) : iDefaultSetting;
         }
 
+        /// <summary>
+        /// Get default AQ mode
+        /// </summary>
+        /// <param name="oPresetLevel">encoding preset</param>
+        /// <param name="oTuningMode">tuning mode</param>
+        /// <returns>AQ Mode</returns>
         public static int GetDefaultAQMode(int oPresetLevel, int oTuningMode)
         {
             if (oTuningMode == 5) // SSIM

@@ -76,8 +76,8 @@ namespace VideoConvertWPF.Startup
                     .LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(
-                Component.For<IEncoderFfmpegAC3>()
-                    .ImplementedBy<EncoderFfmpegAC3>()
+                Component.For<IEncoderFfmpegAc3>()
+                    .ImplementedBy<EncoderFfmpegAc3>()
                     .LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(

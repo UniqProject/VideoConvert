@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VideoConvert.AppServices</RootNamespace>
     <AssemblyName>VideoConvert.AppServices</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -60,11 +60,13 @@
     <Compile Include="Encoder\EncoderFfmpegDVD.cs" />
     <Compile Include="Encoder\EncoderLame.cs" />
     <Compile Include="Encoder\EncoderNeroAac.cs" />
+    <Compile Include="Encoder\EncoderOggEnc.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderBdSup2Sub.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderFfmpegAC3.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderFfmpegDVD.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderLame.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderNeroAac.cs" />
+    <Compile Include="Encoder\Interfaces\IEncoderOggEnc.cs" />
     <Compile Include="Model\Profiles\ProfileHandler.cs" />
     <Compile Include="Muxer\FileWorker.cs" />
     <Compile Include="Muxer\Interfaces\IFileWorker.cs" />
@@ -106,6 +108,10 @@
       <Project>{60efcb9b-e3ff-46a5-a2d2-d9f0ef75d5fe}</Project>
       <Name>Castle.Windsor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libs\DarLib\DarLib.csproj">
+      <Project>{C1A0A11E-2D25-4C91-BA1D-74EC546F4CD6}</Project>
+      <Name>DarLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\libs\DirectShowLib\src\DirectShowLib-2012.csproj">
       <Project>{d623a98b-9ddd-4035-8495-faf4c641046d}</Project>
       <Name>DirectShowLib-2012</Name>
@@ -118,14 +124,6 @@
       <Project>{5E57C453-7D99-48E0-BCAC-71BF7790C2DF}</Project>
       <Name>VideoConvert.Interop</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="7z.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="7z64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

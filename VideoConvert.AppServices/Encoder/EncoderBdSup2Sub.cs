@@ -150,6 +150,13 @@ namespace VideoConvert.AppServices.Encoder
             return verInfo;
         }
 
+        /// <summary>
+        /// Execute a BDSup2Sub demux process.
+        /// This should only be called from the UI thread.
+        /// </summary>
+        /// <param name="encodeQueueTask">
+        /// The encodeQueueTask.
+        /// </param>
         public void Start(EncodeInfo encodeQueueTask)
         {
             try

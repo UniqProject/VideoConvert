@@ -314,24 +314,24 @@ namespace VideoConvert.AppServices.Model.Profiles
                 ProfileList.Where(profile => profile.Type == ProfileType.HcEnc).Cast<HcEncProfile>().ToList();
             hcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<VP8Profile> vp8Profiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.VP8).Cast<VP8Profile>().ToList();
+            List<Vp8Profile> vp8Profiles =
+                ProfileList.Where(profile => profile.Type == ProfileType.VP8).Cast<Vp8Profile>().ToList();
             vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<AC3Profile> ac3Profiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.AC3).Cast<AC3Profile>().ToList();
+            List<Ac3Profile> ac3Profiles =
+                ProfileList.Where(profile => profile.Type == ProfileType.AC3).Cast<Ac3Profile>().ToList();
             ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<MP3Profile> mp3Profiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.MP3).Cast<MP3Profile>().ToList();
+            List<Mp3Profile> mp3Profiles =
+                ProfileList.Where(profile => profile.Type == ProfileType.MP3).Cast<Mp3Profile>().ToList();
             mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             List<OggProfile> oggProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.OGG).Cast<OggProfile>().ToList();
             oggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<AACProfile> aacProfiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AACProfile>().ToList();
+            List<AacProfile> aacProfiles =
+                ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AacProfile>().ToList();
             aacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             XmlProfiles profiles = new XmlProfiles
