@@ -331,69 +331,277 @@ namespace VideoConvert.Interop.Model.MediaInfo
             public VideoFormat VideoSize;
         }
 
+        /// <summary>
+        /// Audio stream properties
+        /// </summary>
         public struct AudioStreamInfo
         {
+            /// <summary>
+            /// Stream kind ID
+            /// </summary>
             public int StreamKindID;
+
+            /// <summary>
+            /// Stream kind position
+            /// </summary>
             public int StreamKindPos;
+
+            /// <summary>
+            /// Stream ID
+            /// </summary>
             public int ID;
+
+            /// <summary>
+            /// Stream format
+            /// </summary>
             public string Format;
+
+            /// <summary>
+            /// Stream format info
+            /// </summary>
             public string FormatInfo;
+
+            /// <summary>
+            /// Stream Format version
+            /// </summary>
             public string FormatVersion;
+
+            /// <summary>
+            /// Stream format profile
+            /// </summary>
             public string FormatProfile;
+
+            /// <summary>
+            /// Stream Codec ID
+            /// </summary>
             public string CodecID;
+
+            /// <summary>
+            /// Stream Codec ID info
+            /// </summary>
             public string CodecIDInfo;
+
+            /// <summary>
+            /// Stream Codec ID Url
+            /// </summary>
             public string CodecIDUrl;
+
+            /// <summary>
+            /// Stream Codec ID description
+            /// </summary>
             public string CodecIDDescription;
+
+            /// <summary>
+            /// Stream duration
+            /// </summary>
             public Int64 Duration;
+
+            /// <summary>
+            /// Stream bitrate mode
+            /// </summary>
             public string BitRateMode;
+
+            /// <summary>
+            /// Stream bitrate
+            /// </summary>
             public int BitRate;
+
+            /// <summary>
+            /// Stream min bitrate
+            /// </summary>
             public int BitRateMin;
+
+            /// <summary>
+            /// Stream nominal bitrate
+            /// </summary>
             public int BitRateNom;
+
+            /// <summary>
+            /// Stream max bitrate
+            /// </summary>
             public int BitRateMax;
+
+            /// <summary>
+            /// Stream channel count
+            /// </summary>
             public int Channels;
+
+            /// <summary>
+            /// Stream channels
+            /// </summary>
             public string ChannelsString;
+
+            /// <summary>
+            /// Stream channel positions
+            /// </summary>
             public string ChannelPositions;
+
+            /// <summary>
+            /// Stream sampling rate
+            /// </summary>
             public int SamplingRate;
+
+            /// <summary>
+            /// Stream bit depth
+            /// </summary>
             public int BitDepth;
+
+            /// <summary>
+            /// Stream compression mode
+            /// </summary>
             public string CompressionMode;
+
+            /// <summary>
+            /// Stream delay
+            /// </summary>
             public int Delay;
+
+            /// <summary>
+            /// Stream size
+            /// </summary>
             public ulong StreamSize;
+
+            /// <summary>
+            /// Encoding library
+            /// </summary>
             public string EncodedLibrary;
+
+            /// <summary>
+            /// Name of encoding library
+            /// </summary>
             public string EncodedLibraryName;
+
+            /// <summary>
+            /// Version of encoding library
+            /// </summary>
             public string EncodedLibraryVersion;
+
+            /// <summary>
+            /// Creation date of encoding library
+            /// </summary>
             public string EncodedLibraryDate;
+
+            /// <summary>
+            /// Encoding library settings
+            /// </summary>
             public string EncodedLibrarySettings;
+
+            /// <summary>
+            /// Stream full language name
+            /// </summary>
             public string LanguageFull;
+
+            /// <summary>
+            /// Stream language abbreviation (ISO 639-1)
+            /// </summary>
             public string LanguageIso6391;
+
+            /// <summary>
+            /// Stream language abbreviation (ISO 639-2)
+            /// </summary>
             public string LanguageIso6392;
         }
 
+        /// <summary>
+        /// Image subtitle stream properties
+        /// </summary>
         public struct ImageStreamInfo
         {
+            /// <summary>
+            /// Stream kind ID
+            /// </summary>
             public int StreamKindID;
+
+            /// <summary>
+            /// Stream ID
+            /// </summary>
             public int ID;
+
+            /// <summary>
+            /// Stream format
+            /// </summary>
             public string Format;
+
+            /// <summary>
+            /// Stream Codec ID info
+            /// </summary>
             public string CodecIDInfo;
+
+            /// <summary>
+            /// Stream size
+            /// </summary>
             public ulong StreamSize;
+
+            /// <summary>
+            /// Stream full language name
+            /// </summary>
             public string LanguageFull;
+
+            /// <summary>
+            /// Stream language abbreviation (ISO 639-2)
+            /// </summary>
             public string LanguageIso6392;
         }
 
+        /// <summary>
+        /// Text subtitle stream properties
+        /// </summary>
         public struct TextStreamInfo
         {
+            /// <summary>
+            /// Stream kind ID
+            /// </summary>
             public int StreamKindID;
+
+            /// <summary>
+            /// Stream ID
+            /// </summary>
             public int ID;
+
+            /// <summary>
+            /// Stream format
+            /// </summary>
             public string Format;
+
+            /// <summary>
+            /// Stream Codec ID info
+            /// </summary>
             public string CodecIDInfo;
+
+            /// <summary>
+            /// Stream delay
+            /// </summary>
             public int Delay;
+
+            /// <summary>
+            /// Stream size
+            /// </summary>
             public ulong StreamSize;
+
+            /// <summary>
+            /// Stream full language name
+            /// </summary>
             public string LanguageFull;
+
+            /// <summary>
+            /// Stream language abbreviation (ISO 639-2)
+            /// </summary>
             public string LanguageIso6392;
         }
 
+        /// <summary>
+        /// Menu stream properties
+        /// </summary>
         public struct MenuStreamInfo
         {
+            /// <summary>
+            /// Chapter start
+            /// </summary>
             public int ChaptersPosBegin;
+
+            /// <summary>
+            /// Chapter end
+            /// </summary>
             public int ChaptersPosEnd;
         }
 
@@ -403,15 +611,40 @@ namespace VideoConvert.Interop.Model.MediaInfo
         private static int _textStreams;
         private static int _menuCount;
 
+        /// <summary>
+        /// General properties
+        /// </summary>
         public GeneralInfo General;
+
+        /// <summary>
+        /// Video streams
+        /// </summary>
         public List<VideoStreamInfo> Video;
+
+        /// <summary>
+        /// Audio streams
+        /// </summary>
         public List<AudioStreamInfo> Audio;
+
+        /// <summary>
+        /// Image subtitle streams
+        /// </summary>
         public List<ImageStreamInfo> Image;
+
+        /// <summary>
+        /// Text subtitle streams
+        /// </summary>
         public List<TextStreamInfo> Text;
 
+        /// <summary>
+        /// Chapters
+        /// </summary>
         public List<TimeSpan> Chapters;
 
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public MediaInfoContainer()
         {
             _videoStreams = 0;
@@ -424,6 +657,11 @@ namespace VideoConvert.Interop.Model.MediaInfo
             Chapters = new List<TimeSpan>();
         }
 
+        /// <summary>
+        /// Read MediaInfo properties from given file
+        /// </summary>
+        /// <param name="fileName">File to check</param>
+        /// <returns>File Properties</returns>
         public static MediaInfoContainer GetMediaInfo(string fileName)
         {
             MediaInfoContainer result = new MediaInfoContainer();
@@ -641,6 +879,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
             return result;
         }
 
+        /// <summary>
+        /// Free resources
+        /// </summary>
         public void Dispose()
         {
             _videoStreams = 0;

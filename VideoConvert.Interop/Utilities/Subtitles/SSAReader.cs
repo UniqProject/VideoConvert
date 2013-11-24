@@ -1,21 +1,11 @@
-﻿//============================================================================
-// VideoConvert - Fast Video & Audio Conversion Tool
-// Copyright © 2012 JT-Soft
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-//=============================================================================
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SSAReader.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   SSA/ASS subtitle reader
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
@@ -30,12 +20,20 @@ namespace VideoConvert.Interop.Utilities.Subtitles
     using log4net;
     using Model.Subtitles;
 
+    /// <summary>
+    /// SSA/ASS subtitle reader
+    /// </summary>
     public class SSAReader
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SSAReader));
 
         private static readonly CultureInfo CInfo = CultureInfo.GetCultureInfoByIetfLanguageTag("en-US");
 
+        /// <summary>
+        /// Read subtitle file
+        /// </summary>
+        /// <param name="fileName">Textfile</param>
+        /// <returns>parsed <see cref="TextSubtitle"/></returns>
         public static TextSubtitle ReadFile(string fileName)
         {
             TextSubtitle result = new TextSubtitle();
@@ -300,6 +298,11 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             return result;
         }
 
+        /// <summary>
+        /// Read color from input
+        /// </summary>
+        /// <param name="input">source color</param>
+        /// <returns>parsed <see cref="Color"/></returns>
         public static Color GetCorrectColor(string input)
         {
             ColorConverter converter = new ColorConverter();
@@ -314,6 +317,12 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             return Color.FromArgb(converted.A, converted.B, converted.G, converted.R);
         }
 
+        /// <summary>
+        /// Calculate Text alignment
+        /// </summary>
+        /// <param name="formatValue"></param>
+        /// <param name="isAdvancedScript"></param>
+        /// <returns>parsed alignment</returns>
         public static int GetAlignment(string formatValue, bool isAdvancedScript)
         {
             int result = 2;

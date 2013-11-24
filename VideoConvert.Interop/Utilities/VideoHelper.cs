@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Helper class for video streams
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -18,10 +18,20 @@ namespace VideoConvert.Interop.Utilities
     using Model.MediaInfo;
     using Model.Profiles;
 
+    /// <summary>
+    /// Helper class for video streams
+    /// </summary>
     public class VideoHelper
     {
         private static readonly CultureInfo CInfo = CultureInfo.GetCultureInfoByIetfLanguageTag("en-US");
 
+        /// <summary>
+        /// Read stream info
+        /// </summary>
+        /// <param name="mi"><see cref="MediaInfoContainer"/></param>
+        /// <param name="vStream">Video stream</param>
+        /// <param name="bluRayTarget"></param>
+        /// <returns></returns>
         public static VideoInfo GetStreamInfo(MediaInfoContainer mi, VideoInfo vStream, bool bluRayTarget)
         {
             if (mi.Video.Count > 0)
@@ -50,6 +60,11 @@ namespace VideoConvert.Interop.Utilities
             return vStream;
         }
 
+        /// <summary>
+        /// Get output resolution for encode job
+        /// </summary>
+        /// <param name="encodeInfo"></param>
+        /// <returns></returns>
         public static Size GetTargetSize(EncodeInfo encodeInfo)
         {
             Size resizeTo = new Size {Width = encodeInfo.VideoStream.Width, Height = encodeInfo.VideoStream.Height};
@@ -88,6 +103,13 @@ namespace VideoConvert.Interop.Utilities
             return resizeTo;
         }
 
+        /// <summary>
+        /// Get video dimensions
+        /// </summary>
+        /// <param name="videoFormat"></param>
+        /// <param name="aspect">Aspect ratio</param>
+        /// <param name="outType"></param>
+        /// <returns></returns>
         public static Size GetVideoDimensions(VideoFormat videoFormat, float aspect, OutputType outType)
         {
             Size outPut = new Size();
@@ -141,6 +163,12 @@ namespace VideoConvert.Interop.Utilities
             return outPut;
         }
 
+        /// <summary>
+        /// Get Framerate enumerator and denominator from given decimal
+        /// </summary>
+        /// <param name="fps">Source fps</param>
+        /// <param name="fpsEnumerator">Calculated Enumerator</param>
+        /// <param name="fpsDenominator">Calculated demominator</param>
         public static void GetFPSNumDenom(float fps, out int fpsEnumerator, out int fpsDenominator)
         {
             int tempFrameRate = Convert.ToInt32(Math.Round(fps, 3) * 1000);
@@ -192,6 +220,11 @@ namespace VideoConvert.Interop.Utilities
         }
 
         // TODO: check overhead calculation
+        /// <summary>
+        /// Calculate target bitrate for video stream
+        /// </summary>
+        /// <param name="jobInfo"></param>
+        /// <returns></returns>
         public static int CalculateVideoBitrate(EncodeInfo jobInfo)
         {
             const double tsOverhead = 0.1D; // 10%
@@ -257,6 +290,12 @@ namespace VideoConvert.Interop.Utilities
             return bitrateCalc;
         }
 
+        /// <summary>
+        /// Calculate max allowed bitrate
+        /// </summary>
+        /// <param name="x264Prof">Encoding profile</param>
+        /// <param name="outType">Target type</param>
+        /// <returns>Max allowed bitrate</returns>
         public static int CalculateMaxRatex264(X264Profile x264Prof, OutputType outType)
         {
             int[] baseLineBitrates =

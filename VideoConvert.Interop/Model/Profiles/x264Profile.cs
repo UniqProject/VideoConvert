@@ -137,7 +137,7 @@ namespace VideoConvert.Interop.Model.Profiles
 
         /// <summary>
         /// Defines wheter non-deterministic parameter should be used.
-        /// From <seealso cref="http://mewiki.project357.com/wiki/X264_Settings#non-deterministic"/>:
+        /// From http://mewiki.project357.com/wiki/X264_Settings#non-deterministic:
         /// Slightly improve quality when encoding with <see cref="NumThreads"/> > 1, at the cost of non-deterministic
         /// output encodes. This enables multi-threaded mv and uses the entire lookahead buffer in slicetype decisions
         /// when slicetype is threaded -- rather than just the minimum amount known to be available.
@@ -152,7 +152,7 @@ namespace VideoConvert.Interop.Model.Profiles
 
         /// <summary>
         /// Defines whether picstruct should be forced.
-        /// From <seealso cref="http://mewiki.project357.com/wiki/X264_Settings#pic-struct"/>:
+        /// From http://mewiki.project357.com/wiki/X264_Settings#pic-struct:
         /// Force sending pic_struct in Picture Timing SEI.
         /// Implied when you use <see cref="Pulldown"/> or <see cref="InterlaceMode"/>.
         /// </summary>
