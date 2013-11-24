@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Avisynth helper class
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,15 +14,27 @@ namespace VideoConvert.AppServices.Utilities
     using Interop.Model;
     using Services.Interfaces;
 
+    /// <summary>
+    /// Avisynth helper class
+    /// </summary>
     public class AviSynthHelper
     {
         private readonly IAppConfigService _appConfig;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="appConfig">Application configuration service</param>
         public AviSynthHelper(IAppConfigService appConfig)
         {
             this._appConfig = appConfig;
         }
 
+        /// <summary>
+        /// Creates a new AviSynth script
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="resizeTo"></param>
         public void GenerateAviSynthScript(EncodeInfo task, Size resizeTo)
         {
             SubtitleInfo sub = task.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);

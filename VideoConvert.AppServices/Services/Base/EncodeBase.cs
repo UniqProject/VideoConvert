@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Base Encoder class
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -16,6 +16,9 @@ namespace VideoConvert.AppServices.Services.Base
     using log4net;
 
 
+    /// <summary>
+    /// Base Encoder class
+    /// </summary>
     public class EncodeBase
     {
         #region Private Variables

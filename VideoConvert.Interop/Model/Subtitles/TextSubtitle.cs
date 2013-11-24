@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Text subtitle
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,17 +12,33 @@ namespace VideoConvert.Interop.Model.Subtitles
     using System.Collections.Generic;
     using System.Drawing;
 
+    /// <summary>
+    /// Text subtitle
+    /// </summary>
     public class TextSubtitle
     {
+        /// <summary>
+        /// Subtitle style
+        /// </summary>
         public SubtitleStyle Style;
+
+        /// <summary>
+        /// subtitle captions
+        /// </summary>
         public List<SubCaption> Captions;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public TextSubtitle()
         {
             Style = new SubtitleStyle();
             Captions = new List<SubCaption>();
         }
 
+        /// <summary>
+        /// Sets default subtitle style
+        /// </summary>
         public void SetDefaultStyle()
         {
             Style.FontName = "Microsoft Sans Serif";

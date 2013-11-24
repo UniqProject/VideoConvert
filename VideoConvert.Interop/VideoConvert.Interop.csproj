@@ -56,6 +56,7 @@
     <Compile Include="Model\EncodeInfo.cs" />
     <Compile Include="Model\EncodingStep.cs" />
     <Compile Include="Model\EpisodeEntry.cs" />
+    <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\IMDB\ImdbAKAEntry.cs" />
     <Compile Include="Model\IMDB\ImdbApiVersion.cs" />
     <Compile Include="Model\IMDB\ImdbClient.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Model\Subtitles\TextSubtitle.cs" />
     <Compile Include="Utilities\AudioHelper.cs" />
     <Compile Include="Utilities\LanguageHelper.cs" />
+    <Compile Include="Utilities\SecurityClass.cs" />
     <Compile Include="Utilities\SettingsConstants.cs" />
     <Compile Include="Model\StereoEncoding.cs" />
     <Compile Include="Model\StereoVideoInfo.cs" />
@@ -146,7 +148,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
+      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

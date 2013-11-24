@@ -11,6 +11,9 @@ namespace VideoConvert.Interop.Exceptions
 {
     using System;
 
+    /// <summary>
+    /// General Application exception
+    /// </summary>
     public class GeneralApplicationException : Exception
     {
         /// <summary>

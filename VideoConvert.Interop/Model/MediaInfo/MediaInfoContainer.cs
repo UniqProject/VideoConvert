@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   MediaInfo file properties
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,73 +14,320 @@ namespace VideoConvert.Interop.Model.MediaInfo
     using System.Globalization;
     using Utilities;
 
+    /// <summary>
+    /// MediaInfo file properties
+    /// </summary>
     public class MediaInfoContainer : IDisposable
     {
+        /// <summary>
+        /// General file properties
+        /// </summary>
         public struct GeneralInfo
         {
+            /// <summary>
+            /// Complete file name
+            /// </summary>
             public string CompleteName;
+
+            /// <summary>
+            /// File name only
+            /// </summary>
             public string FileName;
+
+            /// <summary>
+            /// File extension only
+            /// </summary>
             public string FileExtension;
+
+            /// <summary>
+            /// File format
+            /// </summary>
             public string Format;
+
+            /// <summary>
+            /// Format extensions
+            /// </summary>
             public string FormatExtensions;
+
+            /// <summary>
+            /// Internet mime type
+            /// </summary>
             public string InternetMediaType;
+
+            /// <summary>
+            /// File duration
+            /// </summary>
             public DateTime DurationTime;
+
+            /// <summary>
+            /// File title
+            /// </summary>
             public string Title;
+
+            /// <summary>
+            /// Application used for encoding
+            /// </summary>
             public string EncodedApplication;
+
+            /// <summary>
+            /// URL of application used for encoding
+            /// </summary>
             public string EncodedApplicationUrl;
+
+            /// <summary>
+            /// Library used for encoding
+            /// </summary>
             public string EncodedLibrary;
+
+            /// <summary>
+            /// Library name of encoding lib
+            /// </summary>
             public string EncodedLibraryName;
+
+            /// <summary>
+            /// Version of encoding lib
+            /// </summary>
             public string EncodedLibraryVersion;
+
+            /// <summary>
+            /// creation date of encoding lib
+            /// </summary>
             public string EncodedLibraryDate;
+
+            /// <summary>
+            /// encoding lib settings
+            /// </summary>
             public string EncodedLibrarySettings;
         }
 
+        /// <summary>
+        /// Video stream properties
+        /// </summary>
         public struct VideoStreamInfo
         {
+            /// <summary>
+            /// Stream kind ID
+            /// </summary>
             public int StreamKindID;
+
+            /// <summary>
+            /// Stream kind position
+            /// </summary>
             public int StreamKindPos;
+
+            /// <summary>
+            /// Stream ID
+            /// </summary>
             public int ID;
+
+            /// <summary>
+            /// Stream format
+            /// </summary>
             public string Format;
+
+            /// <summary>
+            /// Stream format info
+            /// </summary>
             public string FormatInfo;
+
+            /// <summary>
+            /// Stream format version
+            /// </summary>
             public string FormatVersion;
+
+            /// <summary>
+            /// Stream format profile
+            /// </summary>
             public string FormatProfile;
+
+            /// <summary>
+            /// Stream format frame mode
+            /// </summary>
             public string FormatFrameMode;
+
+            /// <summary>
+            /// Stream Multiview base profile
+            /// </summary>
             public string MultiViewBaseProfile;
+
+            /// <summary>
+            /// Stream Multiview count
+            /// </summary>
             public string MultiViewCount;
+
+            /// <summary>
+            /// Stream MIME type
+            /// </summary>
             public string InternetMediaType;
+
+            /// <summary>
+            /// Stream codec ID
+            /// </summary>
             public string CodecID;
+
+            /// <summary>
+            /// Stream codec ID info
+            /// </summary>
             public string CodecIDInfo;
+
+            /// <summary>
+            /// Stream codec ID URL
+            /// </summary>
             public string CodecIDUrl;
+
+            /// <summary>
+            /// Stream codec ID description
+            /// </summary>
             public string CodecIDDescription;
+
+            /// <summary>
+            /// Stream duration
+            /// </summary>
             public DateTime DurationTime;
+
+            /// <summary>
+            /// Stream bitrate mode
+            /// </summary>
             public string BitRateMode;
+
+            /// <summary>
+            /// Stream bitrate
+            /// </summary>
             public int BitRate;
+
+            /// <summary>
+            /// Stream min bitrate
+            /// </summary>
             public int BitRateMin;
+
+            /// <summary>
+            /// Stream nominal bitrate
+            /// </summary>
             public int BitRateNom;
+
+            /// <summary>
+            /// Stream max bitrate
+            /// </summary>
             public int BitRateMax;
+
+            /// <summary>
+            /// Stream width
+            /// </summary>
             public int Width;
+
+            /// <summary>
+            /// Stream height
+            /// </summary>
             public int Height;
+
+            /// <summary>
+            /// Stream pixel aspect ratio (PAR)
+            /// </summary>
             public string PixelAspectRatio;
+
+            /// <summary>
+            /// Stream display aspect ratio (DAR)
+            /// </summary>
             public string DisplayAspectRatio;
+
+            /// <summary>
+            /// Stream framerate mode
+            /// </summary>
             public string FrameRateMode;
+
+            /// <summary>
+            /// Stream framerate
+            /// </summary>
             public float FrameRate;
+
+            /// <summary>
+            /// Stream framerate enumerator
+            /// </summary>
             public int FrameRateEnumerator;
+
+            /// <summary>
+            /// Stream framerate denominator
+            /// </summary>
             public int FrameRateDenominator;
+
+            /// <summary>
+            /// Stream min framerate (VFR only)
+            /// </summary>
             public float FrameRateMin;
+
+            /// <summary>
+            /// Stream nominal framerate
+            /// </summary>
             public float FrameRateNom;
+
+            /// <summary>
+            /// Stream max framerate (VFR only)
+            /// </summary>
             public float FrameRateMax;
+
+            /// <summary>
+            /// Stream frame count
+            /// </summary>
             public Int64 FrameCount;
+
+            /// <summary>
+            /// Stream bitdepth
+            /// </summary>
             public int BitDepth;
+
+            /// <summary>
+            /// Stream interlacing scantype
+            /// </summary>
             public string ScanType;
+
+            /// <summary>
+            /// Stream interlacing scan order
+            /// </summary>
             public string ScanOrder;
+
+            /// <summary>
+            /// Stream size
+            /// </summary>
             public ulong StreamSize;
+
+            /// <summary>
+            /// Encoding application
+            /// </summary>
             public string EncodedApplication;
+
+            /// <summary>
+            /// URL of encoding application
+            /// </summary>
             public string EncodedApplicationUrl;
+
+            /// <summary>
+            /// Encoding library
+            /// </summary>
             public string EncodedLibrary;
+
+            /// <summary>
+            /// Name of encoding library
+            /// </summary>
             public string EncodedLibraryName;
+
+            /// <summary>
+            /// Version of encoding library
+            /// </summary>
             public string EncodedLibraryVersion;
+
+            /// <summary>
+            /// Creation date of encoding library
+            /// </summary>
             public string EncodedLibraryDate;
+
+            /// <summary>
+            /// Encoding library settings
+            /// </summary>
             public string EncodedLibrarySettings;
+
+            /// <summary>
+            /// Picture size
+            /// </summary>
             public VideoFormat VideoSize;
         }
 
