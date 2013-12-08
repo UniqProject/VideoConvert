@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Encoding complete event arguments
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,6 +12,9 @@ namespace VideoConvert.Interop.EventArgs
     using System;
     using System.Runtime.Serialization;
 
+    /// <summary>
+    /// Encoding complete event arguments
+    /// </summary>
     [DataContractAttribute]
     public class EncodeCompletedEventArgs : EventArgs
     {

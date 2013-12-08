@@ -1764,9 +1764,9 @@ namespace VideoConvert.AppServices.Encoder
         {
             int vbvBufSize = inProfile.VBVBufSize;
 
-            if (device.VBVBufsize > -1 && (vbvBufSize > device.VBVBufsize || vbvBufSize == 0))
+            if (device.VbvBufsize > -1 && (vbvBufSize > device.VbvBufsize || vbvBufSize == 0))
             {
-                vbvBufSize = device.VBVBufsize;
+                vbvBufSize = device.VbvBufsize;
             }
 
             return vbvBufSize;
@@ -1852,7 +1852,7 @@ namespace VideoConvert.AppServices.Encoder
                 keyInt = (int)(minGop / 25.0 * fps);
 
             int maxValue = maxGop / 2 + 1;
-            if (device.MaxGOP > -1 && minGop > maxValue)
+            if (device.MaxGop > -1 && minGop > maxValue)
             {
                 int Default = maxGop / 10;
                 keyInt = Default;
@@ -1870,9 +1870,9 @@ namespace VideoConvert.AppServices.Encoder
 
             int fps = (int)Math.Round((decimal)fpsN / fpsD, 0);
 
-            if (device.MaxGOP > -1 && maxGop > fps * device.MaxGOP)
+            if (device.MaxGop > -1 && maxGop > fps * device.MaxGop)
             {
-                keyInt = fps * device.MaxGOP;
+                keyInt = fps * device.MaxGop;
             }
 
             return keyInt;
@@ -1882,9 +1882,9 @@ namespace VideoConvert.AppServices.Encoder
         {
             int vbvMaxRate = inProfile.VBVMaxRate;
 
-            if (device.VBVMaxrate > -1 && (vbvMaxRate > device.VBVMaxrate || vbvMaxRate == 0))
+            if (device.VbvMaxrate > -1 && (vbvMaxRate > device.VbvMaxrate || vbvMaxRate == 0))
             {
-                vbvMaxRate = device.VBVMaxrate;
+                vbvMaxRate = device.VbvMaxrate;
             }
 
             return vbvMaxRate;

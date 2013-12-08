@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   A Helper class which handles the profile xml serialization / deserialization
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -112,14 +112,14 @@ namespace VideoConvert.AppServices.Model.Profiles
         /// <returns>List of imported profiles</returns>
         public static List<EncoderProfile> ImportProfiles (string fileName)
         {
-            List<EncoderProfile> importedProfiles = new List<EncoderProfile>();
+            var importedProfiles = new List<EncoderProfile>();
 
-            XmlSerializer serializer = new XmlSerializer(typeof(XmlProfiles));
-            XmlTextReader xmlTextReader = new XmlTextReader(fileName);
-            XmlProfiles xmlProfiles = (XmlProfiles)serializer.Deserialize(xmlTextReader);
+            var serializer = new XmlSerializer(typeof(XmlProfiles));
+            var xmlTextReader = new XmlTextReader(fileName);
+            var xmlProfiles = (XmlProfiles)serializer.Deserialize(xmlTextReader);
 
             
-            StreamCopyProfile copyProfile = new StreamCopyProfile();
+            var copyProfile = new StreamCopyProfile();
             importedProfiles.Add(copyProfile);
 
             xmlProfiles.QuickSelectProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
@@ -134,20 +134,20 @@ namespace VideoConvert.AppServices.Model.Profiles
             xmlProfiles.Mpeg2VideoProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.Mpeg2VideoProfiles);
 
-            xmlProfiles.VP8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
-            importedProfiles.AddRange(xmlProfiles.VP8Profiles);
+            xmlProfiles.Vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            importedProfiles.AddRange(xmlProfiles.Vp8Profiles);
 
-            xmlProfiles.AC3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
-            importedProfiles.AddRange(xmlProfiles.AC3Profiles);
+            xmlProfiles.Ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            importedProfiles.AddRange(xmlProfiles.Ac3Profiles);
 
             xmlProfiles.OggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.OggProfiles);
 
-            xmlProfiles.MP3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
-            importedProfiles.AddRange(xmlProfiles.MP3Profiles);
+            xmlProfiles.Mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            importedProfiles.AddRange(xmlProfiles.Mp3Profiles);
 
-            xmlProfiles.AACProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
-            importedProfiles.AddRange(xmlProfiles.AACProfiles);
+            xmlProfiles.AacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            importedProfiles.AddRange(xmlProfiles.AacProfiles);
             xmlTextReader.Close();
 
             return importedProfiles;
@@ -155,10 +155,10 @@ namespace VideoConvert.AppServices.Model.Profiles
 
         private List<EncoderProfile> GetFilteredList()
         {
-            List<EncoderProfile> result = new List<EncoderProfile>();
+            var result = new List<EncoderProfile>();
             result.AddRange(ProfileList);
 
-            List<EncoderProfile> filter = new List<EncoderProfile>();
+            var filter = new List<EncoderProfile>();
             if (!_config.LameInstalled)
             {
                 filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.MP3));
@@ -334,25 +334,26 @@ namespace VideoConvert.AppServices.Model.Profiles
                 ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AacProfile>().ToList();
             aacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            XmlProfiles profiles = new XmlProfiles
-                {
-                    AC3Profiles =
-                        ac3Profiles,
-                    HcEncProfiles =
-                        hcEncProfiles,
-                    MP3Profiles =
-                        mp3Profiles,
-                    OggProfiles =
-                        oggProfiles,
-                    QuickSelectProfiles =
-                        quickSelectProfiles,
-                    X264Profiles =
-                        x264Profiles,
-                    AACProfiles = aacProfiles,
-                    VP8Profiles = vp8Profiles,
-                };
-            XmlSerializer serializer = new XmlSerializer(typeof(XmlProfiles));
-            using (FileStream writer = new FileStream(_profFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
+            var profiles = new XmlProfiles
+            {
+                Ac3Profiles =
+                    ac3Profiles,
+                HcEncProfiles =
+                    hcEncProfiles,
+                Mp3Profiles =
+                    mp3Profiles,
+                OggProfiles =
+                    oggProfiles,
+                QuickSelectProfiles =
+                    quickSelectProfiles,
+                X264Profiles =
+                    x264Profiles,
+                AacProfiles = aacProfiles,
+                Vp8Profiles = vp8Profiles,
+            };
+
+            var serializer = new XmlSerializer(typeof(XmlProfiles));
+            using (var writer = new FileStream(_profFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
             {
                 serializer.Serialize(writer, profiles);
             }

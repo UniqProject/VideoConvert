@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Settings Serializer
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,6 +13,11 @@ namespace VideoConvert.Interop.Collections
     using System.Collections.Specialized;
     using System.Xml.Serialization;
 
+    /// <summary>
+    /// Settings Serializer
+    /// </summary>
+    /// <typeparam name="TKey">Key</typeparam>
+    /// <typeparam name="TValue">Value</typeparam>
     [XmlRoot("dictionary")]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
@@ -37,8 +42,8 @@ namespace VideoConvert.Interop.Collections
         /// </param>
         public void ReadXml(System.Xml.XmlReader reader)
         {
-            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+            var keySerializer = new XmlSerializer(typeof(TKey));
+            var valueSerializer = new XmlSerializer(typeof(TValue));
 
             bool wasEmpty = reader.IsEmptyElement;
             reader.Read();
@@ -51,14 +56,14 @@ namespace VideoConvert.Interop.Collections
                 reader.ReadStartElement("item");
 
                 reader.ReadStartElement("key");
-                TKey key = (TKey)keySerializer.Deserialize(reader);
+                var key = (TKey)keySerializer.Deserialize(reader);
                 reader.ReadEndElement();
 
                 reader.ReadStartElement("value");
                 TValue value;
                 if (reader.Name.Contains("ArrayOfString"))
                 {
-                    XmlSerializer scSerializer = new XmlSerializer(typeof(StringCollection));
+                    var scSerializer = new XmlSerializer(typeof(StringCollection));
                     value = (TValue)scSerializer.Deserialize(reader);
                 }
                 else
@@ -83,8 +88,8 @@ namespace VideoConvert.Interop.Collections
         /// </param>
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+            var keySerializer = new XmlSerializer(typeof(TKey));
+            var valueSerializer = new XmlSerializer(typeof(TValue));
 
             foreach (TKey key in this.Keys)
             {
@@ -99,7 +104,7 @@ namespace VideoConvert.Interop.Collections
 
                 if (value.GetType() == typeof(StringCollection))
                 {
-                    XmlSerializer scSerializer = new XmlSerializer(typeof(StringCollection));
+                    var scSerializer = new XmlSerializer(typeof(StringCollection));
                     scSerializer.Serialize(writer, value);
                     writer.WriteEndElement();
                 }

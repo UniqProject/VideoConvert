@@ -290,7 +290,7 @@ namespace VideoConvert.AppServices.Encoder
             if (textSub != null)
             {
                 string xmlFile = Path.ChangeExtension(_outputFile, "xml");
-                if (BDNExport.WriteBDNXmlFile(textSub,
+                if (BdnExport.WriteBdnXmlFile(textSub,
                                               xmlFile,
                                               this._currentTask.VideoStream.Width,
                                               this._currentTask.VideoStream.Height,

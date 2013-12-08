@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   File system helper class
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,13 +13,29 @@ namespace VideoConvert.Interop.Utilities
     using System.IO;
     using System.Text;
 
+    /// <summary>
+    /// File system helper class
+    /// </summary>
     public class FileSystemHelper
     {
+        /// <summary>
+        /// Generate temp file name
+        /// </summary>
+        /// <param name="tempPath">Location of temp files</param>
+        /// <param name="extension">File extension</param>
+        /// <returns>Temp file name</returns>
         public static string CreateTempFile(string tempPath, string extension)
         {
             return CreateTempFile(tempPath, null, extension);
         }
 
+        /// <summary>
+        /// Generate temp file name
+        /// </summary>
+        /// <param name="tempPath">Location of temp files</param>
+        /// <param name="baseName">Base name for temp file</param>
+        /// <param name="extension">File extension</param>
+        /// <returns>Temp file name</returns>
         public static string CreateTempFile(String tempPath, string baseName, string extension)
         {
             string output;
@@ -43,6 +59,11 @@ namespace VideoConvert.Interop.Utilities
             return output;
         }
 
+        /// <summary>
+        /// Get filename in ASCII encoding
+        /// </summary>
+        /// <param name="fileName">Filename</param>
+        /// <returns>Filename in ASCII encoding</returns>
         public static string GetAsciiFileName(string fileName)
         {
             return

@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   MediaInfoList
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,13 +12,19 @@ namespace VideoConvert.Interop.Model.MediaInfo
     using System;
     using System.Runtime.InteropServices;
 
+
+#pragma warning disable 1591
+// ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Local
     public class MediaInfoList
+
     {
         //Import of DLL functions. DO NOT USE until you know what you do (MediaInfo DLL do NOT use CoTaskMemAlloc to allocate memory)
         [DllImport("MediaInfo.dll")]
         private static extern IntPtr MediaInfoList_New();
         [DllImport("MediaInfo.dll")]
         private static extern void MediaInfoList_Delete(IntPtr Handle);
+
         [DllImport("MediaInfo.dll")]
         private static extern IntPtr MediaInfoList_Open(IntPtr Handle, [MarshalAs(UnmanagedType.LPWStr)] string FileName, IntPtr Options);
         [DllImport("MediaInfo.dll")]
@@ -58,4 +64,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
         public String Option(String Option_) { return Option(Option_, ""); }
         public int Count_Get(int FilePos, StreamKind StreamKind) { return Count_Get(FilePos, StreamKind, -1); }
     }
+// ReSharper restore FieldCanBeMadeReadOnly.Local
+// ReSharper restore InconsistentNaming
+#pragma warning restore 1591
 }

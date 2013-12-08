@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   TreeView for Stream selection screen
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,15 +13,25 @@ namespace VideoConvert.Interop.Model
     using System.ComponentModel;
 
     /// <summary>
-    /// 
+    /// TreeView for Stream selection screen
     /// </summary>
     public class StreamTreeNode : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Item ID
+        /// </summary>
         public int ID { get; set; }
+
+        /// <summary>
+        /// Item Name
+        /// </summary>
         public string Name { get; set; }
 
         private object _data;
 
+        /// <summary>
+        /// Item data
+        /// </summary>
         public object Data
         {
             get
@@ -40,6 +50,9 @@ namespace VideoConvert.Interop.Model
 
         private bool _isChecked;
 
+        /// <summary>
+        /// Item Checked
+        /// </summary>
         public bool IsChecked
         {
             get
@@ -56,14 +69,28 @@ namespace VideoConvert.Interop.Model
             }
         }
 
+        /// <summary>
+        /// Item Expanded
+        /// </summary>
         public bool IsExpanded { get; set; }
+
+        /// <summary>
+        /// Parent Item
+        /// </summary>
         public StreamTreeNode Parent { get; set; }
+
+        /// <summary>
+        /// Child Items
+        /// </summary>
         public List<StreamTreeNode> Children { get; set; }
 
         private bool _hardcodeIntoVideo;
         private bool _matroskaDefault;
         private bool _keepOnlyForced;
 
+        /// <summary>
+        /// Hardcode subtitle into Video
+        /// </summary>
         public bool HardcodeIntoVideo
         {
             get
@@ -80,6 +107,9 @@ namespace VideoConvert.Interop.Model
             }
         }
 
+        /// <summary>
+        /// Default Stream in Matroska container
+        /// </summary>
         public bool MatroskaDefault
         {
             get
@@ -96,6 +126,9 @@ namespace VideoConvert.Interop.Model
             }
         }
 
+        /// <summary>
+        /// Keep only forced subtitle captions
+        /// </summary>
         public bool KeepOnlyForced
         {
             get
@@ -113,8 +146,15 @@ namespace VideoConvert.Interop.Model
         }
 
 
+        /// <summary>
+        /// Property Changed Event
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Property Changed Event handler
+        /// </summary>
+        /// <param name="e"></param>
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -122,6 +162,10 @@ namespace VideoConvert.Interop.Model
                 handler(this, e);
         }
 
+        /// <summary>
+        /// Property Changed Event handler
+        /// </summary>
+        /// <param name="propertyName"></param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
