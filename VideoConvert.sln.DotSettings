@@ -1,2 +1,1102 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:Boolean x:Key="/Default/CodeInspection/CodeAnnotations/NamespacesWithAnnotations/=VideoConvert_002EAnnotations/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/CodeEditing/GenerateMemberBody/CopyXmlDocumentation/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeEditing/GenerateMemberBody/WrapIntoRegions/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/ParameterInfo/DelegatesAsLambdas/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/CodeAnnotations/NamespacesWithAnnotations/=VideoConvert_002EAnnotations/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/Highlighting/IdentifierHighlightingEnabled/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/CSharpMemberOrderPattern/LayoutType/@EntryValue">UsingRegions</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/CSharpUsing/AddImportsToDeepestScope/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/CSharpUsing/QualifiedUsingAtNestedScope/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/FileHeader/FileHeaderText/@EntryValue">--------------------------------------------------------------------------------------------------------------------&#xD;
+&lt;copyright file="$FILENAME$" company="JT-Soft (https://github.com/UniqProject/VideoConvert)"&gt;&#xD;
+  This file is part of the $PROJECT$ source code - It may be used under the terms of the GNU General Public License.&#xD;
+&lt;/copyright&gt;&#xD;
+&lt;summary&gt;&#xD;
+  &#xD;
+&lt;/summary&gt;&#xD;
+--------------------------------------------------------------------------------------------------------------------</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/QuickList/=F0CA621CDF5AB24282D8CDC11C520997/Entry/=0485276E9DFCD64FB1583A1D7E1557E4/EntryName/@EntryValue">PipedEncoder</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/QuickList/=F0CA621CDF5AB24282D8CDC11C520997/Entry/=0485276E9DFCD64FB1583A1D7E1557E4/Position/@EntryValue">5</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/QuickList/=F0CA621CDF5AB24282D8CDC11C520997/Entry/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/EntryName/@EntryValue">Encoder</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/QuickList/=F0CA621CDF5AB24282D8CDC11C520997/Entry/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Position/@EntryValue">4</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/CustomProperties/=FileName/@EntryIndexedValue">PipedEncoder</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Description/@EntryValue">PipedEncoder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=CLASS/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=CLASS/Expression/@EntryValue">getFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=CLASS/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=CLASS/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=EXEC/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=EXEC/Order/@EntryValue">3</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=HEADER/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=HEADER/Expression/@EntryValue">fileheader()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=HEADER/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACE/Expression/@EntryValue">fileDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACE/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACE/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACEIFACE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACEIFACE/Expression/@EntryValue">fileDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACEIFACE/InitialRange/@EntryValue">-1</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACEIFACE/InitialSection/@EntryValue">59511A8608BE2548BEBFFF1E496B2037</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=NAMESPACEIFACE/Order/@EntryValue">7</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=REGEX/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=REGEX/Order/@EntryValue">5</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=REGEXNAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=REGEXNAME/Order/@EntryValue">4</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=VERSIONREGEX/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Field/=VERSIONREGEX/Order/@EntryValue">6</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Section/=59511A8608BE2548BEBFFF1E496B2037/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Section/=59511A8608BE2548BEBFFF1E496B2037/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig Folder="Interfaces" File="I$NAME$.cs" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Section/=59511A8608BE2548BEBFFF1E496B2037/LocationSelectorName/@EntryValue">manual</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Section/=59511A8608BE2548BEBFFF1E496B2037/Order/@EntryValue">0</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Section/=59511A8608BE2548BEBFFF1E496B2037/SectionPlain/Text/@EntryValue">&#xD;
+namespace $NAMESPACEIFACE$&#xD;
+{&#xD;
+    using System;&#xD;
+    using Interop.Model;&#xD;
+&#xD;
+    /// &lt;summary&gt;&#xD;
+    /// I$CLASS$ interface&#xD;
+    /// &lt;/summary&gt;&#xD;
+    public interface I$CLASS$&#xD;
+    {&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Execute a $EXEC$ demux process.&#xD;
+        /// This should only be called from the UI thread.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="encodeQueueTask"&gt;&#xD;
+        /// The encodeQueueTask.&#xD;
+        /// &lt;/param&gt;&#xD;
+        void Start(EncodeInfo encodeQueueTask);&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Kill the CLI process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        void Stop();&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Shutdown the service.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        void Shutdown();&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Fires when a new CLI QueueTask starts&#xD;
+        /// &lt;/summary&gt;&#xD;
+        event EventHandler EncodeStarted;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Fires when a CLI QueueTask finishes.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        event EncodeCompletedStatus EncodeCompleted;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Encode process has progressed&#xD;
+        /// &lt;/summary&gt;&#xD;
+        event EncodeProgessStatus EncodeStatusChanged;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets or sets a value indicating whether IsEncoding.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        bool IsEncoding { get; }&#xD;
+    }&#xD;
+}</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=0485276E9DFCD64FB1583A1D7E1557E4/Text/@EntryValue">$HEADER$&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+    using System;&#xD;
+    using System.Diagnostics;&#xD;
+    using System.Globalization;&#xD;
+    using System.IO;&#xD;
+    using System.IO.Pipes;&#xD;
+    using System.Text;&#xD;
+    using System.Text.RegularExpressions;&#xD;
+    using System.Threading;&#xD;
+    using Decoder;&#xD;
+    using Interfaces;&#xD;
+    using Interop.EventArgs;&#xD;
+    using Interop.Model;&#xD;
+    using log4net;&#xD;
+    using Services.Base;&#xD;
+    using Services.Interfaces;&#xD;
+    using ThreadState = System.Threading.ThreadState;&#xD;
+&#xD;
+    /// &lt;summary&gt;&#xD;
+    /// The $CLASS$&#xD;
+    /// &lt;/summary&gt;&#xD;
+    public class $CLASS$ : EncodeBase, I$CLASS$&#xD;
+    {&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Errorlog&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private static readonly ILog Log = LogManager.GetLogger(typeof($CLASS$));&#xD;
+&#xD;
+        #region Private Variables&#xD;
+&#xD;
+        private readonly IAppConfigService _appConfig;&#xD;
+        private const string Executable = "$EXEC$.exe";&#xD;
+        private const string Executable64 = "$EXEC$_64.exe";&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets the Encoder Process ID&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private int _encoderProcessId;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Get the Decoder Process ID&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private int _decoderProcessId;&#xD;
+&#xD;
+        private NamedPipeServerStream _encodePipe;&#xD;
+        private IAsyncResult _encodePipeState;&#xD;
+        private Thread _pipeReadThread;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Start time of the current Encode;&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private DateTime _startTime;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// The Current Task&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private EncodeInfo _currentTask;&#xD;
+&#xD;
+        private string _inputFile;&#xD;
+        private string _outputFile;&#xD;
+&#xD;
+        private AudioInfo _audio;&#xD;
+&#xD;
+        private readonly Regex _$REGEXNAME$ = new Regex(@"$REGEX$",&#xD;
+                                                   RegexOptions.Singleline | RegexOptions.Multiline);&#xD;
+        private readonly Regex _pipeObj = new Regex(@"^([\d\,\.]*?)%.*$",&#xD;
+                                                    RegexOptions.Singleline | RegexOptions.Multiline);&#xD;
+        #endregion&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Initializes a new instance of the &lt;see cref="$CLASS$"/&gt; class.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="appConfig"&gt;&#xD;
+        /// The user Setting Service.&#xD;
+        /// &lt;/param&gt;&#xD;
+        public $CLASS$(IAppConfigService appConfig) : base(appConfig)&#xD;
+        {&#xD;
+            this._appConfig = appConfig;&#xD;
+        }&#xD;
+&#xD;
+        #region Properties&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets or sets the $EXEC$ Process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        protected Process EncodeProcess { get; set; }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets or sets the BePipe decoding Process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        protected Process DecodeProcess { get; set; }&#xD;
+&#xD;
+        #endregion&#xD;
+&#xD;
+        #region Public Methods&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Reads encoder version from its output, use path settings from parameters&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="encPath"&gt;Path to encoder&lt;/param&gt;&#xD;
+        /// &lt;param name="use64Bit"&gt;&lt;/param&gt;&#xD;
+        /// &lt;returns&gt;Encoder version&lt;/returns&gt;&#xD;
+        public static string GetVersionInfo(string encPath, bool use64Bit)&#xD;
+        {&#xD;
+            string verInfo = string.Empty;&#xD;
+&#xD;
+            if (use64Bit &amp;&amp; !Environment.Is64BitOperatingSystem) return string.Empty;&#xD;
+&#xD;
+            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);&#xD;
+&#xD;
+            using (Process encoder = new Process())&#xD;
+            {&#xD;
+                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)&#xD;
+                {&#xD;
+                    CreateNoWindow = true,&#xD;
+                    UseShellExecute = false,&#xD;
+                    RedirectStandardError = true&#xD;
+                };&#xD;
+                encoder.StartInfo = parameter;&#xD;
+&#xD;
+                bool started;&#xD;
+                try&#xD;
+                {&#xD;
+                    started = encoder.Start();&#xD;
+                }&#xD;
+                catch (Exception ex)&#xD;
+                {&#xD;
+                    started = false;&#xD;
+                    Log.ErrorFormat("$EXEC$ exception: {0}", ex);&#xD;
+                }&#xD;
+&#xD;
+                if (started)&#xD;
+                {&#xD;
+                    string output = encoder.StandardError.ReadToEnd();&#xD;
+                    Regex regObj = new Regex(@"$VERSIONREGEX$",&#xD;
+                        RegexOptions.Singleline | RegexOptions.Multiline);&#xD;
+                    Match result = regObj.Match(output);&#xD;
+                    if (result.Success)&#xD;
+                        verInfo = result.Groups[1].Value;&#xD;
+&#xD;
+                    encoder.WaitForExit(10000);&#xD;
+                    if (!encoder.HasExited)&#xD;
+                        encoder.Kill();&#xD;
+                }&#xD;
+            }&#xD;
+&#xD;
+            // Debug info&#xD;
+            if (Log.IsDebugEnabled)&#xD;
+            {&#xD;
+                if (use64Bit)&#xD;
+                    Log.Debug("Selected 64 bit encoder");&#xD;
+                Log.DebugFormat("$EXEC$ \"{0}\" found", verInfo);&#xD;
+            }&#xD;
+            return verInfo;&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Starts encoding process with given Encode Job&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="encodeQueueTask"&gt;Job to encode&lt;/param&gt;&#xD;
+        public void Start(EncodeInfo encodeQueueTask)&#xD;
+        {&#xD;
+            try&#xD;
+            {&#xD;
+                if (this.IsEncoding)&#xD;
+                    throw new Exception("$EXEC$ is already running");&#xD;
+&#xD;
+                bool use64BitEncoder = this._appConfig.Use64BitEncoders &amp;&amp;&#xD;
+                                       this._appConfig.Ffmpeg64Installed &amp;&amp;&#xD;
+                                       Environment.Is64BitOperatingSystem;&#xD;
+&#xD;
+                this.IsEncoding = true;&#xD;
+                this._currentTask = encodeQueueTask;&#xD;
+&#xD;
+                string query = GenerateCommandLine();&#xD;
+                string cliPath = Path.Combine(this._appConfig.ToolsPath, use64BitEncoder ? Executable64 : Executable);&#xD;
+&#xD;
+                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)&#xD;
+                {&#xD;
+                    WorkingDirectory = this._appConfig.DemuxLocation,&#xD;
+                    CreateNoWindow = true,&#xD;
+                    UseShellExecute = false,&#xD;
+                    RedirectStandardError = true,&#xD;
+                    RedirectStandardOutput = true,&#xD;
+                    RedirectStandardInput = true&#xD;
+                };&#xD;
+                this.EncodeProcess = new Process {StartInfo = cliStart};&#xD;
+                Log.InfoFormat("start parameter: $EXEC$ {0}", query);&#xD;
+&#xD;
+                this.DecodeProcess = DecoderBePipe.CreateDecodingProcess(_inputFile, this._appConfig.AvsPluginsPath);&#xD;
+&#xD;
+                this._encodePipe = new NamedPipeServerStream(this._appConfig.EncodeNamedPipeName,&#xD;
+                                                             PipeDirection.InOut,&#xD;
+                                                             3,&#xD;
+                                                             PipeTransmissionMode.Byte,&#xD;
+                                                             PipeOptions.Asynchronous);&#xD;
+&#xD;
+                this._encodePipeState = this._encodePipe.BeginWaitForConnection(EncoderConnected, null);&#xD;
+&#xD;
+                this.EncodeProcess.Start();&#xD;
+                this.DecodeProcess.Start();&#xD;
+&#xD;
+                this._startTime = DateTime.Now;&#xD;
+&#xD;
+                // TODO: check output handling&#xD;
+&#xD;
+                this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;&#xD;
+                this.EncodeProcess.BeginErrorReadLine();&#xD;
+&#xD;
+                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;&#xD;
+                this.EncodeProcess.BeginOutputReadLine();&#xD;
+&#xD;
+                this.DecodeProcess.ErrorDataReceived += DecodeProcessDataReceived;&#xD;
+                this.DecodeProcess.BeginErrorReadLine();&#xD;
+&#xD;
+                this._encoderProcessId = this.EncodeProcess.Id;&#xD;
+                this._decoderProcessId = this.DecodeProcess.Id;&#xD;
+&#xD;
+                if (this._encoderProcessId != -1)&#xD;
+                {&#xD;
+                    this.EncodeProcess.EnableRaisingEvents = true;&#xD;
+                    this.EncodeProcess.Exited += EncodeProcessExited;&#xD;
+                }&#xD;
+&#xD;
+                if (this._decoderProcessId != -1)&#xD;
+                {&#xD;
+                    this.DecodeProcess.EnableRaisingEvents = true;&#xD;
+                    this.DecodeProcess.Exited += DecodeProcessExited;&#xD;
+                }&#xD;
+&#xD;
+                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();&#xD;
+                this.DecodeProcess.PriorityClass = this._appConfig.GetProcessPriority();&#xD;
+&#xD;
+                // Fire the Encode Started Event&#xD;
+                this.InvokeEncodeStarted(EventArgs.Empty);&#xD;
+&#xD;
+                $END$&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+                this._currentTask.ExitCode = -1;&#xD;
+                this.IsEncoding = false;&#xD;
+                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Kill the CLI process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        public override void Stop()&#xD;
+        {&#xD;
+            try&#xD;
+            {&#xD;
+                if (this.EncodeProcess != null &amp;&amp; !this.EncodeProcess.HasExited)&#xD;
+                {&#xD;
+                    this.EncodeProcess.Kill();&#xD;
+                }&#xD;
+                if (this.DecodeProcess != null &amp;&amp; !this.DecodeProcess.HasExited)&#xD;
+                {&#xD;
+                    this.DecodeProcess.Kill();&#xD;
+                }&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+            }&#xD;
+            this.IsEncoding = false;&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Shutdown the service.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        public void Shutdown()&#xD;
+        {&#xD;
+            // Nothing to do.&#xD;
+        }&#xD;
+&#xD;
+        #endregion&#xD;
+&#xD;
+        #region Private Helper Methods&#xD;
+&#xD;
+        private string GenerateCommandLine()&#xD;
+        {&#xD;
+            StringBuilder sb = new StringBuilder();&#xD;
+&#xD;
+            // TODO: add commandline generation&#xD;
+&#xD;
+            return sb.ToString();&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// The $EXEC$ process has exited.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="sender"&gt;&#xD;
+        /// The sender.&#xD;
+        /// &lt;/param&gt;&#xD;
+        /// &lt;param name="e"&gt;&#xD;
+        /// The EventArgs.&#xD;
+        /// &lt;/param&gt;&#xD;
+        private void EncodeProcessExited(object sender, EventArgs e)&#xD;
+        {&#xD;
+            if (this._pipeReadThread != null &amp;&amp; this._pipeReadThread.ThreadState == ThreadState.Running)&#xD;
+                this._pipeReadThread.Abort();&#xD;
+            this.EncodeProcess.WaitForExit();&#xD;
+&#xD;
+            try&#xD;
+            {&#xD;
+                this.EncodeProcess.CancelErrorRead();&#xD;
+                this.EncodeProcess.CancelOutputRead();&#xD;
+                // TODO: check stdout / stderr reading&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+            }&#xD;
+&#xD;
+            this._currentTask.ExitCode = EncodeProcess.ExitCode;&#xD;
+            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);&#xD;
+&#xD;
+            if (this._currentTask.ExitCode == 0)&#xD;
+            {&#xD;
+                // TODO: tempfile handling&#xD;
+            }&#xD;
+&#xD;
+            this._currentTask.CompletedStep = this._currentTask.NextStep;&#xD;
+            this.IsEncoding = false;&#xD;
+            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));&#xD;
+        }&#xD;
+&#xD;
+        private void DecodeProcessExited(object sender, EventArgs e)&#xD;
+        {&#xD;
+            if (this._encodePipe != null)&#xD;
+            {&#xD;
+                try&#xD;
+                {&#xD;
+                    _encodePipe.EndWaitForConnection(_encodePipeState);&#xD;
+                }&#xD;
+                catch (Exception exc)&#xD;
+                {&#xD;
+                    Log.Error(exc);&#xD;
+                }&#xD;
+&#xD;
+                if (this._pipeReadThread != null &amp;&amp; this._pipeReadThread.ThreadState == ThreadState.Running)&#xD;
+                    this._pipeReadThread.Abort();&#xD;
+                this.DecodeProcess.WaitForExit();&#xD;
+&#xD;
+                if (this._encodePipe.IsConnected)&#xD;
+                    _encodePipe.Disconnect();&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// process received data&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="sender"&gt;&lt;/param&gt;&#xD;
+        /// &lt;param name="e"&gt;&lt;/param&gt;&#xD;
+        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)&#xD;
+        {&#xD;
+            if (!string.IsNullOrEmpty(e.Data) &amp;&amp; this.IsEncoding)&#xD;
+            {&#xD;
+                this.ProcessLogMessage(e.Data);&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        private void ProcessLogMessage(string line)&#xD;
+        {&#xD;
+            if (string.IsNullOrEmpty(line)) return;&#xD;
+&#xD;
+            Match result = _$REGEXNAME$.Match(line);&#xD;
+&#xD;
+            if (result.Success)&#xD;
+            {&#xD;
+                // TODO: output processing&#xD;
+                /*&#xD;
+                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs&#xD;
+                {&#xD;
+                    AverageFrameRate = 0,&#xD;
+                    CurrentFrameRate = 0,&#xD;
+                    EstimatedTimeLeft = remainingTime,&#xD;
+                    PercentComplete = progress,&#xD;
+                    Task = 0,&#xD;
+                    TaskCount = 0,&#xD;
+                    ElapsedTime = elapsedTime,&#xD;
+                };&#xD;
+                this.InvokeEncodeStatusChanged(eventArgs);&#xD;
+                */&#xD;
+            }&#xD;
+            else&#xD;
+                Log.InfoFormat("$EXEC$: {0}", line);&#xD;
+        }&#xD;
+&#xD;
+        private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)&#xD;
+        {&#xD;
+            string line = e.Data;&#xD;
+            if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;&#xD;
+&#xD;
+            Match bePipeMatch = _pipeObj.Match(line);&#xD;
+            if (bePipeMatch.Success)&#xD;
+            {&#xD;
+                float progress;&#xD;
+                string tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");&#xD;
+                Single.TryParse(tempProgress, NumberStyles.Number, this._appConfig.CInfo, out progress);&#xD;
+&#xD;
+                float progressRemaining = 100f - progress;&#xD;
+                TimeSpan elapsedTime = DateTime.Now - _startTime;&#xD;
+&#xD;
+                long secRemaining = 0;&#xD;
+                if (elapsedTime.TotalSeconds &gt; 0)&#xD;
+                {&#xD;
+                    double speed = Math.Round(progress / elapsedTime.TotalSeconds, 6);&#xD;
+&#xD;
+                    if (speed &gt; 0)&#xD;
+                        secRemaining = (long)Math.Round(progressRemaining / speed, 0);&#xD;
+                    else&#xD;
+                        secRemaining = 0;&#xD;
+                }&#xD;
+                if (secRemaining &lt; 0)&#xD;
+                    secRemaining = 0;&#xD;
+&#xD;
+                TimeSpan remainingTime = TimeSpan.FromSeconds(secRemaining);&#xD;
+&#xD;
+                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs&#xD;
+                {&#xD;
+                    AverageFrameRate = 0,&#xD;
+                    CurrentFrameRate = 0,&#xD;
+                    EstimatedTimeLeft = remainingTime,&#xD;
+                    PercentComplete = progress,&#xD;
+                    Task = 0,&#xD;
+                    TaskCount = 0,&#xD;
+                    ElapsedTime = elapsedTime,&#xD;
+                };&#xD;
+                this.InvokeEncodeStatusChanged(eventArgs);&#xD;
+            }&#xD;
+            else&#xD;
+                Log.InfoFormat("bepipe: {0}", line);&#xD;
+        }&#xD;
+&#xD;
+        #endregion&#xD;
+&#xD;
+        #region Stream Piping functions&#xD;
+&#xD;
+        private void EncoderConnected(IAsyncResult ar)&#xD;
+        {&#xD;
+            Log.Info("Encoder Pipe connected");&#xD;
+            _encodePipeState = ar;&#xD;
+            this._pipeReadThread = new Thread(PipeReadThreadStart);&#xD;
+            this._pipeReadThread.Start();&#xD;
+            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();&#xD;
+        }&#xD;
+&#xD;
+        private void PipeReadThreadStart()&#xD;
+        {&#xD;
+            try&#xD;
+            {&#xD;
+                if (DecodeProcess != null)&#xD;
+                    ReadThreadStart();&#xD;
+            }&#xD;
+            catch (Exception ex)&#xD;
+            {&#xD;
+                Log.Error(ex);&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        private void ReadThreadStart()&#xD;
+        {&#xD;
+            if (!_encodePipe.IsConnected)&#xD;
+            {&#xD;
+                _encodePipe.WaitForConnection();&#xD;
+            }&#xD;
+&#xD;
+            try&#xD;
+            {&#xD;
+                DecodeProcess.StandardOutput.BaseStream.CopyTo(_encodePipe);&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        #endregion&#xD;
+    }&#xD;
+}</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=2CAB0A567F30704CA99AA3EC249E3153/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=2CAB0A567F30704CA99AA3EC249E3153/Text/@EntryValue">$HEADER$&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+  public class $CLASS$ {$END$}&#xD;
+}</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=6FAA6736247D464489DF536819A6D103/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=6FAA6736247D464489DF536819A6D103/Text/@EntryValue">$HEADER$&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+  public interface $INTERFACE$ {$END$}&#xD;
+}</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7B10AC30B0320A4F95A3763001E1DBF6/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7B10AC30B0320A4F95A3763001E1DBF6/Text/@EntryValue">$HEADER$&#xD;
+&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+  public enum $ENUM$ {$END$}&#xD;
+}</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9BB83ED0FF792E47BAAB217C25589C77/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9BB83ED0FF792E47BAAB217C25589C77/Text/@EntryValue">$HEADER$&#xD;
+&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+  public struct $STRUCT$ {$END$}&#xD;
+}</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Description/@EntryValue">FILE HEADER</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Field/=HEADER/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Field/=HEADER/Expression/@EntryValue">fileheader()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Field/=HEADER/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Scope/=C3001E7C0DA78E4487072B7E050D86C5/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Scope/=C3001E7C0DA78E4487072B7E050D86C5/CustomProperties/=minimumLanguageVersion/@EntryIndexedValue">2.0</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Scope/=C3001E7C0DA78E4487072B7E050D86C5/Type/@EntryValue">InCSharpFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Shortcut/@EntryValue">head</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A428889DFC5BFE469DD31D7115461896/Text/@EntryValue">$HEADER$</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Field/=VALUE/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Field/=VALUE/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Scope/=C3001E7C0DA78E4487072B7E050D86C5/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Scope/=C3001E7C0DA78E4487072B7E050D86C5/CustomProperties/=minimumLanguageVersion/@EntryIndexedValue">2.0</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Scope/=C3001E7C0DA78E4487072B7E050D86C5/Type/@EntryValue">InCSharpFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Shortcut/@EntryValue">wa</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=D46B2AD475F2DB44953C4F29106A48BA/Text/@EntryValue">writer.WriteAttributeString("$NAME$", "$VALUE$");&#xD;
+$END$</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Field/=ELEMENT/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Field/=ELEMENT/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Scope/=C3001E7C0DA78E4487072B7E050D86C5/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Scope/=C3001E7C0DA78E4487072B7E050D86C5/CustomProperties/=minimumLanguageVersion/@EntryIndexedValue">2.0</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Scope/=C3001E7C0DA78E4487072B7E050D86C5/Type/@EntryValue">InCSharpFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Shortcut/@EntryValue">we</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DD7FC448AD5D5D40B23BF4D7CFB63D6A/Text/@EntryValue">writer.WriteStartElement("$ELEMENT$");&#xD;
+$END$&#xD;
+writer.WriteEndElement(); // $ELEMENT$&#xD;
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/CustomProperties/=FileName/@EntryIndexedValue">Encoder</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Description/@EntryValue">Encoder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=CLASS/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=CLASS/Expression/@EntryValue">getFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=CLASS/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=CLASS/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=EXEC/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=EXEC/Order/@EntryValue">3</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=HEADER/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=HEADER/Expression/@EntryValue">fileheader()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=HEADER/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACE/Expression/@EntryValue">fileDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACE/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACE/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACEIFACE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACEIFACE/Expression/@EntryValue">fileDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACEIFACE/InitialRange/@EntryValue">-1</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACEIFACE/InitialSection/@EntryValue">D1728D1E2C4A444996C91A158CFF7E5C</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=NAMESPACEIFACE/Order/@EntryValue">7</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=REGEX/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=REGEX/Order/@EntryValue">5</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=REGEXNAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=REGEXNAME/Order/@EntryValue">4</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=VERSIONREGEX/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Field/=VERSIONREGEX/Order/@EntryValue">6</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Section/=D1728D1E2C4A444996C91A158CFF7E5C/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Section/=D1728D1E2C4A444996C91A158CFF7E5C/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig Folder="Interfaces" File="I$NAME$.cs" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Section/=D1728D1E2C4A444996C91A158CFF7E5C/LocationSelectorName/@EntryValue">manual</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Section/=D1728D1E2C4A444996C91A158CFF7E5C/Order/@EntryValue">0</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Section/=D1728D1E2C4A444996C91A158CFF7E5C/SectionPlain/Text/@EntryValue">&#xD;
+namespace $NAMESPACEIFACE$&#xD;
+{&#xD;
+    using System;&#xD;
+    using Encoder.Interfaces;&#xD;
+    using Interop.Model;&#xD;
+&#xD;
+    /// &lt;summary&gt;&#xD;
+    /// I$CLASS$ interface&#xD;
+    /// &lt;/summary&gt;&#xD;
+    public interface I$CLASS$&#xD;
+    {&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Execute a $EXEC$ demux process.&#xD;
+        /// This should only be called from the UI thread.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="encodeQueueTask"&gt;&#xD;
+        /// The encodeQueueTask.&#xD;
+        /// &lt;/param&gt;&#xD;
+        void Start(EncodeInfo encodeQueueTask);&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Kill the CLI process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        void Stop();&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Shutdown the service.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        void Shutdown();&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Fires when a new CLI QueueTask starts&#xD;
+        /// &lt;/summary&gt;&#xD;
+        event EventHandler EncodeStarted;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Fires when a CLI QueueTask finishes.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        event EncodeCompletedStatus EncodeCompleted;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Encode process has progressed&#xD;
+        /// &lt;/summary&gt;&#xD;
+        event EncodeProgessStatus EncodeStatusChanged;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets or sets a value indicating whether IsEncoding.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        bool IsEncoding { get; }&#xD;
+    }&#xD;
+}</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DE3D4F21906DFD49BB8C1CB0DA9C95AB/Text/@EntryValue">$HEADER$&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+    using System;&#xD;
+    using System.Diagnostics;&#xD;
+    using System.IO;&#xD;
+    using System.Text;&#xD;
+    using System.Text.RegularExpressions;&#xD;
+    using Interfaces;&#xD;
+    using Interop.EventArgs;&#xD;
+    using Interop.Model;&#xD;
+    using Interop.Utilities;&#xD;
+    using log4net;&#xD;
+    using Services.Base;&#xD;
+    using Services.Interfaces;&#xD;
+&#xD;
+    /// &lt;summary&gt;&#xD;
+    /// The $CLASS$&#xD;
+    /// &lt;/summary&gt;&#xD;
+    public class $CLASS$ : EncodeBase, I$CLASS$&#xD;
+    {&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Errorlog&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private static readonly ILog Log = LogManager.GetLogger(typeof($CLASS$));&#xD;
+&#xD;
+        #region Private Variables&#xD;
+&#xD;
+        private readonly IAppConfigService _appConfig;&#xD;
+        private const string Executable = "$EXEC$.exe";&#xD;
+        private const string Executable64 = "$EXEC$_64.exe";&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets the Encoder Process ID&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private int _encoderProcessId;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Start time of the current Encode;&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private DateTime _startTime;&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// The Current Task&#xD;
+        /// &lt;/summary&gt;&#xD;
+        private EncodeInfo _currentTask;&#xD;
+&#xD;
+        private string _inputFile;&#xD;
+&#xD;
+        private readonly Regex _$REGEXNAME$ = new Regex(@"$REGEX$",&#xD;
+                                                   RegexOptions.Singleline | RegexOptions.Multiline);&#xD;
+&#xD;
+        #endregion&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Initializes a new instance of the &lt;see cref="$CLASS$"/&gt; class.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="appConfig"&gt;&#xD;
+        /// The user Setting Service.&#xD;
+        /// &lt;/param&gt;&#xD;
+        public $CLASS$(IAppConfigService appConfig) : base(appConfig)&#xD;
+        {&#xD;
+            this._appConfig = appConfig;&#xD;
+        }&#xD;
+&#xD;
+        #region Properties&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Gets or sets the $EXEC$ Process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        protected Process EncodeProcess { get; set; }&#xD;
+&#xD;
+        #endregion&#xD;
+&#xD;
+        #region Public Methods&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Reads encoder version from its output, use path settings from parameters&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="encPath"&gt;Path to encoder&lt;/param&gt;&#xD;
+        /// &lt;param name="use64Bit"&gt;&lt;/param&gt;&#xD;
+        /// &lt;returns&gt;Encoder version&lt;/returns&gt;&#xD;
+        public static string GetVersionInfo(string encPath, bool use64Bit)&#xD;
+        {&#xD;
+            string verInfo = string.Empty;&#xD;
+&#xD;
+            if (use64Bit &amp;&amp; !Environment.Is64BitOperatingSystem) return string.Empty;&#xD;
+&#xD;
+            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);&#xD;
+&#xD;
+            using (Process encoder = new Process())&#xD;
+            {&#xD;
+                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)&#xD;
+                {&#xD;
+                    CreateNoWindow = true,&#xD;
+                    UseShellExecute = false,&#xD;
+                    RedirectStandardError = true&#xD;
+                };&#xD;
+                encoder.StartInfo = parameter;&#xD;
+&#xD;
+                bool started;&#xD;
+                try&#xD;
+                {&#xD;
+                    started = encoder.Start();&#xD;
+                }&#xD;
+                catch (Exception ex)&#xD;
+                {&#xD;
+                    started = false;&#xD;
+                    Log.ErrorFormat("$EXEC$ exception: {0}", ex);&#xD;
+                }&#xD;
+&#xD;
+                if (started)&#xD;
+                {&#xD;
+                    string output = encoder.StandardError.ReadToEnd();&#xD;
+                    Regex regObj = new Regex(@"$VERSIONREGEX$",&#xD;
+                        RegexOptions.Singleline | RegexOptions.Multiline);&#xD;
+                    Match result = regObj.Match(output);&#xD;
+                    if (result.Success)&#xD;
+                        verInfo = result.Groups[1].Value;&#xD;
+&#xD;
+                    encoder.WaitForExit(10000);&#xD;
+                    if (!encoder.HasExited)&#xD;
+                        encoder.Kill();&#xD;
+                }&#xD;
+            }&#xD;
+&#xD;
+            // Debug info&#xD;
+            if (Log.IsDebugEnabled)&#xD;
+            {&#xD;
+                if (use64Bit)&#xD;
+                    Log.Debug("Selected 64 bit encoder");&#xD;
+                Log.DebugFormat("$EXEC$ \"{0}\" found", verInfo);&#xD;
+            }&#xD;
+            return verInfo;&#xD;
+        }&#xD;
+&#xD;
+        public void Start(EncodeInfo encodeQueueTask)&#xD;
+        {&#xD;
+            try&#xD;
+            {&#xD;
+                if (this.IsEncoding)&#xD;
+                    throw new Exception("$EXEC$ is already running");&#xD;
+&#xD;
+                bool use64BitEncoder = this._appConfig.Use64BitEncoders &amp;&amp;&#xD;
+                                       this._appConfig.Ffmpeg64Installed &amp;&amp;&#xD;
+                                       Environment.Is64BitOperatingSystem;&#xD;
+&#xD;
+                this.IsEncoding = true;&#xD;
+                this._currentTask = encodeQueueTask;&#xD;
+&#xD;
+                string query = GenerateCommandLine();&#xD;
+                string cliPath = Path.Combine(this._appConfig.ToolsPath, use64BitEncoder ? Executable64 : Executable);&#xD;
+&#xD;
+                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)&#xD;
+                {&#xD;
+                    WorkingDirectory = this._appConfig.DemuxLocation,&#xD;
+                    CreateNoWindow = true,&#xD;
+                    UseShellExecute = false,&#xD;
+                    RedirectStandardError = true,&#xD;
+                    RedirectStandardOutput = true&#xD;
+                };&#xD;
+                this.EncodeProcess = new Process {StartInfo = cliStart};&#xD;
+                Log.InfoFormat("start parameter: $EXEC$ {0}", query);&#xD;
+&#xD;
+                this.EncodeProcess.Start();&#xD;
+&#xD;
+                this._startTime = DateTime.Now;&#xD;
+&#xD;
+                // TODO: check output handling&#xD;
+&#xD;
+                this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;&#xD;
+                this.EncodeProcess.BeginErrorReadLine();&#xD;
+&#xD;
+                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;&#xD;
+                this.EncodeProcess.BeginOutputReadLine();&#xD;
+&#xD;
+                this._encoderProcessId = this.EncodeProcess.Id;&#xD;
+&#xD;
+                if (this._encoderProcessId != -1)&#xD;
+                {&#xD;
+                    this.EncodeProcess.EnableRaisingEvents = true;&#xD;
+                    this.EncodeProcess.Exited += EncodeProcessExited;&#xD;
+                }&#xD;
+&#xD;
+                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();&#xD;
+&#xD;
+                // Fire the Encode Started Event&#xD;
+                this.InvokeEncodeStarted(EventArgs.Empty);&#xD;
+&#xD;
+                $END$&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+                this._currentTask.ExitCode = -1;&#xD;
+                this.IsEncoding = false;&#xD;
+                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Kill the CLI process&#xD;
+        /// &lt;/summary&gt;&#xD;
+        public override void Stop()&#xD;
+        {&#xD;
+            try&#xD;
+            {&#xD;
+                if (this.EncodeProcess != null &amp;&amp; !this.EncodeProcess.HasExited)&#xD;
+                {&#xD;
+                    this.EncodeProcess.Kill();&#xD;
+                }&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+            }&#xD;
+            this.IsEncoding = false;&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// Shutdown the service.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        public void Shutdown()&#xD;
+        {&#xD;
+            // Nothing to do.&#xD;
+        }&#xD;
+&#xD;
+        #endregion&#xD;
+&#xD;
+        #region Private Helper Methods&#xD;
+&#xD;
+        private string GenerateCommandLine()&#xD;
+        {&#xD;
+            StringBuilder sb = new StringBuilder();&#xD;
+&#xD;
+            // TODO: add commandline generation&#xD;
+&#xD;
+            return sb.ToString();&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// The $EXEC$ process has exited.&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="sender"&gt;&#xD;
+        /// The sender.&#xD;
+        /// &lt;/param&gt;&#xD;
+        /// &lt;param name="e"&gt;&#xD;
+        /// The EventArgs.&#xD;
+        /// &lt;/param&gt;&#xD;
+        private void EncodeProcessExited(object sender, EventArgs e)&#xD;
+        {&#xD;
+            try&#xD;
+            {&#xD;
+                this.EncodeProcess.CancelErrorRead();&#xD;
+                // TODO: check stdout / stderr reading&#xD;
+            }&#xD;
+            catch (Exception exc)&#xD;
+            {&#xD;
+                Log.Error(exc);&#xD;
+            }&#xD;
+&#xD;
+            this._currentTask.ExitCode = EncodeProcess.ExitCode;&#xD;
+            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);&#xD;
+&#xD;
+            if (this._currentTask.ExitCode == 0)&#xD;
+            {&#xD;
+                // TODO: tempfile handling&#xD;
+            }&#xD;
+&#xD;
+            this._currentTask.CompletedStep = this._currentTask.NextStep;&#xD;
+            this.IsEncoding = false;&#xD;
+            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));&#xD;
+        }&#xD;
+&#xD;
+        /// &lt;summary&gt;&#xD;
+        /// process received data&#xD;
+        /// &lt;/summary&gt;&#xD;
+        /// &lt;param name="sender"&gt;&lt;/param&gt;&#xD;
+        /// &lt;param name="e"&gt;&lt;/param&gt;&#xD;
+        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)&#xD;
+        {&#xD;
+            if (!string.IsNullOrEmpty(e.Data) &amp;&amp; this.IsEncoding)&#xD;
+            {&#xD;
+                this.ProcessLogMessage(e.Data);&#xD;
+            }&#xD;
+        }&#xD;
+&#xD;
+        private void ProcessLogMessage(string line)&#xD;
+        {&#xD;
+            if (string.IsNullOrEmpty(line)) return;&#xD;
+&#xD;
+            Match result = _$REGEXNAME$.Match(line);&#xD;
+&#xD;
+            if (result.Success)&#xD;
+            {&#xD;
+                // TODO: output processing&#xD;
+                /*&#xD;
+                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs&#xD;
+                {&#xD;
+                    AverageFrameRate = 0,&#xD;
+                    CurrentFrameRate = 0,&#xD;
+                    EstimatedTimeLeft = remainingTime,&#xD;
+                    PercentComplete = progress,&#xD;
+                    Task = 0,&#xD;
+                    TaskCount = 0,&#xD;
+                    ElapsedTime = elapsedTime,&#xD;
+                };&#xD;
+                this.InvokeEncodeStatusChanged(eventArgs);&#xD;
+                */&#xD;
+            }&#xD;
+            else&#xD;
+                Log.InfoFormat("$EXEC$: {0}", line);&#xD;
+        }&#xD;
+&#xD;
+        #endregion&#xD;
+    }&#xD;
+}</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=NAME/Expression/@EntryValue">suggestVariableName()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=NAME/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=PRIVNAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=PRIVNAME/Expression/@EntryValue">decapitalize(NAME)</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=PRIVNAME/InitialRange/@EntryValue">1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=PRIVNAME/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=TYPE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=TYPE/Expression/@EntryValue">suggestVariableType()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=TYPE/InitialRange/@EntryValue">1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Field/=TYPE/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Scope/=C3001E7C0DA78E4487072B7E050D86C5/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Scope/=C3001E7C0DA78E4487072B7E050D86C5/CustomProperties/=minimumLanguageVersion/@EntryIndexedValue">2.0</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Scope/=C3001E7C0DA78E4487072B7E050D86C5/Type/@EntryValue">InCSharpFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Shortcut/@EntryValue">propf</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E054D2D9207C2243B2DC306061D88F39/Text/@EntryValue">private $TYPE$ _$PRIVNAME$;&#xD;
+public $TYPE$ $NAME$ &#xD;
+{ &#xD;
+    get &#xD;
+    { &#xD;
+        return _$PRIVNAME$; &#xD;
+    }&#xD;
+    set&#xD;
+    {&#xD;
+        _$PRIVNAME$ = value;&#xD;
+        this.NotifyOfPropertyChange(() =&gt; this.$NAME$);&#xD;
+    }&#xD;
+}</s:String></wpf:ResourceDictionary>
