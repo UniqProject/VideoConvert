@@ -1,1 +1,0 @@
-In order to make the libraries compile, you have to apply the FixDependencies.patch or set the library dependencies to the right projects.
