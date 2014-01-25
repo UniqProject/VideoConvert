@@ -12,14 +12,12 @@ namespace VideoConvert.AppServices.Decoder
     using System;
     using System.Diagnostics;
     using System.IO;
-    using log4net;
 
     /// <summary>
     /// Helper class for creating bepipe decoding processes
     /// </summary>
     public class DecoderBePipe
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(DecoderBePipe));
         /// <summary>
         /// Executable filename
         /// </summary>
@@ -34,7 +32,7 @@ namespace VideoConvert.AppServices.Decoder
         public static Process CreateDecodingProcess(string scriptName, string aviSynthPath)
         {
             string localExecutable = Path.Combine(aviSynthPath, "audio", Executable);
-            ProcessStartInfo info = new ProcessStartInfo
+            var info = new ProcessStartInfo
             {
                 FileName = localExecutable,
                 Arguments =
@@ -44,7 +42,7 @@ namespace VideoConvert.AppServices.Decoder
                 RedirectStandardError = true,
                 UseShellExecute = false
             };
-            Process bePipe = new Process { StartInfo = info };
+            var bePipe = new Process { StartInfo = info };
             return bePipe;
         }
     }

@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Audio helper class
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -15,10 +15,18 @@ namespace VideoConvert.Interop.Utilities
     using Model.MediaInfo;
     using Model.Profiles;
 
+    /// <summary>
+    /// Audio helper class
+    /// </summary>
     public class AudioHelper
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(AudioHelper));
 
+        /// <summary>
+        /// Checks if Audio processing is needed for given Profile
+        /// </summary>
+        /// <param name="aProfile">Audio Encoding Profile</param>
+        /// <returns></returns>
         public static bool AudioProcessingNeeded(EncoderProfile aProfile)
         {
             int sampleRate = -1, channelOrder = -1;
@@ -36,6 +44,11 @@ namespace VideoConvert.Interop.Utilities
             return sampleRate > -1 || channelOrder > -1;
         }
 
+        /// <summary>
+        /// Checks if Audio encoding is needed for given Profile
+        /// </summary>
+        /// <param name="aProfile">Audio Encoding Profile</param>
+        /// <returns></returns>
         public static bool AudioEncodingNeeded(EncoderProfile aProfile)
         {
             switch (aProfile.Type)
@@ -48,6 +61,11 @@ namespace VideoConvert.Interop.Utilities
             }
         }
 
+        /// <summary>
+        /// Checks if we can use W64 (Wave64) for PCM streams
+        /// </summary>
+        /// <param name="outType"></param>
+        /// <returns></returns>
         public static bool OutputSupportsW64(OutputType outType)
         {
             switch (outType)
@@ -63,6 +81,11 @@ namespace VideoConvert.Interop.Utilities
             }
         }
 
+        /// <summary>
+        /// Checks if we can use FLAC streams
+        /// </summary>
+        /// <param name="outType"></param>
+        /// <returns></returns>
         public static bool OutputSupportsFlac(OutputType outType)
         {
             switch (outType)
@@ -74,14 +97,24 @@ namespace VideoConvert.Interop.Utilities
             }
         }
 
-        public static double GetRuntimePCM(AudioInfo item)
+        /// <summary>
+        /// Calculates PCM stream runtime
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static double GetRuntimePcm(AudioInfo item)
         {
             return (item.StreamSize * 8D) / item.ChannelCount / ((double)item.SampleRate * item.BitDepth);
         }
 
+        /// <summary>
+        /// Get Audio stream properties
+        /// </summary>
+        /// <param name="aStream"></param>
+        /// <returns></returns>
         public static AudioInfo GetStreamInfo(AudioInfo aStream)
         {
-            MediaInfoContainer mi = new MediaInfoContainer();
+            var mi = new MediaInfoContainer();
             try
             {
                 mi = GenHelper.GetMediaInfo(aStream.TempFile);
@@ -103,7 +136,7 @@ namespace VideoConvert.Interop.Utilities
                     aStream.FormatProfile = mi.Audio[0].FormatProfile;
                     aStream.StreamSize = GenHelper.GetFileSize(aStream.TempFile);
                     if (aStream.Format == "PCM")
-                        aStream.Length = GetRuntimePCM(aStream);
+                        aStream.Length = GetRuntimePcm(aStream);
                     else
                         aStream.Length = mi.Audio[0].Duration/1000d; // convert from ms to seconds
                 }

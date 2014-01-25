@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   IMDB client
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -16,6 +16,9 @@ namespace VideoConvert.Interop.Model.IMDB
     using System.Xml.Serialization;
     using log4net;
 
+    /// <summary>
+    /// IMDB client
+    /// </summary>
     public class ImdbClient
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ImdbClient));
@@ -25,6 +28,9 @@ namespace VideoConvert.Interop.Model.IMDB
 
         private readonly WebClient _client;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public ImdbClient()
         {
             _client = new WebClient {BaseAddress = ApiUrl};
@@ -36,10 +42,10 @@ namespace VideoConvert.Interop.Model.IMDB
             ImdbApiVersion version;
             byte[] data = _client.DownloadData(VersionPath);
 
-            using (MemoryStream dataStream = new MemoryStream(data))
+            using (var dataStream = new MemoryStream(data))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof (ImdbApiVersion));
-                using (XmlReader reader = XmlReader.Create(dataStream))
+                var serializer = new XmlSerializer(typeof (ImdbApiVersion));
+                using (var reader = XmlReader.Create(dataStream))
                 {
                     version = (ImdbApiVersion) serializer.Deserialize(reader);
                 }
@@ -52,22 +58,28 @@ namespace VideoConvert.Interop.Model.IMDB
                 Log.Warn("Warning! Local API version differs from Server API version!!!");
         }
 
-        public ImdbMovieData GetMovieById(string movieID, bool fullPlot = false, bool fullAKA = false,
+        /// <summary>
+        /// Get Movie entry by IMDB ID
+        /// </summary>
+        /// <param name="movieID">IMDB ID</param>
+        /// <param name="fullPlot">Get full plot</param>
+        /// <param name="fullAka">Get Full AKA</param>
+        /// <param name="fullReleaseDates">Get full release dates</param>
+        /// <returns></returns>
+        public ImdbMovieData GetMovieById(string movieID, bool fullPlot = false, bool fullAka = false,
                                           bool fullReleaseDates = false)
         {
             ImdbMovieData result;
 
-            Uri request =
-                new Uri(
-                    string.Format("/?id={0}&type=xml&plot={1}&aka={2}&release={3}", movieID,
-                                  fullPlot ? "full" : "simple", fullAKA ? "full" : "simple",
-                                  fullReleaseDates ? "full" : "simple"), UriKind.Relative);
+            var request = new Uri(string.Format("/?id={0}&type=xml&plot={1}&aka={2}&release={3}", movieID,
+                                                fullPlot ? "full" : "simple", fullAka ? "full" : "simple",
+                                                fullReleaseDates ? "full" : "simple"), UriKind.Relative);
 
-            byte[] data = _client.DownloadData(request);
-            using (MemoryStream dataStream = new MemoryStream(data))
+            var data = _client.DownloadData(request);
+            using (var dataStream = new MemoryStream(data))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(ImdbMovieData));
-                using (XmlReader reader = XmlReader.Create(dataStream))
+                var serializer = new XmlSerializer(typeof(ImdbMovieData));
+                using (var reader = XmlReader.Create(dataStream))
                 {
                     result = (ImdbMovieData)serializer.Deserialize(reader);
                 }

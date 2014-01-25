@@ -263,7 +263,7 @@ namespace VideoConvert.AppServices.Encoder
                     textSub = SSAReader.ReadFile(_inputFile);
                     break;
                 case "UTF-8":
-                    textSub = SRTReader.ReadFile(_inputFile);
+                    textSub = SrtReader.ReadFile(_inputFile);
                     break;
             }
 

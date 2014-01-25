@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Generic Helper Class
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -15,6 +15,9 @@ namespace VideoConvert.Interop.Utilities
     using System.Reflection;
     using Model.MediaInfo;
 
+    /// <summary>
+    /// Generic Helper Class
+    /// </summary>
     public static class GenHelper
     {
         /// <summary>
@@ -25,11 +28,15 @@ namespace VideoConvert.Interop.Utilities
         public static string StringValueOf(Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString("F"));
-            DescriptionAttribute[] attributes =
-                (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length > 0 ? attributes[0].Description : value.ToString("F");
         }
 
+        /// <summary>
+        /// Gets File size
+        /// </summary>
+        /// <param name="fName">File name</param>
+        /// <returns></returns>
         public static ulong GetFileSize(string fName)
         {
             return (ulong)new FileInfo(fName).Length;
@@ -37,6 +44,13 @@ namespace VideoConvert.Interop.Utilities
 
         // Get media information with an 10 sec timeout
         private delegate MediaInfoContainer MiWorkDelegate(string fileName);
+
+        /// <summary>
+        /// Gets Media info
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        /// <exception cref="TimeoutException"></exception>
         public static MediaInfoContainer GetMediaInfo(string fileName)
         {
             MiWorkDelegate d = DoWorkHandler;
