@@ -69,7 +69,7 @@
             								    VerticalContentAlignment="Center" TextOptions.TextFormattingMode="Display"/>
                                         </StackPanel>
                                         <CheckBox x:Uid="EnableSSIF" Content="Enable SSIF scanning" x:Name="EnableSSIF"
-            							    IsChecked="{Binding EnableSSIFScan}" />
+            							    IsChecked="{Binding EnableSsifScan}" />
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="20,0,0,0">
@@ -278,7 +278,7 @@
             								Margin="10,0" x:Name="MovieDbPreferredSearchLanguage" SelectedValuePath="Code" 
             								VerticalAlignment="Top" HorizontalContentAlignment="Stretch" 
             								ItemsSource="{Binding Source={StaticResource MovieDbLangs}}"
-            								SelectedValue="{Binding MovieDBLastLanguage, FallbackValue=en}"
+            								SelectedValue="{Binding MovieDbLastLanguage, FallbackValue=en}"
             								Padding="10,3"  />
                                     </Grid>
                                     <Grid>
@@ -292,7 +292,7 @@
             								x:Name="MovieDbFallbackSearchLanguage" SelectedValuePath="Code" VerticalAlignment="Center"
             								Margin="10,0" HorizontalContentAlignment="Stretch" Padding="10,3" 
             								ItemsSource="{Binding Source={StaticResource MovieDbLangs}}"
-            								SelectedValue="{Binding MovieDBLastFallbackLanguage, FallbackValue=en}"/>
+            								SelectedValue="{Binding MovieDbLastFallbackLanguage, FallbackValue=en}"/>
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -310,7 +310,7 @@
             								Margin="10,0" x:Name="MovieDbCertCountry" SelectedValuePath="CountryName"
             								VerticalAlignment="Center" HorizontalContentAlignment="Stretch" Padding="10,3" 
             								ItemsSource="{Binding Source={StaticResource MovieDbCertCountries}}"
-            								SelectedValue="{Binding MovieDBLastRatingCountry, FallbackValue=us}"/>
+            								SelectedValue="{Binding MovieDbLastRatingCountry, FallbackValue=us}"/>
                                     </Grid>
                                     <Border BorderThickness="0 0 0 1" Margin="0,0,0,3" BorderBrush="LightGray">
                                         <Grid Margin="0,0,0,2">
@@ -321,7 +321,7 @@
                                             <TextBlock Grid.Column="0" Text="Preferred Certification Prefix:" HorizontalAlignment="Stretch" 
             									x:Name="MovieDbPreferredCertPrefixLabel" VerticalAlignment="Center" />
                                             <TextBox Grid.Column="1" HorizontalAlignment="Stretch" x:Name="MovieDbPreferredCertPrefix"
-            									VerticalAlignment="Center" Text="{Binding MovieDBPreferredCertPrefix, FallbackValue='Rated '}" 
+            									VerticalAlignment="Center" Text="{Binding MovieDbPreferredCertPrefix, FallbackValue='Rated '}" 
             									Margin="10,0" VerticalContentAlignment="Center" />
                                         </Grid>
                                     </Border>
@@ -336,7 +336,7 @@
             								x:Name="MovieDbFallbackCertCountry" SelectedValuePath="CountryName" VerticalAlignment="Center"
             								Margin="10,0" HorizontalContentAlignment="Stretch" Padding="10,3" 
             								ItemsSource="{Binding Source={StaticResource MovieDbCertCountries}}"
-            								SelectedValue="{Binding MovieDBLastFallbackRatingCountry, FallbackValue=us}"/>
+            								SelectedValue="{Binding MovieDbLastFallbackRatingCountry, FallbackValue=us}"/>
                                     </Grid>
                                     <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
@@ -346,7 +346,7 @@
                                         <TextBlock Grid.Column="0" Text="Fallback Certification Prefix:" HorizontalAlignment="Stretch" 
             								x:Name="MovieDbFallbackCertPrefixLabel" VerticalAlignment="Center" />
                                         <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,0" x:Name="MovieDbFallbackCertPrefix"
-            								VerticalAlignment="Center" Text="{Binding MovieDBFallbackCertPrefix, FallbackValue='Rated '}"
+            								VerticalAlignment="Center" Text="{Binding MovieDbFallbackCertPrefix, FallbackValue='Rated '}"
             								VerticalContentAlignment="Center" />
                                     </Grid>
                                 </StackPanel>
@@ -363,7 +363,7 @@
             								x:Name="MovieDbRatingSourceLabel" VerticalAlignment="Center" />
                                         <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"  x:Name="MovieDbRatingSource" 
             								VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="10,0"
-            								SelectedIndex="{Binding MovieDBRatingSrc, FallbackValue=0}"
+            								SelectedIndex="{Binding MovieDbRatingSrc, FallbackValue=0}"
             								HorizontalContentAlignment="Stretch" Padding="10,3"  >
                                             <ComboBoxItem x:Name="TheMovieDbItem" Content="TheMovieDB" />
                                             <ComboBoxItem x:Name="ImdbItem" Content="IMDB" />
@@ -385,7 +385,7 @@
                                             <ColumnDefinition Width="130" />
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" HorizontalAlignment="Stretch" x:Name="TvDbCachePath" 
-            								Text="{Binding TvDBCachePath}" VerticalAlignment="Center"
+            								Text="{Binding TvDbCachePath}" VerticalAlignment="Center"
             								VerticalContentAlignment="Center" />
                                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" x:Name="TvDbCachePathLocateBtn"
             								VerticalAlignment="Center" Margin="1,0,10,0" 
@@ -398,7 +398,7 @@
                                 <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                                     <TextBox HorizontalAlignment="Stretch" Margin="0,0,10,0" x:Name="TvDbParseString" 
             							VerticalAlignment="Center" VerticalContentAlignment="Center"
-            							Text="{Binding TvDBParseString, FallbackValue=%show% - S%season%E%episode% - %episode_name%}"/>
+            							Text="{Binding TvDbParseString, FallbackValue=%show% - S%season%E%episode% - %episode_name%}"/>
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Orientation="Vertical" Margin="0,10,0,0">
@@ -415,7 +415,7 @@
             								HorizontalContentAlignment="Stretch" Margin="10,0" x:Name="TvDbPreferredSearchLanguage"
             								SelectedValuePath="Abbriviation" VerticalAlignment="Center"
             								ItemsSource="{Binding Source={StaticResource TvDbLangList}}"
-            								SelectedValue="{Binding TvDBPreferredLanguage, FallbackValue=en}" Padding="10,3" />
+            								SelectedValue="{Binding TvDbPreferredLanguage, FallbackValue=en}" Padding="10,3" />
                                     </Grid>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -428,7 +428,7 @@
             								HorizontalContentAlignment="Stretch" Margin="10,0" x:Name="TvDbFallbackSearchLanguage"
             								SelectedValuePath="Abbriviation" VerticalAlignment="Center"
             								ItemsSource="{Binding Source={StaticResource TvDbLangList}}"
-            								SelectedValue="{Binding TvDBFallbackLanguage, FallbackValue=en}" Padding="10,3" />
+            								SelectedValue="{Binding TvDbFallbackLanguage, FallbackValue=en}" Padding="10,3" />
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -447,13 +447,13 @@
                                 <TextBlock Text="General" FontSize="14" Margin="0,0,0,10" SnapsToDevicePixels="True" />
                                 <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                                     <CheckBox Content="Use async I/O" x:Name="TsMuxeRUseAsyncIo" 
-            							IsChecked="{Binding TSMuxeRUseAsyncIO}" />
+            							IsChecked="{Binding TsMuxeRUseAsyncIo}" />
                                     <CheckBox Content="Blu-Ray Audio PES" x:Name="TsMuxeRBlurayAudioPes"
-            							IsChecked="{Binding TSMuxeRBlurayAudioPES}" />
+            							IsChecked="{Binding TsMuxeRBlurayAudioPes}" />
                                     <CheckBox Content="Add picture timing info for video tracks" x:Name="TsMuxeRVideoTimingInfo"
-            							IsChecked="{Binding TSMuxeRVideoTimingInfo}" />
+            							IsChecked="{Binding TsMuxeRVideoTimingInfo}" />
                                     <CheckBox Content="Continually insert SPS/PPS for video tracks" x:Name="TsMuxeRAddVideoPps" 
-            							IsChecked="{Binding TSMuxeRAddVideoPPS}" />
+            							IsChecked="{Binding TsMuxeRAddVideoPps}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -474,7 +474,7 @@
                                         <ComboBox Grid.Column="1" x:Name="SubtitleFontSwitcher" VerticalAlignment="Center" 
             								HorizontalAlignment="Stretch" Margin="10,0"
             								SelectedValuePath="Source"
-            								SelectedValue="{Binding TSMuxeRSubtitleFont, FallbackValue=Microsoft Sans Serif}" 
+            								SelectedValue="{Binding TsMuxeRSubtitleFont, FallbackValue=Microsoft Sans Serif}" 
             								ItemsSource="{Binding Source={StaticResource SysFontFamilies}}" SnapsToDevicePixels="True" />
                                     </Grid>
                                     <Grid Margin="0,0,0,2">
@@ -491,7 +491,7 @@
                                         <Slider Grid.Column="2" x:Name="SubtitleFontSizeSelect" VerticalAlignment="Center" 
             								TickPlacement="Both" AutoToolTipPlacement="TopLeft" Maximum="150" Margin="10,0"
             								HorizontalAlignment="Stretch" LargeChange="10" SmallChange="1" TickFrequency="10"
-            								Minimum="8" IsMoveToPointEnabled="True" Value="{Binding TSMuxeRSubtitleFontSize, FallbackValue=24}" SnapsToDevicePixels="True" />
+            								Minimum="8" IsMoveToPointEnabled="True" Value="{Binding TsMuxeRSubtitleFontSize, FallbackValue=24}" SnapsToDevicePixels="True" />
                                     </Grid>
                                     <Grid Margin="0,0,0,4">
                                         <Grid.ColumnDefinitions>
@@ -502,7 +502,7 @@
             								VerticalAlignment="Center" SnapsToDevicePixels="True" />
                                         <xctk:ColorPicker Grid.Column="1" x:Name="SubtitleFontColorPicker" Margin="10,0" VerticalAlignment="Center"
             								DisplayColorAndName="True" ShowRecentColors="True" 
-            								SelectedColor="{Binding TSMuxeRSubtitleColor, FallbackValue=#FFFFFFFF}" SnapsToDevicePixels="True" >
+            								SelectedColor="{Binding TsMuxeRSubtitleColor, FallbackValue=#FFFFFFFF}" SnapsToDevicePixels="True" >
                                             
                                         </xctk:ColorPicker>
                                     </Grid>
@@ -525,7 +525,7 @@
             								x:Name="SubtitleAdditionalBorderLabel" VerticalAlignment="Center" SnapsToDevicePixels="True" />
                                         <xctk:IntegerUpDown Grid.Column="1" x:Name="SubtitleAdditionalBorder" Increment="1" Maximum="1999" 
             								Minimum="0" Margin="10,0" CultureInfo="en-US" HorizontalAlignment="Stretch" 
-            								Value="{Binding TSMuxerSubtitleAdditionalBorder, FallbackValue=2}" 
+            								Value="{Binding TsMuxerSubtitleAdditionalBorder, FallbackValue=2}" 
             								SnapsToDevicePixels="True" VerticalAlignment="Center"/>
                                     </Grid>
                                     <Grid Margin="0,0,0,2">
@@ -537,7 +537,7 @@
             								x:Name="SubtileBottomOffsetLabel" VerticalAlignment="Center" />
                                         <xctk:IntegerUpDown Grid.Column="1" x:Name="SubtitleBottomOffset" Increment="1" Maximum="1999" Minimum="0"
             								Margin="10,0" CultureInfo="en-US" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-            								Value="{Binding TSMuxeRBottomOffset, FallbackValue=24}" SnapsToDevicePixels="True" />
+            								Value="{Binding TsMuxeRBottomOffset, FallbackValue=24}" SnapsToDevicePixels="True" />
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>

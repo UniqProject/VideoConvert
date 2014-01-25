@@ -20,10 +20,10 @@ namespace VideoConvertWPF.ViewModels
     using System.Net;
     using System.Threading;
     using System.Windows;
-    using System.Windows.Forms;
     using System.Windows.Threading;
     using Caliburn.Micro;
     using Interfaces;
+    using Microsoft.WindowsAPICodePack.Dialogs;
     using Newtonsoft.Json;
     using UpdateCore;
     using VideoConvert.AppServices.Services;
@@ -32,7 +32,6 @@ namespace VideoConvertWPF.ViewModels
     using VideoConvert.Interop.Utilities;
     using ILog = log4net.ILog;
     using LogManager = log4net.LogManager;
-    using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
     public class MainViewModel : ViewModelBase, IMainViewModel
     {
@@ -103,12 +102,10 @@ namespace VideoConvertWPF.ViewModels
 
         public void Shutdown()
         {
-            JsonSerializer jSer = new JsonSerializer();
-            using (
-                StreamWriter sWriter =
-                    new StreamWriter(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
+            var jSer = new JsonSerializer();
+            using (var sWriter = new StreamWriter(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
             {
-                JsonWriter writer = new JsonTextWriter(sWriter);
+                var writer = new JsonTextWriter(sWriter);
                 jSer.Serialize(writer, this.JobCollection);
                 writer.Flush();
             }
@@ -123,13 +120,13 @@ namespace VideoConvertWPF.ViewModels
 
             try
             {
-                JsonSerializer jSer = new JsonSerializer();
+                var jSer = new JsonSerializer();
                 using (
-                    StreamReader sReader =
+                    var sReader =
                         new StreamReader(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
                 {
                     JsonReader reader = new JsonTextReader(sReader);
-                    List<EncodeInfo> importList = jSer.Deserialize<List<EncodeInfo>>(reader);
+                    var importList = jSer.Deserialize<List<EncodeInfo>>(reader);
                     foreach (EncodeInfo encodeInfo in importList)
                     {
                         AddJob(encodeInfo);
@@ -150,7 +147,7 @@ namespace VideoConvertWPF.ViewModels
 
         public void CheckUpdate()
         {
-            DispatcherTimer updateTimer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 1)};
+            var updateTimer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 1)};
             updateTimer.Tick += UpdateTimerTick;
             updateTimer.Start();
         }
@@ -185,7 +182,7 @@ namespace VideoConvertWPF.ViewModels
 
         private void RunUpdateWorker()
         {
-            BackgroundWorker checkUpdate = new BackgroundWorker
+            var checkUpdate = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
@@ -223,7 +220,7 @@ namespace VideoConvertWPF.ViewModels
                 _processingService.GetUpdaterVersion();
                 _processingService.GetAviSynthPluginsVer();
 
-                WebClient downloader = new WebClient { UseDefaultCredentials = true };
+                var downloader = new WebClient { UseDefaultCredentials = true };
                 Stream onlineUpdateFile;
                 try
                 {
@@ -350,23 +347,47 @@ namespace VideoConvertWPF.ViewModels
         
         public void AddFiles()
         {
-            OpenFileDialog fileDialog = new OpenFileDialog { DereferenceLinks = false, Multiselect = true, ValidateNames = true };
-            if (fileDialog.ShowDialog() != true) return;
+            var fileDialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = false,
+                AddToMostRecentlyUsedList = false,
+                AllowNonFileSystemItems = false,
+                EnsureFileExists = true,
+                EnsurePathExists = true,
+                EnsureReadOnly = false,
+                EnsureValidNames = true,
+                Multiselect = true,
+                ShowPlacesList = true,
+            };
+
+            if (fileDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
+
             foreach (string fileName in fileDialog.FileNames)
                 CreateJob(fileName);
         }
 
         public void AddFolder()
         {
-            FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
-            if (!string.IsNullOrEmpty(_lastDir))
-                folderBrowser.SelectedPath = _lastDir;
-
-            if (folderBrowser.ShowDialog() == DialogResult.OK)
+            var folderBrowser = new CommonOpenFileDialog
             {
-                CreateJob(folderBrowser.SelectedPath);
-                _lastDir = folderBrowser.SelectedPath;
-            }
+                IsFolderPicker = true,
+                AddToMostRecentlyUsedList = false,
+                AllowNonFileSystemItems = false,
+                EnsureFileExists = true,
+                EnsurePathExists = true,
+                EnsureReadOnly = false,
+                EnsureValidNames = true,
+                Multiselect = false,
+                ShowPlacesList = true
+            };
+
+            if (!string.IsNullOrEmpty(_lastDir))
+                folderBrowser.InitialDirectory = _lastDir;
+
+            if (folderBrowser.ShowDialog() != CommonFileDialogResult.Ok) return;
+
+            CreateJob(folderBrowser.FileName);
+            _lastDir = folderBrowser.FileName;
         }
 
         public void RemoveItem()
@@ -406,11 +427,11 @@ namespace VideoConvertWPF.ViewModels
 
         private void CreateJob(string fileName)
         {
-            EncodeInfo inJob = new EncodeInfo { InputFile = fileName, Input = _processingService.DetectInputType(fileName) };
+            var inJob = new EncodeInfo { InputFile = fileName, Input = _processingService.DetectInputType(fileName) };
 
             if ((string.IsNullOrEmpty(inJob.InputFile)) || (inJob.Input == InputType.InputUndefined)) return;
 
-            StreamSelectViewModel streamSelect = new StreamSelectViewModel(this._configService, _shellViewModel,
+            var streamSelect = new StreamSelectViewModel(this._configService, _shellViewModel,
                 WindowManager, _processingService)
             {
                 JobInfo = inJob,
