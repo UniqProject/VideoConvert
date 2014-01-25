@@ -730,7 +730,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
                 videoStream.FrameRateMode       = resultInfo.Get(StreamKind.Video, i, "FrameRate_Mode");
 
                 Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRate);
-                VideoHelper.GetFPSNumDenom(videoStream.FrameRate, out videoStream.FrameRateEnumerator, out videoStream.FrameRateDenominator);
+                VideoHelper.GetFpsNumDenom(videoStream.FrameRate, out videoStream.FrameRateEnumerator, out videoStream.FrameRateDenominator);
 
                 Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateMin);
                 Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateNom);

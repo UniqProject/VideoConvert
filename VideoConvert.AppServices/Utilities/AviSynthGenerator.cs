@@ -145,7 +145,7 @@ namespace VideoConvert.AppServices.Utilities
                     if (mi.Video.Count > 0)
                     {
                         videoInfo.FPS = mi.Video[0].FrameRate;
-                        VideoHelper.GetFPSNumDenom(videoInfo.FPS, out videoInfo.FrameRateEnumerator,
+                        VideoHelper.GetFpsNumDenom(videoInfo.FPS, out videoInfo.FrameRateEnumerator,
                                                   out videoInfo.FrameRateDenominator);
 
                         if (videoInfo.FrameRateEnumerator == 0)
@@ -448,7 +448,7 @@ namespace VideoConvert.AppServices.Utilities
                 int fpsden;
 
                 // get framerate numerator & denominator for target framerate
-                VideoHelper.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
+                VideoHelper.GetFpsNumDenom(targetFps, out fpsnum, out fpsden);
 
                 // source is 23.976 or 24 fps
                 if (videoInfo.FrameRateEnumerator == 24000 && (videoInfo.FrameRateDenominator == 1001 || videoInfo.FrameRateDenominator == 1000))
@@ -573,7 +573,7 @@ namespace VideoConvert.AppServices.Utilities
 
             int fpsnum;
             int fpsden;
-            VideoHelper.GetFPSNumDenom(targetFps, out fpsnum, out fpsden);
+            VideoHelper.GetFpsNumDenom(targetFps, out fpsnum, out fpsden);
 
             if (fpsnum == 0)
             {

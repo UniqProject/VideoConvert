@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Subtitle Stream properties
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -15,24 +15,86 @@ namespace VideoConvert.Interop.Model
     /// <summary>
     /// contains information for a subtitle stream
     /// </summary>
-    public class SubtitleInfo:IFormattable
+    public class SubtitleInfo : IFormattable
     {
+        /// <summary>
+        /// ID
+        /// </summary>
         public int Id;
+
+        /// <summary>
+        /// Stream ID
+        /// </summary>
         public int StreamId;
+
+        /// <summary>
+        /// Stream Format
+        /// </summary>
         public string Format;
+
+        /// <summary>
+        /// Language Code
+        /// </summary>
         public string LangCode;
+
+        /// <summary>
+        /// Temp file name
+        /// </summary>
         public string TempFile;
+
+        /// <summary>
+        /// Stream kind ID
+        /// </summary>
         public int StreamKindId;
+
+        /// <summary>
+        /// Strean Delay
+        /// </summary>
         public int Delay;
+
+        /// <summary>
+        /// Stream ID used for Demuxing
+        /// </summary>
         public int DemuxStreamId;
+
+        /// <summary>
+        /// Stream size in bytes
+        /// </summary>
         public ulong StreamSize;
+
+        /// <summary>
+        /// Keep only forced captions during processing
+        /// </summary>
         public bool KeepOnlyForcedCaptions;
+
+        /// <summary>
+        /// Hardsub into video during encoding process
+        /// </summary>
         public bool HardSubIntoVideo;
+
+        /// <summary>
+        /// Make stream default
+        /// </summary>
         public bool MkvDefault;
+
+        /// <summary>
+        /// Stream has raw format
+        /// </summary>
         public bool RawStream;
+
+        /// <summary>
+        /// Stream needs conversion
+        /// </summary>
         public bool NeedConversion;
+
+        /// <summary>
+        /// Is supported format
+        /// </summary>
         public bool FormatSupported;
 
+        /// <summary>
+        /// Default constuctor
+        /// </summary>
         public SubtitleInfo()
         {
             Id = int.MinValue;
@@ -79,15 +141,15 @@ namespace VideoConvert.Interop.Model
         {
             var result = string.Empty;
 
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.ID:              {0:g} {1:s}", Id,             Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamID:        {0:g} {1:s}", StreamId, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.Format:          {0:s} {1:s}", Format, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.LangCode:        {0:s} {1:s}", LangCode, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.TempFile:        {0:s} {1:s}", TempFile, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamKindID:    {0:g} {1:s}", StreamKindId, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.Delay:           {0:g} {1:s}", Delay, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.DemuxStreamID:   {0:g} {1:s}", DemuxStreamId, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamSize:      {0:g} {1:s}", StreamSize, Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.ID:              {0:g} {1:s}", Id,              Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamID:        {0:g} {1:s}", StreamId,        Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.Format:          {0:s} {1:s}", Format,          Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.LangCode:        {0:s} {1:s}", LangCode,        Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.TempFile:        {0:s} {1:s}", TempFile,        Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamKindID:    {0:g} {1:s}", StreamKindId,    Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.Delay:           {0:g} {1:s}", Delay,           Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.DemuxStreamID:   {0:g} {1:s}", DemuxStreamId,   Environment.NewLine);
+            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamSize:      {0:g} {1:s}", StreamSize,      Environment.NewLine);
             
             return result;
         }

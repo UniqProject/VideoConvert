@@ -149,7 +149,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         {
             var roundedFps = (int) Math.Ceiling(fps);
             int num, denom;
-            VideoHelper.GetFPSNumDenom(fps, out num, out denom);
+            VideoHelper.GetFpsNumDenom(fps, out num, out denom);
 
             var calculatedTime = inTime.TotalMilliseconds/((double)denom/1000);
 

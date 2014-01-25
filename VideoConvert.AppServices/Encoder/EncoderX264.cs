@@ -663,7 +663,7 @@ namespace VideoConvert.AppServices.Encoder
                 var device = X264Device.CreateDeviceList()[_encProfile.TuneDevice];
 
                 // AVC Profiles
-                switch (_encProfile.AVCProfile)
+                switch (_encProfile.AvcProfile)
                 {
                     case 0:
                         sb.Append("--profile baseline ");
@@ -677,8 +677,8 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 // AVC Levels
-                if (_encProfile.AVCLevel != 15) // unrestricted
-                    sb.AppendFormat("--level {0} ", CliLevelNames[_encProfile.AVCLevel]);
+                if (_encProfile.AvcLevel != 15) // unrestricted
+                    sb.AppendFormat("--level {0} ", CliLevelNames[_encProfile.AvcLevel]);
 
                 // Blu-Ray compatibility
                 if (_encProfile.UseBluRayCompatibility)
@@ -723,7 +723,7 @@ namespace VideoConvert.AppServices.Encoder
                 var vbvBuf = GetVBVMaxrate(_encProfile, device);
 
                 if (tempBitrate <= 0)
-                    tempBitrate = _encProfile.VBRSetting;
+                    tempBitrate = _encProfile.VbrSetting;
 
                 if (vbvBuf > 0 && tempBitrate > vbvBuf)   // limit Bitrate to max vbvbuf size
                     tempBitrate = vbvBuf;
@@ -790,7 +790,7 @@ namespace VideoConvert.AppServices.Encoder
                             sb.Append("--no-deblock ");
                 }
 
-                if (_encProfile.AVCProfile > 0 && !_encProfile.CustomCommandLine.Contains("--no-cabac"))
+                if (_encProfile.AvcProfile > 0 && !_encProfile.CustomCommandLine.Contains("--no-cabac"))
                 {
                     if (!_encProfile.UseCabac)
                     {
@@ -835,7 +835,7 @@ namespace VideoConvert.AppServices.Encoder
 
                 // B-Frames
                 _encProfile.NumBFrames = GetBFrames(_encProfile, device);
-                if (_encProfile.AVCProfile > 0 && _encProfile.NumBFrames != X264Settings.GetDefaultNumberOfBFrames(_encProfile.AVCLevel, _encProfile.Tuning, _encProfile.AVCProfile, device))
+                if (_encProfile.AvcProfile > 0 && _encProfile.NumBFrames != X264Settings.GetDefaultNumberOfBFrames(_encProfile.AvcLevel, _encProfile.Tuning, _encProfile.AvcProfile, device))
                     sb.AppendFormat(_appConfig.CInfo, "--bframes {0:0} ", _encProfile.NumBFrames);
 
                 if (_encProfile.NumBFrames > 0)
@@ -901,14 +901,14 @@ namespace VideoConvert.AppServices.Encoder
 
                 // reference frames
                 var iRefFrames = GetRefFrames(hRes, vRes, _encProfile, device);
-                if (iRefFrames != X264Settings.GetDefaultNumberOfRefFrames(_encProfile.Preset, _encProfile.Tuning, null, _encProfile.AVCLevel, hRes, vRes))
+                if (iRefFrames != X264Settings.GetDefaultNumberOfRefFrames(_encProfile.Preset, _encProfile.Tuning, null, _encProfile.AvcLevel, hRes, vRes))
                     sb.AppendFormat(_appConfig.CInfo, "--ref {0:0} ", iRefFrames);
 
                 // WeightedPPrediction
                 _encProfile.PFrameWeightedPrediction = GetWeightp(_encProfile, device);
                 if (_encProfile.PFrameWeightedPrediction != X264Settings.GetDefaultNumberOfWeightp(_encProfile.Preset,
                                                                                                  _encProfile.Tuning,
-                                                                                                 _encProfile.AVCProfile,
+                                                                                                 _encProfile.AvcProfile,
                                                                                                  _encProfile.UseBluRayCompatibility))
                     sb.AppendFormat(_appConfig.CInfo, "--weightp {0:0} ", _encProfile.PFrameWeightedPrediction);
 
@@ -1083,7 +1083,7 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 // custom matrices 
-                if (_encProfile.AVCProfile > 1 && _encProfile.QuantizerMatrix > 0)
+                if (_encProfile.AvcProfile > 1 && _encProfile.QuantizerMatrix > 0)
                 {
                     switch (_encProfile.QuantizerMatrix)
                     {
@@ -1222,7 +1222,7 @@ namespace VideoConvert.AppServices.Encoder
                     if (_encProfile.Tuning == 7 && bExpectedP8X8Mv)
                         bExpectedP4X4Mv = true;
 
-                    if (_encProfile.AVCProfile < 2)
+                    if (_encProfile.AvcProfile < 2)
                         bExpectedI8X8Mv = false;
 
                     if (bExpectedP8X8Mv != _encProfile.MacroBlocksPartitionsP8X8 || bExpectedB8X8Mv != _encProfile.MacroBlocksPartitionsB8X8
@@ -1266,7 +1266,7 @@ namespace VideoConvert.AppServices.Encoder
                     }
                 }
 
-                if (_encProfile.AVCProfile > 1 && !_encProfile.CustomCommandLine.Contains("--no-8x8dct"))
+                if (_encProfile.AvcProfile > 1 && !_encProfile.CustomCommandLine.Contains("--no-8x8dct"))
                     if (!_encProfile.MacroBlocksPartitionsAdaptiveDCT)
                         if (_encProfile.Preset > 0)
                             sb.Append("--no-8x8dct ");
@@ -1805,7 +1805,7 @@ namespace VideoConvert.AppServices.Encoder
                 refFrames = device.ReferenceFrames;
             }
 
-            var iMaxRefForLevel = X264Settings.GetMaxRefForLevel(inProfile.AVCLevel, hRes, vRes);
+            var iMaxRefForLevel = X264Settings.GetMaxRefForLevel(inProfile.AvcLevel, hRes, vRes);
             if (iMaxRefForLevel > -1 && iMaxRefForLevel < refFrames)
             {
                 refFrames = iMaxRefForLevel;

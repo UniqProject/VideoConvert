@@ -168,7 +168,7 @@ namespace VideoConvert.Interop.Utilities
         /// <param name="fps">Source fps</param>
         /// <param name="fpsEnumerator">Calculated Enumerator</param>
         /// <param name="fpsDenominator">Calculated demominator</param>
-        public static void GetFPSNumDenom(float fps, out int fpsEnumerator, out int fpsDenominator)
+        public static void GetFpsNumDenom(float fps, out int fpsEnumerator, out int fpsDenominator)
         {
             var tempFrameRate = Convert.ToInt32(Math.Round(fps, 3) * 1000);
 
@@ -314,7 +314,7 @@ namespace VideoConvert.Interop.Utilities
             if (outType == OutputType.OutputBluRay)
                 return maxBlurayBitrate;
 
-            return x264Prof.AVCProfile < 2 ? baseLineBitrates[x264Prof.AVCLevel] : highBitrates[x264Prof.AVCLevel];
+            return x264Prof.AvcProfile < 2 ? baseLineBitrates[x264Prof.AvcLevel] : highBitrates[x264Prof.AvcLevel];
         }
     }
 }
