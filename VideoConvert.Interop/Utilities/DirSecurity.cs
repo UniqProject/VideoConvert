@@ -24,16 +24,16 @@ namespace VideoConvert.Interop.Utilities
         /// <returns></returns>
         public static DirectorySecurity CreateDirSecurity (SecurityClass securityClass)
         {
-            DirectorySecurity security = new DirectorySecurity();
+            var security = new DirectorySecurity();
 
-            WindowsIdentity windowsIdentity = WindowsIdentity.GetCurrent();
+            var windowsIdentity = WindowsIdentity.GetCurrent();
             if (windowsIdentity != null)
             {
-                SecurityIdentifier identity = windowsIdentity.User;
+                var identity = windowsIdentity.User;
                 if (identity != null)
                 {
                     security.SetOwner(identity);
-                    FileSystemAccessRule accessRule = new FileSystemAccessRule(identity,
+                    var accessRule = new FileSystemAccessRule(identity,
                                                               FileSystemRights.FullControl,
                                                               InheritanceFlags.ObjectInherit |
                                                               InheritanceFlags.ContainerInherit,
@@ -45,9 +45,9 @@ namespace VideoConvert.Interop.Utilities
 
             if (securityClass == SecurityClass.Everybody)
             {
-                SecurityIdentifier everybodyIdentity = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                var everybodyIdentity = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
 
-                FileSystemAccessRule accessRule = new FileSystemAccessRule(everybodyIdentity,
+                var accessRule = new FileSystemAccessRule(everybodyIdentity,
                                                           FileSystemRights.FullControl,
                                                           InheritanceFlags.ObjectInherit |
                                                           InheritanceFlags.ContainerInherit,

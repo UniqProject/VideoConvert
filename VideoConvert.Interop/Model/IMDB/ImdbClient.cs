@@ -40,7 +40,7 @@ namespace VideoConvert.Interop.Model.IMDB
         private void CheckApiVersion()
         {
             ImdbApiVersion version;
-            byte[] data = _client.DownloadData(VersionPath);
+            var data = _client.DownloadData(VersionPath);
 
             using (var dataStream = new MemoryStream(data))
             {

@@ -33,17 +33,17 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <returns>XmlDocument containing the serialized data</returns>
         public static XmlDocument Serialize<T>(T obj, XmlSerializerNamespaces alternateNamespaces = null)
         {
-            XmlSerializer s = new XmlSerializer(obj.GetType());
+            var s = new XmlSerializer(obj.GetType());
 
-            using (MemoryStream stream = new MemoryStream())
-            using (StreamWriter sw = new StreamWriter(stream))
+            using (var stream = new MemoryStream())
+            using (var sw = new StreamWriter(stream))
             {
                 s.Serialize(sw, obj, alternateNamespaces ?? SerializerNamespaces);
 
                 stream.Position = 0;
                 stream.Flush();
 
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(stream);
                 return doc;
             }
@@ -59,11 +59,11 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         public static T Deserialize<T>(XmlDocument doc)
         {
             // Use awesomeness of Activator
-            T tmp = Activator.CreateInstance<T>();
-            XmlSerializer serializer = new XmlSerializer(tmp.GetType());
+            var tmp = Activator.CreateInstance<T>();
+            var serializer = new XmlSerializer(tmp.GetType());
             if (doc.DocumentElement != null)
             {
-                T objectToSerialize = (T)serializer.Deserialize(new XmlNodeReader(doc.DocumentElement));
+                var objectToSerialize = (T)serializer.Deserialize(new XmlNodeReader(doc.DocumentElement));
                 return objectToSerialize;
             }
             return default(T);

@@ -355,7 +355,7 @@ namespace VideoConvertWPF.ViewModels
             }
             else
             {
-                DirectoryInfo dir = new DirectoryInfo(JobInfo.InputFile);
+                var dir = new DirectoryInfo(JobInfo.InputFile);
                 JobTitle = GetVolumeLabel(dir);
 
                 if (string.IsNullOrEmpty(JobTitle))
@@ -402,7 +402,7 @@ namespace VideoConvertWPF.ViewModels
 
         private void ProfilesWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-            ProfilesHandler profHandler = new ProfilesHandler(this._configService);
+            var profHandler = new ProfilesHandler(this._configService);
             _profiles = profHandler.FilteredList.Where(p => p.Type == ProfileType.QuickSelect).ToList();
         }
 
@@ -412,7 +412,7 @@ namespace VideoConvertWPF.ViewModels
 
         private void TreeNodePropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            StreamTreeNode myStreamTree = sender as StreamTreeNode;
+            var myStreamTree = sender as StreamTreeNode;
             if (myStreamTree == null) return;
             switch (propertyChangedEventArgs.PropertyName)
             {
@@ -467,15 +467,15 @@ namespace VideoConvertWPF.ViewModels
             if (SelectedProfile == null) return;
             if (string.IsNullOrEmpty(JobTitle)) return;
 
-            IEnumerable<StreamTreeNode> sortedList = GetCheckedItems(SelectedTitleInfo);
+            var sortedList = GetCheckedItems(SelectedTitleInfo);
 
-            bool videoSet = false;
+            var videoSet = false;
 
-            foreach (StreamTreeNode item in sortedList)
+            foreach (var item in sortedList)
             {
                 if (item.Data == null) continue;
 
-                Type dataType = item.Data.GetType();
+                var dataType = item.Data.GetType();
 
                 if (dataType == typeof(string))
                     JobInfo.InputFile = (string)item.Data;
@@ -493,8 +493,8 @@ namespace VideoConvertWPF.ViewModels
                     JobInfo.AudioStreams.Add((AudioInfo)item.Data);
                 else if (dataType == typeof(SubtitleInfo))
                 {
-                    SubtitleInfo sub = (SubtitleInfo)item.Data;
-                    bool isBD = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
+                    var sub = (SubtitleInfo)item.Data;
+                    var isBD = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
                                 JobInfo.Input == InputType.InputHddvd;
                     if ((sub.Format == "PGS" || sub.Format == "VobSub" || sub.Format == "UTF-8" || sub.Format == "ASS" || sub.Format == "SSA") && ((isBD && _bdInfo != null && !_bdInfo.Is3D) || !isBD))
                         // don't extract subtitles on 3d blurays, because eac3to can't handle them
@@ -547,12 +547,12 @@ namespace VideoConvertWPF.ViewModels
 
         public void LoadStreams()
         {
-            BackgroundWorker bgWorker = new BackgroundWorker();
+            var bgWorker = new BackgroundWorker();
             bgWorker.DoWork += BgWorkerDoWork;
             bgWorker.RunWorkerCompleted += BgWorkerRunWorkerCompleted;
             bgWorker.RunWorkerAsync();
 
-            BackgroundWorker profilesWorker = new BackgroundWorker();
+            var profilesWorker = new BackgroundWorker();
             profilesWorker.DoWork += ProfilesWorkerDoWork;
             profilesWorker.RunWorkerCompleted += ProfilesWorkerRunWorkerCompleted;
             profilesWorker.RunWorkerAsync();
@@ -560,7 +560,7 @@ namespace VideoConvertWPF.ViewModels
 
         public void GetFileInfo()
         {
-            MediaInfoContainer mi = new MediaInfoContainer();
+            var mi = new MediaInfoContainer();
             try
             {
                 mi = GenHelper.GetMediaInfo(JobInfo.InputFile);
@@ -580,13 +580,13 @@ namespace VideoConvertWPF.ViewModels
             const string strAudio = "Audio";
             const string strSubtitles = "Subtitles";
 
-            string containerFormat = mi.General.Format;
-            string duration = mi.General.DurationTime.ToString("H:mm:ss.fff");
-            string shortFileName = mi.General.FileName + "." + mi.General.FileExtension;
+            var containerFormat = mi.General.Format;
+            var duration = mi.General.DurationTime.ToString("H:mm:ss.fff");
+            var shortFileName = mi.General.FileName + "." + mi.General.FileExtension;
 
-            string treeRoot = string.Format(fileTitleFormat, shortFileName, containerFormat, duration);
+            var treeRoot = string.Format(fileTitleFormat, shortFileName, containerFormat, duration);
 
-            StreamTreeNode root = new StreamTreeNode
+            var root = new StreamTreeNode
             {
                 ID = _treeNodeID++,
                 Name = treeRoot,
@@ -598,35 +598,35 @@ namespace VideoConvertWPF.ViewModels
             root.PropertyChanged += TreeNodePropertyChanged;
             _tree.Add(root);
 
-            StreamTreeNode chaptersStreamTree = CreateNode(root, strChapters, null);
-            StreamTreeNode videoStreamTree = CreateNode(root, strVideo, null);
-            StreamTreeNode audioStreamTree = CreateNode(root, strAudio, null);
-            StreamTreeNode subStreamTree = CreateNode(root, strSubtitles, null);
+            var chaptersStreamTree = CreateNode(root, strChapters, null);
+            var videoStreamTree = CreateNode(root, strVideo, null);
+            var audioStreamTree = CreateNode(root, strAudio, null);
+            var subStreamTree = CreateNode(root, strSubtitles, null);
 
             if (mi.Chapters.Count > 0)
             {
-                string chaptersTitle = string.Format("{0:0} {1}", mi.Chapters.Count, strChapters);
+                var chaptersTitle = string.Format("{0:0} {1}", mi.Chapters.Count, strChapters);
 
                 CreateNode(chaptersStreamTree, chaptersTitle, mi.Chapters);
             }
             else
                 chaptersStreamTree.IsChecked = false;
 
-            int streamIndex = 0;
+            var streamIndex = 0;
 
-            foreach (MediaInfoContainer.VideoStreamInfo clip in mi.Video)
+            foreach (var clip in mi.Video)
             {
                 streamIndex++;
-                int videoPid = clip.ID;
-                string videoCodec = clip.FormatInfo;
-                string videoCodecShort = clip.Format;
-                string videoDesc = string.Format(fileVideoFormat, clip.Width, clip.Height, clip.ScanType,
+                var videoPid = clip.ID;
+                var videoCodec = clip.FormatInfo;
+                var videoCodecShort = clip.Format;
+                var videoDesc = string.Format(fileVideoFormat, clip.Width, clip.Height, clip.ScanType,
                                                  clip.FormatProfile, clip.FrameRate);
 
-                string videoStreamTitle = string.Format("{3:g}: {0} ({1}), {2}", videoCodec, videoCodecShort, videoDesc,
+                var videoStreamTitle = string.Format("{3:g}: {0} ({1}), {2}", videoCodec, videoCodecShort, videoDesc,
                                                         streamIndex);
 
-                VideoInfo vid = new VideoInfo();
+                var vid = new VideoInfo();
                 if (JobInfo.Input == InputType.InputAvi)
                     vid.StreamId = 0;
                 else
@@ -652,20 +652,20 @@ namespace VideoConvertWPF.ViewModels
 
             videoStreamTree.IsChecked = videoStreamTree.Children.Count > 0;
 
-            foreach (MediaInfoContainer.AudioStreamInfo audio in mi.Audio)
+            foreach (var audio in mi.Audio)
             {
                 streamIndex++;
-                int audioPid = audio.ID;
-                string audioCodec = audio.FormatInfo;
-                string audioCodecShort = audio.Format;
-                string audioLangCode = audio.LanguageIso6392;
-                string audioLanguage = audio.LanguageFull;
-                int audioStreamKindID = audio.StreamKindID;
+                var audioPid = audio.ID;
+                var audioCodec = audio.FormatInfo;
+                var audioCodecShort = audio.Format;
+                var audioLangCode = audio.LanguageIso6392;
+                var audioLanguage = audio.LanguageFull;
+                var audioStreamKindID = audio.StreamKindID;
 
-                string audioDesc = string.Format(fileAudioFormat, audio.Channels, audio.ChannelPositions,
+                var audioDesc = string.Format(fileAudioFormat, audio.Channels, audio.ChannelPositions,
                                                  audio.SamplingRate, audio.BitDepth, audio.BitRate / 1000);
 
-                string audioStreamTitle = string.Format("{5:g}: {0} ({1}) / {2} ({3}) / {4}", audioCodec,
+                var audioStreamTitle = string.Format("{5:g}: {0} ({1}) / {2} ({3}) / {4}", audioCodec,
                                                         audioCodecShort, audioLangCode, audioLanguage, audioDesc,
                                                         streamIndex);
 
@@ -674,7 +674,7 @@ namespace VideoConvertWPF.ViewModels
                 else
                     audioPid = audioPid == 0 ? streamIndex : audioPid;
 
-                AudioInfo aud = new AudioInfo
+                var aud = new AudioInfo
                 {
                     Id = audioPid,
                     Format = audioCodecShort,
@@ -699,19 +699,19 @@ namespace VideoConvertWPF.ViewModels
 
             audioStreamTree.IsChecked = audioStreamTree.Children.Count > 0;
 
-            foreach (MediaInfoContainer.TextStreamInfo sub in mi.Text)
+            foreach (var sub in mi.Text)
             {
                 streamIndex++;
-                string subCodec = sub.CodecIDInfo;
-                string subCodecShort = sub.Format;
-                string subLangCode = sub.LanguageIso6392;
-                string subLanguage = sub.LanguageFull;
-                int subStreamKindID = sub.StreamKindID;
+                var subCodec = sub.CodecIDInfo;
+                var subCodecShort = sub.Format;
+                var subLangCode = sub.LanguageIso6392;
+                var subLanguage = sub.LanguageFull;
+                var subStreamKindID = sub.StreamKindID;
 
-                string subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
+                var subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
                                                       subLangCode, subLanguage, streamIndex);
 
-                SubtitleInfo subInfo = new SubtitleInfo
+                var subInfo = new SubtitleInfo
                 {
                     Id = sub.ID,
                     StreamId = streamIndex,
@@ -725,18 +725,18 @@ namespace VideoConvertWPF.ViewModels
                 CreateNode(subStreamTree, subStreamTitle, subInfo);
             }
 
-            foreach (MediaInfoContainer.ImageStreamInfo sub in mi.Image)
+            foreach (var sub in mi.Image)
             {
                 streamIndex++;
-                string subCodec = sub.CodecIDInfo;
-                string subCodecShort = sub.Format;
-                string subLangCode = sub.LanguageIso6392;
-                string subLanguage = sub.LanguageFull;
-                int subStreamKindID = sub.StreamKindID;
+                var subCodec = sub.CodecIDInfo;
+                var subCodecShort = sub.Format;
+                var subLangCode = sub.LanguageIso6392;
+                var subLanguage = sub.LanguageFull;
+                var subStreamKindID = sub.StreamKindID;
 
-                string subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
+                var subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
                                                       subLangCode, subLanguage, streamIndex);
-                SubtitleInfo subInfo = new SubtitleInfo
+                var subInfo = new SubtitleInfo
                 {
                     Id = sub.ID,
                     StreamId = streamIndex,
@@ -769,11 +769,11 @@ namespace VideoConvertWPF.ViewModels
             _bdInfo = new BDROM(JobInfo.InputFile);
             _bdInfo.Scan();
 
-            int longestClip = GetLongestBDPlaylist();
+            var longestClip = GetLongestBDPlaylist();
 
-            int playlistIndex = 1;
+            var playlistIndex = 1;
 
-            foreach (TSPlaylistFile item in _bdInfo.PlaylistFiles.Values)
+            foreach (var item in _bdInfo.PlaylistFiles.Values)
             {
                 if (!item.IsValid)
                 {
@@ -781,16 +781,16 @@ namespace VideoConvertWPF.ViewModels
                     continue;
                 }
 
-                int streamIndex = 0;
+                var streamIndex = 0;
 
-                DateTime duration = new DateTime();
+                var duration = new DateTime();
 
                 duration = duration.AddSeconds(item.TotalLength);
 
-                string treeRoot = string.Format(bdTitleFormat, playlistIndex, item.Name,
+                var treeRoot = string.Format(bdTitleFormat, playlistIndex, item.Name,
                                                 duration.ToString("H:mm:ss.fff"));
 
-                Dictionary<string, object> treeData = new Dictionary<string, object>
+                var treeData = new Dictionary<string, object>
                     {
                         {
                             "Name",
@@ -800,7 +800,7 @@ namespace VideoConvertWPF.ViewModels
                         {"PlaylistIndex", playlistIndex}
                     };
 
-                StreamTreeNode root = new StreamTreeNode
+                var root = new StreamTreeNode
                 {
                     ID = _treeNodeID++,
                     Name = treeRoot,
@@ -812,31 +812,31 @@ namespace VideoConvertWPF.ViewModels
                 root.PropertyChanged += TreeNodePropertyChanged;
                 _tree.Add(root);
 
-                StreamTreeNode chaptersStreamTree = CreateNode(root, strChapters, null);
-                StreamTreeNode videoStreamTree = CreateNode(root, strVideo, null);
-                StreamTreeNode audioStreamTree = CreateNode(root, strAudio, null);
-                StreamTreeNode subStreamTree = CreateNode(root, strSubtitles, null);
+                var chaptersStreamTree = CreateNode(root, strChapters, null);
+                var videoStreamTree = CreateNode(root, strVideo, null);
+                var audioStreamTree = CreateNode(root, strAudio, null);
+                var subStreamTree = CreateNode(root, strSubtitles, null);
 
-                List<TimeSpan> streamChapters = new List<TimeSpan>();
+                var streamChapters = new List<TimeSpan>();
                 if (item.Chapters.Count > 1)
                 {
                     streamIndex++;
 
                     streamChapters.AddRange(item.Chapters.Select(TimeSpan.FromSeconds));
 
-                    string chaptersFormat = string.Format("{0:0} {1}", streamChapters.Count, strChapters);
+                    var chaptersFormat = string.Format("{0:0} {1}", streamChapters.Count, strChapters);
 
                     CreateNode(chaptersStreamTree, chaptersFormat, streamChapters);
                 }
 
-                string videoDescStereo = string.Empty;
-                int leftVideoStreamID = -1;
-                foreach (TSVideoStream clip in item.VideoStreams)
+                var videoDescStereo = string.Empty;
+                var leftVideoStreamID = -1;
+                foreach (var clip in item.VideoStreams)
                 {
                     streamIndex++;
-                    string videoCodec = clip.CodecName;
-                    string videoCodecShort = clip.CodecShortName;
-                    string videoDesc = clip.Description;
+                    var videoCodec = clip.CodecName;
+                    var videoCodecShort = clip.CodecShortName;
+                    var videoDesc = clip.Description;
 
                     if ((clip.StreamType == TSStreamType.AVC_VIDEO) && (item.VideoStreams.Count > 1)
                         && (item.VideoStreams[0].PID == clip.PID)
@@ -854,7 +854,7 @@ namespace VideoConvertWPF.ViewModels
                         videoCodec = "MPEG-4 MVC Video (right eye)";
                     }
                     /* */
-                    string videoStreamFormat = string.Format("{3:g}: {0} ({1}), {2}", videoCodec, videoCodecShort,
+                    var videoStreamFormat = string.Format("{3:g}: {0} ({1}), {2}", videoCodec, videoCodecShort,
                                                                    videoDesc, streamIndex);
                     switch (clip.StreamType)
                     {
@@ -863,7 +863,7 @@ namespace VideoConvertWPF.ViewModels
                         case TSStreamType.MPEG1_VIDEO:
                         case TSStreamType.VC1_VIDEO:
                             {
-                                VideoInfo vid = new VideoInfo
+                                var vid = new VideoInfo
                                 {
                                     StreamId = streamIndex,
                                     TrackId = playlistIndex,
@@ -885,7 +885,7 @@ namespace VideoConvertWPF.ViewModels
                                 Int32.TryParse(item.Name.Substring(0, item.Name.LastIndexOf('.')), NumberStyles.Number,
                                                this._configService.CInfo, out vid.DemuxPlayList);
 
-                                foreach (TSStreamClip streamClip in item.StreamClips)
+                                foreach (var streamClip in item.StreamClips)
                                     vid.DemuxStreamNames.Add(streamClip.StreamFile.FileInfo.FullName);
 
                                 float mod;
@@ -906,7 +906,7 @@ namespace VideoConvertWPF.ViewModels
                             break;
                         case TSStreamType.MVC_VIDEO:
                             {
-                                StereoVideoInfo vid = new StereoVideoInfo
+                                var vid = new StereoVideoInfo
                                 {
                                     RightStreamId = streamIndex,
                                     LeftStreamId = leftVideoStreamID
@@ -917,19 +917,19 @@ namespace VideoConvertWPF.ViewModels
                     }
                 }
 
-                foreach (TSAudioStream audio in item.AudioStreams)
+                foreach (var audio in item.AudioStreams)
                 {
                     streamIndex++;
-                    string audioCodec = audio.CodecName;
-                    string audioCodecShort = audio.CodecShortName;
-                    string audioDesc = audio.Description;
-                    string audioLangCode = audio.LanguageCode;
-                    string audioLanguage = audio.LanguageName;
+                    var audioCodec = audio.CodecName;
+                    var audioCodecShort = audio.CodecShortName;
+                    var audioDesc = audio.Description;
+                    var audioLangCode = audio.LanguageCode;
+                    var audioLanguage = audio.LanguageName;
 
-                    string audioStreamFormat = string.Format(bdAudioFormat, audioCodec, audioCodecShort, audioLangCode,
+                    var audioStreamFormat = string.Format(bdAudioFormat, audioCodec, audioCodecShort, audioLangCode,
                                                              audioLanguage, audioDesc, streamIndex);
 
-                    AudioInfo aud = new AudioInfo
+                    var aud = new AudioInfo
                     {
                         Format = audioCodecShort,
                         FormatProfile = string.Empty,
@@ -953,18 +953,18 @@ namespace VideoConvertWPF.ViewModels
                     CreateNode(audioStreamTree, audioStreamFormat, aud);
                 }
 
-                foreach (TSTextStream sub in item.TextStreams)
+                foreach (var sub in item.TextStreams)
                 {
                     streamIndex++;
-                    string subCodecShort = sub.CodecShortName;
-                    string subDesc = sub.Description;
-                    string subLangCode = sub.LanguageCode;
-                    string subLanguage = sub.LanguageName;
+                    var subCodecShort = sub.CodecShortName;
+                    var subDesc = sub.Description;
+                    var subLangCode = sub.LanguageCode;
+                    var subLanguage = sub.LanguageName;
 
-                    string subStreamFormat = string.Format(bdSubFormat, subCodecShort, subLangCode, subLanguage,
+                    var subStreamFormat = string.Format(bdSubFormat, subCodecShort, subLangCode, subLanguage,
                                                            streamIndex, subDesc);
 
-                    SubtitleInfo subInfo = new SubtitleInfo
+                    var subInfo = new SubtitleInfo
                     {
                         Id = streamIndex,
                         StreamId = streamIndex,
@@ -979,18 +979,18 @@ namespace VideoConvertWPF.ViewModels
                     CreateNode(subStreamTree, subStreamFormat, subInfo);
                 }
 
-                foreach (TSGraphicsStream sub in item.GraphicsStreams)
+                foreach (var sub in item.GraphicsStreams)
                 {
                     streamIndex++;
-                    string subCodecShort = sub.CodecShortName;
-                    string subDesc = sub.Description;
-                    string subLangCode = sub.LanguageCode;
-                    string subLanguage = sub.LanguageName;
+                    var subCodecShort = sub.CodecShortName;
+                    var subDesc = sub.Description;
+                    var subLangCode = sub.LanguageCode;
+                    var subLanguage = sub.LanguageName;
 
-                    string subStreamFormat = string.Format(bdSubFormat, subCodecShort, subLangCode, subLanguage,
+                    var subStreamFormat = string.Format(bdSubFormat, subCodecShort, subLangCode, subLanguage,
                                                            streamIndex, subDesc);
 
-                    SubtitleInfo subInfo = new SubtitleInfo
+                    var subInfo = new SubtitleInfo
                     {
                         Id = streamIndex,
                         StreamId = streamIndex,
@@ -1010,12 +1010,12 @@ namespace VideoConvertWPF.ViewModels
 
         public int GetLongestBDPlaylist()
         {
-            int longest = 0;
-            int longestClip = 0;
+            var longest = 0;
+            var longestClip = 0;
 
-            int playlistIndex = 1;
+            var playlistIndex = 1;
 
-            foreach (int clipLength in from item in _bdInfo.PlaylistFiles.Values where item.IsValid select (int)Math.Truncate(item.TotalLength))
+            foreach (var clipLength in from item in _bdInfo.PlaylistFiles.Values where item.IsValid select (int)Math.Truncate(item.TotalLength))
             {
                 if (clipLength > longest)
                 {
@@ -1041,19 +1041,19 @@ namespace VideoConvertWPF.ViewModels
 
             const string dvdVideoStreamFormat = "{0} {1} {2} ({3}) {4} {5:0.000} fps";
 
-            DvdInfoContainer dvd = new DvdInfoContainer(JobInfo.InputFile);
+            var dvd = new DvdInfoContainer(JobInfo.InputFile);
 
-            foreach (TitleInfo info in dvd.Titles)
+            foreach (var info in dvd.Titles)
             {
                 int videoId = info.TitleNumber;
-                float fps = info.VideoStream.Framerate;
-                string videoFormat = info.VideoStream.VideoStandard.ToString();
-                string codec = _processingService.StringValueOf(info.VideoStream.CodingMode);
-                string aspect = _processingService.StringValueOf(info.VideoStream.AspectRatio);
+                var fps = info.VideoStream.Framerate;
+                var videoFormat = info.VideoStream.VideoStandard.ToString();
+                var codec = _processingService.StringValueOf(info.VideoStream.CodingMode);
+                var aspect = _processingService.StringValueOf(info.VideoStream.AspectRatio);
 
-                string resolution = _processingService.StringValueOf(info.VideoStream.VideoResolution);
+                var resolution = _processingService.StringValueOf(info.VideoStream.VideoResolution);
 
-                string[] resolutionArray = resolution.Split(new[] {"x"}, StringSplitOptions.RemoveEmptyEntries);
+                var resolutionArray = resolution.Split(new[] {"x"}, StringSplitOptions.RemoveEmptyEntries);
                 int width = 0, height = 0;
 
                 try
@@ -1066,18 +1066,18 @@ namespace VideoConvertWPF.ViewModels
                     Log.Error(ex);
                 }
 
-                string letterboxed = _processingService.StringValueOf(info.VideoStream.DisplayFormat);
+                var letterboxed = _processingService.StringValueOf(info.VideoStream.DisplayFormat);
                 int vtsID = info.TitleSetNumber;
 
-                DateTime duration = DateTime.MinValue.Add(info.VideoStream.Runtime);
-                string treeRoot = string.Format(dvdTitleFormat, videoId, duration.ToString("H:mm:ss.fff"));
+                var duration = DateTime.MinValue.Add(info.VideoStream.Runtime);
+                var treeRoot = string.Format(dvdTitleFormat, videoId, duration.ToString("H:mm:ss.fff"));
 
-                Dictionary<string, object> treeData = new Dictionary<string, object>
+                var treeData = new Dictionary<string, object>
                 {
                     {"Name", JobInfo.InputFile},
                     {"TrackID", videoId}
                 };
-                StreamTreeNode root = new StreamTreeNode
+                var root = new StreamTreeNode
                 {
                     ID = _treeNodeID++,
                     Name = treeRoot,
@@ -1088,20 +1088,20 @@ namespace VideoConvertWPF.ViewModels
                 };
                 _tree.Add(root);
 
-                StreamTreeNode chaptersTree = CreateNode(root, strChapters, null);
-                StreamTreeNode videoTree = CreateNode(root, strVideo, null);
-                StreamTreeNode audioTree = CreateNode(root, strAudio, null);
-                StreamTreeNode subTree = CreateNode(root, strSubtitles, null);
+                var chaptersTree = CreateNode(root, strChapters, null);
+                var videoTree = CreateNode(root, strVideo, null);
+                var audioTree = CreateNode(root, strAudio, null);
+                var subTree = CreateNode(root, strSubtitles, null);
 
                 if (info.Chapters != null && info.Chapters.Count > 0)
                 {
-                    string chaptersFormat = string.Format("{0:0} {1}", info.Chapters.Count, strChapters);
+                    var chaptersFormat = string.Format("{0:0} {1}", info.Chapters.Count, strChapters);
                     CreateNode(chaptersTree, chaptersFormat, info.Chapters);
                 }
 
-                string videoStream = string.Format(dvdVideoStreamFormat, codec, resolution, aspect, letterboxed, videoFormat,
+                var videoStream = string.Format(dvdVideoStreamFormat, codec, resolution, aspect, letterboxed, videoFormat,
                                                    fps);
-                VideoInfo vid = new VideoInfo
+                var vid = new VideoInfo
                 {
                     VtsId = vtsID,
                     TrackId = videoId,
@@ -1124,22 +1124,22 @@ namespace VideoConvertWPF.ViewModels
 
                 CreateNode(videoTree, videoStream, vid);
 
-                foreach (AudioProperties stream in info.AudioStreams)
+                foreach (var stream in info.AudioStreams)
                 {
-                    int audioID = stream.StreamIndex;
-                    string langCode = stream.Language.Code;
-                    string language = stream.Language.Name;
-                    string format = _processingService.StringValueOf(stream.CodingMode);
-                    int frequency = stream.SampleRate;
-                    string quantization = _processingService.StringValueOf(stream.Quantization);
-                    int channels = stream.Channels;
-                    string content = _processingService.StringValueOf(stream.Extension);
-                    int streamID = stream.StreamId;
+                    var audioID = stream.StreamIndex;
+                    var langCode = stream.Language.Code;
+                    var language = stream.Language.Name;
+                    var format = _processingService.StringValueOf(stream.CodingMode);
+                    var frequency = stream.SampleRate;
+                    var quantization = _processingService.StringValueOf(stream.Quantization);
+                    var channels = stream.Channels;
+                    var content = _processingService.StringValueOf(stream.Extension);
+                    var streamID = stream.StreamId;
 
-                    string audioStream = string.Format(dvdAudioFormat, audioID, streamID, langCode, language,
+                    var audioStream = string.Format(dvdAudioFormat, audioID, streamID, langCode, language,
                                                            content, format, channels, frequency, quantization);
 
-                    AudioInfo aud = new AudioInfo
+                    var aud = new AudioInfo
                     {
                         Format = format,
                         FormatProfile = string.Empty,
@@ -1160,17 +1160,17 @@ namespace VideoConvertWPF.ViewModels
                     CreateNode(audioTree, audioStream, aud);
                 }
 
-                foreach (SubpictureProperties stream in info.SubtitleStreams)
+                foreach (var stream in info.SubtitleStreams)
                 {
-                    int subID = stream.StreamIndex;
-                    string langCode = stream.Language.Code;
-                    string language = stream.Language.Name;
-                    string content = _processingService.StringValueOf(stream.Extension);
-                    int streamID = stream.StreamId;
+                    var subID = stream.StreamIndex;
+                    var langCode = stream.Language.Code;
+                    var language = stream.Language.Name;
+                    var content = _processingService.StringValueOf(stream.Extension);
+                    var streamID = stream.StreamId;
 
-                    string subtitleStream = string.Format(dvdSubFormat, subID, streamID, langCode, language, content);
+                    var subtitleStream = string.Format(dvdSubFormat, subID, streamID, langCode, language, content);
 
-                    SubtitleInfo subInfo = new SubtitleInfo
+                    var subInfo = new SubtitleInfo
                     {
                         Id = subID + info.AudioStreams.Count,
                         StreamId = streamID,
@@ -1198,10 +1198,10 @@ namespace VideoConvertWPF.ViewModels
         {
             uint serialNumber = 0;
             uint maxLength = 0;
-            uint volumeFlags = new uint();
-            StringBuilder volumeLabel = new StringBuilder(256);
-            StringBuilder fileSystemName = new StringBuilder(256);
-            string label = string.Empty;
+            var volumeFlags = new uint();
+            var volumeLabel = new StringBuilder(256);
+            var fileSystemName = new StringBuilder(256);
+            var label = string.Empty;
 
             try
             {
@@ -1223,7 +1223,7 @@ namespace VideoConvertWPF.ViewModels
 
         public StreamTreeNode CreateNode(StreamTreeNode tParent, string tName, object data)
         {
-            StreamTreeNode subNode = new StreamTreeNode
+            var subNode = new StreamTreeNode
             {
                 ID = _treeNodeID++,
                 Name = tName,
@@ -1241,19 +1241,19 @@ namespace VideoConvertWPF.ViewModels
 
         public EncoderProfile GetProfile(string pName, ProfileType pType)
         {
-            ProfilesHandler profHandler = new ProfilesHandler(this._configService);
+            var profHandler = new ProfilesHandler(this._configService);
             return profHandler.FilteredList.Find(ep => (ep.Name == pName) && (ep.Type == pType));
         }
 
         public IEnumerable<StreamTreeNode> GetCheckedItems(StreamTreeNode streamTree)
         {
-            List<StreamTreeNode> items = new List<StreamTreeNode>();
+            var items = new List<StreamTreeNode>();
 
             if (streamTree.IsChecked)
                 items.Add(streamTree);
 
             if (streamTree.Children.Count > 0)
-                foreach (StreamTreeNode child in streamTree.Children)
+                foreach (var child in streamTree.Children)
                     items.AddRange(GetCheckedItems(child));
 
             return items;
@@ -1261,7 +1261,7 @@ namespace VideoConvertWPF.ViewModels
 
         public void CheckRootItem(StreamTreeNode item)
         {
-            StreamTreeNode iParent = item.Parent;
+            var iParent = item.Parent;
             StreamTreeNode topParent = null;
             if (iParent != null)
             {
@@ -1283,7 +1283,7 @@ namespace VideoConvertWPF.ViewModels
 
         public void CheckSubItems(StreamTreeNode node)
         {
-            foreach (StreamTreeNode childNode in node.Children)
+            foreach (var childNode in node.Children)
             {
                 childNode.IsChecked = node.IsChecked;
                 childNode.IsExpanded = node.IsChecked;

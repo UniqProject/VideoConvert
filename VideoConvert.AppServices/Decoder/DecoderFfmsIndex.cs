@@ -97,10 +97,10 @@ namespace VideoConvert.AppServices.Decoder
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.AvsPluginsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.AvsPluginsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -174,7 +174,7 @@ namespace VideoConvert.AppServices.Decoder
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             this._inputFile = this._currentTask.VideoStream.TempFile;
 
@@ -233,13 +233,13 @@ namespace VideoConvert.AppServices.Decoder
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            TimeSpan elapsedTime = DateTime.Now - this._startTime;
+            var elapsedTime = DateTime.Now - this._startTime;
 
-            Match result = _regObj.Match(line);
+            var result = _regObj.Match(line);
             if (result.Success)
             {
                 float progress = Convert.ToInt32(result.Groups[1].Value);
-                float progressLeft = 100f - progress;
+                var progressLeft = 100f - progress;
 
                 double speed = 0f;
                 if (elapsedTime.TotalSeconds > 0)
@@ -253,9 +253,9 @@ namespace VideoConvert.AppServices.Decoder
                     secLeft = (int)Math.Floor(progressLeft * speed);
                 }
 
-                TimeSpan remainingTime = TimeSpan.FromSeconds(secLeft);
+                var remainingTime = TimeSpan.FromSeconds(secLeft);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,

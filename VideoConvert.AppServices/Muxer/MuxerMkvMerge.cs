@@ -91,15 +91,15 @@ namespace VideoConvert.AppServices.Muxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
             const string query = DefaultParams + "-V";
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable, query)
+                var parameter = new ProcessStartInfo(localExecutable, query)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -120,11 +120,11 @@ namespace VideoConvert.AppServices.Muxer
 
                 if (started)
                 {
-                    string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^mkvmerge v([\d\.]+ \(.*\)).*built.*$",
+                    var output = encoder.StandardOutput.ReadToEnd();
+                    var regObj = new Regex(@"^mkvmerge v([\d\.]+ \(.*\)).*built.*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
 
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
 
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
@@ -160,10 +160,10 @@ namespace VideoConvert.AppServices.Muxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string mkvmergeCliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var mkvmergeCliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(mkvmergeCliPath, query)
+                var cliStart = new ProcessStartInfo(mkvmergeCliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -236,13 +236,13 @@ namespace VideoConvert.AppServices.Muxer
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append(DefaultParams);
 
-            float fps = this._currentTask.VideoStream.FPS;
+            var fps = this._currentTask.VideoStream.FPS;
             int vidStream;
 
-            string tempExt = Path.GetExtension(this._currentTask.VideoStream.TempFile);
+            var tempExt = Path.GetExtension(this._currentTask.VideoStream.TempFile);
             if (this._currentTask.VideoStream.IsRawStream ||
                 (this._currentTask.Input == InputType.InputAvi && !this._currentTask.VideoStream.Encoded) ||
                 this._currentTask.VideoStream.Encoded)
@@ -252,7 +252,7 @@ namespace VideoConvert.AppServices.Muxer
             else
                 vidStream = this._currentTask.VideoStream.StreamId;
 
-            string streamOrder = string.Format(" --track-order 0:{0:g}", vidStream);
+            var streamOrder = string.Format(" --track-order 0:{0:g}", vidStream);
 
             _outFile = !string.IsNullOrEmpty(this._currentTask.TempOutput)
                        ? this._currentTask.TempOutput
@@ -263,7 +263,7 @@ namespace VideoConvert.AppServices.Muxer
             if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputWebM)
                 sb.Append("--webm ");
 
-            string fpsStr = string.Empty;
+            var fpsStr = string.Empty;
             if (this._currentTask.VideoStream.IsRawStream)
             {
                 if (this._currentTask.VideoStream.FrameRateEnumerator == 0)
@@ -305,9 +305,9 @@ namespace VideoConvert.AppServices.Muxer
                             "-d {1:g} -A -S --no-global-tags --no-chapters --compression {1:g}:none \"{0:s}\" ",
                             this._currentTask.VideoStream.TempFile, vidStream);
 
-            int i = 1;
-            bool defaultAudioExists = false;
-            foreach (AudioInfo item in this._currentTask.AudioStreams)
+            var i = 1;
+            var defaultAudioExists = false;
+            foreach (var item in this._currentTask.AudioStreams)
             {
                 string isDefault;
                 if (item.MkvDefault && !defaultAudioExists)
@@ -318,17 +318,17 @@ namespace VideoConvert.AppServices.Muxer
                 else
                     isDefault = "no";
 
-                string itemlang = item.LangCode;
+                var itemlang = item.LangCode;
 
                 if (itemlang == "xx" || string.IsNullOrEmpty(itemlang))
                     itemlang = "und";
 
-                string delayString = string.Empty;
+                var delayString = string.Empty;
 
                 if (item.Delay != 0)
                     delayString = string.Format(_appConfig.CInfo, "--sync 0:{0:#}", item.Delay);
 
-                int itemStream = 0;
+                var itemStream = 0;
 
                 if (Path.GetExtension(item.TempFile) == ".mkv")
                     itemStream = 1;
@@ -347,10 +347,10 @@ namespace VideoConvert.AppServices.Muxer
                 i++;
             }
 
-            bool defaultSubExists = false;
+            var defaultSubExists = false;
             if (this._currentTask.EncodingProfile.OutFormat != OutputType.OutputWebM)
             {
-                foreach (SubtitleInfo item in this._currentTask.SubtitleStreams.Where(item => !item.HardSubIntoVideo && File.Exists(item.TempFile)))
+                foreach (var item in this._currentTask.SubtitleStreams.Where(item => !item.HardSubIntoVideo && File.Exists(item.TempFile)))
                 {
                     string isDefault;
                     if (item.MkvDefault && !defaultSubExists)
@@ -361,14 +361,14 @@ namespace VideoConvert.AppServices.Muxer
                     else
                         isDefault = "no";
 
-                    string itemlang = item.LangCode;
+                    var itemlang = item.LangCode;
 
                     int subId;
 
                     if (itemlang == "xx" || string.IsNullOrEmpty(itemlang))
                         itemlang = "und";
 
-                    string subFile = item.TempFile;
+                    var subFile = item.TempFile;
 
                     if (string.IsNullOrEmpty(subFile))
                     {
@@ -378,7 +378,7 @@ namespace VideoConvert.AppServices.Muxer
                     else
                         subId = 0;
 
-                    string delayString = string.Empty;
+                    var delayString = string.Empty;
 
                     if (subFile != this._currentTask.InputFile && (item.Delay != 0 && item.Delay != int.MinValue))
                         delayString = string.Format(_appConfig.CInfo, "--sync {0:g}:{1:g}", subId, item.Delay);
@@ -399,17 +399,17 @@ namespace VideoConvert.AppServices.Muxer
                 }
             }
 
-            string chapterString = string.Empty;
+            var chapterString = string.Empty;
 
             if (this._currentTask.Chapters.Count > 1 && this._currentTask.EncodingProfile.OutFormat != OutputType.OutputWebM)
             {
-                string chapterFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
+                var chapterFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
                                                                     !string.IsNullOrEmpty(this._currentTask.TempOutput)
                                                                         ? this._currentTask.TempOutput
                                                                         : this._currentTask.OutputFile,
                                                                     "chapters.txt");
 
-                using (StreamWriter chapters = new StreamWriter(chapterFile))
+                using (var chapters = new StreamWriter(chapterFile))
                 {
 
                     string chapterFormatTimes;
@@ -430,7 +430,7 @@ namespace VideoConvert.AppServices.Muxer
 
                     if (this._currentTask.Input != InputType.InputDvd)
                     {
-                        for (int j = 0; j < this._currentTask.Chapters.Count; j++)
+                        for (var j = 0; j < this._currentTask.Chapters.Count; j++)
                         {
                             dt = DateTime.MinValue.Add(this._currentTask.Chapters[j]);
                             chapters.WriteLine(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff"));
@@ -439,8 +439,8 @@ namespace VideoConvert.AppServices.Muxer
                     }
                     else
                     {
-                        TimeSpan actualTime = new TimeSpan();
-                        for (int j = 0; j < this._currentTask.Chapters.Count; j++)
+                        var actualTime = new TimeSpan();
+                        for (var j = 0; j < this._currentTask.Chapters.Count; j++)
                         {
                             actualTime = actualTime.Add(this._currentTask.Chapters[j]);
                             dt = DateTime.MinValue.Add(actualTime);
@@ -485,9 +485,9 @@ namespace VideoConvert.AppServices.Muxer
             if (this._currentTask.ExitCode < 2)
             {
                 this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
-                foreach (AudioInfo item in this._currentTask.AudioStreams)
+                foreach (var item in this._currentTask.AudioStreams)
                     this._currentTask.TempFiles.Add(item.TempFile);
-                foreach (SubtitleInfo item in this._currentTask.SubtitleStreams)
+                foreach (var item in this._currentTask.SubtitleStreams)
                     this._currentTask.TempFiles.Add(item.TempFile);
 
                 this._currentTask.ExitCode = 0;
@@ -515,16 +515,16 @@ namespace VideoConvert.AppServices.Muxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _regObj.Match(line);
+            var result = _regObj.Match(line);
 
             double processingSpeed = 0f;
-            int secRemaining = 0;
+            var secRemaining = 0;
             if (result.Success)
             {
                 int progress;
                 Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo, out progress);
 
-                TimeSpan elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - this._startTime;
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = progress / elapsedTime.TotalSeconds;
@@ -532,9 +532,9 @@ namespace VideoConvert.AppServices.Muxer
                 if (processingSpeed > 0)
                     secRemaining = (int)Math.Round((100D - progress) / processingSpeed, MidpointRounding.ToEven);
 
-                TimeSpan remainingTime = new TimeSpan(0, 0, secRemaining);
+                var remainingTime = new TimeSpan(0, 0, secRemaining);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,

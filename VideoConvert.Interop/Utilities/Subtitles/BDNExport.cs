@@ -38,7 +38,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         {
             if (File.Exists(fileName)) return false;
 
-            string partFileName = Path.GetFileNameWithoutExtension(fileName);
+            var partFileName = Path.GetFileNameWithoutExtension(fileName);
 
             var outputDocument = new XmlDocument();
             outputDocument.AppendChild(outputDocument.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -79,10 +79,10 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             XmlNode eventNode = outputDocument.CreateElement("Events");
             docNode.AppendChild(eventNode);
 
-            int i = 0;
-            foreach (SubCaption caption in subtitle.Captions)
+            var i = 0;
+            foreach (var caption in subtitle.Captions)
             {
-                ImageHolder image = PNGImage.CreateImage(caption, subtitle.Style, i, videoWidth, videoHeight, fileName);
+                var image = PNGImage.CreateImage(caption, subtitle.Style, i, videoWidth, videoHeight, fileName);
                 if (string.IsNullOrEmpty(image.FileName) || image.Width == 0 || image.Height == 0) continue;
 
                 workNode = outputDocument.CreateElement("Event");
@@ -134,7 +134,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         {
             if (workNode.Attributes == null) return;
 
-            XmlAttribute attribute = xmlDoc.CreateAttribute(prefix, localName, nameSpaceUri);
+            var attribute = xmlDoc.CreateAttribute(prefix, localName, nameSpaceUri);
             attribute.Value = value;
             workNode.Attributes.Append(attribute);
         }
@@ -147,19 +147,19 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         /// <returns>BDN Timestamp</returns>
         public static string CreateBdnTimeStamp(TimeSpan inTime, float fps)
         {
-            int roundedFps = (int) Math.Ceiling(fps);
+            var roundedFps = (int) Math.Ceiling(fps);
             int num, denom;
             VideoHelper.GetFPSNumDenom(fps, out num, out denom);
 
-            double calculatedTime = inTime.TotalMilliseconds/((double)denom/1000);
+            var calculatedTime = inTime.TotalMilliseconds/((double)denom/1000);
 
-            TimeSpan outTime = TimeSpan.FromMilliseconds(calculatedTime);
-            float mSec = outTime.Milliseconds - (outTime.Milliseconds / 1000f * roundedFps) * 10;
+            var outTime = TimeSpan.FromMilliseconds(calculatedTime);
+            var mSec = outTime.Milliseconds - (outTime.Milliseconds / 1000f * roundedFps) * 10;
 
-            TimeSpan corrected = TimeSpan.FromMilliseconds(mSec);
+            var corrected = TimeSpan.FromMilliseconds(mSec);
             outTime = outTime.Subtract(corrected);
             
-            DateTime date = new DateTime().Add(outTime);
+            var date = new DateTime().Add(outTime);
 
             return date.ToString("HH:mm:ss:ff", CInfo);
         }

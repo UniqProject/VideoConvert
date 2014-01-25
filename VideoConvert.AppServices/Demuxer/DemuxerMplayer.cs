@@ -90,13 +90,13 @@ namespace VideoConvert.AppServices.Demuxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -117,10 +117,10 @@ namespace VideoConvert.AppServices.Demuxer
 
                 if (started)
                 {
-                    string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^MPlayer ([\w\.].*) .*\(C\).*$",
+                    var output = encoder.StandardOutput.ReadToEnd();
+                    var regObj = new Regex(@"^MPlayer ([\w\.].*) .*\(C\).*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -155,10 +155,10 @@ namespace VideoConvert.AppServices.Demuxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -230,7 +230,7 @@ namespace VideoConvert.AppServices.Demuxer
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             this._inputFile = this._currentTask.InputFile;
             this._outputFile =
@@ -242,17 +242,17 @@ namespace VideoConvert.AppServices.Demuxer
 
             this._currentTask.DumpOutput = this._outputFile;
             
-            string chapterText = string.Empty;
+            var chapterText = string.Empty;
             if (this._currentTask.SelectedDvdChapters.Length > 0)
             {
-                int posMinus = this._currentTask.SelectedDvdChapters.IndexOf('-');
+                var posMinus = this._currentTask.SelectedDvdChapters.IndexOf('-');
                 chapterText = string.Format(posMinus == -1 ? "-chapter {0}-{0}" : "-chapter {0}",
                                             this._currentTask.SelectedDvdChapters);
             }
 
             if (string.IsNullOrEmpty(Path.GetDirectoryName(this._inputFile)))
             {
-                int pos = this._inputFile.LastIndexOf(Path.DirectorySeparatorChar);
+                var pos = this._inputFile.LastIndexOf(Path.DirectorySeparatorChar);
                 this._inputFile = this._inputFile.Remove(pos);
             }
 
@@ -307,16 +307,16 @@ namespace VideoConvert.AppServices.Demuxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _regObj.Match(line);
+            var result = _regObj.Match(line);
 
             if (result.Success)
             {
                 float progress;
                 Single.TryParse(result.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo, out progress);
-                TimeSpan elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - this._startTime;
 
                 double processingSpeed = 0f;
-                int secRemaining = 0;
+                var secRemaining = 0;
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = progress / elapsedTime.TotalSeconds;
@@ -324,9 +324,9 @@ namespace VideoConvert.AppServices.Demuxer
                 if (processingSpeed > 0)
                     secRemaining = (int)Math.Round((100D - progress) / processingSpeed, MidpointRounding.ToEven);
 
-                TimeSpan remainingTime = new TimeSpan(0, 0, secRemaining);
+                var remainingTime = new TimeSpan(0, 0, secRemaining);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,

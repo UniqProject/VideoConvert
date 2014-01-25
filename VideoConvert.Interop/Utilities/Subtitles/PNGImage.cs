@@ -29,33 +29,33 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             _underlineStyle = false;
             _strikeStyle = false;
 
-            ImageHolder result = new ImageHolder();
+            var result = new ImageHolder();
             if (string.IsNullOrEmpty(baseFName)) return new ImageHolder();
 
-            string basePath = Path.GetDirectoryName(baseFName);
-            string baseName = Path.GetFileNameWithoutExtension(baseFName);
+            var basePath = Path.GetDirectoryName(baseFName);
+            var baseName = Path.GetFileNameWithoutExtension(baseFName);
             if (string.IsNullOrEmpty(basePath) || string.IsNullOrEmpty(baseName)) return new ImageHolder();
             
             result.FileName = string.Format("{0}_{1:00000}.png", Path.Combine(basePath, baseName), number);
-            SizeF imgSize = new SizeF();
+            var imgSize = new SizeF();
 
-            FontStyle styleFontStyle = FontStyle.Regular;
+            var styleFontStyle = FontStyle.Regular;
             if (style.Bold)
                 styleFontStyle = styleFontStyle | FontStyle.Bold;
             if (style.Italic)
                 styleFontStyle = styleFontStyle | FontStyle.Italic;
 
-            Font styleFont = new Font(style.FontName, style.FontSize, styleFontStyle, GraphicsUnit.Point);
-            StringFormat stringFormat = new StringFormat();
+            var styleFont = new Font(style.FontName, style.FontSize, styleFontStyle, GraphicsUnit.Point);
+            var stringFormat = new StringFormat();
 
-            List<SizeF> lineSizes = new List<SizeF>();
+            var lineSizes = new List<SizeF>();
 
-            string rawText = Regex.Replace(caption.Text, "</*?(?:i|b)>", "", RegexOptions.Singleline | RegexOptions.Multiline);
+            var rawText = Regex.Replace(caption.Text, "</*?(?:i|b)>", "", RegexOptions.Singleline | RegexOptions.Multiline);
 
-            string[] rawTextLines = rawText.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
-            foreach (string rawTextLine in rawTextLines)
+            var rawTextLines = rawText.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            foreach (var rawTextLine in rawTextLines)
             {
-                using (GraphicsPath rawLinePath = new GraphicsPath())
+                using (var rawLinePath = new GraphicsPath())
                 {
                     rawLinePath.AddString(rawTextLine, styleFont.FontFamily, (int) styleFontStyle,
                                           styleFont.SizeInPoints, new PointF(), stringFormat);
@@ -63,10 +63,10 @@ namespace VideoConvert.Interop.Utilities.Subtitles
                 }
             }
 
-            string[] textLines = caption.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var textLines = caption.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            float lastLineBreak = 0f;
-            foreach (SizeF lineSize in lineSizes)
+            var lastLineBreak = 0f;
+            foreach (var lineSize in lineSizes)
             {
                 
                 imgSize.Height += lineSize.Height;
@@ -84,41 +84,41 @@ namespace VideoConvert.Interop.Utilities.Subtitles
 
             using (Image img = new Bitmap((int)imgSize.Width, (int)imgSize.Height, PixelFormat.Format32bppArgb))
             {
-                using (Graphics g = Graphics.FromImage(img))
+                using (var g = Graphics.FromImage(img))
                 {
-                    RectangleF origin = new RectangleF(new PointF(0f,0f), imgSize);
-                    Region[] regions2 = g.MeasureCharacterRanges(" .", styleFont, origin, stringFormat);
+                    var origin = new RectangleF(new PointF(0f,0f), imgSize);
+                    var regions2 = g.MeasureCharacterRanges(" .", styleFont, origin, stringFormat);
                     if (!regions2.Any()) return new ImageHolder();
 
                     whiteSpace = regions2[0].GetBounds(g);
                 }
             }
 
-            GraphicsPath wordpath = new GraphicsPath();
-            GraphicsPath wordPathShadow = new GraphicsPath();
+            var wordpath = new GraphicsPath();
+            var wordPathShadow = new GraphicsPath();
 
-            int shadowOffset = style.Shadow;
+            var shadowOffset = style.Shadow;
 
-            RectangleF wStart = new RectangleF { Y = 0, X = 0 };
-            RectangleF wStartShadow = wStart;
+            var wStart = new RectangleF { Y = 0, X = 0 };
+            var wStartShadow = wStart;
             wStartShadow.Offset(shadowOffset, shadowOffset);
 
-            for (int i = 0; i < textLines.Length; i++)
+            for (var i = 0; i < textLines.Length; i++)
             {
-                string textLine = textLines[i];
-                SizeF lineSize = lineSizes[i];
+                var textLine = textLines[i];
+                var lineSize = lineSizes[i];
                 wStart.Offset(imgSize.Width / 2 - lineSize.Width / 2, 0);
                 wStartShadow.Offset(imgSize.Width / 2 - lineSize.Width / 2, 0);
 
-                string[] words = textLine.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                var words = textLine.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (string word in words)
+                foreach (var word in words)
                 {
                     using (GraphicsPath singleWord = new GraphicsPath(),
                         singleWordShadow = new GraphicsPath())
                     {
                         string lWord;
-                        FontStyle fontStyle = GetStyleFont(word, out lWord, styleFontStyle);
+                        var fontStyle = GetStyleFont(word, out lWord, styleFontStyle);
                         if (string.IsNullOrEmpty(lWord)) continue;
 
                         singleWord.AddString(lWord, styleFont.FontFamily, (int) fontStyle, styleFont.SizeInPoints,
@@ -142,7 +142,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
 
             using (Image img = new Bitmap((int)imgSize.Width + style.MarginL + style.MarginR, (int)imgSize.Height + style.MarginV * 2, PixelFormat.Format32bppArgb))
             {
-                using (Graphics g = Graphics.FromImage(img))
+                using (var g = Graphics.FromImage(img))
                 {
                     g.CompositingMode = CompositingMode.SourceOver;
                     g.CompositingQuality = CompositingQuality.HighQuality;
@@ -154,7 +154,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
                     Brush primBrush = new SolidBrush(style.PrimaryColor);
                     Brush shadowBrush = new SolidBrush(Color.FromArgb(64, style.BackColor));
 
-                    Pen outPen = new Pen(style.OutlineColor) {Alignment = PenAlignment.Outset};
+                    var outPen = new Pen(style.OutlineColor) {Alignment = PenAlignment.Outset};
 
                     if (style.BorderStyle == 1)
                     {
@@ -190,7 +190,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
 
         private static FontStyle GetStyleFont(string word, out string lWord, FontStyle fontStyle)
         {
-            FontStyle result = fontStyle;
+            var result = fontStyle;
             lWord = word;
 
             if (lWord.Contains("<b>"))

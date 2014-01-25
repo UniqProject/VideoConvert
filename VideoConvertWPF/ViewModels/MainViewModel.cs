@@ -127,7 +127,7 @@ namespace VideoConvertWPF.ViewModels
                 {
                     JsonReader reader = new JsonTextReader(sReader);
                     var importList = jSer.Deserialize<List<EncodeInfo>>(reader);
-                    foreach (EncodeInfo encodeInfo in importList)
+                    foreach (var encodeInfo in importList)
                     {
                         AddJob(encodeInfo);
                     }
@@ -194,8 +194,8 @@ namespace VideoConvertWPF.ViewModels
 
         private void CheckUpdateDoWork(object sender, DoWorkEventArgs e)
         {
-            bool needUpdate = false;
-            bool needCheck = false;
+            var needUpdate = false;
+            var needCheck = false;
 
             switch (this._configService.UpdateFrequency)
             {
@@ -239,7 +239,7 @@ namespace VideoConvertWPF.ViewModels
                     return;
                 }
 
-                using (UpdateFileInfo updateFile = Updater.LoadUpdateFileFromStream(onlineUpdateFile))
+                using (var updateFile = Updater.LoadUpdateFileFromStream(onlineUpdateFile))
                 {
                     if (updateFile.Core.PackageVersion.CompareTo(AppConfigService.GetAppVersion()) > 0)
                         needUpdate = true;
@@ -362,7 +362,7 @@ namespace VideoConvertWPF.ViewModels
 
             if (fileDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
 
-            foreach (string fileName in fileDialog.FileNames)
+            foreach (var fileName in fileDialog.FileNames)
                 CreateJob(fileName);
         }
 
@@ -473,22 +473,22 @@ namespace VideoConvertWPF.ViewModels
 
         private void SetOutput(EncodeInfo input)
         {
-            string cleanJobName = input.JobName;
-            char[] invalidChars = Path.GetInvalidFileNameChars();
+            var cleanJobName = input.JobName;
+            var invalidChars = Path.GetInvalidFileNameChars();
 
             cleanJobName = invalidChars.Aggregate(cleanJobName, (current, invalidChar) => current.Replace(invalidChar.ToString(CultureInfo.InvariantCulture), ""));
 
             input.BaseName = cleanJobName;
             input.OutputFile = Path.Combine(this._configService.OutputLocation, input.BaseName);
 
-            string inputFilePath = Path.GetDirectoryName(input.InputFile);
+            var inputFilePath = Path.GetDirectoryName(input.InputFile);
 
             if (string.IsNullOrEmpty(inputFilePath))
                 inputFilePath = input.InputFile;
 
             if (input.InputFile != null)
             {
-                string inFile = Path.Combine(inputFilePath, Path.GetFileNameWithoutExtension(input.InputFile));
+                var inFile = Path.Combine(inputFilePath, Path.GetFileNameWithoutExtension(input.InputFile));
 
                 if (inFile == input.OutputFile)
                 {
@@ -531,7 +531,7 @@ namespace VideoConvertWPF.ViewModels
 
         private void SetInOutTemp(EncodeInfo inJob)
         {
-            string asciiFile = FileSystemHelper.GetAsciiFileName(inJob.InputFile);
+            var asciiFile = FileSystemHelper.GetAsciiFileName(inJob.InputFile);
             if (string.CompareOrdinal(inJob.InputFile, asciiFile) != 0)
                 inJob.TempInput = FileSystemHelper.CreateTempFile(this._configService.DemuxLocation, Path.GetExtension(inJob.InputFile));
 

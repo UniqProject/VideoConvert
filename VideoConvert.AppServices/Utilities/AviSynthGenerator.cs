@@ -60,11 +60,11 @@ namespace VideoConvert.AppServices.Utilities
                                StereoEncoding stereoEncoding, StereoVideoInfo stereoVideoInfo, bool isDvdResolution,
                                string subtitleFile, bool subtitleOnlyForced, bool skipScaling)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            bool mtUseful = (videoInfo.Interlaced && _appConfig.UseHQDeinterlace) || changeFps;
+            var mtUseful = (videoInfo.Interlaced && _appConfig.UseHQDeinterlace) || changeFps;
 
-            bool useStereo = stereoEncoding != StereoEncoding.None && stereoVideoInfo.RightStreamId > -1;
+            var useStereo = stereoEncoding != StereoEncoding.None && stereoVideoInfo.RightStreamId > -1;
 
             // support for multithreaded AviSynth
             if (_appConfig.UseAviSynthMT && mtUseful)
@@ -130,7 +130,7 @@ namespace VideoConvert.AppServices.Utilities
             // calculate framerate numerator & denominator
             if (videoInfo.FPS <= 0)
             {
-                MediaInfoContainer mi = new MediaInfoContainer();
+                var mi = new MediaInfoContainer();
                 try
                 {
                      mi = GenHelper.GetMediaInfo(videoInfo.TempFile);
@@ -168,11 +168,11 @@ namespace VideoConvert.AppServices.Utilities
                 sb.AppendLine(string.Format(CInfo, "FFVideoSource(\"{0:s}\",threads={1:0})",
                     videoInfo.TempFile, _appConfig.LimitDecoderThreads ? 1 : 0));
 
-            string stereoVar = string.Empty;
+            var stereoVar = string.Empty;
 
             if (useStereo)
             {
-                string configFile = GenerateStereoSourceConfig(stereoVideoInfo);
+                var configFile = GenerateStereoSourceConfig(stereoVideoInfo);
                 sb.AppendLine(string.Format(CInfo, "VideoRight = H264StereoSource(\"{0:s}\",{1:g})",
                                             configFile, videoInfo.FrameCount - 50));
                 StereoConfigFile = configFile;
@@ -268,23 +268,23 @@ namespace VideoConvert.AppServices.Utilities
                 sb.AppendLine("ConvertToYV12()");
             }
 
-            int calculatedHeight = videoInfo.Height;
-            int calculatedWidth = videoInfo.Width;
+            var calculatedHeight = videoInfo.Height;
+            var calculatedWidth = videoInfo.Width;
 
-            int borderRight = 0;
-            int borderLeft = 0;
-            int borderBottom = 0;
-            int borderTop = 0;
-            bool addBorders = false;
+            var borderRight = 0;
+            var borderLeft = 0;
+            var borderBottom = 0;
+            var borderTop = 0;
+            var addBorders = false;
 
             // video resizing
             if (!resizeTo.IsEmpty && (resizeTo.Height != videoInfo.Height || resizeTo.Width != videoInfo.Width) && !skipScaling)
             {
                 // aspect ratios
 
-                float toAr = (float) Math.Round(resizeTo.Width / (float)resizeTo.Height, 3);
-                float fromAr = videoInfo.AspectRatio;
-                float mod = 1f;
+                var toAr = (float) Math.Round(resizeTo.Width / (float)resizeTo.Height, 3);
+                var fromAr = videoInfo.AspectRatio;
+                var mod = 1f;
 
                 calculatedWidth = resizeTo.Width;
 
@@ -313,7 +313,7 @@ namespace VideoConvert.AppServices.Utilities
                     if (calculatedHeight != resizeTo.Height)
                     {
                         addBorders = true;
-                        int borderHeight = resizeTo.Height - calculatedHeight;
+                        var borderHeight = resizeTo.Height - calculatedHeight;
                         borderTop = borderHeight/2;
                         Math.DivRem(borderTop, 2, out temp);
                         borderTop += temp;
@@ -345,7 +345,7 @@ namespace VideoConvert.AppServices.Utilities
                     if (calculatedHeight != resizeTo.Height)
                     {
                         addBorders = true;
-                        int borderHeight = resizeTo.Height - calculatedHeight;
+                        var borderHeight = resizeTo.Height - calculatedHeight;
                         borderTop = borderHeight/2;
                         Math.DivRem(borderTop, 2, out temp);
                         borderTop += temp;
@@ -384,13 +384,13 @@ namespace VideoConvert.AppServices.Utilities
                     if (Math.Abs(toAr - 1.778f) <= 0)     // aspectratio 16:9
                     {
                         addBorders = true;
-                        int borderHeight = resizeTo.Height - calculatedHeight;
+                        var borderHeight = resizeTo.Height - calculatedHeight;
                         borderTop = borderHeight/2;
                         Math.DivRem(borderTop, 2, out temp);
                         borderTop += temp;
                         borderBottom = borderHeight - borderTop;
 
-                        int borderWidth = (int) ((resizeTo.Width*mod) - calculatedWidth);
+                        var borderWidth = (int) ((resizeTo.Width*mod) - calculatedWidth);
                         borderLeft = borderWidth/2;
                         Math.DivRem(borderLeft, 2, out temp);
                         borderLeft += temp;
@@ -399,13 +399,13 @@ namespace VideoConvert.AppServices.Utilities
                     else if (calculatedWidth != resizeTo.Width)
                     {
                         addBorders = true;
-                        int borderWidth = resizeTo.Width - calculatedWidth;
+                        var borderWidth = resizeTo.Width - calculatedWidth;
                         borderLeft = borderWidth/2;
                         Math.DivRem(borderLeft, 2, out temp);
                         borderLeft += temp;
                         borderRight = borderWidth - borderLeft;
 
-                        int borderHeight = resizeTo.Height - calculatedHeight;
+                        var borderHeight = resizeTo.Height - calculatedHeight;
                         borderTop = borderHeight/2;
                         Math.DivRem(borderTop, 2, out temp);
                         borderTop += temp;
@@ -536,7 +536,7 @@ namespace VideoConvert.AppServices.Utilities
         /// <returns></returns>
         private string GenerateStereoSourceConfig(StereoVideoInfo stereoVideoInfo)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendFormat(CInfo, "InputFile = \"{0:s}\"", stereoVideoInfo.LeftTempFile);
             sb.AppendLine();
@@ -567,7 +567,7 @@ namespace VideoConvert.AppServices.Utilities
         public string GenerateCropDetect(string inputFile, float targetFps, double streamLength, Size videoSize,
                                          float aspectRatio, out int frameCount)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine(ImportFFMPEGSource()); // ffms2
 
@@ -585,26 +585,26 @@ namespace VideoConvert.AppServices.Utilities
                                         "inStream=FFVideoSource(\"{0:s}\",fpsnum={1:0},fpsden={2:0},threads=1)",
                                         inputFile, fpsnum, fpsden));
 
-            List<int> randomList = new List<int>();
+            var randomList = new List<int>();
 
-            Random rand = new Random();
-            for (int i = 0; i < 5; i++)
+            var rand = new Random();
+            for (var i = 0; i < 5; i++)
                 randomList.Add(rand.Next((int) Math.Round(streamLength*targetFps, 0)));
 
             randomList.Sort();
 
             frameCount = 0;
 
-            List<string> frameList = new List<string>();
-            foreach (int frame in randomList)
+            var frameList = new List<string>();
+            foreach (var frame in randomList)
             {
-                int endFrame = frame + (int)Math.Round(targetFps * 5f, 0);
+                var endFrame = frame + (int)Math.Round(targetFps * 5f, 0);
                 sb.AppendLine(string.Format("Frame{0:0}=inStream.Trim({0:0},{1:0})", frame, endFrame));
                 frameList.Add("Frame" + frame.ToString(CInfo));
                 frameCount += (endFrame - frame);
             }
 
-            string concString = "combined=" + string.Join("+", frameList);
+            var concString = "combined=" + string.Join("+", frameList);
 
             sb.AppendLine(concString);
 
@@ -643,8 +643,8 @@ namespace VideoConvert.AppServices.Utilities
         {
             Log.InfoFormat("Writing AviSynth script: {1}{0}", script, Environment.NewLine);
 
-            string avsFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation, extension);
-            using (StreamWriter sw = new StreamWriter(avsFile, false, Encoding.ASCII))
+            var avsFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation, extension);
+            using (var sw = new StreamWriter(avsFile, false, Encoding.ASCII))
                 sw.WriteLine(script);
 
             return avsFile;
@@ -665,9 +665,9 @@ namespace VideoConvert.AppServices.Utilities
                                           int inChannels, int outChannels, int inSampleRate, 
                                           int outSampleRate)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            string ext = StreamFormat.GetFormatExtension(inFormat, inFormatProfile, false);
+            var ext = StreamFormat.GetFormatExtension(inFormat, inFormatProfile, false);
 
             switch (ext)
             {

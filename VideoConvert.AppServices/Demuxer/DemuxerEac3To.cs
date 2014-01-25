@@ -90,13 +90,13 @@ namespace VideoConvert.AppServices.Demuxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -117,10 +117,10 @@ namespace VideoConvert.AppServices.Demuxer
 
                 if (started)
                 {
-                    string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*eac3to v([\d\.]+),.*$",
+                    var output = encoder.StandardOutput.ReadToEnd();
+                    var regObj = new Regex(@"^.*eac3to v([\d\.]+),.*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -153,10 +153,10 @@ namespace VideoConvert.AppServices.Demuxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -228,7 +228,7 @@ namespace VideoConvert.AppServices.Demuxer
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             string baseFileName;
 
@@ -282,7 +282,7 @@ namespace VideoConvert.AppServices.Demuxer
             string formattedExt;
 
             // process all audio streams
-            foreach (AudioInfo item in this._currentTask.AudioStreams)
+            foreach (var item in this._currentTask.AudioStreams)
             {
                 // get file extension for selected stream based on format and format profile
                 ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
@@ -297,7 +297,7 @@ namespace VideoConvert.AppServices.Demuxer
             }
 
             // process all subtitle streams
-            foreach (SubtitleInfo item in this._currentTask.SubtitleStreams)
+            foreach (var item in this._currentTask.SubtitleStreams)
             {
                 ext = StreamFormat.GetFormatExtension(item.Format, String.Empty, false);
                 formattedExt = string.Format("demuxed.subtitle.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
@@ -370,17 +370,17 @@ namespace VideoConvert.AppServices.Demuxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            TimeSpan elapsedTime = DateTime.Now - this._startTime;
-            TimeSpan remainingTime = elapsedTime + TimeSpan.FromSeconds(1);
-            float progress = 0f;
+            var elapsedTime = DateTime.Now - this._startTime;
+            var remainingTime = elapsedTime + TimeSpan.FromSeconds(1);
+            var progress = 0f;
 
-            Match processingResult = _processingRegex.Match(line);
-            Match analyzingResult = _analyzingRegex.Match(line);
+            var processingResult = _processingRegex.Match(line);
+            var analyzingResult = _analyzingRegex.Match(line);
 
             if (analyzingResult.Success)
             {
                 progress = Convert.ToInt32(analyzingResult.Groups[1].Value) / 2f;
-                float progressLeft = 100f - progress;
+                var progressLeft = 100f - progress;
 
                 double speed = 0f;
                 if (elapsedTime.TotalSeconds > 0)
@@ -399,7 +399,7 @@ namespace VideoConvert.AppServices.Demuxer
             else if (processingResult.Success)
             {
                 progress = 50 + Convert.ToInt32(analyzingResult.Groups[1].Value) / 2f;
-                float progressLeft = 100f - progress;
+                var progressLeft = 100f - progress;
 
                 double speed = 0f;
                 if (elapsedTime.TotalSeconds > 0)
@@ -420,7 +420,7 @@ namespace VideoConvert.AppServices.Demuxer
 
             if (analyzingResult.Success || processingResult.Success)
             {
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,
@@ -455,14 +455,14 @@ namespace VideoConvert.AppServices.Demuxer
                 }
             }
 
-            for (int i = 0; i < this._currentTask.AudioStreams.Count; i++)
+            for (var i = 0; i < this._currentTask.AudioStreams.Count; i++)
             {
-                AudioInfo aStream = this._currentTask.AudioStreams[i];
+                var aStream = this._currentTask.AudioStreams[i];
                 aStream = AudioHelper.GetStreamInfo(aStream);
                 this._currentTask.AudioStreams[i] = aStream;
             }
 
-            foreach (SubtitleInfo sStream in this._currentTask.SubtitleStreams)
+            foreach (var sStream in this._currentTask.SubtitleStreams)
                 sStream.StreamSize = GenHelper.GetFileSize(sStream.TempFile);
         }
 

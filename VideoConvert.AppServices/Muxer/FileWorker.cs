@@ -111,15 +111,15 @@ namespace VideoConvert.AppServices.Muxer
                 this._outputFile = this._currentTask.OutputFile;
             }
 
-            List<FileInfo> fileList = new List<FileInfo>();
-            List<DirectoryInfo> dirList = new List<DirectoryInfo>();
+            var fileList = new List<FileInfo>();
+            var dirList = new List<DirectoryInfo>();
 
-            bool isDir = File.GetAttributes(_inputFile) == FileAttributes.Directory;
+            var isDir = File.GetAttributes(_inputFile) == FileAttributes.Directory;
 
             if (isDir)
             {
-                List<string> tempDirList = Directory.EnumerateDirectories(_inputFile).ToList();
-                List<string> tempFileList = Directory.EnumerateFiles(_inputFile).ToList();
+                var tempDirList = Directory.EnumerateDirectories(_inputFile).ToList();
+                var tempFileList = Directory.EnumerateFiles(_inputFile).ToList();
 
                 dirList.AddRange(tempDirList.Select(dir => new DirectoryInfo(dir)));
                 fileList.AddRange(tempFileList.Select(file => new FileInfo(file)));
@@ -132,16 +132,16 @@ namespace VideoConvert.AppServices.Muxer
 
             if (isDir)
             {
-                foreach (DirectoryInfo info in dirList)
+                foreach (var info in dirList)
                 {
-                    string targetDir = info.FullName.Replace(_inputFile, _outputFile);
+                    var targetDir = info.FullName.Replace(_inputFile, _outputFile);
                     Directory.CreateDirectory(targetDir);
                 }
             }
 
-            foreach (FileInfo info in fileList)
+            foreach (var info in fileList)
             {
-                string targetFile = info.FullName.Replace(_inputFile, _outputFile);
+                var targetFile = info.FullName.Replace(_inputFile, _outputFile);
                 ExecuteCopy(info.FullName, targetFile);
             }
 
@@ -149,7 +149,7 @@ namespace VideoConvert.AppServices.Muxer
             // handle temp files
             if (isDir && this._currentTask.NextStep == EncodingStep.MoveOutFile)
             {
-                foreach (DirectoryInfo info in dirList)
+                foreach (var info in dirList)
                 {
                     this._currentTask.TempFiles.Add(info.FullName);
                 }
@@ -167,24 +167,24 @@ namespace VideoConvert.AppServices.Muxer
             using (FileStream fromStream = new FileStream(inFile, FileMode.Open),
                               toStream = new FileStream(outFile, FileMode.CreateNew))
             {
-                DateTime reportTime = DateTime.Now;
-                long totalFile = fromStream.Length;
+                var reportTime = DateTime.Now;
+                var totalFile = fromStream.Length;
                 long current = 0;
-                Byte[] buffer = new Byte[1048576]; // 1 mbyte buffer
-                int secRemaining = 0;
+                var buffer = new Byte[1048576]; // 1 mbyte buffer
+                var secRemaining = 0;
 
                 do
                 {
-                    int read = fromStream.Read(buffer, 0, buffer.Length);
+                    var read = fromStream.Read(buffer, 0, buffer.Length);
                     toStream.Write(buffer, 0, read);
                     current += read;
                     this._totalCopied += read;
 
-                    float progress = (float) this._totalCopied / this._fileSizeToCopy * 100f;
-                    TimeSpan elapsedTime = DateTime.Now - this._startTime;
-                    long remainingSize = this._fileSizeToCopy - this._totalCopied;
+                    var progress = (float) this._totalCopied / this._fileSizeToCopy * 100f;
+                    var elapsedTime = DateTime.Now - this._startTime;
+                    var remainingSize = this._fileSizeToCopy - this._totalCopied;
 
-                    double speed = 0d;
+                    var speed = 0d;
                     if (elapsedTime.TotalSeconds > 0)
                     {
                         speed = this._totalCopied/elapsedTime.TotalSeconds;
@@ -195,11 +195,11 @@ namespace VideoConvert.AppServices.Muxer
                         secRemaining = (int)Math.Floor(remainingSize/speed);
                     }
 
-                    TimeSpan remainingTime = TimeSpan.FromSeconds(secRemaining);
+                    var remainingTime = TimeSpan.FromSeconds(secRemaining);
 
                     if (reportTime.AddSeconds(1) <= DateTime.Now)
                     {
-                        EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                        var eventArgs = new EncodeProgressEventArgs
                         {
                             AverageFrameRate = 0,
                             CurrentFrameRate = 0,

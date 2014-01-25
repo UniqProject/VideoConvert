@@ -114,13 +114,13 @@ namespace VideoConvert.AppServices.Encoder
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -142,15 +142,15 @@ namespace VideoConvert.AppServices.Encoder
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    string[] lines = output.Split(new[] { Environment.NewLine },
+                    var output = encoder.StandardError.ReadToEnd();
+                    var lines = output.Split(new[] { Environment.NewLine },
                                                   StringSplitOptions.RemoveEmptyEntries);
 
-                    Regex regObj = new Regex(@"^\*.*Package version:.* ([\d\.]+?) .*\*$",
+                    var regObj = new Regex(@"^\*.*Package version:.* ([\d\.]+?) .*\*$",
                                              RegexOptions.Singleline | RegexOptions.Multiline);
-                    foreach (string line in lines)
+                    foreach (var line in lines)
                     {
-                        Match result = regObj.Match(line);
+                        var result = regObj.Match(line);
                         if (!result.Success) continue;
 
                         verInfo = result.Groups[1].Value.Trim();
@@ -186,10 +186,10 @@ namespace VideoConvert.AppServices.Encoder
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -352,11 +352,11 @@ namespace VideoConvert.AppServices.Encoder
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
 
-            int outChannels = ((AacProfile)this._currentTask.AudioProfile).OutputChannels;
+            var outChannels = ((AacProfile)this._currentTask.AudioProfile).OutputChannels;
             switch (outChannels)
             {
                 case 1:
@@ -366,7 +366,7 @@ namespace VideoConvert.AppServices.Encoder
                     outChannels = 1;
                     break;
             }
-            int outSampleRate = ((AacProfile)this._currentTask.AudioProfile).SampleRate;
+            var outSampleRate = ((AacProfile)this._currentTask.AudioProfile).SampleRate;
             switch (outSampleRate)
             {
                 case 1:
@@ -389,11 +389,11 @@ namespace VideoConvert.AppServices.Encoder
                     break;
             }
 
-            int encMode = ((AacProfile)this._currentTask.AudioProfile).EncodingMode;
-            int bitrate = ((AacProfile)this._currentTask.AudioProfile).Bitrate * 1000;
-            float quality = ((AacProfile)this._currentTask.AudioProfile).Quality;
+            var encMode = ((AacProfile)this._currentTask.AudioProfile).EncodingMode;
+            var bitrate = ((AacProfile)this._currentTask.AudioProfile).Bitrate * 1000;
+            var quality = ((AacProfile)this._currentTask.AudioProfile).Quality;
 
-            AviSynthGenerator avs = new AviSynthGenerator(this._appConfig);
+            var avs = new AviSynthGenerator(this._appConfig);
 
             this._inputFile = avs.GenerateAudioScript(this._audio.TempFile, this._audio.Format, this._audio.FormatProfile,
                                                       this._audio.ChannelCount, outChannels, this._audio.SampleRate,
@@ -464,23 +464,23 @@ namespace VideoConvert.AppServices.Encoder
 
         private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            string line = e.Data;
+            var line = e.Data;
             if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
 
-            Match bePipeMatch = _pipeObj.Match(line);
+            var bePipeMatch = _pipeObj.Match(line);
             if (bePipeMatch.Success)
             {
                 float progress;
-                string tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");
+                var tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");
                 Single.TryParse(tempProgress, NumberStyles.Number, this._appConfig.CInfo, out progress);
 
-                float progressRemaining = 100f - progress;
-                TimeSpan elapsedTime = DateTime.Now - _startTime;
+                var progressRemaining = 100f - progress;
+                var elapsedTime = DateTime.Now - _startTime;
 
                 long secRemaining = 0;
                 if (elapsedTime.TotalSeconds > 0)
                 {
-                    double speed = Math.Round(progress / elapsedTime.TotalSeconds, 6);
+                    var speed = Math.Round(progress / elapsedTime.TotalSeconds, 6);
 
                     if (speed > 0)
                         secRemaining = (long)Math.Round(progressRemaining / speed, 0);
@@ -490,9 +490,9 @@ namespace VideoConvert.AppServices.Encoder
                 if (secRemaining < 0)
                     secRemaining = 0;
 
-                TimeSpan remainingTime = TimeSpan.FromSeconds(secRemaining);
+                var remainingTime = TimeSpan.FromSeconds(secRemaining);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,
@@ -525,7 +525,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _encObj.Match(line);
+            var result = _encObj.Match(line);
             if (!result.Success)
                 Log.InfoFormat("neroAacEnc: {0}", line);
         }

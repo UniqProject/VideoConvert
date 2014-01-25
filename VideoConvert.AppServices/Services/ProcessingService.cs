@@ -15,7 +15,6 @@ namespace VideoConvert.AppServices.Services
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Text;
     using Demuxer;
@@ -53,10 +52,10 @@ namespace VideoConvert.AppServices.Services
         /// <returns><see cref="InputType"/></returns>
         public InputType CheckFolderStructure(string pathToFile)
         {
-            string dvdCheck = Path.Combine(pathToFile, "VIDEO_TS\\VIDEO_TS.IFO");
-            string hddvdCheck = Path.Combine(pathToFile, "ADV_OBJ\\DISCINFO.XML");
-            string bluRayCheck = Path.Combine(pathToFile, "BDMV\\index.bdmv");
-            string bluRayAltCheck = Path.Combine(pathToFile, "index.bdmv");
+            var dvdCheck = Path.Combine(pathToFile, "VIDEO_TS\\VIDEO_TS.IFO");
+            var hddvdCheck = Path.Combine(pathToFile, "ADV_OBJ\\DISCINFO.XML");
+            var bluRayCheck = Path.Combine(pathToFile, "BDMV\\index.bdmv");
+            var bluRayAltCheck = Path.Combine(pathToFile, "index.bdmv");
 
             if (File.Exists(dvdCheck))
             {
@@ -70,19 +69,19 @@ namespace VideoConvert.AppServices.Services
                 return InputType.InputHddvd;
             }
 
-            bool blurayExists = File.Exists(bluRayCheck);
-            bool blurayAltExists = File.Exists(bluRayAltCheck);
+            var blurayExists = File.Exists(bluRayCheck);
+            var blurayAltExists = File.Exists(bluRayAltCheck);
 
             if (blurayExists || blurayAltExists)
             {
-                using (FileStream fRead = blurayExists ? File.OpenRead(bluRayCheck) : File.OpenRead(bluRayAltCheck))
+                using (var fRead = blurayExists ? File.OpenRead(bluRayCheck) : File.OpenRead(bluRayAltCheck))
                 {
-                    byte[] buffer = new byte[4];
+                    var buffer = new byte[4];
 
                     fRead.Seek(4, SeekOrigin.Begin);
                     fRead.Read(buffer, 0, 4);
-                    string verString = Encoding.Default.GetString(buffer);
-                    int version = Convert.ToInt32(verString);
+                    var verString = Encoding.Default.GetString(buffer);
+                    var version = Convert.ToInt32(verString);
                     switch (version)
                     {
                         case 100:
@@ -120,7 +119,7 @@ namespace VideoConvert.AppServices.Services
                 mi = new MediaInfoContainer();
             }
                 
-            string containerFormat = mi.General.Format;
+            var containerFormat = mi.General.Format;
 
             Log.InfoFormat(CultureInfo.InvariantCulture, "General.FileName:            {0:s}", mi.General.CompleteName);
             Log.InfoFormat(CultureInfo.InvariantCulture, "General.FileExtension:       {0:s}", mi.General.FileExtension);
@@ -136,7 +135,7 @@ namespace VideoConvert.AppServices.Services
             Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedLibraryVersion: {0:s}", mi.General.EncodedLibraryVersion);
             Log.Info(String.Empty);
 
-            foreach (MediaInfoContainer.VideoStreamInfo item in mi.Video)
+            foreach (var item in mi.Video)
             {
                 Log.InfoFormat(CultureInfo.InvariantCulture, "Video.ID:                 {0:g}", item.ID);
                 Log.InfoFormat(CultureInfo.InvariantCulture, "Video.StreamKindID:       {0:g}", item.StreamKindID);
@@ -180,7 +179,7 @@ namespace VideoConvert.AppServices.Services
             }
             Log.Info(String.Empty);
 
-            foreach (MediaInfoContainer.AudioStreamInfo item in mi.Audio)
+            foreach (var item in mi.Audio)
             {
                 Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.ID:                 {0:g}", item.ID);
                 Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.StreamKindID:       {0:g}", item.StreamKindID);
@@ -243,7 +242,7 @@ namespace VideoConvert.AppServices.Services
         /// <returns><see cref="InputType"/></returns>
         public InputType DetectInputType(string pathToFile)
         {
-            DirectoryInfo dir = new DirectoryInfo(pathToFile);
+            var dir = new DirectoryInfo(pathToFile);
             return (dir.Attributes & FileAttributes.Directory) == FileAttributes.Directory
                        ? CheckFolderStructure(pathToFile)
                        : CheckFileType(pathToFile);
@@ -276,9 +275,9 @@ namespace VideoConvert.AppServices.Services
         /// <returns>true if stream is DVD compatible, false otherwise</returns>
         public bool CheckAudioDvdCompatible(AudioInfo aud)
         {
-            string ext = StreamFormat.GetFormatExtension(aud.Format, aud.FormatProfile, false);
+            var ext = StreamFormat.GetFormatExtension(aud.Format, aud.FormatProfile, false);
 
-            bool compat = true;
+            var compat = true;
 
             Log.Info("Check if audio is compatible with DVD Spec");
             Log.InfoFormat("Format: {0}, Profile: {1}", aud.Format, aud.FormatProfile);
@@ -331,9 +330,9 @@ namespace VideoConvert.AppServices.Services
         /// <returns>true if stream is Blu-Ray compatible, false otherwise</returns>
         public bool CheckAudioBluRayCompatible(AudioInfo aud)
         {
-            string ext = StreamFormat.GetFormatExtension(aud.Format, aud.FormatProfile, false);
+            var ext = StreamFormat.GetFormatExtension(aud.Format, aud.FormatProfile, false);
 
-            bool compat = !(ext != "ac3"    &&
+            var compat = !(ext != "ac3"    &&
                             ext != "eac3"   &&
                             ext != "dts"    &&
                             ext != "dtshd"  &&
@@ -350,8 +349,8 @@ namespace VideoConvert.AppServices.Services
         /// <returns>string containing the description</returns>
         public string StringValueOf(Enum value)
         {
-            FieldInfo fi = value.GetType().GetField(value.ToString("F"));
-            DescriptionAttribute[] attributes =
+            var fi = value.GetType().GetField(value.ToString("F"));
+            var attributes =
                 (DescriptionAttribute[]) fi.GetCustomAttributes(typeof (DescriptionAttribute), false);
             return attributes.Length > 0 ? attributes[0].Description : value.ToString("F");
         }
@@ -418,11 +417,11 @@ namespace VideoConvert.AppServices.Services
 
             #region Get AviSynth Version
 
-            IGraphBuilder graphBuilder = (IGraphBuilder)new FilterGraph();
+            var graphBuilder = (IGraphBuilder)new FilterGraph();
 
-            string avsFile = new AviSynthGenerator(_configService).GenerateTestFile();
+            var avsFile = new AviSynthGenerator(_configService).GenerateTestFile();
 
-            int result = graphBuilder.RenderFile(avsFile, null);
+            var result = graphBuilder.RenderFile(avsFile, null);
 
             Log.DebugFormat("RenderFile Result: {0}", result);
 
@@ -430,8 +429,8 @@ namespace VideoConvert.AppServices.Services
                 Log.Debug("AviSynth is not installed");
             else
             {
-                FileVersionInfo ver = FileVersionInfo.GetVersionInfo(Path.Combine(Environment.SystemDirectory, "avisynth.dll"));
-                string appVer = String.Format("{0:g}.{1:g}.{2:g}.{3:g}", ver.FileMajorPart, ver.FileMinorPart,
+                var ver = FileVersionInfo.GetVersionInfo(Path.Combine(Environment.SystemDirectory, "avisynth.dll"));
+                var appVer = String.Format("{0:g}.{1:g}.{2:g}.{3:g}", ver.FileMajorPart, ver.FileMinorPart,
                                               ver.FileBuildPart, ver.FilePrivatePart);
                 Log.DebugFormat("Avisynth version {0} installed", appVer);
                 _configService.LastAviSynthVer = appVer;
@@ -453,7 +452,7 @@ namespace VideoConvert.AppServices.Services
         {
             try
             {
-                FileVersionInfo updaterVer =
+                var updaterVer =
                     FileVersionInfo.GetVersionInfo(Path.Combine(_configService.UpdaterPath, @"AppUpdater.exe"));
                 _configService.UpdaterVersion = new Version(updaterVer.ProductVersion);
             }
@@ -469,10 +468,10 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public void GetAviSynthPluginsVer()
         {
-            string verFile = Path.Combine(_configService.AvsPluginsPath, "version");
+            var verFile = Path.Combine(_configService.AvsPluginsPath, "version");
             if (File.Exists(verFile))
             {
-                using (StreamReader str = new StreamReader(verFile))
+                using (var str = new StreamReader(verFile))
                 {
                     _configService.LastAviSynthPluginsVer = str.ReadLine();
                 }
@@ -488,7 +487,7 @@ namespace VideoConvert.AppServices.Services
         {
             bool fIsElevated;
             SafeTokenHandle hToken = null;
-            IntPtr pTokenElevation = IntPtr.Zero;
+            var pTokenElevation = IntPtr.Zero;
 
             try
             {
@@ -500,7 +499,7 @@ namespace VideoConvert.AppServices.Services
                 }
 
                 // Allocate a buffer for the elevation information. 
-                int cbTokenElevation = Marshal.SizeOf(typeof(TOKEN_ELEVATION));
+                var cbTokenElevation = Marshal.SizeOf(typeof(TOKEN_ELEVATION));
                 pTokenElevation = Marshal.AllocHGlobal(cbTokenElevation);
                 if (pTokenElevation == IntPtr.Zero)
                 {
@@ -520,7 +519,7 @@ namespace VideoConvert.AppServices.Services
                 }
 
                 // Marshal the TOKEN_ELEVATION struct from native to .NET object. 
-                TOKEN_ELEVATION elevation = (TOKEN_ELEVATION)Marshal.PtrToStructure(
+                var elevation = (TOKEN_ELEVATION)Marshal.PtrToStructure(
                     pTokenElevation, typeof(TOKEN_ELEVATION));
 
                 // TOKEN_ELEVATION.TokenIsElevated is a non-zero value if the token  
@@ -611,7 +610,7 @@ namespace VideoConvert.AppServices.Services
             if (encodingJob.EncodingProfile.OutFormat == OutputType.OutputWebM)
                 encodingJob.SubtitleStreams.Clear();
 
-            foreach (SubtitleInfo info in encodingJob.SubtitleStreams)
+            foreach (var info in encodingJob.SubtitleStreams)
             {
                 info.NeedConversion = SubtitleNeedConversion(encodingJob.EncodingProfile.OutFormat, info.Format) ||
                                       (info.KeepOnlyForcedCaptions && !info.HardSubIntoVideo);
@@ -630,7 +629,7 @@ namespace VideoConvert.AppServices.Services
             if (encodingJob.EncodingProfile == null) return;
 
             // rearrange default audio stream
-            AudioInfo defaultAudioItem = encodingJob.AudioStreams.Find(info => info.MkvDefault);
+            var defaultAudioItem = encodingJob.AudioStreams.Find(info => info.MkvDefault);
             if (defaultAudioItem != null)
             {
                 encodingJob.AudioStreams.Remove(defaultAudioItem);
@@ -638,7 +637,7 @@ namespace VideoConvert.AppServices.Services
             }
 
             // rearrange default subtitle stream
-            SubtitleInfo defaultSubtitleItem = encodingJob.SubtitleStreams.Find(info => info.MkvDefault);
+            var defaultSubtitleItem = encodingJob.SubtitleStreams.Find(info => info.MkvDefault);
             if (defaultSubtitleItem != null)
             {
                 encodingJob.SubtitleStreams.Remove(defaultSubtitleItem);
@@ -651,14 +650,14 @@ namespace VideoConvert.AppServices.Services
                     // WebM has no support for subtitles
                     encodingJob.SubtitleStreams.Clear();
                     // WebM supports max one audio stream per file
-                    AudioInfo firstIndex = encodingJob.AudioStreams.First();
+                    var firstIndex = encodingJob.AudioStreams.First();
                     if (firstIndex != null)
                         encodingJob.AudioStreams.RemoveAll(info => info != firstIndex);
                     break;
                 case OutputType.OutputDvd:
-                    int audioCount = encodingJob.AudioStreams.Count;
-                    int subtitleCount = encodingJob.SubtitleStreams.Count;
-                    int chapterCount = encodingJob.Chapters.Count;
+                    var audioCount = encodingJob.AudioStreams.Count;
+                    var subtitleCount = encodingJob.SubtitleStreams.Count;
+                    var chapterCount = encodingJob.Chapters.Count;
 
                     // DVD supports max 8 audio streams
                     if (audioCount > 8)

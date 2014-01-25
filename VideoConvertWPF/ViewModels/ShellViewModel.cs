@@ -260,7 +260,7 @@ namespace VideoConvertWPF.ViewModels
 
         internal void ReconfigureLogger()
         {
-            string logFile = Path.Combine(_configService.AppSettingsPath, "ErrorLog_");
+            var logFile = Path.Combine(_configService.AppSettingsPath, "ErrorLog_");
 
             if (Log.Logger.Repository.Configured)
             {
@@ -281,9 +281,9 @@ namespace VideoConvertWPF.ViewModels
                 _clearLog = false;
             }
 
-            XmlLayoutSchemaLog4j layout = new XmlLayoutSchemaLog4j(true);
+            var layout = new XmlLayoutSchemaLog4j(true);
 
-            LevelRangeFilter filter = new LevelRangeFilter
+            var filter = new LevelRangeFilter
             {
                 LevelMin = _configService.UseDebug ? Level.All : Level.Warn,
                 AcceptOnMatch = true
@@ -291,7 +291,7 @@ namespace VideoConvertWPF.ViewModels
 
             layout.ActivateOptions();
 
-            RollingFileAppender fileAppender = new RollingFileAppender
+            var fileAppender = new RollingFileAppender
             {
                 PreserveLogFileNameExtension = true,
                 StaticLogFileName = false,
@@ -316,7 +316,7 @@ namespace VideoConvertWPF.ViewModels
             Log.InfoFormat(".NET Version: {0}", Environment.Version.ToString(4));
             Log.InfoFormat("System Uptime: {0}", TimeSpan.FromMilliseconds(Environment.TickCount).ToString("c"));
 
-            bool elevated = false;
+            var elevated = false;
             try
             {
                 elevated = _processingService.IsProcessElevated();
@@ -342,7 +342,7 @@ namespace VideoConvertWPF.ViewModels
         private void InspectCpuExtensions(Extensions supExt)
         {
             _configService.SupportedCpuExtensions = supExt;
-            List<string> ext = (from field in supExt.GetType().GetFields() 
+            var ext = (from field in supExt.GetType().GetFields() 
                                 where (int) field.GetValue(supExt) == 1 
                                 select field.Name).ToList();
             Log.Info("Supported CPU Extensions: " + string.Join(", ", ext));

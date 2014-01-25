@@ -12,7 +12,6 @@ namespace VideoConvert.Interop.Utilities
     using System;
     using System.Drawing;
     using System.Globalization;
-    using System.IO;
     using System.Linq;
     using Model;
     using Model.MediaInfo;
@@ -67,7 +66,7 @@ namespace VideoConvert.Interop.Utilities
         /// <returns></returns>
         public static Size GetTargetSize(EncodeInfo encodeInfo)
         {
-            Size resizeTo = new Size {Width = encodeInfo.VideoStream.Width, Height = encodeInfo.VideoStream.Height};
+            var resizeTo = new Size {Width = encodeInfo.VideoStream.Width, Height = encodeInfo.VideoStream.Height};
 
             if ((!encodeInfo.VideoStream.CropRect.IsEmpty) && (!encodeInfo.EncodingProfile.KeepInputResolution))
             {
@@ -84,7 +83,7 @@ namespace VideoConvert.Interop.Utilities
                 resizeTo.Width = encodeInfo.EncodingProfile.TargetWidth;
                 if (!encodeInfo.VideoStream.CropRect.IsEmpty)
                 {
-                    double aspectRatio = (double) encodeInfo.VideoStream.CropRect.Width/
+                    var aspectRatio = (double) encodeInfo.VideoStream.CropRect.Width/
                                          encodeInfo.VideoStream.CropRect.Height;
                     resizeTo.Height = (int) Math.Ceiling(resizeTo.Width/aspectRatio);
                 }
@@ -112,9 +111,9 @@ namespace VideoConvert.Interop.Utilities
         /// <returns></returns>
         public static Size GetVideoDimensions(VideoFormat videoFormat, float aspect, OutputType outType)
         {
-            Size outPut = new Size();
-            double aspect16To9 = Math.Round(16 / (double)9, 3);
-            double aspect16To10 = Math.Round(16 / (double)10, 3);
+            var outPut = new Size();
+            var aspect16To9 = Math.Round(16 / (double)9, 3);
+            var aspect16To10 = Math.Round(16 / (double)10, 3);
 
             switch (videoFormat)
             {
@@ -171,7 +170,7 @@ namespace VideoConvert.Interop.Utilities
         /// <param name="fpsDenominator">Calculated demominator</param>
         public static void GetFPSNumDenom(float fps, out int fpsEnumerator, out int fpsDenominator)
         {
-            int tempFrameRate = Convert.ToInt32(Math.Round(fps, 3) * 1000);
+            var tempFrameRate = Convert.ToInt32(Math.Round(fps, 3) * 1000);
 
             fpsEnumerator = 0;
             fpsDenominator = 0;
@@ -231,8 +230,8 @@ namespace VideoConvert.Interop.Utilities
             const double mkvOverhead = 0.005D; // 0.5%
             const double dvdOverhead = 0.04D; // 4%
 
-            ulong targetSize = jobInfo.EncodingProfile.TargetFileSize;
-            double overhead = 0D;
+            var targetSize = jobInfo.EncodingProfile.TargetFileSize;
+            var overhead = 0D;
 
             switch (jobInfo.EncodingProfile.OutFormat)
             {
@@ -259,12 +258,12 @@ namespace VideoConvert.Interop.Utilities
 
             ulong streamSizes = 0;
 
-            int maxRate = -1;
+            var maxRate = -1;
 
             if (jobInfo.VideoProfile.Type == ProfileType.X264)
                 maxRate = CalculateMaxRatex264((X264Profile)jobInfo.VideoProfile, jobInfo.EncodingProfile.OutFormat);
 
-            foreach (AudioInfo item in jobInfo.AudioStreams)
+            foreach (var item in jobInfo.AudioStreams)
             {
                 streamSizes += item.StreamSize + (ulong)Math.Floor(item.StreamSize * overhead);
                 if ((item.IsHdStream) && (Math.Abs(overhead - tsOverhead) <= 0))
@@ -276,10 +275,10 @@ namespace VideoConvert.Interop.Utilities
                                                             (item.StreamSize +
                                                              (ulong)Math.Floor(item.StreamSize * overhead)));
 
-            ulong sizeRemains = targetSize - streamSizes;
+            var sizeRemains = targetSize - streamSizes;
 
             sizeRemains -= (ulong)Math.Floor(sizeRemains * overhead);
-            int bitrateCalc = (int)Math.Floor(sizeRemains / jobInfo.VideoStream.Length / 1000 * 8);
+            var bitrateCalc = (int)Math.Floor(sizeRemains / jobInfo.VideoStream.Length / 1000 * 8);
 
             if (jobInfo.EncodingProfile.OutFormat == OutputType.OutputDvd)
                 bitrateCalc = Math.Min(bitrateCalc, 8000);

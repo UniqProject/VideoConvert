@@ -13,7 +13,6 @@ namespace VideoConvert.AppServices.Services.Base
     using Encoder.Interfaces;
     using Interfaces;
     using Interop.EventArgs;
-    using log4net;
 
 
     /// <summary>
@@ -22,8 +21,6 @@ namespace VideoConvert.AppServices.Services.Base
     public class EncodeBase
     {
         #region Private Variables
-
-        private static readonly ILog Log = LogManager.GetLogger(typeof(EncodeBase));
 
         /// <summary>
         /// The User Setting Service
@@ -80,7 +77,7 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public void InvokeEncodeStatusChanged(EncodeProgressEventArgs e)
         {
-            EncodeProgessStatus handler = this.EncodeStatusChanged;
+            var handler = this.EncodeStatusChanged;
             if (handler != null)
             {
                 handler(this, e);
@@ -95,7 +92,7 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public void InvokeEncodeCompleted(EncodeCompletedEventArgs e)
         {
-            EncodeCompletedStatus handler = this.EncodeCompleted;
+            var handler = this.EncodeCompleted;
             if (handler != null)
             {
                 handler(this, e);
@@ -110,7 +107,7 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public void InvokeEncodeStarted(EventArgs e)
         {
-            EventHandler handler = this.EncodeStarted;
+            var handler = this.EncodeStarted;
             if (handler != null)
             {
                 handler(this, e);
@@ -144,7 +141,7 @@ namespace VideoConvert.AppServices.Services.Base
         /// </returns>
         public EncodeProgressEventArgs ReadEncodeStatus(string encodeStatus, DateTime startTime)
         {
-            EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+            var eventArgs = new EncodeProgressEventArgs
             {
                 AverageFrameRate = 0,
                 CurrentFrameRate = 0,

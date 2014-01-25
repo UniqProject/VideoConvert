@@ -41,7 +41,7 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Variables
 
-        private static readonly string[] CLILevelNames =
+        private static readonly string[] CliLevelNames =
         {
             "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1",
             "3.2", "4", "4.1", "4.2", "5", "5.1"
@@ -148,15 +148,15 @@ namespace VideoConvert.AppServices.Encoder
         /// </returns>
         public static string GetVersionInfo(string encPath, bool use64Bit)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
             if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
 
-            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
+            var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable, "--version")
+                var parameter = new ProcessStartInfo(localExecutable, "--version")
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -178,10 +178,10 @@ namespace VideoConvert.AppServices.Encoder
 
                 if (started)
                 {
-                    string output = encoder.StandardOutput.ReadToEnd();
-                    Regex regObj = new Regex(@"^x264.+?(\d)\.(\d+)\.([\dM]+)",
+                    var output = encoder.StandardOutput.ReadToEnd();
+                    var regObj = new Regex(@"^x264.+?(\d)\.(\d+)\.([\dM]+)",
                                              RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = string.Format("Core: {0} Build {1}", result.Groups[2].Value, result.Groups[3].Value);
 
@@ -220,7 +220,7 @@ namespace VideoConvert.AppServices.Encoder
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                bool use64BitEncoder = _appConfig.Use64BitEncoders &&
+                var use64BitEncoder = _appConfig.Use64BitEncoders &&
                                        _appConfig.X26464Installed &&
                                        Environment.Is64BitOperatingSystem;
 
@@ -231,15 +231,15 @@ namespace VideoConvert.AppServices.Encoder
                 if (!this._currentTask.EncodingProfile.Deinterlace && this._currentTask.VideoStream.Interlaced)
                     this._currentTask.VideoStream.Interlaced = false;
 
-                Size resizeTo = VideoHelper.GetTargetSize(this._currentTask);
+                var resizeTo = VideoHelper.GetTargetSize(this._currentTask);
 
                 if (string.IsNullOrEmpty(this._currentTask.AviSynthScript))
                 {
-                    AviSynthHelper avsHelper = new AviSynthHelper(this._appConfig);
+                    var avsHelper = new AviSynthHelper(this._appConfig);
                     avsHelper.GenerateAviSynthScript(this._currentTask, resizeTo);
                 }
 
-                string inputFile = this._currentTask.AviSynthScript;
+                var inputFile = this._currentTask.AviSynthScript;
 
                 _outFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
                     string.IsNullOrEmpty(this._currentTask.TempOutput) 
@@ -247,7 +247,7 @@ namespace VideoConvert.AppServices.Encoder
                         : this._currentTask.TempOutput,
                     "encoded.264");
 
-                int targetBitrate = 0;
+                var targetBitrate = 0;
                 if (this._currentTask.EncodingProfile.TargetFileSize > 0)
                     targetBitrate = VideoHelper.CalculateVideoBitrate(this._currentTask);
 
@@ -255,10 +255,10 @@ namespace VideoConvert.AppServices.Encoder
                 _frameCount = this._currentTask.VideoStream.FrameCount;
                 _encodePass = this._currentTask.StreamId;
 
-                string x264CliPath = Path.Combine(this._appConfig.ToolsPath,
+                var x264CliPath = Path.Combine(this._appConfig.ToolsPath,
                                                   use64BitEncoder ? Executable64 : Executable);
 
-                string query = GenerateCommandLine(targetBitrate,
+                var query = GenerateCommandLine(targetBitrate,
                                                    resizeTo.Width,
                                                    resizeTo.Height,
                                                    this._encodePass,
@@ -269,7 +269,7 @@ namespace VideoConvert.AppServices.Encoder
                                                    "-", 
                                                    _outFile);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(x264CliPath, query)
+                var cliStart = new ProcessStartInfo(x264CliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     RedirectStandardOutput = true,
@@ -289,7 +289,7 @@ namespace VideoConvert.AppServices.Encoder
                                                              PipeOptions.Asynchronous);
                 this._decodePipeState = this._decodePipe.BeginWaitForConnection(DecoderConnected, null);
 
-                Size originalSize = new Size(this._currentTask.VideoStream.Width, this._currentTask.VideoStream.Height);
+                var originalSize = new Size(this._currentTask.VideoStream.Width, this._currentTask.VideoStream.Height);
                 if (this._currentTask.VideoStream.Width <
                     this._currentTask.VideoStream.Height * this._currentTask.VideoStream.AspectRatio)
                 {
@@ -559,20 +559,20 @@ namespace VideoConvert.AppServices.Encoder
         {
             if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
 
-            Match frameMatch = _frameInformation.Match(line);
-            Match fullFrameMatch = _fullFrameInformation.Match(line);
+            var frameMatch = _frameInformation.Match(line);
+            var fullFrameMatch = _fullFrameInformation.Match(line);
 
-            TimeSpan eta = DateTime.Now.Subtract(_startTime);
+            var eta = DateTime.Now.Subtract(_startTime);
 
             long current;
             long framesRemaining;
             long secRemaining;
 
             float encBitrate;
-            float fps = 0f;
-            float codingFPS = 0f;
+            var fps = 0f;
+            var codingFps = 0f;
 
-            float percent = 0f;
+            var percent = 0f;
 
             if (frameMatch.Success)
             {
@@ -585,11 +585,11 @@ namespace VideoConvert.AppServices.Encoder
                 if (eta.Seconds != 0) // prevent division by zero
                 {
                     //Frames per Second
-                    codingFPS = (float) Math.Round(current / eta.TotalSeconds, 2);
+                    codingFps = (float) Math.Round(current / eta.TotalSeconds, 2);
                 }
 
-                if (codingFPS > 1) // prevent another division by zero
-                    secRemaining = framesRemaining / (int)codingFPS;
+                if (codingFps > 1) // prevent another division by zero
+                    secRemaining = framesRemaining / (int)codingFps;
                 else
                     secRemaining = 0;
 
@@ -613,11 +613,11 @@ namespace VideoConvert.AppServices.Encoder
                 if (eta.Seconds != 0) // prevent division by zero
                 {
                     //Frames per Second
-                    codingFPS = (float) Math.Round(current / eta.TotalSeconds, 2);
+                    codingFps = (float) Math.Round(current / eta.TotalSeconds, 2);
                 }
 
-                if (codingFPS > 1) // prevent another division by zero
-                    secRemaining = framesRemaining / (int)codingFPS;
+                if (codingFps > 1) // prevent another division by zero
+                    secRemaining = framesRemaining / (int)codingFps;
                 else
                     secRemaining = 0;
 
@@ -636,9 +636,9 @@ namespace VideoConvert.AppServices.Encoder
 
             if (frameMatch.Success || fullFrameMatch.Success)
             {
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
-                    AverageFrameRate = codingFPS,
+                    AverageFrameRate = codingFps,
                     CurrentFrameRate = fps,
                     EstimatedTimeLeft = _remainingTime,
                     PercentComplete = percent,
@@ -656,11 +656,11 @@ namespace VideoConvert.AppServices.Encoder
                                            VideoFormat format = VideoFormat.Unknown, string inFile = "input",
                                            string outFile = "output")
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (_encProfile != null)
             {
                 bool display;
-                X264Device device = X264Device.CreateDeviceList()[_encProfile.TuneDevice];
+                var device = X264Device.CreateDeviceList()[_encProfile.TuneDevice];
 
                 // AVC Profiles
                 switch (_encProfile.AVCProfile)
@@ -678,7 +678,7 @@ namespace VideoConvert.AppServices.Encoder
 
                 // AVC Levels
                 if (_encProfile.AVCLevel != 15) // unrestricted
-                    sb.AppendFormat("--level {0} ", CLILevelNames[_encProfile.AVCLevel]);
+                    sb.AppendFormat("--level {0} ", CliLevelNames[_encProfile.AVCLevel]);
 
                 // Blu-Ray compatibility
                 if (_encProfile.UseBluRayCompatibility)
@@ -717,10 +717,10 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 // Encoding Modes
-                int tempPass = pass;
+                var tempPass = pass;
 
-                int tempBitrate = bitrate;
-                int vbvBuf = GetVBVMaxrate(_encProfile, device);
+                var tempBitrate = bitrate;
+                var vbvBuf = GetVBVMaxrate(_encProfile, device);
 
                 if (tempBitrate <= 0)
                     tempBitrate = _encProfile.VBRSetting;
@@ -800,8 +800,8 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 // GOP Size
-                int backupMaxGopSize = _encProfile.MaxGopSize;
-                int backupMinGopSize = _encProfile.MinGopSize;
+                var backupMaxGopSize = _encProfile.MaxGopSize;
+                var backupMinGopSize = _encProfile.MinGopSize;
 
                 _encProfile.MaxGopSize = GetKeyInt(fpsN, fpsD, backupMaxGopSize, device, _encProfile.GopCalculation);
 
@@ -821,7 +821,7 @@ namespace VideoConvert.AppServices.Encoder
                     {
                         _encProfile.MinGopSize = _encProfile.MaxGopSize / 2 + 1;
                     }
-                    int Default = Math.Min(_encProfile.MaxGopSize / 10, fpsN / fpsD);
+                    var Default = Math.Min(_encProfile.MaxGopSize / 10, fpsN / fpsD);
 
                     if (_encProfile.MinGopSize != Default) // (MIN(--keyint / 10,--fps)) is default
                         sb.AppendFormat(_appConfig.CInfo, "--min-keyint {0:0} ", _encProfile.MinGopSize);
@@ -900,7 +900,7 @@ namespace VideoConvert.AppServices.Encoder
 
 
                 // reference frames
-                int iRefFrames = GetRefFrames(hRes, vRes, _encProfile, device);
+                var iRefFrames = GetRefFrames(hRes, vRes, _encProfile, device);
                 if (iRefFrames != X264Settings.GetDefaultNumberOfRefFrames(_encProfile.Preset, _encProfile.Tuning, null, _encProfile.AVCLevel, hRes, vRes))
                     sb.AppendFormat(_appConfig.CInfo, "--ref {0:0} ", iRefFrames);
 
@@ -1191,11 +1191,11 @@ namespace VideoConvert.AppServices.Encoder
                 // macroblock types
                 if (!_encProfile.CustomCommandLine.Contains("--partitions "))
                 {
-                    bool bExpectedP8X8Mv = true;
-                    bool bExpectedB8X8Mv = true;
-                    bool bExpectedI4X4Mv = true;
-                    bool bExpectedI8X8Mv = true;
-                    bool bExpectedP4X4Mv = true;
+                    var bExpectedP8X8Mv = true;
+                    var bExpectedB8X8Mv = true;
+                    var bExpectedI4X4Mv = true;
+                    var bExpectedI8X8Mv = true;
+                    var bExpectedP4X4Mv = true;
 
                     switch (_encProfile.Preset)
                     {
@@ -1371,13 +1371,13 @@ namespace VideoConvert.AppServices.Encoder
 
                 #region input / ouput / custom
 
-                string customSarValue = string.Empty;
+                var customSarValue = string.Empty;
 
                 Dar? d = new Dar((ulong)hRes, (ulong)vRes);
 
                 if (_encProfile.UseAutoSelectSAR)
                 {
-                    int tempValue = GetSar(_encProfile, d, hRes, vRes, out customSarValue, String.Empty);
+                    var tempValue = GetSar(_encProfile, d, hRes, vRes, out customSarValue, String.Empty);
                     _encProfile.ForceSAR = tempValue;
                 }
 
@@ -1545,7 +1545,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetPulldown(X264Profile inProfile, VideoFormat format, int fpsN, int fpsD)
         {
-            int pullDown = inProfile.Pulldown;
+            var pullDown = inProfile.Pulldown;
 
             switch (format)
             {
@@ -1575,7 +1575,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private bool GetPicStruct(X264Profile inProfile, VideoFormat format)
         {
-            bool pStruct = inProfile.UseForcePicStruct;
+            var pStruct = inProfile.UseForcePicStruct;
 
             switch (format)
             {
@@ -1589,7 +1589,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private bool GetFakeInterlaced(X264Profile inProfile, VideoFormat format, int fpsN, int fpsD)
         {
-            bool fInterlaced = inProfile.UseFakeInterlaced;
+            var fInterlaced = inProfile.UseFakeInterlaced;
 
             switch (format)
             {
@@ -1627,7 +1627,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetColorMatrix(X264Profile inProfile, VideoFormat format)
         {
-            int matrix = inProfile.ColorMatrix;
+            var matrix = inProfile.ColorMatrix;
             switch (format)
             {
                 case VideoFormat.Videoformat480I:
@@ -1649,7 +1649,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetTransfer(X264Profile inProfile, VideoFormat format)
         {
-            int transfer = inProfile.Transfer;
+            var transfer = inProfile.Transfer;
             switch (format)
             {
                 case VideoFormat.Videoformat480I:
@@ -1671,7 +1671,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetColorprim(X264Profile inProfile, VideoFormat format)
         {
-            int colorPrim = inProfile.ColorPrimaries;
+            var colorPrim = inProfile.ColorPrimaries;
             switch (format)
             {
                 case VideoFormat.Videoformat480I:
@@ -1693,8 +1693,8 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetSar(X264Profile inProfile, Dar? d, int hRes, int vRes, out string customSarValue, string customSarValueInput)
         {
-            string strCustomValue = string.Empty;
-            int sar = inProfile.ForceSAR;
+            var strCustomValue = string.Empty;
+            var sar = inProfile.ForceSAR;
 
             customSarValue = String.Empty;
             if (String.IsNullOrEmpty(customSarValueInput))
@@ -1719,7 +1719,7 @@ namespace VideoConvert.AppServices.Encoder
             if (d.HasValue && sar == 0 &&
                 String.IsNullOrEmpty(customSarValue) && String.IsNullOrEmpty(customSarValueInput))
             {
-                Sar s = d.Value.ToSar(hRes, vRes);
+                var s = d.Value.ToSar(hRes, vRes);
                 switch (s.X + ":" + s.Y)
                 {
                     case "1:1": sar = 1; break;
@@ -1740,7 +1740,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetNalHrd(X264Profile inProfile, X264Device device)
         {
-            int nalHrd = inProfile.HRDInfo;
+            var nalHrd = inProfile.HRDInfo;
 
             if (device.BluRay && nalHrd < 1)
             {
@@ -1754,7 +1754,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             // TODO: need this one for resharper to suspend an false positive message
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
-            bool aud = inProfile.UseAccessUnitDelimiters || device.BluRay && inProfile.UseAccessUnitDelimiters == false;
+            var aud = inProfile.UseAccessUnitDelimiters || device.BluRay && inProfile.UseAccessUnitDelimiters == false;
             // ReSharper restore ConditionIsAlwaysTrueOrFalse
 
             return aud;
@@ -1762,7 +1762,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetVBVBufsize(X264Profile inProfile, X264Device device)
         {
-            int vbvBufSize = inProfile.VBVBufSize;
+            var vbvBufSize = inProfile.VBVBufSize;
 
             if (device.VbvBufsize > -1 && (vbvBufSize > device.VbvBufsize || vbvBufSize == 0))
             {
@@ -1774,7 +1774,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetSlices(X264Profile inProfile, X264Device device)
         {
-            int numSlices = inProfile.NumSlices;
+            var numSlices = inProfile.NumSlices;
 
             if (device.BluRay && numSlices != 4)
             {
@@ -1786,7 +1786,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetWeightp(X264Profile inProfile, X264Device device)
         {
-            int weightP = inProfile.PFrameWeightedPrediction;
+            var weightP = inProfile.PFrameWeightedPrediction;
 
             if (device.BluRay && weightP > 1)
             {
@@ -1798,14 +1798,14 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetRefFrames(int hRes, int vRes, X264Profile inProfile, X264Device device)
         {
-            int refFrames = inProfile.NumRefFrames;
+            var refFrames = inProfile.NumRefFrames;
 
             if (device.ReferenceFrames > -1 && refFrames > device.ReferenceFrames)
             {
                 refFrames = device.ReferenceFrames;
             }
 
-            int iMaxRefForLevel = X264Settings.GetMaxRefForLevel(inProfile.AVCLevel, hRes, vRes);
+            var iMaxRefForLevel = X264Settings.GetMaxRefForLevel(inProfile.AVCLevel, hRes, vRes);
             if (iMaxRefForLevel > -1 && iMaxRefForLevel < refFrames)
             {
                 refFrames = iMaxRefForLevel;
@@ -1816,7 +1816,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetBPyramid(X264Profile inProfile, X264Device device)
         {
-            int bPyramid = inProfile.BPyramid;
+            var bPyramid = inProfile.BPyramid;
 
             if (device.BluRay && inProfile.BPyramid > 1)
             {
@@ -1833,7 +1833,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetBFrames(X264Profile inProfile, X264Device device)
         {
-            int numBframes = inProfile.NumBFrames;
+            var numBframes = inProfile.NumBFrames;
 
             if (device.BFrames > -1 && inProfile.NumBFrames > device.BFrames)
             {
@@ -1845,16 +1845,16 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetMinKeyInt(int fpsN, int fpsD, int minGop, int maxGop, X264Device device, int gopCalculation)
         {
-            int keyInt = 0;
+            var keyInt = 0;
 
-            double fps = (double)fpsN / fpsD;
+            var fps = (double)fpsN / fpsD;
             if (gopCalculation == 1) // calculate min-keyint based on 25fps
                 keyInt = (int)(minGop / 25.0 * fps);
 
-            int maxValue = maxGop / 2 + 1;
+            var maxValue = maxGop / 2 + 1;
             if (device.MaxGop > -1 && minGop > maxValue)
             {
-                int Default = maxGop / 10;
+                var Default = maxGop / 10;
                 keyInt = Default;
             }
 
@@ -1863,12 +1863,12 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetKeyInt(int fpsN, int fpsD, int maxGop, X264Device device, int gopCalculation)
         {
-            int keyInt = 0;
+            var keyInt = 0;
 
             if (gopCalculation == 1)// calculate min-keyint based on 25fps
                 keyInt = (int)Math.Round(maxGop / 25.0 * (fpsN / (double)fpsD), 0);
 
-            int fps = (int)Math.Round((decimal)fpsN / fpsD, 0);
+            var fps = (int)Math.Round((decimal)fpsN / fpsD, 0);
 
             if (device.MaxGop > -1 && maxGop > fps * device.MaxGop)
             {
@@ -1880,7 +1880,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetVBVMaxrate(X264Profile inProfile, X264Device device)
         {
-            int vbvMaxRate = inProfile.VBVMaxRate;
+            var vbvMaxRate = inProfile.VBVMaxRate;
 
             if (device.VbvMaxrate > -1 && (vbvMaxRate > device.VbvMaxrate || vbvMaxRate == 0))
             {

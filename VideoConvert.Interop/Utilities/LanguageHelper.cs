@@ -57,7 +57,7 @@ namespace VideoConvert.Interop.Utilities
         /// <returns></returns>
         public static LanguageHelper GetLanguage(string lang)
         {
-            List<LanguageHelper> langList = GenerateList();
+            var langList = GenerateList();
             LanguageHelper ret;
 
             try

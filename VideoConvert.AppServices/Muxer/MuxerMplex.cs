@@ -84,13 +84,13 @@ namespace VideoConvert.AppServices.Muxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -111,10 +111,10 @@ namespace VideoConvert.AppServices.Muxer
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*mjpegtools.*?version.([\d\.]+).*\(.*$",
+                    var output = encoder.StandardError.ReadToEnd();
+                    var regObj = new Regex(@"^.*mjpegtools.*?version.([\d\.]+).*\(.*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -147,10 +147,10 @@ namespace VideoConvert.AppServices.Muxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -224,13 +224,13 @@ namespace VideoConvert.AppServices.Muxer
         {
             this._outputFile = Path.ChangeExtension(this._currentTask.VideoStream.TempFile, "premuxed.mpg");
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.Append("-f 8 -r 0 -V -v 1");
 
             sb.AppendFormat(" -o \"{0}\" {1}", this._outputFile, this._currentTask.VideoStream.TempFile);
 
-            foreach (AudioInfo stream in this._currentTask.AudioStreams)
+            foreach (var stream in this._currentTask.AudioStreams)
             {
                 sb.AppendFormat(" \"{0}\"", stream.TempFile);
             }
@@ -266,7 +266,7 @@ namespace VideoConvert.AppServices.Muxer
                 this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
                 this._currentTask.VideoStream.TempFile = this._outputFile;
 
-                foreach (AudioInfo stream in this._currentTask.AudioStreams)
+                foreach (var stream in this._currentTask.AudioStreams)
                 {
                     this._currentTask.TempFiles.Add(stream.TempFile);
                 }
@@ -295,10 +295,10 @@ namespace VideoConvert.AppServices.Muxer
             if (string.IsNullOrEmpty(line)) return;
 
             const float progress = -1f;
-            TimeSpan elapsedTime = DateTime.Now - this._startTime;
-            TimeSpan remainingTime = elapsedTime + TimeSpan.FromSeconds(1d);
+            var elapsedTime = DateTime.Now - this._startTime;
+            var remainingTime = elapsedTime + TimeSpan.FromSeconds(1d);
 
-            EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+            var eventArgs = new EncodeProgressEventArgs
             {
                 AverageFrameRate = 0,
                 CurrentFrameRate = 0,

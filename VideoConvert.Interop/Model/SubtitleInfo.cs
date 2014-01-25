@@ -77,7 +77,7 @@ namespace VideoConvert.Interop.Model
         /// <filterpriority>2</filterpriority>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            string result = string.Empty;
+            var result = string.Empty;
 
             result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.ID:              {0:g} {1:s}", Id,             Environment.NewLine);
             result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamID:        {0:g} {1:s}", StreamId, Environment.NewLine);

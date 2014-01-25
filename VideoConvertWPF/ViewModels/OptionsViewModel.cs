@@ -970,7 +970,7 @@ namespace VideoConvertWPF.ViewModels
 
         private static string GetFolder()
         {
-            string result = string.Empty;
+            var result = string.Empty;
 
             var folderBrowser = new CommonOpenFileDialog
             {
@@ -992,7 +992,7 @@ namespace VideoConvertWPF.ViewModels
 
         private static string GetFilePath(string file = "")
         {
-            string result = string.Empty;
+            var result = string.Empty;
 
             var fileDialog = new CommonOpenFileDialog
             {

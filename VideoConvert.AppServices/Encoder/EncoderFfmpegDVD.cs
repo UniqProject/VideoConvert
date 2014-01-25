@@ -101,13 +101,13 @@ namespace VideoConvert.AppServices.Encoder
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -128,10 +128,10 @@ namespace VideoConvert.AppServices.Encoder
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
+                    var output = encoder.StandardError.ReadToEnd();
+                    var regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -164,10 +164,10 @@ namespace VideoConvert.AppServices.Encoder
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -242,7 +242,7 @@ namespace VideoConvert.AppServices.Encoder
             string[] mbdArray = {"simple", "bits", "rd"};
             string[] cmpArray = {"sad", "sse", "satd", "dct", "psnr", "bit", "rd"};
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             this._encProfile = this._currentTask.VideoProfile as Mpeg2VideoProfile;
 
             if (this._encProfile == null) return string.Empty;
@@ -256,16 +256,16 @@ namespace VideoConvert.AppServices.Encoder
 
             #region AviSynth script generation
 
-            int targetSys = this._currentTask.EncodingProfile.SystemType;
+            var targetSys = this._currentTask.EncodingProfile.SystemType;
             int targetHeight;
 
-            float sourceFPS = (float)Math.Round(this._currentTask.VideoStream.FPS, 3);
-            float targetFPS = 0f;
-            bool changeFPS = false;
+            var sourceFPS = (float)Math.Round(this._currentTask.VideoStream.FPS, 3);
+            var targetFPS = 0f;
+            var changeFPS = false;
 
-            float sourceAspect = (float)Math.Round(this._currentTask.VideoStream.AspectRatio, 3);
+            var sourceAspect = (float)Math.Round(this._currentTask.VideoStream.AspectRatio, 3);
 
-            int targetWidth = sourceAspect >= 1.4f ? 1024 : 720;
+            var targetWidth = sourceAspect >= 1.4f ? 1024 : 720;
 
             if (this._currentTask.Input == InputType.InputDvd)
                 this._currentTask.VideoStream.Width =
@@ -294,11 +294,11 @@ namespace VideoConvert.AppServices.Encoder
                 targetHeight = (int)Math.Floor(targetWidth / sourceAspect);
             }
 
-            Size resizeTo = new Size(targetWidth, targetHeight);
+            var resizeTo = new Size(targetWidth, targetHeight);
 
-            SubtitleInfo sub = this._currentTask.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
-            string subFile = string.Empty;
-            bool keepOnlyForced = false;
+            var sub = this._currentTask.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
+            var subFile = string.Empty;
+            var keepOnlyForced = false;
             if (sub != null)
             {
                 subFile = sub.TempFile;
@@ -307,7 +307,7 @@ namespace VideoConvert.AppServices.Encoder
 
             if (string.IsNullOrEmpty(this._currentTask.AviSynthScript))
             {
-                AviSynthGenerator avs = new AviSynthGenerator(this._appConfig);
+                var avs = new AviSynthGenerator(this._appConfig);
                 this._currentTask.AviSynthScript = avs.Generate(this._currentTask.VideoStream,
                                                                 changeFPS,
                                                                 targetFPS,
@@ -324,12 +324,12 @@ namespace VideoConvert.AppServices.Encoder
 
             #region bitrate calculation
 
-            int bitrate = this._currentTask.EncodingProfile.TargetFileSize > 1
+            var bitrate = this._currentTask.EncodingProfile.TargetFileSize > 1
                 ? VideoHelper.CalculateVideoBitrate(this._currentTask)
                 : this._encProfile.Bitrate;
 
-            int audBitrate = this._currentTask.AudioStreams.Sum(stream => (int)stream.Bitrate / 1000);
-            int maxRate = 9800 - audBitrate;
+            var audBitrate = this._currentTask.AudioStreams.Sum(stream => (int)stream.Bitrate / 1000);
+            var maxRate = 9800 - audBitrate;
 
             #endregion
 
@@ -459,9 +459,9 @@ namespace VideoConvert.AppServices.Encoder
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            TimeSpan elapsedTime = DateTime.Now.Subtract(_startTime);
+            var elapsedTime = DateTime.Now.Subtract(_startTime);
 
-            Match result = _frameReg.Match(line);
+            var result = _frameReg.Match(line);
             // groups:
             // 1: actual frame
             // 2: fps
@@ -473,11 +473,11 @@ namespace VideoConvert.AppServices.Encoder
                 Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
                                _appConfig.CInfo, out current);
 
-                long framesRemaining = _frameCount - current;
+                var framesRemaining = _frameCount - current;
 
-                float progress = ((float)current / _frameCount) * 100;
+                var progress = ((float)current / _frameCount) * 100;
 
-                float codingFPS = 0f;
+                var codingFPS = 0f;
                 if (elapsedTime.Seconds != 0) // prevent division by zero
                 {
                     //Frames per Second
@@ -493,7 +493,7 @@ namespace VideoConvert.AppServices.Encoder
                 if (secRemaining > 0)
                     this._remainingTime = new TimeSpan(0, 0, (int)secRemaining);
 
-                float fps = 0f;
+                var fps = 0f;
                 Single.TryParse(result.Groups[2].Value, NumberStyles.Number,
                                 _appConfig.CInfo, out fps);
                 float encBitrate;
@@ -501,7 +501,7 @@ namespace VideoConvert.AppServices.Encoder
                                 _appConfig.CInfo, out encBitrate);
 
                 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = codingFPS,
                     CurrentFrameRate = fps,

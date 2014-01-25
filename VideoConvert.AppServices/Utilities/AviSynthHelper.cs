@@ -37,16 +37,16 @@ namespace VideoConvert.AppServices.Utilities
         /// <param name="resizeTo"></param>
         public void GenerateAviSynthScript(EncodeInfo task, Size resizeTo)
         {
-            SubtitleInfo sub = task.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
-            string subFile = string.Empty;
-            bool keepOnlyForced = false;
+            var sub = task.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
+            var subFile = string.Empty;
+            var keepOnlyForced = false;
             if (sub != null)
             {
                 subFile = sub.TempFile;
                 keepOnlyForced = sub.KeepOnlyForcedCaptions;
             }
 
-            AviSynthGenerator avs = new AviSynthGenerator(_appConfig);
+            var avs = new AviSynthGenerator(_appConfig);
 
             if ((task.EncodingProfile.OutFormat == OutputType.OutputBluRay) ||
                 (task.EncodingProfile.OutFormat == OutputType.OutputAvchd))

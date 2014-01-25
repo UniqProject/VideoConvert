@@ -111,15 +111,15 @@ namespace VideoConvert.AppServices.Encoder
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath, bool use64Bit)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
             if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
 
-            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
+            var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -140,10 +140,10 @@ namespace VideoConvert.AppServices.Encoder
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^OggEnc\s+?v([\w\d\.\(\)\s]+?)$",
+                    var output = encoder.StandardError.ReadToEnd();
+                    var regObj = new Regex(@"^OggEnc\s+?v([\w\d\.\(\)\s]+?)$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -174,17 +174,17 @@ namespace VideoConvert.AppServices.Encoder
                 if (this.IsEncoding)
                     throw new Exception("OggEnc is already running");
 
-                bool use64BitEncoder = this._appConfig.Use64BitEncoders &&
+                var use64BitEncoder = this._appConfig.Use64BitEncoders &&
                                        this._appConfig.Ffmpeg64Installed &&
                                        Environment.Is64BitOperatingSystem;
 
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, use64BitEncoder ? Executable64 : Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, use64BitEncoder ? Executable64 : Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -291,7 +291,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             // TODO: add commandline generation
 
@@ -376,7 +376,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _encObj.Match(line);
+            var result = _encObj.Match(line);
 
             if (result.Success)
             {
@@ -401,23 +401,23 @@ namespace VideoConvert.AppServices.Encoder
 
         private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            string line = e.Data;
+            var line = e.Data;
             if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
 
-            Match bePipeMatch = _pipeObj.Match(line);
+            var bePipeMatch = _pipeObj.Match(line);
             if (bePipeMatch.Success)
             {
                 float progress;
-                string tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");
+                var tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");
                 Single.TryParse(tempProgress, NumberStyles.Number, this._appConfig.CInfo, out progress);
 
-                float progressRemaining = 100f - progress;
-                TimeSpan elapsedTime = DateTime.Now - _startTime;
+                var progressRemaining = 100f - progress;
+                var elapsedTime = DateTime.Now - _startTime;
 
                 long secRemaining = 0;
                 if (elapsedTime.TotalSeconds > 0)
                 {
-                    double speed = Math.Round(progress/elapsedTime.TotalSeconds, 6);
+                    var speed = Math.Round(progress/elapsedTime.TotalSeconds, 6);
 
                     if (speed > 0)
                         secRemaining = (long) Math.Round(progressRemaining/speed, 0);
@@ -427,9 +427,9 @@ namespace VideoConvert.AppServices.Encoder
                 if (secRemaining < 0)
                     secRemaining = 0;
 
-                TimeSpan remainingTime = TimeSpan.FromSeconds(secRemaining);
+                var remainingTime = TimeSpan.FromSeconds(secRemaining);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,

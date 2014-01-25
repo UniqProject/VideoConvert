@@ -113,7 +113,7 @@ namespace VideoConvert.AppServices.Services
         /// </param>
         protected virtual void OnSettingChanged(SettingChangedEventArgs e)
         {
-            SettingEventHandler handler = this.SettingChanged;
+            var handler = this.SettingChanged;
             if (handler != null)
             {
                 handler(this, e);
@@ -127,13 +127,13 @@ namespace VideoConvert.AppServices.Services
         {
             try
             {
-                string directory = Path.GetDirectoryName(this._settingsFile);
+                var directory = Path.GetDirectoryName(this._settingsFile);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                using (FileStream strm = new FileStream(this._settingsFile, FileMode.Create, FileAccess.Write))
+                using (var strm = new FileStream(this._settingsFile, FileMode.Create, FileAccess.Write))
                 {
                     _serializer.Serialize(strm, this._userSettings);
                 }
@@ -157,9 +157,9 @@ namespace VideoConvert.AppServices.Services
                 // Load up the users current settings file.
                 if (File.Exists(this._settingsFile))
                 {
-                    using (StreamReader reader = new StreamReader(this._settingsFile))
+                    using (var reader = new StreamReader(this._settingsFile))
                     {
-                        SerializableDictionary<string, object> data = (SerializableDictionary<string, object>)_serializer.Deserialize(reader);
+                        var data = (SerializableDictionary<string, object>)_serializer.Deserialize(reader);
                         this._userSettings = data;
                     }
                 }
@@ -169,7 +169,7 @@ namespace VideoConvert.AppServices.Services
                 }
 
                 // Add any missing / new settings
-                SerializableDictionary<string, object> defaults = this.GetDefaults();
+                var defaults = this.GetDefaults();
                 foreach (var item in defaults.Where(item => !this._userSettings.Keys.Contains(item.Key)))
                 {
                     this._userSettings.Add(item.Key, item.Value);
@@ -206,7 +206,7 @@ namespace VideoConvert.AppServices.Services
         {
             if (File.Exists("defaultsettings.xml"))
             {
-                using (StreamReader reader = new StreamReader("defaultsettings.xml"))
+                using (var reader = new StreamReader("defaultsettings.xml"))
                 {
                     return (SerializableDictionary<string, object>)_serializer.Deserialize(reader);
                 }

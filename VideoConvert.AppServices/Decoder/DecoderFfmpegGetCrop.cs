@@ -96,15 +96,15 @@ namespace VideoConvert.AppServices.Decoder
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath, bool use64Bit)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
             if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
 
-            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
+            var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -125,10 +125,10 @@ namespace VideoConvert.AppServices.Decoder
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
+                    var output = encoder.StandardError.ReadToEnd();
+                    var regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -165,10 +165,10 @@ namespace VideoConvert.AppServices.Decoder
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -242,9 +242,9 @@ namespace VideoConvert.AppServices.Decoder
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            AviSynthGenerator avs = new AviSynthGenerator(this._appConfig);
+            var avs = new AviSynthGenerator(this._appConfig);
             _inputFile = avs.GenerateCropDetect(this._currentTask.VideoStream.TempFile,
                                                 this._currentTask.VideoStream.FPS,
                                                 this._currentTask.VideoStream.Length,
@@ -301,16 +301,16 @@ namespace VideoConvert.AppServices.Decoder
         private void FixCropReg()
         {
             int mod16Temp;
-            int mod16Width = Math.DivRem(this._currentTask.VideoStream.Width, 16, out mod16Temp);
+            var mod16Width = Math.DivRem(this._currentTask.VideoStream.Width, 16, out mod16Temp);
             mod16Width *= 16;
 
-            int mod16Height = Math.DivRem(this._currentTask.VideoStream.Height, 16, out mod16Temp);
+            var mod16Height = Math.DivRem(this._currentTask.VideoStream.Height, 16, out mod16Temp);
             mod16Height *= 16;
 
             if (this._currentTask.VideoStream.CropRect.Width == mod16Width)
             {
                 this._currentTask.VideoStream.CropRect.Width = this._currentTask.VideoStream.Width;
-                Point lPoint = this._currentTask.VideoStream.CropRect.Location;
+                var lPoint = this._currentTask.VideoStream.CropRect.Location;
                 lPoint.X = 0;
                 this._currentTask.VideoStream.CropRect.Location = lPoint;
             }
@@ -318,7 +318,7 @@ namespace VideoConvert.AppServices.Decoder
             if (this._currentTask.VideoStream.CropRect.Height == mod16Height)
             {
                 this._currentTask.VideoStream.CropRect.Height = this._currentTask.VideoStream.Height;
-                Point lPoint = this._currentTask.VideoStream.CropRect.Location;
+                var lPoint = this._currentTask.VideoStream.CropRect.Location;
                 lPoint.Y = 0;
                 this._currentTask.VideoStream.CropRect.Location = lPoint;
             }
@@ -341,11 +341,11 @@ namespace VideoConvert.AppServices.Decoder
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match cropResult = _cropReg.Match(line);
-            Match frameResult = _frameReg.Match(line);
+            var cropResult = _cropReg.Match(line);
+            var frameResult = _frameReg.Match(line);
             if (cropResult.Success)
             {
-                Point loc = new Point();
+                var loc = new Point();
                 int tempVal;
 
                 Int32.TryParse(cropResult.Groups[3].Value, NumberStyles.Number, this._appConfig.CInfo,
@@ -373,26 +373,26 @@ namespace VideoConvert.AppServices.Decoder
 
                 Int32.TryParse(frameResult.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo,
                                out actualFrame);
-                float progress = (float)actualFrame / _cropDetectFrames * 100;
-                float progressLeft = 100f - progress;
+                var progress = (float)actualFrame / _cropDetectFrames * 100;
+                var progressLeft = 100f - progress;
 
-                TimeSpan elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - this._startTime;
 
-                float speed = 0f;
+                var speed = 0f;
                 if (elapsedTime.TotalSeconds > 0)
                 {
                     speed = actualFrame / progress;
                 }
 
-                float remainingSecs = 0f;
+                var remainingSecs = 0f;
                 if (speed > 0)
                 {
                     remainingSecs = progressLeft * speed;
                 }
 
-                TimeSpan remainingTime = TimeSpan.FromSeconds(remainingSecs);
+                var remainingTime = TimeSpan.FromSeconds(remainingSecs);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,

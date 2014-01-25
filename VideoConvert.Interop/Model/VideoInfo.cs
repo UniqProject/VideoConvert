@@ -114,7 +114,7 @@ namespace VideoConvert.Interop.Model
         /// <filterpriority>2</filterpriority>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            string result = string.Empty;
+            var result = string.Empty;
 
             result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.FPS:              {0:g} {1:s}", FPS,
                                     Environment.NewLine);

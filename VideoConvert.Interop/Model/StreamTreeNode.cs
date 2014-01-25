@@ -157,7 +157,7 @@ namespace VideoConvert.Interop.Model
         /// <param name="e"></param>
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null)
                 handler(this, e);
         }
@@ -168,7 +168,7 @@ namespace VideoConvert.Interop.Model
         /// <param name="propertyName"></param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null) 
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }

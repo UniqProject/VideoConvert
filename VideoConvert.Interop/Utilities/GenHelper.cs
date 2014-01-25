@@ -12,7 +12,6 @@ namespace VideoConvert.Interop.Utilities
     using System;
     using System.ComponentModel;
     using System.IO;
-    using System.Reflection;
     using Model.MediaInfo;
 
     /// <summary>
@@ -27,7 +26,7 @@ namespace VideoConvert.Interop.Utilities
         /// <returns>string containing the description</returns>
         public static string StringValueOf(Enum value)
         {
-            FieldInfo fi = value.GetType().GetField(value.ToString("F"));
+            var fi = value.GetType().GetField(value.ToString("F"));
             var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length > 0 ? attributes[0].Description : value.ToString("F");
         }
@@ -54,7 +53,7 @@ namespace VideoConvert.Interop.Utilities
         public static MediaInfoContainer GetMediaInfo(string fileName)
         {
             MiWorkDelegate d = DoWorkHandler;
-            IAsyncResult res = d.BeginInvoke(fileName, null, null);
+            var res = d.BeginInvoke(fileName, null, null);
             if (res.IsCompleted == false)
             {
                 res.AsyncWaitHandle.WaitOne(10000, false);

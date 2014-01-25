@@ -7,17 +7,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
-using System.ComponentModel;
-using System.IO;
-using Caliburn.Micro;
-using VideoConvertWPF.ViewModels.Interfaces;
-using ILog = log4net.ILog;
-using LogManager = log4net.LogManager;
-
 namespace VideoConvertWPF.ViewModels
 {
+    using System.ComponentModel;
+    using System.IO;
+    using Caliburn.Micro;
     using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvertWPF.ViewModels.Interfaces;
 
     public class ChangeLogViewModel : ViewModelBase, IChangeLogViewModel
     {
@@ -25,7 +21,6 @@ namespace VideoConvertWPF.ViewModels
 
         public IAppConfigService ConfigService { get; set; }
 
-        private static readonly ILog Log = LogManager.GetLogger(typeof(MainViewModel));
         private string _changeLogText;
 
         public string LangCode
@@ -71,7 +66,7 @@ namespace VideoConvertWPF.ViewModels
 
         private void ReloadChangeLogText()
         {
-            string localizedFileName = Path.ChangeExtension("CHANGELOG", this.LangCode);
+            var localizedFileName = Path.ChangeExtension("CHANGELOG", this.LangCode);
             using (TextReader reader = new StreamReader(Path.Combine(ConfigService.AppPath, localizedFileName)))
             {
                 this.ChangeLogText = reader.ReadToEnd();

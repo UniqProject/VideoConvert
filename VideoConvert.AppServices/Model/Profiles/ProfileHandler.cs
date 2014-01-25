@@ -74,13 +74,13 @@ namespace VideoConvert.AppServices.Model.Profiles
             }
             catch (Exception)
             {
-                string dir = Path.GetDirectoryName(_profFileName);
+                var dir = Path.GetDirectoryName(_profFileName);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
                 }
-                XmlDeclaration decl = _profilesFile.CreateXmlDeclaration("1.0", "UTF-8", "yes");
-                XmlElement xn = _profilesFile.CreateElement("VideoConvert");
+                var decl = _profilesFile.CreateXmlDeclaration("1.0", "UTF-8", "yes");
+                var xn = _profilesFile.CreateElement("VideoConvert");
                 _profilesFile.AppendChild(decl);
                 _profilesFile.AppendChild(xn);
 
@@ -292,7 +292,7 @@ namespace VideoConvert.AppServices.Model.Profiles
                         ((QuickSelectProfile) profile).OutFormat == OutputType.OutputDvd));
             }
 
-            foreach (EncoderProfile encoderProfile in filter)
+            foreach (var encoderProfile in filter)
             {
                 result.Remove(encoderProfile);
             }
@@ -302,35 +302,35 @@ namespace VideoConvert.AppServices.Model.Profiles
 
         private void SaveProfiles()
         {
-            List<QuickSelectProfile> quickSelectProfiles =
+            var quickSelectProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.QuickSelect).Cast<QuickSelectProfile>().ToList();
             quickSelectProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<X264Profile> x264Profiles =
+            var x264Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.X264).Cast<X264Profile>().ToList();
             x264Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<HcEncProfile> hcEncProfiles =
+            var hcEncProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.HcEnc).Cast<HcEncProfile>().ToList();
             hcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<Vp8Profile> vp8Profiles =
+            var vp8Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.VP8).Cast<Vp8Profile>().ToList();
             vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<Ac3Profile> ac3Profiles =
+            var ac3Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.AC3).Cast<Ac3Profile>().ToList();
             ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<Mp3Profile> mp3Profiles =
+            var mp3Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.MP3).Cast<Mp3Profile>().ToList();
             mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<OggProfile> oggProfiles =
+            var oggProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.OGG).Cast<OggProfile>().ToList();
             oggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
-            List<AacProfile> aacProfiles =
+            var aacProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AacProfile>().ToList();
             aacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 

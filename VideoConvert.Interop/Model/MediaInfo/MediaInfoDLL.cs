@@ -135,8 +135,8 @@ namespace VideoConvert.Interop.Model.MediaInfo
         {
             if (MustUseAnsi)
             {
-                IntPtr FileName_Ptr = Marshal.StringToHGlobalAnsi(FileName);
-                int ToReturn = (int)MediaInfoA_Open(Handle, FileName_Ptr);
+                var FileName_Ptr = Marshal.StringToHGlobalAnsi(FileName);
+                var ToReturn = (int)MediaInfoA_Open(Handle, FileName_Ptr);
                 Marshal.FreeHGlobal(FileName_Ptr);
                 return ToReturn;
             }
@@ -171,8 +171,8 @@ namespace VideoConvert.Interop.Model.MediaInfo
         {
             if (MustUseAnsi)
             {
-                IntPtr Parameter_Ptr=Marshal.StringToHGlobalAnsi(Parameter);
-                String ToReturn=Marshal.PtrToStringAnsi(MediaInfoA_Get(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, Parameter_Ptr, (IntPtr)KindOfInfo, (IntPtr)KindOfSearch));
+                var Parameter_Ptr=Marshal.StringToHGlobalAnsi(Parameter);
+                var ToReturn=Marshal.PtrToStringAnsi(MediaInfoA_Get(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, Parameter_Ptr, (IntPtr)KindOfInfo, (IntPtr)KindOfSearch));
                 Marshal.FreeHGlobal(Parameter_Ptr);
                 return ToReturn;
             }
@@ -190,9 +190,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
         {
             if (MustUseAnsi)
             {
-                IntPtr Option_Ptr=Marshal.StringToHGlobalAnsi(Option);
-                IntPtr Value_Ptr=Marshal.StringToHGlobalAnsi(Value);
-                String ToReturn=Marshal.PtrToStringAnsi(MediaInfoA_Option(Handle, Option_Ptr, Value_Ptr));
+                var Option_Ptr=Marshal.StringToHGlobalAnsi(Option);
+                var Value_Ptr=Marshal.StringToHGlobalAnsi(Value);
+                var ToReturn=Marshal.PtrToStringAnsi(MediaInfoA_Option(Handle, Option_Ptr, Value_Ptr));
                 Marshal.FreeHGlobal(Option_Ptr);
                 Marshal.FreeHGlobal(Value_Ptr);
                 return ToReturn;

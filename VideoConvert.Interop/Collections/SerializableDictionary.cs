@@ -45,7 +45,7 @@ namespace VideoConvert.Interop.Collections
             var keySerializer = new XmlSerializer(typeof(TKey));
             var valueSerializer = new XmlSerializer(typeof(TValue));
 
-            bool wasEmpty = reader.IsEmptyElement;
+            var wasEmpty = reader.IsEmptyElement;
             reader.Read();
 
             if (wasEmpty)
@@ -91,7 +91,7 @@ namespace VideoConvert.Interop.Collections
             var keySerializer = new XmlSerializer(typeof(TKey));
             var valueSerializer = new XmlSerializer(typeof(TValue));
 
-            foreach (TKey key in this.Keys)
+            foreach (var key in this.Keys)
             {
                 writer.WriteStartElement("item");
 
@@ -100,7 +100,7 @@ namespace VideoConvert.Interop.Collections
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("value");
-                TValue value = this[key];
+                var value = this[key];
 
                 if (value.GetType() == typeof(StringCollection))
                 {

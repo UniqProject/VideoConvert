@@ -89,13 +89,13 @@ namespace VideoConvert.AppServices.Muxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -116,10 +116,10 @@ namespace VideoConvert.AppServices.Muxer
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*DVDAuthor::dvdauthor, version ([\d\.\+]*)\..+?$",
+                    var output = encoder.StandardError.ReadToEnd();
+                    var regObj = new Regex(@"^.*DVDAuthor::dvdauthor, version ([\d\.\+]*)\..+?$",
                                              RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -152,10 +152,10 @@ namespace VideoConvert.AppServices.Muxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
                 
-                ProcessStartInfo cliStart = new ProcessStartInfo(cliPath, query)
+                var cliStart = new ProcessStartInfo(cliPath, query)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -225,7 +225,7 @@ namespace VideoConvert.AppServices.Muxer
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             _outputFile = !string.IsNullOrEmpty(this._currentTask.TempOutput)
                             ? this._currentTask.TempOutput
                             : this._currentTask.OutputFile;
@@ -243,17 +243,17 @@ namespace VideoConvert.AppServices.Muxer
 
         private string GenerateXmlInput()
         {
-            string xmlFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, ".xml");
+            var xmlFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, ".xml");
 
-            string chapterString = string.Empty;
+            var chapterString = string.Empty;
             if (this._currentTask.Chapters.Count > 1)
             {
                 DateTime dt;
-                List<string> tempChapters = new List<string>();
+                var tempChapters = new List<string>();
 
                 if (this._currentTask.Input != InputType.InputDvd)
                 {
-                    foreach (TimeSpan chapter in this._currentTask.Chapters)
+                    foreach (var chapter in this._currentTask.Chapters)
                     {
                         dt = DateTime.MinValue.Add(chapter);
                         tempChapters.Add(dt.ToString("H:mm:ss.fff"));
@@ -261,9 +261,9 @@ namespace VideoConvert.AppServices.Muxer
                 }
                 else
                 {
-                    TimeSpan actualTime = new TimeSpan();
+                    var actualTime = new TimeSpan();
 
-                    foreach (TimeSpan chapter in this._currentTask.Chapters)
+                    foreach (var chapter in this._currentTask.Chapters)
                     {
                         actualTime = actualTime.Add(chapter);
                         dt = DateTime.MinValue.Add(actualTime);
@@ -273,7 +273,7 @@ namespace VideoConvert.AppServices.Muxer
                 chapterString = string.Join(",", tempChapters.ToArray());
             }
 
-            XmlWriterSettings xmlSettings = new XmlWriterSettings
+            var xmlSettings = new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "    ",
@@ -282,7 +282,7 @@ namespace VideoConvert.AppServices.Muxer
                 ConformanceLevel = ConformanceLevel.Auto,
                 CloseOutput = true
             };
-            XmlWriter writer = XmlWriter.Create(xmlFile, xmlSettings);
+            var writer = XmlWriter.Create(xmlFile, xmlSettings);
 
             writer.WriteStartDocument(true);
             writer.WriteStartElement("dvdauthor");
@@ -295,18 +295,18 @@ namespace VideoConvert.AppServices.Muxer
             writer.WriteStartElement("titleset");
             writer.WriteStartElement("titles");
 
-            foreach (string itemlang in this._currentTask.AudioStreams.Select(item => item.ShortLang))
+            foreach (var itemlang in this._currentTask.AudioStreams.Select(item => item.ShortLang))
             {
-                LanguageHelper language = LanguageHelper.GetLanguage(string.IsNullOrEmpty(itemlang) ? "xx" : itemlang);
+                var language = LanguageHelper.GetLanguage(string.IsNullOrEmpty(itemlang) ? "xx" : itemlang);
 
                 writer.WriteStartElement("audio");
                 writer.WriteAttributeString("lang", language.Iso1Lang);
                 writer.WriteEndElement();
             }
 
-            foreach (SubtitleInfo item in this._currentTask.SubtitleStreams)
+            foreach (var item in this._currentTask.SubtitleStreams)
             {
-                LanguageHelper language =
+                var language =
                     LanguageHelper.GetLanguage(string.IsNullOrEmpty(item.LangCode) ? "xx" : item.LangCode);
 
                 if (item.Format != "PGS" && item.Format != "VobSub") continue;
@@ -388,11 +388,11 @@ namespace VideoConvert.AppServices.Muxer
 
             Log.InfoFormat("dvdauthor: {0}", line);
 
-            TimeSpan elapsedTime = DateTime.Now - this._startTime;
-            TimeSpan remainingTime = elapsedTime + TimeSpan.FromSeconds(1);
+            var elapsedTime = DateTime.Now - this._startTime;
+            var remainingTime = elapsedTime + TimeSpan.FromSeconds(1);
 
 
-            EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+            var eventArgs = new EncodeProgressEventArgs
             {
                 AverageFrameRate = 0,
                 CurrentFrameRate = 0,

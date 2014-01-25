@@ -48,7 +48,7 @@ namespace VideoConvert.Interop.Utilities
                     output = Path.Combine(tempPath, String.Format("{0}.{1}", baseName, extension));
                 else
                 {
-                    string inFile = Path.GetFileNameWithoutExtension(baseName);
+                    var inFile = Path.GetFileNameWithoutExtension(baseName);
                     output = Path.Combine(tempPath, String.Format("{0}.{1}", inFile, extension));
                 }
             }

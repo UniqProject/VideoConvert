@@ -28,10 +28,10 @@ namespace VideoConvert.Interop.DataProviders
         {
             get
             {
-                List<TvdbLanguage> result = new List<TvdbLanguage>();
-                XmlSerializer serializer = new XmlSerializer(typeof(List<TvdbLanguage>));
-                string commPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                string cachePath = Path.Combine(commPath, "TvDBCache");
+                var result = new List<TvdbLanguage>();
+                var serializer = new XmlSerializer(typeof(List<TvdbLanguage>));
+                var commPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                var cachePath = Path.Combine(commPath, "TvDBCache");
 
                 if (!Directory.Exists(cachePath))
                     Directory.CreateDirectory(cachePath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
@@ -46,14 +46,14 @@ namespace VideoConvert.Interop.DataProviders
                 }
                 catch (Exception)
                 {
-                    XmlTextReader xmlTextReader =
+                    var xmlTextReader =
                         new XmlTextReader(Path.Combine(cachePath, "tvdblangcache.xml"));
                     result = (List<TvdbLanguage>)serializer.Deserialize(xmlTextReader);
                 }
                 finally
                 {
                     using (
-                        FileStream writer = new FileStream(Path.Combine(cachePath, "tvdblangcache.xml"), FileMode.Create,
+                        var writer = new FileStream(Path.Combine(cachePath, "tvdblangcache.xml"), FileMode.Create,
                             FileAccess.ReadWrite, FileShare.Read))
                     {
                         serializer.Serialize(writer, result);

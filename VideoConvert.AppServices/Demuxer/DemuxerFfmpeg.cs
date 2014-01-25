@@ -92,15 +92,15 @@ namespace VideoConvert.AppServices.Demuxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath, bool use64Bit)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
             if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
 
-            string localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
+            var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
-            using (Process encoder = new Process())
+            using (var encoder = new Process())
             {
-                ProcessStartInfo parameter = new ProcessStartInfo(localExecutable)
+                var parameter = new ProcessStartInfo(localExecutable)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -121,10 +121,10 @@ namespace VideoConvert.AppServices.Demuxer
 
                 if (started)
                 {
-                    string output = encoder.StandardError.ReadToEnd();
-                    Regex regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
+                    var output = encoder.StandardError.ReadToEnd();
+                    var regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -161,7 +161,7 @@ namespace VideoConvert.AppServices.Demuxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                bool use64BitEncoder = this._appConfig.Use64BitEncoders &&
+                var use64BitEncoder = this._appConfig.Use64BitEncoders &&
                                        this._appConfig.Ffmpeg64Installed &&
                                        Environment.Is64BitOperatingSystem;
 
@@ -188,11 +188,11 @@ namespace VideoConvert.AppServices.Demuxer
                     Log.Error(ex);
                 }
 
-                string query = GenerateCommandLine();
-                string ffmpegCliPath = Path.Combine(this._appConfig.ToolsPath,
+                var query = GenerateCommandLine();
+                var ffmpegCliPath = Path.Combine(this._appConfig.ToolsPath,
                                                   use64BitEncoder ? Executable64 : Executable);
 
-                ProcessStartInfo cliStart = new ProcessStartInfo(ffmpegCliPath, query)
+                var cliStart = new ProcessStartInfo(ffmpegCliPath, query)
                 {
                     WorkingDirectory = this._appConfig.DemuxLocation,
                     CreateNoWindow = true,
@@ -263,7 +263,7 @@ namespace VideoConvert.AppServices.Demuxer
 
         private string GenerateCommandLine()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             if (this._currentTask.Input == InputType.InputDvd)
                 sb.Append("-probesize 2147483647 -analyzeduration 2147483647 -fflags genpts ");
@@ -273,7 +273,7 @@ namespace VideoConvert.AppServices.Demuxer
             string baseName;
             string ext;
 
-            string formattedExt = "demuxed.video.mkv";
+            var formattedExt = "demuxed.video.mkv";
 
             if (string.IsNullOrEmpty(this._currentTask.TempInput))
                 baseName = string.IsNullOrEmpty(this._currentTask.TempOutput)
@@ -286,13 +286,13 @@ namespace VideoConvert.AppServices.Demuxer
                                                                                      baseName,
                                                                                      formattedExt);
 
-            string streamID = this._currentTask.Input == InputType.InputDvd
+            var streamID = this._currentTask.Input == InputType.InputDvd
                               ? string.Format("#0x{0:X}", this._currentTask.VideoStream.StreamId + 479)
                               : string.Format("0:v:{0:0}", this._currentTask.VideoStream.StreamKindID);
 
             sb.AppendFormat("-map {0} -c:v copy -y \"{1}\" ", streamID, this._currentTask.VideoStream.TempFile);
 
-            foreach (AudioInfo item in this._currentTask.AudioStreams)
+            foreach (var item in this._currentTask.AudioStreams)
             {
                 ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
 
@@ -317,7 +317,7 @@ namespace VideoConvert.AppServices.Demuxer
 
                 if (this._currentTask.Input == InputType.InputDvd)
                 {
-                    int dvdStreamId = item.StreamId;
+                    var dvdStreamId = item.StreamId;
                     if (String.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg1") == 0 ||
                         String.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg2") == 0)
                         dvdStreamId += 256;
@@ -329,7 +329,7 @@ namespace VideoConvert.AppServices.Demuxer
                 sb.AppendFormat("-map {0} -c:a {1} -y \"{2}\" ", streamID, acodec, item.TempFile);
             }
 
-            foreach (SubtitleInfo item in this._currentTask.SubtitleStreams)
+            foreach (var item in this._currentTask.SubtitleStreams)
             {
                 ext = "mkv";
 
@@ -343,7 +343,7 @@ namespace VideoConvert.AppServices.Demuxer
                     ? string.Format("#0x{0:X}", item.StreamId)
                     : string.Format("0:s:{0:0}", item.StreamKindId);
 
-                string codec = "copy";
+                var codec = "copy";
 
                 if (item.Format == "VobSub")
                     codec = "dvd_subtitle";
@@ -406,20 +406,20 @@ namespace VideoConvert.AppServices.Demuxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _demuxReg.Match(line);
+            var result = _demuxReg.Match(line);
             
             double processingSpeed = 0f;
-            int secRemaining = 0;
+            var secRemaining = 0;
 
             if (result.Success)
             {
                 TimeSpan streamPosition;
                 TimeSpan.TryParseExact(result.Groups[2].Value, @"hh\:mm\:ss\.ff", _appConfig.CInfo, out streamPosition);
-                double secDemux = streamPosition.TotalSeconds;
+                var secDemux = streamPosition.TotalSeconds;
 
-                double remainingStreamTime = this._currentTask.VideoStream.Length - secDemux;
+                var remainingStreamTime = this._currentTask.VideoStream.Length - secDemux;
                 
-                TimeSpan elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - this._startTime;
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = secDemux / elapsedTime.TotalSeconds;
@@ -427,11 +427,11 @@ namespace VideoConvert.AppServices.Demuxer
                 if (processingSpeed > 0)
                     secRemaining = (int) Math.Round(remainingStreamTime/processingSpeed, MidpointRounding.ToEven);
 
-                TimeSpan remainingTime = new TimeSpan(0, 0, secRemaining);
+                var remainingTime = new TimeSpan(0, 0, secRemaining);
 
-                float progress = (float) Math.Round(secDemux/this._currentTask.VideoStream.Length*100d);
+                var progress = (float) Math.Round(secDemux/this._currentTask.VideoStream.Length*100d);
 
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
+                var eventArgs = new EncodeProgressEventArgs
                 {
                     AverageFrameRate = 0,
                     CurrentFrameRate = 0,

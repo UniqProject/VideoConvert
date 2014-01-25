@@ -41,7 +41,7 @@ namespace VideoConvert.AppServices.Services
         /// <param name="e"></param>
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null)
                 handler(this, e);
         }
@@ -52,7 +52,7 @@ namespace VideoConvert.AppServices.Services
         /// <param name="propertyName"></param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -197,7 +197,7 @@ namespace VideoConvert.AppServices.Services
         {
             get
             {
-                string tPath = GetSetting<string>(SettingConstants.ToolsPath);
+                var tPath = GetSetting<string>(SettingConstants.ToolsPath);
                 if (String.IsNullOrEmpty(tPath))
                     tPath = Path.Combine(CommonAppSettingsPath, "codecs");
                 return tPath;
@@ -919,7 +919,7 @@ namespace VideoConvert.AppServices.Services
         {
             get
             {
-                string strPath = GetSetting<string>(SettingConstants.TvDBCachePath);
+                var strPath = GetSetting<string>(SettingConstants.TvDBCachePath);
 
                 if (string.IsNullOrEmpty(strPath))
                 {
@@ -939,7 +939,7 @@ namespace VideoConvert.AppServices.Services
         {
             get
             {
-                string strValue = GetSetting<string>(SettingConstants.TvDBParseString);
+                var strValue = GetSetting<string>(SettingConstants.TvDBParseString);
                 if (string.IsNullOrEmpty(strValue))
                     strValue = "%show% - S%season%E%episode% - %episode_name%";
                 return strValue;
@@ -1025,7 +1025,7 @@ namespace VideoConvert.AppServices.Services
             {
                 try
                 {
-                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                     appDataPath = Path.Combine(appDataPath, GetCompanyName(), GetProductName());
                     return appDataPath;
                 }
@@ -1043,7 +1043,7 @@ namespace VideoConvert.AppServices.Services
         /// <returns><see cref="AppSettingsPath"/></returns>
         public static string GetAppSettingsPath()
         {
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             appDataPath = Path.Combine(appDataPath, GetCompanyName(), GetProductName());
             return appDataPath;
         }
@@ -1057,7 +1057,7 @@ namespace VideoConvert.AppServices.Services
             {
                 try
                 {
-                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     appDataPath = Path.Combine(appDataPath, GetCompanyName(), GetProductName());
                     return appDataPath;
                 }
@@ -1078,7 +1078,7 @@ namespace VideoConvert.AppServices.Services
             {
                 try
                 {
-                    string tempPath = Path.GetTempPath();
+                    var tempPath = Path.GetTempPath();
                     tempPath = Path.Combine(tempPath, GetProductName() + "-" + Guid.NewGuid());
                     return tempPath;
                 }
@@ -1105,8 +1105,8 @@ namespace VideoConvert.AppServices.Services
         {
             get
             {
-                Version result = new Version(0, 0, 0, 0);
-                string tVersion = GetSetting<string>(SettingConstants.UpdaterVersion);
+                var result = new Version(0, 0, 0, 0);
+                var tVersion = GetSetting<string>(SettingConstants.UpdaterVersion);
                 try
                 {
                     result = Version.Parse(tVersion);
@@ -1120,7 +1120,7 @@ namespace VideoConvert.AppServices.Services
             }
             set
             {
-                string tVersion = String.Format("{0:0}.{1:0}.{2:0}.{3:0}", value.Major,
+                var tVersion = String.Format("{0:0}.{1:0}.{2:0}.{3:0}", value.Major,
                                                                            value.Minor,
                                                                            value.Build,
                                                                            value.Revision);
@@ -1209,7 +1209,7 @@ namespace VideoConvert.AppServices.Services
         /// <returns>Version String of Main Application executable</returns>
         public static string GetAppVersionStr()
         {
-            Version version = GetAppVersion();
+            var version = GetAppVersion();
             return string.Format("{0:0}.{1:0}.{2:0}.{3:0}",
                                   version.Major, 
                                   version.Minor, 
@@ -1223,14 +1223,14 @@ namespace VideoConvert.AppServices.Services
         /// <returns>Company Name</returns>
         public static string GetCompanyName()
         {
-            string companyName = String.Empty;
+            var companyName = String.Empty;
 
-            Assembly myAssembly = GetAssembly();
-            object[] attributes = myAssembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
+            var myAssembly = GetAssembly();
+            var attributes = myAssembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
 
             if (attributes.Length > 0)
             {
-                AssemblyCompanyAttribute aca = attributes[0] as AssemblyCompanyAttribute;
+                var aca = attributes[0] as AssemblyCompanyAttribute;
 
                 if (aca != null)
                     companyName = aca.Company;
@@ -1245,14 +1245,14 @@ namespace VideoConvert.AppServices.Services
         /// <returns>Product Name</returns>
         public static string GetProductName()
         {
-            string productName = String.Empty;
+            var productName = String.Empty;
 
-            Assembly myAssembly = GetAssembly();
-            object[] attributes = myAssembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+            var myAssembly = GetAssembly();
+            var attributes = myAssembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
 
             if (attributes.Length > 0)
             {
-                AssemblyProductAttribute apa = attributes[0] as AssemblyProductAttribute;
+                var apa = attributes[0] as AssemblyProductAttribute;
 
                 if (apa != null)
                     productName = apa.Product;

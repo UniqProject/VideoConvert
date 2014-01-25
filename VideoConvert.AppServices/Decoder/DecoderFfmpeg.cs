@@ -56,11 +56,11 @@ namespace VideoConvert.AppServices.Decoder
         public static Process CreateDecodingProcess(string scriptName, bool useScaling, Size originalSize, float fromAr,
             Rectangle cropRect, Size resize, string toolPath, string pipeName)
         {
-            string localExecutable = Path.Combine(toolPath, Executable);
+            var localExecutable = Path.Combine(toolPath, Executable);
 
-            List<string> filterArray = new List<string>();
+            var filterArray = new List<string>();
 
-            string filterChain = string.Empty;
+            var filterChain = string.Empty;
 
             if (useScaling)
             {
@@ -82,12 +82,12 @@ namespace VideoConvert.AppServices.Decoder
                         filterArray.Add(string.Format("crop={0:D}:{1:D}:{2:D}:{3:D}", cropRect.Width, cropRect.Height, cropRect.X, cropRect.Y));
                     }
                 }
-                int calculatedWidth = originalSize.Width;
-                int calculatedHeight = originalSize.Height;
+                var calculatedWidth = originalSize.Width;
+                var calculatedHeight = originalSize.Height;
 
                 if (!resize.IsEmpty)
                 {
-                    float toAr = (float)Math.Round(resize.Width / (float)resize.Height, 3);
+                    var toAr = (float)Math.Round(resize.Width / (float)resize.Height, 3);
                     fromAr = (float)Math.Round(fromAr, 3);
                     int temp;
                     if (fromAr > toAr) // source aspectratio higher than target aspectratio
@@ -127,8 +127,8 @@ namespace VideoConvert.AppServices.Decoder
 
                 if (!resize.IsEmpty && (calculatedHeight < resize.Height || calculatedWidth < resize.Width))
                 {
-                    int posLeft = (int)Math.Ceiling((decimal)(resize.Width - calculatedWidth) / 2);
-                    int posTop = (int)Math.Ceiling((decimal)(resize.Height - calculatedHeight) / 2);
+                    var posLeft = (int)Math.Ceiling((decimal)(resize.Width - calculatedWidth) / 2);
+                    var posTop = (int)Math.Ceiling((decimal)(resize.Height - calculatedHeight) / 2);
                     filterArray.Add(string.Format("pad={0:D}:{1:D}:{2:D}:{3:D}", resize.Width, resize.Height,
                         posLeft > 0 ? posLeft : 0, posTop > 0 ? posTop : 0));
                 }
@@ -139,7 +139,7 @@ namespace VideoConvert.AppServices.Decoder
                 filterChain = string.Format("-vf \"{0}\" ", string.Join(",", filterArray));
             }
 
-            ProcessStartInfo info = new ProcessStartInfo
+            var info = new ProcessStartInfo
             {
                 FileName = localExecutable,
                 Arguments =
@@ -150,7 +150,7 @@ namespace VideoConvert.AppServices.Decoder
                 RedirectStandardError = true,
                 UseShellExecute = false
             };
-            Process ffmpeg = new Process { StartInfo = info };
+            var ffmpeg = new Process { StartInfo = info };
 
             ffmpeg.ErrorDataReceived += DecodeOnErrorDataReceived;
 
@@ -162,10 +162,10 @@ namespace VideoConvert.AppServices.Decoder
 
         private static void DecodeOnErrorDataReceived(object sender, DataReceivedEventArgs args)
         {
-            string line = args.Data;
+            var line = args.Data;
             if (string.IsNullOrEmpty(line)) return;
 
-            Match frameResult = FrameReg.Match(line);
+            var frameResult = FrameReg.Match(line);
             if (!frameResult.Success)
                 Log.Info(line);
         }

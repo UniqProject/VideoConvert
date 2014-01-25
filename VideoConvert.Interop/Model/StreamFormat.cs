@@ -99,7 +99,7 @@ namespace VideoConvert.Interop.Model
         /// <returns></returns>
         public static string GetFormatExtension(string format, string formatProfile, bool encode)
         {
-            StreamFormat stream = GenerateList().Find(sf =>
+            var stream = GenerateList().Find(sf =>
                                                           {
                                                               if (!String.IsNullOrEmpty(sf._profile))
                                                                   return sf._name.Equals(format.ToLowerInvariant()) &&

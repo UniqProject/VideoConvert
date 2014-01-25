@@ -14,11 +14,11 @@
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            IShellViewModel shellViewModel = this.DataContext as IShellViewModel;
+            var shellViewModel = this.DataContext as IShellViewModel;
 
             if (shellViewModel != null)
             {
-                bool canClose = shellViewModel.CanClose();
+                var canClose = shellViewModel.CanClose();
                 if (!canClose)
                 {
                     e.Cancel = true;

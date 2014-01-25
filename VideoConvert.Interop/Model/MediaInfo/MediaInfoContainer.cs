@@ -664,10 +664,10 @@ namespace VideoConvert.Interop.Model.MediaInfo
         /// <returns>File Properties</returns>
         public static MediaInfoContainer GetMediaInfo(string fileName)
         {
-            MediaInfoContainer result = new MediaInfoContainer();
+            var result = new MediaInfoContainer();
             const NumberStyles numStyle = NumberStyles.Number;
 
-            MediaInfo resultInfo = new MediaInfo();
+            var resultInfo = new MediaInfo();
             resultInfo.Option("Internet", "No");
 
             resultInfo.Open(fileName);
@@ -698,9 +698,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
 
         #region Get Video Info
 
-            for (int i = 0; i < _videoStreams; i++)
+            for (var i = 0; i < _videoStreams; i++)
             {
-                VideoStreamInfo videoStream = new VideoStreamInfo();
+                var videoStream = new VideoStreamInfo();
 
                 Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamKindID);
                 Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamKindPos"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamKindPos);
@@ -779,9 +779,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
         #endregion
 
         #region Get Audio Info
-            for (int i = 0; i < _audioStreams; i++)
+            for (var i = 0; i < _audioStreams; i++)
             {
-                AudioStreamInfo audioStream = new AudioStreamInfo();
+                var audioStream = new AudioStreamInfo();
 
                 Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamKindID);
                 Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamKindPos"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamKindPos);
@@ -822,9 +822,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
         #endregion
 
         #region Get Image Info
-            for (int i = 0; i < _imageStreams; i++)
+            for (var i = 0; i < _imageStreams; i++)
             {
-                ImageStreamInfo imageStream = new ImageStreamInfo();
+                var imageStream = new ImageStreamInfo();
 
                 Int32.TryParse(resultInfo.Get(StreamKind.Image, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out imageStream.StreamKindID);
                 Int32.TryParse(resultInfo.Get(StreamKind.Image, i, "ID"), numStyle, CultureInfo.InvariantCulture, out imageStream.ID);
@@ -839,9 +839,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
         #endregion
 
         #region Get Text Info
-            for (int i = 0; i < _textStreams; i++)
+            for (var i = 0; i < _textStreams; i++)
             {
-                TextStreamInfo textStream = new TextStreamInfo();
+                var textStream = new TextStreamInfo();
 
                 Int32.TryParse(resultInfo.Get(StreamKind.Text, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out textStream.StreamKindID);
                 Int32.TryParse(resultInfo.Get(StreamKind.Text, i, "ID"), numStyle, CultureInfo.InvariantCulture, out textStream.ID);
@@ -857,14 +857,14 @@ namespace VideoConvert.Interop.Model.MediaInfo
         #endregion
 
         #region Get Menu Info
-            for (int i = 0; i < _menuCount; i++)
+            for (var i = 0; i < _menuCount; i++)
             {
-                MenuStreamInfo menuStream = new MenuStreamInfo();
+                var menuStream = new MenuStreamInfo();
                 
                 Int32.TryParse(resultInfo.Get(StreamKind.Menu, i, "Chapters_Pos_Begin"), numStyle, CultureInfo.InvariantCulture, out menuStream.ChaptersPosBegin);
                 Int32.TryParse(resultInfo.Get(StreamKind.Menu, i, "Chapters_Pos_End"), numStyle, CultureInfo.InvariantCulture, out menuStream.ChaptersPosEnd);
 
-                for (int j = menuStream.ChaptersPosBegin; j < menuStream.ChaptersPosEnd; j++)
+                for (var j = menuStream.ChaptersPosBegin; j < menuStream.ChaptersPosEnd; j++)
                 {
                     DateTime tempTime;
                     DateTime.TryParse(resultInfo.Get(StreamKind.Menu, i, j, InfoKind.Name), CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out tempTime);

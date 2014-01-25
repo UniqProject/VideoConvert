@@ -31,7 +31,7 @@ namespace VideoConvert.AppServices.Decoder
         /// <returns>Created <see cref="Process" /></returns>
         public static Process CreateDecodingProcess(string scriptName, string aviSynthPath)
         {
-            string localExecutable = Path.Combine(aviSynthPath, "audio", Executable);
+            var localExecutable = Path.Combine(aviSynthPath, "audio", Executable);
             var info = new ProcessStartInfo
             {
                 FileName = localExecutable,

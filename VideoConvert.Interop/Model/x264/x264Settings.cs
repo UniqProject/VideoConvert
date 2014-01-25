@@ -40,7 +40,7 @@ namespace VideoConvert.Interop.Model.x264
         /// <returns>number of ref frames</returns>
         public static int GetDefaultNumberOfRefFrames(int oPreset, int oTuningMode, X264Device oDevice, int iLevel, int hRes, int vRes)
         {
-            int iDefaultSetting = 1;
+            var iDefaultSetting = 1;
             switch (oPreset)
             {
                 case 0:
@@ -66,7 +66,7 @@ namespace VideoConvert.Interop.Model.x264
 
             if (iLevel > -1 && hRes > 0 && vRes > 0)
             {
-                int iMaxRefForLevel = GetMaxRefForLevel(iLevel, hRes, vRes);
+                var iMaxRefForLevel = GetMaxRefForLevel(iLevel, hRes, vRes);
                 if (iMaxRefForLevel > -1 && iMaxRefForLevel < iDefaultSetting)
                     iDefaultSetting = iMaxRefForLevel;
             }
@@ -86,7 +86,7 @@ namespace VideoConvert.Interop.Model.x264
             if (level < 0 || hRes <= 0 || vRes <= 0 || level >= 15)  // Unrestricted/Autoguess
                 return -1;
 
-            int maxDPB = 0;  // the maximum picture decoded buffer for the given level
+            var maxDPB = 0;  // the maximum picture decoded buffer for the given level
             switch (level)
             {
                 case 0: // level 1
@@ -136,9 +136,9 @@ namespace VideoConvert.Interop.Model.x264
                     break;
             }
 
-            int frameHeightInMbs = (int)Math.Ceiling((double)vRes / 16);
-            int frameWidthInMbs = (int)Math.Ceiling((double)hRes / 16);
-            int maxRef = (int)Math.Floor((double)maxDPB / (frameHeightInMbs * frameWidthInMbs));
+            var frameHeightInMbs = (int)Math.Ceiling((double)vRes / 16);
+            var frameWidthInMbs = (int)Math.Ceiling((double)hRes / 16);
+            var maxRef = (int)Math.Floor((double)maxDPB / (frameHeightInMbs * frameWidthInMbs));
             return Math.Min(maxRef, 16);
         }
 
@@ -152,7 +152,7 @@ namespace VideoConvert.Interop.Model.x264
         /// <returns>number of b-frames</returns>
         public static int GetDefaultNumberOfBFrames(int oPresetLevel, int oTuningMode, int oAVCProfile, X264Device oDevice)
         {
-            int iDefaultSetting = 0;
+            var iDefaultSetting = 0;
             if (oAVCProfile == 0) // baseline
                 return iDefaultSetting;
 
@@ -195,7 +195,7 @@ namespace VideoConvert.Interop.Model.x264
             if (oTuningMode == 6) // Fast Decode
                 return 0;
 
-            int iDefaultSetting = 0;
+            var iDefaultSetting = 0;
             switch (oPresetLevel)
             {
                 case 0: iDefaultSetting = 0; break;

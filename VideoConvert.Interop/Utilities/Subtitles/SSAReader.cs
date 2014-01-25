@@ -36,7 +36,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         /// <returns>parsed <see cref="TextSubtitle"/></returns>
         public static TextSubtitle ReadFile(string fileName)
         {
-            TextSubtitle result = new TextSubtitle();
+            var result = new TextSubtitle();
             if (!File.Exists(fileName))
             {
                 Log.DebugFormat("File \"{0}\" doesn't exist. Aborting file import", fileName);
@@ -50,12 +50,12 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             }
             if (string.IsNullOrEmpty(lines)) return result;
 
-            List<string> textLines = lines.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            List<string> textCaps = new List<string>();
+            var textLines = lines.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var textCaps = new List<string>();
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            foreach (string line in textLines)
+            foreach (var line in textLines)
             {
                 if (line.Trim().StartsWith("["))
                 {
@@ -80,15 +80,15 @@ namespace VideoConvert.Interop.Utilities.Subtitles
 
             if (!textCaps.Any()) return result;
 
-            string sInfo = textCaps[0];
+            var sInfo = textCaps[0];
             if (!sInfo.Any()) return result;
             sInfo = Regex.Replace(sInfo, "^;.*$|^Title.*$", "", RegexOptions.Multiline);
 
-            bool isAdvancedScript = false;
+            var isAdvancedScript = false;
             try
             {
-                Match matchAdvanced = Regex.Match(sInfo, @"^\[Script Info\].*ScriptType: v4\.00+.*$", RegexOptions.Singleline | RegexOptions.Multiline);
-                Match matchResults = Regex.Match(sInfo, @"^\[Script Info\].*ScriptType: v4\.00.*$", RegexOptions.Singleline | RegexOptions.Multiline);
+                var matchAdvanced = Regex.Match(sInfo, @"^\[Script Info\].*ScriptType: v4\.00+.*$", RegexOptions.Singleline | RegexOptions.Multiline);
+                var matchResults = Regex.Match(sInfo, @"^\[Script Info\].*ScriptType: v4\.00.*$", RegexOptions.Singleline | RegexOptions.Multiline);
                 if (!matchResults.Success && !matchAdvanced.Success)
                 {
                     return result;
@@ -101,26 +101,26 @@ namespace VideoConvert.Interop.Utilities.Subtitles
                 Log.Error(ex);
             }
 
-            bool setFormat = false;
+            var setFormat = false;
             
-            for (int i = 1; i <= textCaps.Count - 1; i++ )
+            for (var i = 1; i <= textCaps.Count - 1; i++ )
             {
-                string section = textCaps[i];
+                var section = textCaps[i];
                 try
                 {
-                    Match matchStyles = Regex.Match(section, @"^\[V4.*Styles\].*$", RegexOptions.Multiline);
-                    Match matchEvents = Regex.Match(section, @"^\[Events\].*$", RegexOptions.Multiline);
+                    var matchStyles = Regex.Match(section, @"^\[V4.*Styles\].*$", RegexOptions.Multiline);
+                    var matchEvents = Regex.Match(section, @"^\[Events\].*$", RegexOptions.Multiline);
                     if (matchStyles.Success && !setFormat)
                     {
-                        string[] styles = section.Split(new[] {"\r\n", "\n"}, StringSplitOptions.RemoveEmptyEntries);
+                        var styles = section.Split(new[] {"\r\n", "\n"}, StringSplitOptions.RemoveEmptyEntries);
                         if (styles.Length < 3) return result;
-                        List<String> formatAttribs = styles[1].Split(new[] {","}, StringSplitOptions.None).ToList();
-                        List<String> formatValues = styles[2].Split(new[] {","}, StringSplitOptions.None).ToList();
+                        var formatAttribs = styles[1].Split(new[] {","}, StringSplitOptions.None).ToList();
+                        var formatValues = styles[2].Split(new[] {","}, StringSplitOptions.None).ToList();
                         
-                        for (int index = 0; index <= formatAttribs.Count - 1; index++)
+                        for (var index = 0; index <= formatAttribs.Count - 1; index++)
                         {
-                            string formatAttrib = formatAttribs[index].Trim();
-                            string formatValue = formatValues[index].Trim();
+                            var formatAttrib = formatAttribs[index].Trim();
+                            var formatValue = formatValues[index].Trim();
 
                             switch (formatAttrib)
                             {
@@ -188,15 +188,15 @@ namespace VideoConvert.Interop.Utilities.Subtitles
                     }
                     else if (matchEvents.Success)
                     {
-                        string[] events = section.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                        var events = section.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                         if (events.Length < 2) return result;
-                        List<String> eventFormat = events[1].Split(new[] { "," }, StringSplitOptions.None).ToList();
+                        var eventFormat = events[1].Split(new[] { "," }, StringSplitOptions.None).ToList();
 
                         int startTimeRow = -1, endTimeRow = -1, textRow = -1;
 
-                        for (int j = 0; j <= eventFormat.Count - 1; j++)
+                        for (var j = 0; j <= eventFormat.Count - 1; j++)
                         {
-                            string label = eventFormat[j].Trim();
+                            var label = eventFormat[j].Trim();
                             if (label.Equals("Start"))
                                 startTimeRow = j;
                             else if (label.Equals("End"))
@@ -207,19 +207,19 @@ namespace VideoConvert.Interop.Utilities.Subtitles
 
                         if (startTimeRow < 0 || endTimeRow < 0 || textRow < 0) return result;
 
-                        for (int j = 2; j <= events.Length - 1; j++)
+                        for (var j = 2; j <= events.Length - 1; j++)
                         {
-                            string eventLine = events[j];
-                            string[] eventRows = eventLine.Split(new[] {","}, StringSplitOptions.None);
+                            var eventLine = events[j];
+                            var eventRows = eventLine.Split(new[] {","}, StringSplitOptions.None);
                             if (eventRows.Length < textRow + 1) continue;
 
-                            TimeSpan startTime =
+                            var startTime =
                                 DateTime.ParseExact(eventRows[startTimeRow].Trim(), "h:mm:ss.ff", CInfo).
                                     TimeOfDay;
-                            TimeSpan endTime =
+                            var endTime =
                                 DateTime.ParseExact(eventRows[endTimeRow].Trim(), "h:mm:ss.ff", CInfo).
                                     TimeOfDay;
-                            string text = string.Join(", ", eventRows, textRow, eventRows.Length - textRow);
+                            var text = string.Join(", ", eventRows, textRow, eventRows.Length - textRow);
 
                             // line break
                             text = Regex.Replace(text, @"(?:\\N|\\n)", Environment.NewLine, RegexOptions.Multiline);
@@ -253,8 +253,8 @@ namespace VideoConvert.Interop.Utilities.Subtitles
                             // remove charset definition
                             text = Regex.Replace(text, @"\{\\fe.*?\}", string.Empty, RegexOptions.Multiline);
                             // parse and remove text alignment
-                            Regex align = new Regex(@"\{\\an*?(\d*?)\}", RegexOptions.Multiline);
-                            int alignment = GetAlignment(align.Match(text).Value, isAdvancedScript);
+                            var align = new Regex(@"\{\\an*?(\d*?)\}", RegexOptions.Multiline);
+                            var alignment = GetAlignment(align.Match(text).Value, isAdvancedScript);
                             text = align.Replace(text, string.Empty);
                             // remove x/y/z text rotation
                             text = Regex.Replace(text, @"\{\\fr(?:x|y|z)??(-??\d*?)\}", string.Empty, RegexOptions.Multiline);
@@ -271,7 +271,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
                                                        @"\\(?:move|pos|t|org|fad|fade|clip)\(.*?\)\\N|\\n|\\q\d*?|\\(?:b|i|u|s|be)(?:1|0)*?|\\(?:bord|shad)\d*?)*?\}",
                                                        string.Empty, RegexOptions.Multiline);
 
-                            SubCaption caption = new SubCaption
+                            var caption = new SubCaption
                                                 {
                                                     StartTime = startTime,
                                                     EndTime = endTime,
@@ -305,11 +305,11 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         /// <returns>parsed <see cref="Color"/></returns>
         public static Color GetCorrectColor(string input)
         {
-            ColorConverter converter = new ColorConverter();
-            object fromString = converter.ConvertFromString(input);
+            var converter = new ColorConverter();
+            var fromString = converter.ConvertFromString(input);
             if (fromString == null) return Color.Black;
 
-            Color converted = (Color) fromString;
+            var converted = (Color) fromString;
             if (converted.A == 0)
             {
                 converted = Color.FromArgb(255, converted);
@@ -325,10 +325,10 @@ namespace VideoConvert.Interop.Utilities.Subtitles
         /// <returns>parsed alignment</returns>
         public static int GetAlignment(string formatValue, bool isAdvancedScript)
         {
-            int result = 2;
+            var result = 2;
             if (string.IsNullOrEmpty(formatValue)) return result;
 
-            int tempAlignment = int.Parse(formatValue, NumberStyles.Integer);
+            var tempAlignment = int.Parse(formatValue, NumberStyles.Integer);
             if (isAdvancedScript)
                 result = tempAlignment;
             else
