@@ -430,10 +430,6 @@
       <Project>{d623a98b-9ddd-4035-8495-faf4c641046d}</Project>
       <Name>DirectShowLib-2012</Name>
     </ProjectReference>
-    <ProjectReference Include="..\libs\log4net\src\log4net.vs2010.csproj">
-      <Project>{181fe707-e161-4722-9f38-6aaab6faa106}</Project>
-      <Name>log4net.vs2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\libs\SevenZipSharp\SevenZip\SevenZip2010.csproj">
       <Project>{4960dd14-3431-47ec-b9d9-9d2730a98dc3}</Project>
       <Name>SevenZip2010</Name>
@@ -612,7 +608,7 @@
   <Import Project="$(ProjectDir)Build\LocBamlCsv.Target.xml" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_IncrementBeforeBuild="False" BuildVersion_UseUniversalClock="False" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2011/1/13" BuildVersion_DetectChanges="False" BuildVersion_BuildAction="ReBuild" />
+      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_DetectChanges="False" BuildVersion_StartDate="2011/1/13" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.DeltaBaseDateInDays.TimeStamp" BuildVersion_UseUniversalClock="False" BuildVersion_IncrementBeforeBuild="False" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
