@@ -1034,7 +1034,7 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 // Disable Macroblok Tree
-                if (!_encProfile.UseMBTree)
+                if (!_encProfile.UseMbTree)
                 {
                     if (!_encProfile.CustomCommandLine.Contains("--no-mbtree"))
                         if (_encProfile.Preset > 0) // preset veryfast
@@ -1151,15 +1151,15 @@ namespace VideoConvert.AppServices.Encoder
                     display = false;
                     if (_encProfile.Preset > 5) // preset medium
                     {
-                        if (_encProfile.MVPredictionMod != 3)
+                        if (_encProfile.MvPredictionMod != 3)
                             display = true;
                     }
-                    else if (_encProfile.MVPredictionMod != 1)
+                    else if (_encProfile.MvPredictionMod != 1)
                         display = true;
 
                     if (display)
                     {
-                        switch (_encProfile.MVPredictionMod)
+                        switch (_encProfile.MvPredictionMod)
                         {
                             case 0: sb.Append("--direct none "); break;
                             case 1: sb.Append("--direct spatial "); break;
