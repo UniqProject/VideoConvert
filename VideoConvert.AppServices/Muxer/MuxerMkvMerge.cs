@@ -239,7 +239,7 @@ namespace VideoConvert.AppServices.Muxer
             var sb = new StringBuilder();
             sb.Append(DefaultParams);
 
-            var fps = this._currentTask.VideoStream.FPS;
+            var fps = this._currentTask.VideoStream.Fps;
             int vidStream;
 
             var tempExt = Path.GetExtension(this._currentTask.VideoStream.TempFile);

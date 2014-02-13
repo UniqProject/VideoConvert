@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Audio stream information container
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,30 +13,108 @@ namespace VideoConvert.Interop.Model
     using System.Globalization;
 
     /// <summary>
-    /// contains information for an audio stream
+    /// Audio stream information container
     /// </summary>
     public class AudioInfo:IFormattable
     {
+        /// <summary>
+        /// ID
+        /// </summary>
         public int Id;
+
+        /// <summary>
+        /// Stream ID
+        /// </summary>
         public int StreamId;
+
+        /// <summary>
+        /// Stream format
+        /// </summary>
         public string Format;
+
+        /// <summary>
+        /// Stream format profile
+        /// </summary>
         public string FormatProfile;
+
+        /// <summary>
+        /// Language code
+        /// </summary>
         public string LangCode;
+
+        /// <summary>
+        /// Language
+        /// </summary>
         public string ShortLang;
+
+        /// <summary>
+        /// Temp file name
+        /// </summary>
         public string TempFile;
+
+        /// <summary>
+        /// Original stream ID
+        /// </summary>
         public int OriginalId;
+
+        /// <summary>
+        /// Stream kind ID
+        /// </summary>
         public int StreamKindId;
+
+        /// <summary>
+        /// Stream delay
+        /// </summary>
         public int Delay;
+
+        /// <summary>
+        /// Stream bitrate
+        /// </summary>
         public long Bitrate;
+
+        /// <summary>
+        /// Stream ID used while demuxing
+        /// </summary>
         public int DemuxStreamId;
+
+        /// <summary>
+        /// Stream Sample Rate
+        /// </summary>
         public int SampleRate;
+
+        /// <summary>
+        /// Stream Channel count
+        /// </summary>
         public int ChannelCount;
+
+        /// <summary>
+        /// Stream Bit depth
+        /// </summary>
         public int BitDepth;
+
+        /// <summary>
+        /// Stream size in bytes
+        /// </summary>
         public ulong StreamSize;
+
+        /// <summary>
+        /// Stream duration in seconds
+        /// </summary>
         public double Length;
+
+        /// <summary>
+        /// HD Audio (TrueHD / DTS-HR / DTS-MA)
+        /// </summary>
         public bool IsHdStream;
+
+        /// <summary>
+        /// Default stream for MKV output
+        /// </summary>
         public bool MkvDefault;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public AudioInfo()
         {
             Id = int.MinValue;

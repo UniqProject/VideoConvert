@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   PNG (Portable network graphics) container
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -20,8 +20,21 @@ namespace VideoConvert.Interop.Utilities.Subtitles
     using System.Text.RegularExpressions;
     using Model.Subtitles;
 
-    public class PNGImage
+    /// <summary>
+    /// PNG (Portable network graphics) container
+    /// </summary>
+    public class PngImage
     {
+        /// <summary>
+        /// Creates an PNG image for given Subtitle caption
+        /// </summary>
+        /// <param name="caption">Subtitle caption</param>
+        /// <param name="style">Subtitle style</param>
+        /// <param name="number">Caption number</param>
+        /// <param name="videoWidth">Video width</param>
+        /// <param name="videoHeight">Video height</param>
+        /// <param name="baseFName">File base name</param>
+        /// <returns>Generated PNG image</returns>
         public static ImageHolder CreateImage(SubCaption caption, SubtitleStyle style, int number, int videoWidth, int videoHeight, string baseFName)
         {
             _boldStyle = false;

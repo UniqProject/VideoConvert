@@ -867,8 +867,15 @@ namespace VideoConvert.AppServices.Encoder
                     {
                         switch (_encProfile.BPyramid) // pyramid needs a minimum of 2 b frames
                         {
-                            case 1: sb.Append("--b-pyramid strict "); break;
-                            case 0: sb.Append("--b-pyramid none "); break;
+                            case 2:
+                                sb.Append("--b-pyramid normal ");
+                                break;
+                            case 1: 
+                                sb.Append("--b-pyramid strict ");
+                                break;
+                            case 0: 
+                                sb.Append("--b-pyramid none ");
+                                break;
                         }
                     }
 
@@ -941,45 +948,45 @@ namespace VideoConvert.AppServices.Encoder
                     if (_encProfile.QuantizerDelta != 4)
                         sb.AppendFormat(_appConfig.CInfo, "--qpstep {0:0} ", _encProfile.QuantizerDelta);
 
-                if (Math.Abs(_encProfile.QuantizerRatioIP - 1.4F) > 0)
+                if (Math.Abs(_encProfile.QuantizerRatioIp - 1.4F) > 0)
                 {
                     display = true;
-                    if (_encProfile.Tuning == 3 && Math.Abs(_encProfile.QuantizerRatioIP - 1.1F) <= 0)
+                    if (_encProfile.Tuning == 3 && Math.Abs(_encProfile.QuantizerRatioIp - 1.1F) <= 0)
                         display = false;
 
                     if (!_encProfile.CustomCommandLine.Contains("--ipratio"))
                         if (display)
-                            sb.AppendFormat(_appConfig.CInfo, "--ipratio {0:0} ", _encProfile.QuantizerRatioIP);
+                            sb.AppendFormat(_appConfig.CInfo, "--ipratio {0:0} ", _encProfile.QuantizerRatioIp);
                 }
 
-                if (Math.Abs(_encProfile.QuantizerRatioPB - 1.3F) > 0)
+                if (Math.Abs(_encProfile.QuantizerRatioPb - 1.3F) > 0)
                 {
                     display = true;
-                    if (_encProfile.Tuning == 3 && Math.Abs(_encProfile.QuantizerRatioPB - 1.1F) <= 0)
+                    if (_encProfile.Tuning == 3 && Math.Abs(_encProfile.QuantizerRatioPb - 1.1F) <= 0)
                         display = false;
 
                     if (!_encProfile.CustomCommandLine.Contains("--pbratio"))
                         if (display)
-                            sb.AppendFormat(_appConfig.CInfo, "--pbratio {0:0} ", _encProfile.QuantizerRatioPB);
+                            sb.AppendFormat(_appConfig.CInfo, "--pbratio {0:0} ", _encProfile.QuantizerRatioPb);
                 }
 
                 if (!_encProfile.CustomCommandLine.Contains("--chroma-qp-offset"))
-                    if (_encProfile.ChromaQPOffset != 0)
-                        sb.AppendFormat(_appConfig.CInfo, "--chroma-qp-offset {0:0} ", _encProfile.ChromaQPOffset);
+                    if (_encProfile.ChromaQpOffset != 0)
+                        sb.AppendFormat(_appConfig.CInfo, "--chroma-qp-offset {0:0} ", _encProfile.ChromaQpOffset);
 
                 if (_encProfile.EncodingMode != 1) // doesn't apply to CQ mode
                 {
-                    _encProfile.VBVBufSize = GetVBVBufsize(_encProfile, device);
-                    if (_encProfile.VBVBufSize > 0)
-                        sb.AppendFormat(_appConfig.CInfo, "--vbv-bufsize {0:0} ", _encProfile.VBVBufSize);
+                    _encProfile.VbvBufSize = GetVBVBufsize(_encProfile, device);
+                    if (_encProfile.VbvBufSize > 0)
+                        sb.AppendFormat(_appConfig.CInfo, "--vbv-bufsize {0:0} ", _encProfile.VbvBufSize);
 
-                    _encProfile.VBVMaxRate = GetVBVMaxrate(_encProfile, device);
-                    if (_encProfile.VBVMaxRate > 0)
-                        sb.AppendFormat(_appConfig.CInfo, "--vbv-maxrate {0:0} ", _encProfile.VBVMaxRate);
+                    _encProfile.VbvMaxRate = GetVBVMaxrate(_encProfile, device);
+                    if (_encProfile.VbvMaxRate > 0)
+                        sb.AppendFormat(_appConfig.CInfo, "--vbv-maxrate {0:0} ", _encProfile.VbvMaxRate);
 
                     if (!_encProfile.CustomCommandLine.Contains("--vbv-init"))
-                        if (Math.Abs(_encProfile.VBVInitialBuffer - 0.9F) > 0)
-                            sb.AppendFormat(_appConfig.CInfo, "--vbv-init {0:0.0} ", _encProfile.VBVInitialBuffer);
+                        if (Math.Abs(_encProfile.VbvInitialBuffer - 0.9F) > 0)
+                            sb.AppendFormat(_appConfig.CInfo, "--vbv-init {0:0.0} ", _encProfile.VbvInitialBuffer);
 
                     if (!_encProfile.CustomCommandLine.Contains("--ratetol"))
                         if (Math.Abs(_encProfile.BitrateVariance - 1.0F) > 0)
@@ -1762,7 +1769,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetVBVBufsize(X264Profile inProfile, X264Device device)
         {
-            var vbvBufSize = inProfile.VBVBufSize;
+            var vbvBufSize = inProfile.VbvBufSize;
 
             if (device.VbvBufsize > -1 && (vbvBufSize > device.VbvBufsize || vbvBufSize == 0))
             {
@@ -1880,7 +1887,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetVBVMaxrate(X264Profile inProfile, X264Device device)
         {
-            var vbvMaxRate = inProfile.VBVMaxRate;
+            var vbvMaxRate = inProfile.VbvMaxRate;
 
             if (device.VbvMaxrate > -1 && (vbvMaxRate > device.VbvMaxrate || vbvMaxRate == 0))
             {

@@ -42,7 +42,7 @@ namespace VideoConvert.Interop.Utilities
                 vStream.FormatProfile = mi.Video[0].FormatProfile;
                 if (mi.Video[0].FrameRateEnumerator < vStream.FrameRateEnumerator*2 || !bluRayTarget)
                 {
-                    vStream.FPS = mi.Video[0].FrameRate;
+                    vStream.Fps = mi.Video[0].FrameRate;
                     vStream.FrameCount = mi.Video[0].FrameCount;
                     vStream.FrameRateDenominator = mi.Video[0].FrameRateDenominator;
                     vStream.FrameRateEnumerator = mi.Video[0].FrameRateEnumerator;

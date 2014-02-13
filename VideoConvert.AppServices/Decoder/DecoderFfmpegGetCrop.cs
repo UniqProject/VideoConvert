@@ -246,7 +246,7 @@ namespace VideoConvert.AppServices.Decoder
 
             var avs = new AviSynthGenerator(this._appConfig);
             _inputFile = avs.GenerateCropDetect(this._currentTask.VideoStream.TempFile,
-                                                this._currentTask.VideoStream.FPS,
+                                                this._currentTask.VideoStream.Fps,
                                                 this._currentTask.VideoStream.Length,
                                                 new Size(this._currentTask.VideoStream.Width,
                                                     this._currentTask.VideoStream.Height),

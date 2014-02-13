@@ -254,7 +254,7 @@ namespace VideoConvert.AppServices.Muxer
         {
             var sb = new StringBuilder();
 
-            var fps = this._currentTask.VideoStream.FPS;
+            var fps = this._currentTask.VideoStream.Fps;
             int vidStream;
 
             const string chapterName = "Chapter {0:g}";

@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   TVDB Language container
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -20,10 +20,16 @@ namespace VideoConvert.Interop.DataProviders
     using Model;
     using Utilities;
 
+    /// <summary>
+    /// TVDB Language container
+    /// </summary>
     public class TvdbLang
     {
         private static TvdbHandler _handler;
 
+        /// <summary>
+        /// List of Languages supported by TVDB
+        /// </summary>
         public static List<TvdbLanguage> Languages
         {
             get

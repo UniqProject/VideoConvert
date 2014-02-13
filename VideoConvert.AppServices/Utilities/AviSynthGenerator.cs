@@ -128,7 +128,7 @@ namespace VideoConvert.AppServices.Utilities
             //generate rest of the script
 
             // calculate framerate numerator & denominator
-            if (videoInfo.FPS <= 0)
+            if (videoInfo.Fps <= 0)
             {
                 var mi = new MediaInfoContainer();
                 try
@@ -144,15 +144,15 @@ namespace VideoConvert.AppServices.Utilities
                 {
                     if (mi.Video.Count > 0)
                     {
-                        videoInfo.FPS = mi.Video[0].FrameRate;
-                        VideoHelper.GetFpsNumDenom(videoInfo.FPS, out videoInfo.FrameRateEnumerator,
+                        videoInfo.Fps = mi.Video[0].FrameRate;
+                        VideoHelper.GetFpsNumDenom(videoInfo.Fps, out videoInfo.FrameRateEnumerator,
                                                   out videoInfo.FrameRateDenominator);
 
                         if (videoInfo.FrameRateEnumerator == 0)
                         {
-                            videoInfo.FrameRateEnumerator = (int)Math.Round(videoInfo.FPS) * 1000;
+                            videoInfo.FrameRateEnumerator = (int)Math.Round(videoInfo.Fps) * 1000;
                             videoInfo.FrameRateDenominator =
-                                (int)(Math.Round(Math.Ceiling(videoInfo.FPS) - Math.Floor(videoInfo.FPS)) + 1000);
+                                (int)(Math.Round(Math.Ceiling(videoInfo.Fps) - Math.Floor(videoInfo.Fps)) + 1000);
                         }
                     }
                 }

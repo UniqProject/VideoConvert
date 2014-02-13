@@ -82,7 +82,7 @@ namespace VideoConvertWPF.Startup
 
             this._winContainer.Register(
                 Component.For<IEncoderFfmpegDVD>()
-                    .ImplementedBy<EncoderFfmpegDVD>()
+                    .ImplementedBy<EncoderFfmpegDvd>()
                     .LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(

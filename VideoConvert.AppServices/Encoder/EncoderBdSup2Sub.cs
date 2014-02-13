@@ -294,7 +294,7 @@ namespace VideoConvert.AppServices.Encoder
                                               xmlFile,
                                               this._currentTask.VideoStream.Width,
                                               this._currentTask.VideoStream.Height,
-                                              this._currentTask.VideoStream.FPS))
+                                              this._currentTask.VideoStream.Fps))
                 {
                     _subtitle.Format = "XML";
                     this._currentTask.TempFiles.Add(_inputFile);
@@ -311,11 +311,11 @@ namespace VideoConvert.AppServices.Encoder
                 _outputFile = Path.ChangeExtension(_outputFile, "sup");
 
             var targetFps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
-                              ? this._currentTask.VideoStream.FPS * 2
-                              : this._currentTask.VideoStream.FPS;
+                              ? this._currentTask.VideoStream.Fps * 2
+                              : this._currentTask.VideoStream.Fps;
             var fpsMode = "keep";
 
-            if (Math.Abs(targetFps - this._currentTask.VideoStream.FPS) > 0)
+            if (Math.Abs(targetFps - this._currentTask.VideoStream.Fps) > 0)
                 fpsMode = targetFps.ToString("0.000", _appConfig.CInfo);
 
             sb.AppendFormat(_appConfig.CInfo, "\"{0}\" --output \"{1}\" --fps-target {2} --palette-mode keep ",

@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Video stream information container
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -15,53 +15,146 @@ namespace VideoConvert.Interop.Model
     using System.Globalization;
 
     /// <summary>
-    /// contains information for a video stream
+    /// Video stream information container
     /// </summary>
     public class VideoInfo:IFormattable
     {
         /// <summary>
         /// Framerate of the Video stream
         /// </summary>
-        public float FPS;
+        public float Fps;
+
         /// <summary>
         /// encoding format
         /// </summary>
         public string Format;
+
+        /// <summary>
+        /// Format Profile
+        /// </summary>
         public string FormatProfile;
+
         /// <summary>
         /// stream id in container
         /// </summary>
         public int StreamId;
+
         /// <summary>
         /// id of the video title set (only used for dvd)
         /// </summary>
         public int VtsId;
 
+        /// <summary>
+        /// Track ID
+        /// </summary>
         public int TrackId;
+
+        /// <summary>
+        /// Stream kind ID
+        /// </summary>
         public int StreamKindID;
+
+        /// <summary>
+        /// Temp file name
+        /// </summary>
         public string TempFile;
+
+        /// <summary>
+        /// Interlaced stream
+        /// </summary>
         public bool Interlaced;
+
+        /// <summary>
+        /// Stream resolution
+        /// </summary>
         public VideoFormat PicSize;
+
+        /// <summary>
+        /// Stream ID used while demuxing
+        /// </summary>
         public int DemuxStreamId;
+
+        /// <summary>
+        /// Stream names used while demuxing
+        /// </summary>
         public List<string> DemuxStreamNames;
+
+        /// <summary>
+        /// BD Playlist used while demuxing
+        /// </summary>
         public int DemuxPlayList;
+
+        /// <summary>
+        /// Video width
+        /// </summary>
         public int Width;
+
+        /// <summary>
+        /// Video height
+        /// </summary>
         public int Height;
+
+        /// <summary>
+        /// Video stream frame count
+        /// </summary>
         public long FrameCount;
+
+        /// <summary>
+        /// Encoded stream
+        /// </summary>
         public bool Encoded;
+
+        /// <summary>
+        /// Raw stream
+        /// </summary>
         public bool IsRawStream;
+
+        /// <summary>
+        /// Stream size in bytes
+        /// </summary>
         public ulong StreamSize;
+
+        /// <summary>
+        /// Stream duration in seconds
+        /// </summary>
         public double Length;
+
+        /// <summary>
+        /// Video aspect ratio
+        /// </summary>
         public float AspectRatio;
+
+        /// <summary>
+        /// Video bitrate
+        /// </summary>
         public long Bitrate;
+
+        /// <summary>
+        /// Crop rectangle
+        /// </summary>
         public Rectangle CropRect;
+
+        /// <summary>
+        /// Framerate Enumerator
+        /// </summary>
         public int FrameRateEnumerator;
+
+        /// <summary>
+        /// Framerate Denominator
+        /// </summary>
         public int FrameRateDenominator;
+
+        /// <summary>
+        /// Frame mode
+        /// </summary>
         public string FrameMode;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public VideoInfo()
         {
-            FPS = float.NaN;
+            Fps = float.NaN;
             Format = string.Empty;
             FormatProfile = string.Empty;
             StreamId = int.MinValue;
@@ -116,7 +209,7 @@ namespace VideoConvert.Interop.Model
         {
             var result = string.Empty;
 
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.FPS:              {0:g} {1:s}", FPS,
+            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.FPS:              {0:g} {1:s}", Fps,
                                     Environment.NewLine);
             result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.Format:           {0:s} {1:s}", Format,
                                     Environment.NewLine);

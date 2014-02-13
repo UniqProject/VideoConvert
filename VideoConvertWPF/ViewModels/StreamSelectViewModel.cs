@@ -22,7 +22,6 @@ namespace VideoConvertWPF.ViewModels
     using Interfaces;
     using SharpDvdInfo;
     using SharpDvdInfo.DvdTypes;
-    using SharpDvdInfo.Model;
     using VideoConvert.AppServices.Model.Profiles;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;
@@ -379,10 +378,10 @@ namespace VideoConvertWPF.ViewModels
                 case InputType.InputBluRay:
                 case InputType.InputAvchd:
                 case InputType.InputHddvd:
-                    GetBDInfo();
+                    GetBdInfo();
                     break;
                 case InputType.InputDvd:
-                    GetDVDTitleList();
+                    GetDvdTitleList();
                     break;
                 default:
                     GetFileInfo();
@@ -461,7 +460,7 @@ namespace VideoConvertWPF.ViewModels
             this.NotifyOfPropertyChange(() => this.SelectedNodeData);
         }
 
-        public void ClickOK()
+        public void ClickOk()
         {
             if (SelectedTitleInfo == null) return;
             if (SelectedProfile == null) return;
@@ -494,9 +493,9 @@ namespace VideoConvertWPF.ViewModels
                 else if (dataType == typeof(SubtitleInfo))
                 {
                     var sub = (SubtitleInfo)item.Data;
-                    var isBD = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
+                    var isBd = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
                                 JobInfo.Input == InputType.InputHddvd;
-                    if ((sub.Format == "PGS" || sub.Format == "VobSub" || sub.Format == "UTF-8" || sub.Format == "ASS" || sub.Format == "SSA") && ((isBD && _bdInfo != null && !_bdInfo.Is3D) || !isBD))
+                    if ((sub.Format == "PGS" || sub.Format == "VobSub" || sub.Format == "UTF-8" || sub.Format == "ASS" || sub.Format == "SSA") && ((isBd && _bdInfo != null && !_bdInfo.Is3D) || !isBd))
                         // don't extract subtitles on 3d blurays, because eac3to can't handle them
                         JobInfo.SubtitleStreams.Add(sub);
                 }
@@ -632,7 +631,7 @@ namespace VideoConvertWPF.ViewModels
                 else
                     vid.StreamId = videoPid == 0 ? streamIndex : videoPid;
                 vid.StreamKindID = clip.StreamKindID;
-                vid.FPS = clip.FrameRate;
+                vid.Fps = clip.FrameRate;
                 vid.PicSize = clip.VideoSize;
                 vid.Interlaced = clip.ScanType == "Interlaced";
                 vid.Format = clip.Format;
@@ -755,7 +754,7 @@ namespace VideoConvertWPF.ViewModels
             this.NotifyOfPropertyChange(() => this.Tree);
         }
 
-        public void GetBDInfo()
+        public void GetBdInfo()
         {
             const string strChapters = "Chapters";    //ProcessingService.GetResourceString("streamselect_chapters");
             const string strVideo = "Video";    //ProcessingService.GetResourceString("streamselect_video");
@@ -769,7 +768,7 @@ namespace VideoConvertWPF.ViewModels
             _bdInfo = new BDROM(JobInfo.InputFile);
             _bdInfo.Scan();
 
-            var longestClip = GetLongestBDPlaylist();
+            var longestClip = GetLongestBdPlaylist();
 
             var playlistIndex = 1;
 
@@ -867,7 +866,7 @@ namespace VideoConvertWPF.ViewModels
                                 {
                                     StreamId = streamIndex,
                                     TrackId = playlistIndex,
-                                    FPS = (float)clip.FrameRateEnumerator / clip.FrameRateDenominator,
+                                    Fps = (float)clip.FrameRateEnumerator / clip.FrameRateDenominator,
                                     PicSize = (VideoFormat)clip.VideoFormat,
                                     Interlaced = clip.IsInterlaced,
                                     Format = clip.CodecShortName,
@@ -1008,7 +1007,7 @@ namespace VideoConvertWPF.ViewModels
             _defaultSelection = longestClip - 1;
         }
 
-        public int GetLongestBDPlaylist()
+        public int GetLongestBdPlaylist()
         {
             var longest = 0;
             var longestClip = 0;
@@ -1028,7 +1027,7 @@ namespace VideoConvertWPF.ViewModels
             return longestClip;
         }
 
-        public void GetDVDTitleList()
+        public void GetDvdTitleList()
         {
             const string strChapters = "Chapters";
             const string strVideo = "Video";
@@ -1106,7 +1105,7 @@ namespace VideoConvertWPF.ViewModels
                     VtsId = vtsID,
                     TrackId = videoId,
                     StreamId = 1,
-                    FPS = fps,
+                    Fps = fps,
                     Interlaced = true,
                     Format = codec,
                     FrameCount = 0,

@@ -30,12 +30,12 @@ namespace VideoConvert.AppServices.Encoder
     /// <summary>
     /// The EncoderFfmpegDVD
     /// </summary>
-    public class EncoderFfmpegDVD : EncodeBase, IEncoderFfmpegDVD
+    public class EncoderFfmpegDvd : EncodeBase, IEncoderFfmpegDVD
     {
         /// <summary>
         /// Errorlog
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(typeof (EncoderFfmpegDVD));
+        private static readonly ILog Log = LogManager.GetLogger(typeof (EncoderFfmpegDvd));
 
         #region Private Variables
 
@@ -73,12 +73,12 @@ namespace VideoConvert.AppServices.Encoder
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EncoderFfmpegDVD"/> class.
+        /// Initializes a new instance of the <see cref="EncoderFfmpegDvd"/> class.
         /// </summary>
         /// <param name="appConfig">
         /// The user Setting Service.
         /// </param>
-        public EncoderFfmpegDVD(IAppConfigService appConfig) : base(appConfig)
+        public EncoderFfmpegDvd(IAppConfigService appConfig) : base(appConfig)
         {
             this._appConfig = appConfig;
         }
@@ -259,9 +259,9 @@ namespace VideoConvert.AppServices.Encoder
             var targetSys = this._currentTask.EncodingProfile.SystemType;
             int targetHeight;
 
-            var sourceFPS = (float)Math.Round(this._currentTask.VideoStream.FPS, 3);
-            var targetFPS = 0f;
-            var changeFPS = false;
+            var sourceFps = (float)Math.Round(this._currentTask.VideoStream.Fps, 3);
+            var targetFps = 0f;
+            var changeFps = false;
 
             var sourceAspect = (float)Math.Round(this._currentTask.VideoStream.AspectRatio, 3);
 
@@ -276,16 +276,16 @@ namespace VideoConvert.AppServices.Encoder
                 if (targetSys == 0)
                 {
                     targetHeight = 576;
-                    if (Math.Abs(sourceFPS - 25f) > 0)
-                        changeFPS = true;
-                    targetFPS = 25f;
+                    if (Math.Abs(sourceFps - 25f) > 0)
+                        changeFps = true;
+                    targetFps = 25f;
                 }
                 else
                 {
                     targetHeight = 480;
-                    if (Math.Abs(sourceFPS - 29.970f) > 0 && Math.Abs(sourceFPS - 23.976f) > 0)
-                        changeFPS = true;
-                    targetFPS = (float)Math.Round(30000f / 1001f, 3);
+                    if (Math.Abs(sourceFps - 29.970f) > 0 && Math.Abs(sourceFps - 23.976f) > 0)
+                        changeFps = true;
+                    targetFps = (float)Math.Round(30000f / 1001f, 3);
                 }
             }
             else
@@ -309,8 +309,8 @@ namespace VideoConvert.AppServices.Encoder
             {
                 var avs = new AviSynthGenerator(this._appConfig);
                 this._currentTask.AviSynthScript = avs.Generate(this._currentTask.VideoStream,
-                                                                changeFPS,
-                                                                targetFPS,
+                                                                changeFps,
+                                                                targetFps,
                                                                 resizeTo,
                                                                 StereoEncoding.None,
                                                                 new StereoVideoInfo(),
@@ -477,23 +477,23 @@ namespace VideoConvert.AppServices.Encoder
 
                 var progress = ((float)current / _frameCount) * 100;
 
-                var codingFPS = 0f;
+                var codingFps = 0f;
                 if (elapsedTime.Seconds != 0) // prevent division by zero
                 {
                     //Frames per Second
-                    codingFPS = (float)Math.Round(current / elapsedTime.TotalSeconds, 2);
+                    codingFps = (float)Math.Round(current / elapsedTime.TotalSeconds, 2);
                 }
 
                 long secRemaining;
-                if (codingFPS > 1) // prevent another division by zero
-                    secRemaining = framesRemaining / (int)codingFPS;
+                if (codingFps > 1) // prevent another division by zero
+                    secRemaining = framesRemaining / (int)codingFps;
                 else
                     secRemaining = 0;
 
                 if (secRemaining > 0)
                     this._remainingTime = new TimeSpan(0, 0, (int)secRemaining);
 
-                var fps = 0f;
+                float fps;
                 Single.TryParse(result.Groups[2].Value, NumberStyles.Number,
                                 _appConfig.CInfo, out fps);
                 float encBitrate;
@@ -503,7 +503,7 @@ namespace VideoConvert.AppServices.Encoder
                 
                 var eventArgs = new EncodeProgressEventArgs
                 {
-                    AverageFrameRate = codingFPS,
+                    AverageFrameRate = codingFps,
                     CurrentFrameRate = fps,
                     EstimatedTimeLeft = this._remainingTime,
                     PercentComplete = progress,

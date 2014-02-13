@@ -82,7 +82,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             var i = 0;
             foreach (var caption in subtitle.Captions)
             {
-                var image = PNGImage.CreateImage(caption, subtitle.Style, i, videoWidth, videoHeight, fileName);
+                var image = PngImage.CreateImage(caption, subtitle.Style, i, videoWidth, videoHeight, fileName);
                 if (string.IsNullOrEmpty(image.FileName) || image.Width == 0 || image.Height == 0) continue;
 
                 workNode = outputDocument.CreateElement("Event");
