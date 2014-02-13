@@ -554,59 +554,253 @@ namespace VideoConvert.Interop.Model.Profiles
         /// </summary>
         public int Trellis { get; set; }
 
-        public float PsyRDStrength { get; set; }
+        /// <summary>
+        /// The strength of Psy-RDO to use (requires <see cref="SubPixelRefinement"/> >= 6 to activate). 
+        /// Note that Trellis is still considered 'experimental', and almost certainly is a Bad Thing for at least cartoons.
+        /// See this thread on doom9 for an explanation of psy-rd: http://forum.doom9.org/showthread.php?t=138293.
+        /// Life is short, and this article saved valubale time on this Earth.
+        /// </summary>
+        public float PsyRdStrength { get; set; }
+
+        /// <summary>
+        /// The strength of Psy-Trellis (requires <see cref="Trellis"/> >= 1 to activate). 
+        /// Note that Trellis is still considered 'experimental', and almost certainly is a Bad Thing for at least cartoons.
+        /// See this thread on doom9 for an explanation of psy-rd: http://forum.doom9.org/showthread.php?t=138293.
+        /// Life is short, and this article saved valubale time on this Earth.
+        /// </summary>
         public float PsyTrellisStrength { get; set; }
+
+        /// <summary>
+        /// Mixed refs will select refs on a per-8x8 partition, rather than per-macroblock basis. 
+        /// This improves quality when using multiple reference frames, albeit at some speed cost. 
+        /// Setting this option will disable it.
+        /// </summary>
         public bool UseNoMixedReferenceFrames { get; set; }
-        public bool UseNoDCTDecimation { get; set; }
+
+        /// <summary>
+        /// DCT Decimation will drop DCT blocks it deems "unnecessary". 
+        /// This will improve coding efficiency, with a usually negligible loss in quality. 
+        /// Setting this option will disable it.
+        /// </summary>
+        public bool UseNoDctDecimation { get; set; }
+
+        /// <summary>
+        /// Disables early skip detection on P-frames. 
+        /// At low bitrates, provides a moderate quality increase for a large speed cost. 
+        /// At high bitrates, has negligible effect on both speed and quality.
+        /// </summary>
         public bool UseNoFastPSkip { get; set; }
-        public bool UseNoPsychovisualEnhancements { get; set; }
+
+        /// <summary>
+        /// Performs fast noise reduction. 
+        /// Estimates film noise based on this value and attempts to remove it by dropping small details before quantization. 
+        /// This may not match the quality of a good external noise reduction filter, but it performs very fast.
+        /// </summary>
         public int NoiseReduction { get; set; }
-        public int MacroBlocksPartitions { get; set; }
-        public bool MacroBlocksPartitionsAdaptiveDCT { get; set; }
+
+        /// <summary>
+        /// Adaptive 8x8 DCT enables the intelligent adaptive use of 8x8 transforms in I-frames. 
+        /// Setting this to false disables the feature.
+        /// </summary>
+        public bool MacroBlocksPartitionsAdaptiveDct { get; set; }
+
+        /// <summary>
+        /// H.264 video is split up into 16x16 macroblocks during compression. 
+        /// These blocks can be further split up into smaller partitions, which is what this option controls.
+        /// With this option, you enable 4x4 partitions for I-frames. 
+        /// </summary>
         public bool MacroBlocksPartitionsI4X4 { get; set; }
+
+        /// <summary>
+        /// H.264 video is split up into 16x16 macroblocks during compression. 
+        /// These blocks can be further split up into smaller partitions, which is what this option controls.
+        /// With this option, you enable 4x4 partitions for P-frames. 
+        /// p4x4 is generally not very useful and has an extremely high ratio of speed cost to resulting quality gain.
+        /// </summary>
         public bool MacroBlocksPartitionsP4X4 { get; set; }
+
+        /// <summary>
+        /// H.264 video is split up into 16x16 macroblocks during compression. 
+        /// These blocks can be further split up into smaller partitions, which is what this option controls.
+        /// With this option, you enable 8x8 partitions for I-frames. 
+        /// </summary>
         public bool MacroBlocksPartitionsI8X8 { get; set; }
+
+        /// <summary>
+        /// H.264 video is split up into 16x16 macroblocks during compression. 
+        /// These blocks can be further split up into smaller partitions, which is what this option controls.
+        /// With this option, you enable 8x8 partitions for P-frames. 
+        /// </summary>
         public bool MacroBlocksPartitionsP8X8 { get; set; }
+
+        /// <summary>
+        /// H.264 video is split up into 16x16 macroblocks during compression. 
+        /// These blocks can be further split up into smaller partitions, which is what this option controls.
+        /// With this option, you enable 8x8 partitions for B-frames. 
+        /// </summary>
         public bool MacroBlocksPartitionsB8X8 { get; set; }
-        public int HRDInfo { get; set; }
+
+        /// <summary>
+        /// Signal HRD information. Required for Blu-ray streams, television broadcast and a few other specialist areas. 
+        /// Acceptable values are:
+        /// 
+        /// none (0): Specify no HRD information
+        /// vbr (1):  Specify HRD information
+        /// cbr (2):  Specify HRD information and pack the bitstream to the bitrate specified by bitrate. Requires bitrate mode ratecontrol.
+        /// 
+        /// Recommendation: none, unless you need to signal this information.
+        /// </summary>
+        public int HrdInfo { get; set; }
+
+        /// <summary>
+        /// Use access unit delimiters.
+        /// Default: Not Set
+        /// Recommendation: Default, unless encoding for Blu-ray, in which case set this option.
+        /// </summary>
         public bool UseAccessUnitDelimiters { get; set; }
+
+        /// <summary>
+        /// Mark a stream as interlaced even when not encoding as interlaced. Allows encoding of 25p and 30p Blu-ray compliant videos.
+        /// Default: Not Set
+        /// </summary>
         public bool UseFakeInterlaced { get; set; }
+
+        /// <summary>
+        /// Modify x264's options to ensure better compatibility with all Blu-Ray players. 
+        /// Only neccessary if your video will be played by Blu-Ray hardware players.
+        /// This setting makes some option changes:
+        /// Cap <see cref="PFrameWeightedPrediction"/> at 1
+        /// Set <see cref="MinGopSize"/> to 1
+        /// Disable --intra-refresh
+        /// etc...
+        /// It also enables some internal x264 hacks to produce more hardware-player-friendly streams. For example:
+        /// GOP/mini-GOP tweaks to size and reference lists.
+        /// More verbose slice headers
+        /// 
+        /// Default: Not set
+        /// Recommendation: Set if you're encoding for hardware Blu-Ray players.
+        /// </summary>
         public bool UseBluRayCompatibility { get; set; }
-        public int VUIRange { get; set; }
+
+        /// <summary>
+        /// Indicates whether the output range of luma and chroma levels should be limited or full. 
+        /// If set to TV (1), the limited ranges will be used. If set to auto (0), use the same range as input.
+        /// NOTE: If range and --input-range differ, then a range conversion will occur!
+        /// See this page for a simple description.
+        /// 
+        /// Default: auto (0)
+        /// Recommendation: Default.
+        /// </summary>
+        public int VuiRange { get; set; }
+
+        /// <summary>
+        /// Set what color primaries for converting to RGB.
+        /// Will be ignored if <see cref="UseAutoSelectColorSettings"/> is enabled, 
+        /// and calculated based on resolution instead.
+        /// Possible Values:
+        /// undef (0)
+        /// bt709 (1)
+        /// bt470m (2)
+        /// bt470bg (3)
+        /// smpte170m (4)
+        /// smpte240m (5)
+        /// film (6)
+        /// 
+        /// Default: undef
+        /// Recommendation: Default, unless you know what your source uses.
+        /// </summary>
         public int ColorPrimaries { get; set; }
+
+        /// <summary>
+        /// Set the opto-electronic transfer characteristics to use. (Sets the gamma curve to use for correction.)
+        /// Will be ignored if <see cref="UseAutoSelectColorSettings"/> is enabled, 
+        /// and calculated based on resolution instead.
+        /// Possible values:
+        /// undef (0)
+        /// bt709 (1)
+        /// bt470m (2)
+        /// bt470bg (3)
+        /// linear (4)
+        /// log100 (5)
+        /// log316 (6)
+        /// smpte170m (7)
+        /// smpte240m (8)
+        /// 
+        /// Default: undef
+        /// Recommendation: Default, unless you know what your source uses.
+        /// </summary>
         public int Transfer { get; set; }
+
+        /// <summary>
+        /// Set the matrix coefficients used in deriving the luma and chroma from the RGB primaries.
+        /// Will be ignored if <see cref="UseAutoSelectColorSettings"/> is enabled, 
+        /// and calculated based on resolution instead.
+        /// Possible values:
+        /// undef (0)
+        /// bt709 (1)
+        /// fcc (2)
+        /// bt470bg (3)
+        /// smpte170m (4)
+        /// smpte240m (5)
+        /// GBR (6)
+        /// YCgCo (7)
+        /// 
+        /// Default: undef
+        /// Recommendation: Whatever your sources uses, or default.
+        /// </summary>
         public int ColorMatrix { get; set; }
+
+        /// <summary>
+        /// calculates <see cref="ColorPrimaries"/>, <see cref="Transfer"/> and <see cref="ColorMatrix"/> based on output resolution.
+        /// </summary>
         public bool UseAutoSelectColorSettings { get; set; }
-        public bool UsePSNRCalculation { get; set; }
 
         /// <summary>
-        /// 
+        /// Enables PSNR calculations (http://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio)
+        /// that are reported on completion at the cost of a small decrease in speed.
         /// </summary>
-        public bool UseSSIMCalculation { get; set; }
+        public bool UsePsnrCalculation { get; set; }
 
         /// <summary>
-        /// 
+        /// Enables SSIM calculations (http://en.wikipedia.org/wiki/SSIM)
+        /// that are reported on completion at the cost of a small decrease in speed.
         /// </summary>
-        public int ForceSAR { get; set; }
+        public bool UseSsimCalculation { get; set; }
 
         /// <summary>
+        /// Specifies the input video's Sample Aspect Ratio (SAR) to be used by the encoder in width:height.
+        /// This in conjunction with frame dimensions can be used to encode an anamorphic output by determining the 
+        /// Display Aspect Ratio (DAR) via the formula: DAR = SAR x width/height
         /// 
+        /// Default: Not Set
         /// </summary>
-        public bool UseAutoSelectSAR { get; set; }
+        public int ForceSar { get; set; }
 
         /// <summary>
+        /// Calculate SAR based on input resolution
+        /// </summary>
+        public bool UseAutoSelectSar { get; set; }
+
+        /// <summary>
+        /// Enables parallel encoding by using more than 1 thread to increase speed on multi-core systems. 
+        /// The quality loss from multiple threads is mostly negligible unless using very high numbers of threads (say, above 16).
+        /// The speed gain should be slightly less than linear until you start using more than 1 thread per 40px of vertical video,
+        /// at which point the gain from additional threads sharply decreases.
+        /// x264 currently has an internal limit on the number of threads set at 128, realistically you should never set it this high.
         /// 
+        /// Default: auto (frame based threads: 1.5 * logical processors, rounded down; slice based threads: 1 * logical processors)
         /// </summary>
         public int NumThreads { get; set; }
 
         /// <summary>
+        /// Decodes the input video in a separate thread to the encoding process.
         /// 
+        /// Default: Set if threads > 1.
+        /// Recommendation: Default.
         /// </summary>
         public bool UseThreadInput { get; set; }
 
         /// <summary>
-        /// Defines wheter non-deterministic parameter should be used.
-        /// From http://mewiki.project357.com/wiki/X264_Settings#non-deterministic:
         /// Slightly improve quality when encoding with <see cref="NumThreads"/> > 1, at the cost of non-deterministic
         /// output encodes. This enables multi-threaded mv and uses the entire lookahead buffer in slicetype decisions
         /// when slicetype is threaded -- rather than just the minimum amount known to be available.
@@ -615,13 +809,20 @@ namespace VideoConvert.Interop.Model.Profiles
         public bool UseNonDeterministic { get; set; }
 
         /// <summary>
-        /// Defines the use of slow first pass
+        /// Using --pass 1 applies the following settings at the end of parsing the command line:
+        /// <see cref="NumRefFrames"/> 1
+        /// <see cref="MacroBlocksPartitionsAdaptiveDct"/> = false
+        /// <see cref="MacroBlocksPartitionsI4X4"/> (if originally enabled, else none)
+        /// <see cref="MotionEstimationAlgorithm"/> dia
+        /// <see cref="SubPixelRefinement"/> MIN( 2, <see cref="MotionEstimationAlgorithm"/> )
+        /// <see cref="Trellis"/> 0
+        /// 
+        /// You can set UseSlowFirstPass to disable this.
+        /// Note: <see cref="Preset"/> placebo enables UseSlowFirstPass.
         /// </summary>
         public bool UseSlowFirstPass { get; set; }
 
         /// <summary>
-        /// Defines whether picstruct should be forced.
-        /// From http://mewiki.project357.com/wiki/X264_Settings#pic-struct:
         /// Force sending pic_struct in Picture Timing SEI.
         /// Implied when you use <see cref="Pulldown"/> or <see cref="InterlaceMode"/>.
         /// </summary>
@@ -696,33 +897,31 @@ namespace VideoConvert.Interop.Model.Profiles
             SubPixelRefinement = 7;
             MvPredictionMod = 1;
             Trellis = 1;
-            PsyRDStrength = 1.0f;
+            PsyRdStrength = 1.0f;
             PsyTrellisStrength = 0.0f;
             UseNoMixedReferenceFrames = false;
-            UseNoDCTDecimation = false;
+            UseNoDctDecimation = false;
             UseNoFastPSkip = false;
-            UseNoPsychovisualEnhancements = false;
             NoiseReduction = 0;
-            MacroBlocksPartitions = 3;
-            MacroBlocksPartitionsAdaptiveDCT = true;
+            MacroBlocksPartitionsAdaptiveDct = true;
             MacroBlocksPartitionsI4X4 = true;
             MacroBlocksPartitionsP4X4 = false;
             MacroBlocksPartitionsI8X8 = true;
             MacroBlocksPartitionsP8X8 = true;
             MacroBlocksPartitionsB8X8 = true;
-            HRDInfo = 0;
+            HrdInfo = 0;
             UseAccessUnitDelimiters = false;
             UseFakeInterlaced = false;
             UseBluRayCompatibility = false;
-            VUIRange = 0;
+            VuiRange = 0;
             ColorPrimaries = 0;
             Transfer = 0;
             ColorMatrix = 0;
             UseAutoSelectColorSettings = true;
-            UsePSNRCalculation = false;
-            UseSSIMCalculation = false;
-            ForceSAR = 0;
-            UseAutoSelectSAR = true;
+            UsePsnrCalculation = false;
+            UseSsimCalculation = false;
+            ForceSar = 0;
+            UseAutoSelectSar = true;
             NumThreads = 0;
             UseThreadInput = true;
             UseNonDeterministic = false;

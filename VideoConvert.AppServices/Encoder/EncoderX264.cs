@@ -1274,7 +1274,7 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 if (_encProfile.AvcProfile > 1 && !_encProfile.CustomCommandLine.Contains("--no-8x8dct"))
-                    if (!_encProfile.MacroBlocksPartitionsAdaptiveDCT)
+                    if (!_encProfile.MacroBlocksPartitionsAdaptiveDct)
                         if (_encProfile.Preset > 0)
                             sb.Append("--no-8x8dct ");
 
@@ -1306,15 +1306,15 @@ namespace VideoConvert.AppServices.Encoder
                         display = false;
                         switch (_encProfile.Tuning)
                         {
-                            case 1: if ((Math.Abs(_encProfile.PsyRDStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.15F) > 0)) display = true; break;
-                            case 2: if ((Math.Abs(_encProfile.PsyRDStrength - 0.4F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.0F) > 0)) display = true; break;
-                            case 3: if ((Math.Abs(_encProfile.PsyRDStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.25F) > 0)) display = true; break;
-                            case 7: if ((Math.Abs(_encProfile.PsyRDStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.2F) > 0)) display = true; break;
-                            default: if ((Math.Abs(_encProfile.PsyRDStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.0F) > 0)) display = true; break;
+                            case 1: if ((Math.Abs(_encProfile.PsyRdStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.15F) > 0)) display = true; break;
+                            case 2: if ((Math.Abs(_encProfile.PsyRdStrength - 0.4F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.0F) > 0)) display = true; break;
+                            case 3: if ((Math.Abs(_encProfile.PsyRdStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.25F) > 0)) display = true; break;
+                            case 7: if ((Math.Abs(_encProfile.PsyRdStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.2F) > 0)) display = true; break;
+                            default: if ((Math.Abs(_encProfile.PsyRdStrength - 1.0F) > 0) || (Math.Abs(_encProfile.PsyTrellisStrength - 0.0F) > 0)) display = true; break;
                         }
 
                         if (display)
-                            sb.AppendFormat(_appConfig.CInfo, "--psy-rd {0:0.00}:{1:0.00} ", _encProfile.PsyRDStrength, _encProfile.PsyTrellisStrength);
+                            sb.AppendFormat(_appConfig.CInfo, "--psy-rd {0:0.00}:{1:0.00} ", _encProfile.PsyRdStrength, _encProfile.PsyTrellisStrength);
                     }
                 }
 
@@ -1324,7 +1324,7 @@ namespace VideoConvert.AppServices.Encoder
                             sb.Append("--no-mixed-refs ");
 
                 if (!_encProfile.CustomCommandLine.Contains("--no-dct-decimate"))
-                    if (_encProfile.UseNoDCTDecimation)
+                    if (_encProfile.UseNoDctDecimation)
                         if (_encProfile.Tuning != 3) // tune grain
                             sb.Append("--no-dct-decimate ");
 
@@ -1333,16 +1333,13 @@ namespace VideoConvert.AppServices.Encoder
                         if (_encProfile.Preset != 9) // preset placebo
                             sb.Append("--no-fast-pskip ");
 
-                if (!_encProfile.CustomCommandLine.Contains("--no-psy"))
-                    if (_encProfile.UseNoPsychovisualEnhancements && (_encProfile.Tuning != 5 && _encProfile.Tuning != 6))
-                        sb.Append("--no-psy ");
 
                 _encProfile.UseAccessUnitDelimiters = GetAud(_encProfile, device);
                 if (_encProfile.UseAccessUnitDelimiters && !_encProfile.UseBluRayCompatibility)
                     sb.Append("--aud ");
 
-                _encProfile.HRDInfo = GetNalHrd(_encProfile, device);
-                switch (_encProfile.HRDInfo)
+                _encProfile.HrdInfo = GetNalHrd(_encProfile, device);
+                switch (_encProfile.HrdInfo)
                 {
                     case 1: if (!_encProfile.UseBluRayCompatibility) sb.Append("--nal-hrd vbr "); break;
                     case 2: sb.Append("--nal-hrd cbr "); break;
@@ -1356,15 +1353,15 @@ namespace VideoConvert.AppServices.Encoder
                 #region misc tab
 
                 if (!_encProfile.CustomCommandLine.Contains("--psnr"))
-                    if (_encProfile.UsePSNRCalculation)
+                    if (_encProfile.UsePsnrCalculation)
                         sb.Append("--psnr ");
 
                 if (!_encProfile.CustomCommandLine.Contains("--ssim"))
-                    if (_encProfile.UseSSIMCalculation)
+                    if (_encProfile.UseSsimCalculation)
                         sb.Append("--ssim ");
 
                 if (!_encProfile.CustomCommandLine.Contains("--range "))
-                    switch (_encProfile.VUIRange)
+                    switch (_encProfile.VuiRange)
                     {
                         case 1:
                             sb.AppendFormat("--range tv ");
@@ -1382,10 +1379,10 @@ namespace VideoConvert.AppServices.Encoder
 
                 Dar? d = new Dar((ulong)hRes, (ulong)vRes);
 
-                if (_encProfile.UseAutoSelectSAR)
+                if (_encProfile.UseAutoSelectSar)
                 {
                     var tempValue = GetSar(_encProfile, d, hRes, vRes, out customSarValue, String.Empty);
-                    _encProfile.ForceSAR = tempValue;
+                    _encProfile.ForceSar = tempValue;
                 }
 
                 if (_encProfile.UseAutoSelectColorSettings)
@@ -1505,7 +1502,7 @@ namespace VideoConvert.AppServices.Encoder
 
                 if (!_encProfile.CustomCommandLine.Contains("--sar"))
                 {
-                    switch (_encProfile.ForceSAR)
+                    switch (_encProfile.ForceSar)
                     {
                         case 0:
                             {
@@ -1701,7 +1698,7 @@ namespace VideoConvert.AppServices.Encoder
         private int GetSar(X264Profile inProfile, Dar? d, int hRes, int vRes, out string customSarValue, string customSarValueInput)
         {
             var strCustomValue = string.Empty;
-            var sar = inProfile.ForceSAR;
+            var sar = inProfile.ForceSar;
 
             customSarValue = String.Empty;
             if (String.IsNullOrEmpty(customSarValueInput))
@@ -1747,7 +1744,7 @@ namespace VideoConvert.AppServices.Encoder
 
         private int GetNalHrd(X264Profile inProfile, X264Device device)
         {
-            var nalHrd = inProfile.HRDInfo;
+            var nalHrd = inProfile.HrdInfo;
 
             if (device.BluRay && nalHrd < 1)
             {
