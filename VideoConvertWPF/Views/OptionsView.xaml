@@ -241,12 +241,12 @@
                                                         <ColumnDefinition Width="Auto" />
                                                         <ColumnDefinition Width="*" />
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" 
-                                                               Text="{Binding Path=Key}" FontWeight="DemiBold" />
-                                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                               Margin="5,0" Text="version" />
-                                                    <TextBlock Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                                               Text="{Binding Path=Value}"/>
+                                                    <Label Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                                               Content="{Binding Path=Key}" FontWeight="DemiBold" />
+                                                    <Label Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Margin="5,0" Content="version" />
+                                                    <Label Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                                               Content="{Binding Path=Value}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
