@@ -177,7 +177,7 @@ namespace VideoConvert.AppServices.Encoder
                     throw new Exception("lame is already running");
 
                 var use64BitEncoder = this._appConfig.Use64BitEncoders &&
-                                       this._appConfig.Ffmpeg64Installed &&
+                                       this._appConfig.Lame64Installed &&
                                        Environment.Is64BitOperatingSystem;
 
                 this.IsEncoding = true;
