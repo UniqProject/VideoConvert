@@ -24,6 +24,9 @@ namespace VideoConvert.AppServices.Encoder
     using log4net;
     using Services.Base;
     using Services.Interfaces;
+    using VideoConvert.AppServices.Utilities;
+    using VideoConvert.Interop.Model.Profiles;
+    using VideoConvert.Interop.Utilities;
     using ThreadState = System.Threading.ThreadState;
 
     /// <summary>
@@ -39,8 +42,6 @@ namespace VideoConvert.AppServices.Encoder
         #region Private Variables
 
         private readonly IAppConfigService _appConfig;
-        private const string Executable = "OggEnc.exe";
-        private const string Executable64 = "OggEnc_64.exe";
 
         /// <summary>
         /// Gets the Encoder Process ID
@@ -67,12 +68,17 @@ namespace VideoConvert.AppServices.Encoder
         private EncodeInfo _currentTask;
 
         private string _inputFile;
+        private string _outputFile;
+
+        private AudioInfo _audio;
 
         private readonly Regex _encObj = new Regex(@"^.*Encoding\s*?\[.*\].*$",
             RegexOptions.Singleline | RegexOptions.Multiline);
 
         private readonly Regex _pipeObj = new Regex(@"^([\d\,\.]*?)%.*$",
             RegexOptions.Singleline | RegexOptions.Multiline);
+
+        
 
         #endregion
 
@@ -107,15 +113,13 @@ namespace VideoConvert.AppServices.Encoder
         /// Reads encoder version from its output, use path settings from parameters
         /// </summary>
         /// <param name="encPath">Path to encoder</param>
-        /// <param name="use64Bit"></param>
+        /// <param name="optimized"></param>
         /// <returns>Encoder version</returns>
-        public static string GetVersionInfo(string encPath, bool use64Bit)
+        public string GetVersionInfo(string encPath, bool optimized)
         {
             var verInfo = string.Empty;
 
-            if (use64Bit && !Environment.Is64BitOperatingSystem) return string.Empty;
-
-            var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
+            var localExecutable = Path.Combine(encPath, BuildExecutable(optimized));
 
             using (var encoder = new Process())
             {
@@ -123,7 +127,8 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
-                    RedirectStandardError = true
+                    RedirectStandardOutput = true,
+                    Arguments = "-h"
                 };
                 encoder.StartInfo = parameter;
 
@@ -140,12 +145,21 @@ namespace VideoConvert.AppServices.Encoder
 
                 if (started)
                 {
-                    var output = encoder.StandardError.ReadToEnd();
-                    var regObj = new Regex(@"^OggEnc\s+?v([\w\d\.\(\)\s]+?)$",
-                        RegexOptions.Singleline | RegexOptions.Multiline);
+                    var output = encoder.StandardOutput.ReadToEnd();
+                    const string regexNonOptimized = @"^OggEnc\s+?v([\w\d\.\(\)\s]+?)$";
+                    const string regexOptimized = @"^OggEnc\s+?v([\d\.]*?)\s+?\(.+?based on (.+?)\s+?\[.+?\]\).*?$";
+
+                    var regObj = new Regex(regexNonOptimized, RegexOptions.Singleline | RegexOptions.Multiline);
                     var result = regObj.Match(output);
                     if (result.Success)
-                        verInfo = result.Groups[1].Value;
+                        verInfo = result.Groups[1].Value.Trim();
+                    else
+                    {
+                        regObj = new Regex(regexOptimized, RegexOptions.Singleline | RegexOptions.Multiline);
+                        result = regObj.Match(output);
+                        if (result.Success)
+                            verInfo = string.Format("{0} ({1})", result.Groups[1].Value, result.Groups[2].Value);
+                    }
 
                     encoder.WaitForExit(10000);
                     if (!encoder.HasExited)
@@ -156,8 +170,8 @@ namespace VideoConvert.AppServices.Encoder
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                if (use64Bit)
-                    Log.Debug("Selected 64 bit encoder");
+                if (optimized)
+                    Log.Debug("Optimized encoder");
                 Log.DebugFormat("OggEnc \"{0}\" found", verInfo);
             }
             return verInfo;
@@ -174,15 +188,11 @@ namespace VideoConvert.AppServices.Encoder
                 if (this.IsEncoding)
                     throw new Exception("OggEnc is already running");
 
-                var use64BitEncoder = this._appConfig.Use64BitEncoders &&
-                                       this._appConfig.Ffmpeg64Installed &&
-                                       Environment.Is64BitOperatingSystem;
-
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, use64BitEncoder ? Executable64 : Executable);
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, BuildExecutable(this._appConfig.UseOptimizedEncoders));
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
@@ -190,19 +200,19 @@ namespace VideoConvert.AppServices.Encoder
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardError = true,
-                    RedirectStandardOutput = true,
                     RedirectStandardInput = true
                 };
+
                 this.EncodeProcess = new Process {StartInfo = cliStart};
                 Log.InfoFormat("start parameter: OggEnc {0}", query);
 
-                this.DecodeProcess = DecoderBePipe.CreateDecodingProcess(_inputFile, this._appConfig.AvsPluginsPath);
+                this.DecodeProcess = DecoderBePipe.CreateDecodingProcess(this._inputFile, this._appConfig.AvsPluginsPath);
 
                 this._encodePipe = new NamedPipeServerStream(this._appConfig.EncodeNamedPipeName,
-                    PipeDirection.InOut,
-                    3,
-                    PipeTransmissionMode.Byte,
-                    PipeOptions.Asynchronous);
+                                                             PipeDirection.InOut,
+                                                             3,
+                                                             PipeTransmissionMode.Byte,
+                                                             PipeOptions.Asynchronous);
 
                 this._encodePipeState = this._encodePipe.BeginWaitForConnection(EncoderConnected, null);
 
@@ -211,13 +221,8 @@ namespace VideoConvert.AppServices.Encoder
 
                 this._startTime = DateTime.Now;
 
-                // TODO: check output handling
-
                 this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
                 this.EncodeProcess.BeginErrorReadLine();
-
-                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
 
                 this.DecodeProcess.ErrorDataReceived += DecodeProcessDataReceived;
                 this.DecodeProcess.BeginErrorReadLine();
@@ -289,11 +294,89 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
+        private string BuildExecutable (bool optimized)
+        {
+            string fName = "oggenc2";
+            if (optimized && this._appConfig.UseOptimizedEncoders)
+            {
+                if (this._appConfig.SupportedCpuExtensions.SSE3 == 1)
+                {
+                    fName += "_SSE3";
+                    if (Environment.Is64BitOperatingSystem && this._appConfig.Use64BitEncoders)
+                        fName += "_64";
+                }
+                else if (this._appConfig.SupportedCpuExtensions.SSE2 == 1)
+                    fName += "_SSE2";
+                else if (this._appConfig.SupportedCpuExtensions.SSE == 1)
+                    fName += "_SSE";
+            }
+            fName += ".exe";
+
+            return fName;
+        }
+
         private string GenerateCommandLine()
         {
             var sb = new StringBuilder();
 
-            // TODO: add commandline generation
+            this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
+
+            var outChannels = ((OggProfile)this._currentTask.AudioProfile).OutputChannels;
+            switch (outChannels)
+            {
+                case 1:
+                    outChannels = 2;
+                    break;
+                case 2:
+                    outChannels = 1;
+                    break;
+            }
+            var outSampleRate = ((OggProfile)this._currentTask.AudioProfile).SampleRate;
+            switch (outSampleRate)
+            {
+                case 1:
+                    outSampleRate = 8000;
+                    break;
+                case 2:
+                    outSampleRate = 11025;
+                    break;
+                case 3:
+                    outSampleRate = 22050;
+                    break;
+                case 4:
+                    outSampleRate = 44100;
+                    break;
+                case 5:
+                    outSampleRate = 48000;
+                    break;
+                default:
+                    outSampleRate = 0;
+                    break;
+            }
+
+            var encMode = ((OggProfile)this._currentTask.AudioProfile).EncodingMode;
+            var bitrate = ((OggProfile)this._currentTask.AudioProfile).Bitrate * 1000;
+            var quality = ((OggProfile)this._currentTask.AudioProfile).Quality;
+
+            var avs = new AviSynthGenerator(this._appConfig);
+
+            this._inputFile = avs.GenerateAudioScript(this._audio.TempFile, this._audio.Format, this._audio.FormatProfile,
+                                                      this._audio.ChannelCount, outChannels, this._audio.SampleRate,
+                                                      outSampleRate);
+
+            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, this._audio.TempFile, "encoded.ogg");
+
+            if (encMode == 2)
+                sb.AppendFormat("-q {0:0.00} ", quality);
+            else
+            {
+                if (encMode == 1)
+                    sb.Append("--managed ");
+                sb.AppendFormat("-b {0:0} ", bitrate);
+            }
+
+            sb.AppendFormat("-o \"{0}\" ", this._outputFile);
+            sb.Append("--ignorelength - ");
 
             return sb.ToString();
         }
@@ -316,8 +399,6 @@ namespace VideoConvert.AppServices.Encoder
             try
             {
                 this.EncodeProcess.CancelErrorRead();
-                this.EncodeProcess.CancelOutputRead();
-                // TODO: check stdout / stderr reading
             }
             catch (Exception exc)
             {
@@ -329,7 +410,12 @@ namespace VideoConvert.AppServices.Encoder
 
             if (this._currentTask.ExitCode == 0)
             {
-                // TODO: tempfile handling
+                this._currentTask.TempFiles.Add(this._inputFile);
+                this._currentTask.TempFiles.Add(this._audio.TempFile);
+                this._currentTask.TempFiles.Add(this._audio.TempFile + ".d2a");
+                this._currentTask.TempFiles.Add(this._audio.TempFile + ".ffindex");
+                this._audio.TempFile = this._outputFile;
+                AudioHelper.GetStreamInfo(this._audio);
             }
 
             this._currentTask.CompletedStep = this._currentTask.NextStep;
@@ -377,25 +463,7 @@ namespace VideoConvert.AppServices.Encoder
             if (string.IsNullOrEmpty(line)) return;
 
             var result = _encObj.Match(line);
-
-            if (result.Success)
-            {
-                // TODO: output processing
-                /*
-                EncodeProgressEventArgs eventArgs = new EncodeProgressEventArgs
-                {
-                    AverageFrameRate = 0,
-                    CurrentFrameRate = 0,
-                    EstimatedTimeLeft = remainingTime,
-                    PercentComplete = progress,
-                    Task = 0,
-                    TaskCount = 0,
-                    ElapsedTime = elapsedTime,
-                };
-                this.InvokeEncodeStatusChanged(eventArgs);
-                */
-            }
-            else
+            if (!result.Success)
                 Log.InfoFormat("OggEnc: {0}", line);
         }
 
