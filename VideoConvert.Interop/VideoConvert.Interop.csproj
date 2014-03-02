@@ -144,15 +144,11 @@
       <Project>{b47feb9e-eb56-45ca-8afb-99ab9b818f0f}</Project>
       <Name>TvdbLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VideoConvert\VideoConvert.csproj">
-      <Project>{FE3FCACA-E23A-433A-895F-308CD5723C9D}</Project>
-      <Name>VideoConvert</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
