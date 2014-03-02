@@ -1,6 +1,6 @@
 [submodule "libs/Caliburn.Micro"]
 	path = libs/Caliburn.Micro
-	url = https://git01.codeplex.com/caliburnmicro
+url=https://github.com/BlueSpire/Caliburn.Micro
 	branch = 1.x-maintenance
 	ignore = dirty
 [submodule "libs/MahApps.Metro"]
