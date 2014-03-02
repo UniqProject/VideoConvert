@@ -114,12 +114,13 @@ namespace VideoConvert.AppServices.Encoder
         /// </summary>
         /// <param name="encPath">Path to encoder</param>
         /// <param name="optimized"></param>
+        /// <param name="appConfig"></param>
         /// <returns>Encoder version</returns>
-        public string GetVersionInfo(string encPath, bool optimized)
+        public static string GetVersionInfo(string encPath, bool optimized, IAppConfigService appConfig)
         {
             var verInfo = string.Empty;
 
-            var localExecutable = Path.Combine(encPath, BuildExecutable(optimized));
+            var localExecutable = Path.Combine(encPath, BuildExecutable(optimized, appConfig));
 
             using (var encoder = new Process())
             {
@@ -192,7 +193,7 @@ namespace VideoConvert.AppServices.Encoder
                 this._currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, BuildExecutable(this._appConfig.UseOptimizedEncoders));
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, BuildExecutable(this._appConfig.UseOptimizedEncoders, this._appConfig));
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
@@ -294,20 +295,20 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
-        private string BuildExecutable (bool optimized)
+        private static string BuildExecutable (bool optimized, IAppConfigService appConfig)
         {
             string fName = "oggenc2";
-            if (optimized && this._appConfig.UseOptimizedEncoders)
+            if (optimized)
             {
-                if (this._appConfig.SupportedCpuExtensions.SSE3 == 1)
+                if (appConfig.SupportedCpuExtensions.SSE3 == 1)
                 {
                     fName += "_SSE3";
-                    if (Environment.Is64BitOperatingSystem && this._appConfig.Use64BitEncoders)
+                    if (Environment.Is64BitOperatingSystem && appConfig.Use64BitEncoders)
                         fName += "_64";
                 }
-                else if (this._appConfig.SupportedCpuExtensions.SSE2 == 1)
+                else if (appConfig.SupportedCpuExtensions.SSE2 == 1)
                     fName += "_SSE2";
-                else if (this._appConfig.SupportedCpuExtensions.SSE == 1)
+                else if (appConfig.SupportedCpuExtensions.SSE == 1)
                     fName += "_SSE";
             }
             fName += ".exe";

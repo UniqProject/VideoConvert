@@ -391,6 +391,11 @@ namespace VideoConvert.AppServices.Services
                 _configService.LastLame64Ver = EncoderLame.GetVersionInfo(encPath, true);
             }
 
+            _configService.LastOggEncVer = EncoderOggEnc.GetVersionInfo(encPath, false, this._configService);
+
+            if (_configService.UseOptimizedEncoders)
+                _configService.LastOggEncLancerVer = EncoderOggEnc.GetVersionInfo(encPath, true, this._configService);
+
             //LsDvd lsdvd = new LsDvd();
             //ConfigService.LastlsdvdVer = lsdvd.GetVersionInfo(encPath);
 
@@ -399,12 +404,6 @@ namespace VideoConvert.AppServices.Services
 
             //HcEnc hcenc = new HcEnc();
             //ConfigService.LastHcEncVer = hcenc.GetVersionInfo(encPath);
-
-            //OggEnc ogg = new OggEnc();
-            //ConfigService.LastOggEncVer = ogg.GetVersionInfo(encPath, false, ConfigService);
-
-            //if (ConfigService.UseOptimizedEncoders)
-            //    ConfigService.LastOggEncLancerVer = ogg.GetVersionInfo(encPath, true, ConfigService);
 
             //NeroAACEnc aac = new NeroAACEnc();
             //ConfigService.LastNeroAacEncVer = aac.GetVersionInfo(encPath);
