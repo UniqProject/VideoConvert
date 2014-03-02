@@ -414,7 +414,7 @@ namespace VideoConvert.AppServices.Encoder
                     break;
             }
 
-            sb.Append("-ignorelength -if - ");
+            sb.AppendFormat("-ignorelength -if {0} ", this._appConfig.EncodeNamedPipeFullName);
             sb.AppendFormat("-of \"{0}\" ", this._outputFile);
 
             return sb.ToString();
