@@ -396,6 +396,8 @@ namespace VideoConvert.AppServices.Services
             if (_configService.UseOptimizedEncoders)
                 _configService.LastOggEncLancerVer = EncoderOggEnc.GetVersionInfo(encPath, true, this._configService);
 
+            _configService.LastNeroAacEncVer = EncoderNeroAac.GetVersionInfo(encPath);
+
             //LsDvd lsdvd = new LsDvd();
             //ConfigService.LastlsdvdVer = lsdvd.GetVersionInfo(encPath);
 
@@ -404,9 +406,6 @@ namespace VideoConvert.AppServices.Services
 
             //HcEnc hcenc = new HcEnc();
             //ConfigService.LastHcEncVer = hcenc.GetVersionInfo(encPath);
-
-            //NeroAACEnc aac = new NeroAACEnc();
-            //ConfigService.LastNeroAacEncVer = aac.GetVersionInfo(encPath);
 
             //VpxEnc vpxEnc = new VpxEnc();
             //ConfigService.LastVpxEncVer = vpxEnc.GetVersionInfo(encPath);
