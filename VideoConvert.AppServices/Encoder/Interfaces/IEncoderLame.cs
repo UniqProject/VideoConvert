@@ -18,7 +18,7 @@ namespace VideoConvert.AppServices.Encoder.Interfaces
     public interface IEncoderLame
     {
         /// <summary>
-        /// Execute a lame demux process.
+        /// Execute a lame process.
         /// This should only be called from the UI thread.
         /// </summary>
         /// <param name="encodeQueueTask">

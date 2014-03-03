@@ -165,10 +165,12 @@ namespace VideoConvert.AppServices.Encoder
         }
 
         /// <summary>
-        /// 
+        /// Execute a lame process.
+        /// This should only be called from the UI thread.
         /// </summary>
-        /// <param name="encodeQueueTask"></param>
-        /// <exception cref="Exception"></exception>
+        /// <param name="encodeQueueTask">
+        /// The encodeQueueTask.
+        /// </param>
         public void Start(EncodeInfo encodeQueueTask)
         {
             try
@@ -461,7 +463,7 @@ namespace VideoConvert.AppServices.Encoder
                     break;
             }
 
-            sb.Append("- ");
+            sb.AppendFormat("\"{0}\" ", this._appConfig.EncodeNamedPipeFullName);
             sb.AppendFormat("\"{0}\" ", _outputFile);
 
             return sb.ToString();
