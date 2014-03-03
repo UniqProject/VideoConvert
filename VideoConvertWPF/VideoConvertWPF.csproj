@@ -113,6 +113,8 @@
     </Compile>
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\ChangeLogViewModel.cs" />
+    <Compile Include="ViewModels\EncodeViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IEncodeViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAboutViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IChangeLogViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
@@ -130,6 +132,9 @@
     </Compile>
     <Compile Include="Views\ChangeLogView.xaml.cs">
       <DependentUpon>ChangeLogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EncodeView.xaml.cs">
+      <DependentUpon>EncodeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
@@ -149,6 +154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChangeLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EncodeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -325,7 +334,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_DetectChanges="True" BuildVersion_BuildAction="Both" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="Both" BuildVersion_DetectChanges="True" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

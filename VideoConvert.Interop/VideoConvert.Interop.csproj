@@ -63,6 +63,7 @@
     <Compile Include="Model\IMDB\ImdbMovieData.cs" />
     <Compile Include="Model\IMDB\ImdbReleaseDateEntry.cs" />
     <Compile Include="Model\InputType.cs" />
+    <Compile Include="Model\LogEntry.cs" />
     <Compile Include="Model\MediaInfo\MediaInfoContainer.cs" />
     <Compile Include="Model\MediaInfo\MediaInfoDLL.cs" />
     <Compile Include="Model\MediaInfo\MediaInfoList.cs" />
@@ -148,7 +149,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
+      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

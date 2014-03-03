@@ -43,6 +43,8 @@ namespace VideoConvertWPF.ViewModels
         public IOptionsViewModel OptionsViewModel { get; set; }
         public IChangeLogViewModel ChangeLogViewModel { get; set; }
         public IAboutViewModel AboutViewModel { get; set; }
+        public IEncodeViewModel EncodeViewModel { get; set; }
+
         private readonly IAppConfigService _configService;
         private readonly IProcessingService _processingService;
         private ShellWin _lastView;
@@ -216,6 +218,7 @@ namespace VideoConvertWPF.ViewModels
                     ShowOptions = false;
                     ShowChangelog = false;
                     ShowAboutView = false;
+                    ShowEncode = false;
                     if (this.MainViewModel != null)
                     {
                         this.MainViewModel.CheckUpdate();
@@ -226,18 +229,28 @@ namespace VideoConvertWPF.ViewModels
                     ShowMainView = false;
                     ShowChangelog = false;
                     ShowAboutView = false;
+                    ShowEncode = false;
                     break;
                 case ShellWin.ChangelogView:
                     ShowOptions = false;
                     ShowMainView = false;
                     ShowChangelog = true;
                     ShowAboutView = false;
+                    ShowEncode = false;
                     break;
                 case ShellWin.AboutView:
                     ShowOptions = false;
                     ShowMainView = false;
                     ShowChangelog = false;
                     ShowAboutView = true;
+                    ShowEncode = false;
+                    break;
+                case ShellWin.EncodeView:
+                    ShowOptions = false;
+                    ShowMainView = false;
+                    ShowChangelog = false;
+                    ShowAboutView = false;
+                    ShowEncode = true;
                     break;
             }
         }

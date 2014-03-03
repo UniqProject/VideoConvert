@@ -408,7 +408,7 @@ namespace VideoConvertWPF.ViewModels
 
         public void StartEncode()
         {
-            
+            _shellViewModel.DisplayWindow(ShellWin.EncodeView);   
         }
 
         public void ShowSettings()

@@ -23,7 +23,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/styles/controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TreeView.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
@@ -43,6 +43,7 @@
         <controls:MetroContentControl x:Name="MainViewModel" Visibility="{Binding ShowMainView, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}"/>
         <controls:MetroContentControl x:Name="OptionsViewModel" Visibility="{Binding ShowOptions, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}"/>
         <controls:MetroContentControl x:Name="ChangeLogViewModel" Visibility="{Binding ShowChangelog, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}" />
+        <controls:MetroContentControl x:Name="EncodeViewModel" Visibility="{Binding ShowEncode, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}" />
         <controls:MetroContentControl x:Name="AboutViewModel" Visibility="{Binding ShowAboutView, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}" />
     </Grid>
 </controls:MetroWindow>

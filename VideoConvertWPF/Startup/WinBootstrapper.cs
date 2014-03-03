@@ -132,6 +132,11 @@ namespace VideoConvertWPF.Startup
                     .LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(
+                Component.For<IEncodeViewModel>()
+                .ImplementedBy<EncodeViewModel>()
+                .LifeStyle.Is(LifestyleType.Singleton));
+
+            this._winContainer.Register(
                 Component.For<IAboutViewModel>().ImplementedBy<AboutViewModel>().LifeStyle.Is(LifestyleType.Singleton));
         }
 
