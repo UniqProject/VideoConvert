@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The MuxerSpuMux
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -147,7 +147,7 @@ namespace VideoConvert.AppServices.Muxer
         /// <param name="encodeQueueTask">
         /// The encodeQueueTask.
         /// </param>
-        public void Start(EncodeInfo encodeQueueTask)
+        public override void Start(EncodeInfo encodeQueueTask)
         {
             try
             {

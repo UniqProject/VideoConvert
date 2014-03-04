@@ -30,7 +30,7 @@ namespace VideoConvert.AppServices.Encoder
     /// <summary>
     /// The EncoderFfmpegDVD
     /// </summary>
-    public class EncoderFfmpegDvd : EncodeBase, IEncoderFfmpegDVD
+    public class EncoderFfmpegDvd : EncodeBase, IEncoderFfmpegDvd
     {
         /// <summary>
         /// Errorlog
@@ -154,7 +154,7 @@ namespace VideoConvert.AppServices.Encoder
         /// </summary>
         /// <param name="encodeQueueTask"></param>
         /// <exception cref="Exception"></exception>
-        public void Start(EncodeInfo encodeQueueTask)
+        public override void Start(EncodeInfo encodeQueueTask)
         {
             try
             {

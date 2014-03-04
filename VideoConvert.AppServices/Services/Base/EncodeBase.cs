@@ -11,14 +11,16 @@ namespace VideoConvert.AppServices.Services.Base
 {
     using System;
     using Encoder.Interfaces;
-    using Interfaces;
     using Interop.EventArgs;
+    using VideoConvert.AppServices.Services.Base.Interfaces;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.Model;
 
 
     /// <summary>
     /// Base Encoder class
     /// </summary>
-    public class EncodeBase
+    public class EncodeBase : IEncodeBase
     {
         #region Private Variables
 
@@ -117,6 +119,15 @@ namespace VideoConvert.AppServices.Services.Base
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// A Start Method to be implemented
+        /// </summary>
+        /// <param name="encodeQueueTask"></param>
+        public virtual void Start(EncodeInfo encodeQueueTask)
+        {
+            // Do Nothing
+        }
 
         /// <summary>
         /// A Stop Method to be implemeneted.

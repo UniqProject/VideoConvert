@@ -174,7 +174,7 @@ namespace VideoConvert.AppServices.Encoder
         /// </summary>
         /// <param name="encodeQueueTask"></param>
         /// <exception cref="Exception"></exception>
-        public void Start(EncodeInfo encodeQueueTask)
+        public override void Start(EncodeInfo encodeQueueTask)
         {
             try
             {

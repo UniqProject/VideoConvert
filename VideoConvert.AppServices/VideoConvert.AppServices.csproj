@@ -86,6 +86,7 @@
     <Compile Include="Services\Base\EncodeBase.cs" />
     <Compile Include="Encoder\EncoderX264.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderX264.cs" />
+    <Compile Include="Services\Base\Interfaces\IEncodeBase.cs" />
     <Compile Include="Services\Interfaces\IAppConfigService.cs" />
     <Compile Include="Services\Interfaces\IUserSettingService.cs" />
     <Compile Include="Services\Interfaces\IProcessingService.cs" />
@@ -130,7 +131,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

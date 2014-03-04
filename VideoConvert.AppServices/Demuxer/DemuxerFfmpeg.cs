@@ -151,7 +151,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// <param name="encodeQueueTask">
         /// The encodeQueueTask.
         /// </param>
-        public void Start(EncodeInfo encodeQueueTask)
+        public override void Start(EncodeInfo encodeQueueTask)
         {
             try
             {

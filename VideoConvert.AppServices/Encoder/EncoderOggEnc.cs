@@ -182,7 +182,7 @@ namespace VideoConvert.AppServices.Encoder
         /// Starts encoding process with given Encode Job
         /// </summary>
         /// <param name="encodeQueueTask">Job to encode</param>
-        public void Start(EncodeInfo encodeQueueTask)
+        public override void Start(EncodeInfo encodeQueueTask)
         {
             try
             {
