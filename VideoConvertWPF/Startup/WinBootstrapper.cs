@@ -81,12 +81,18 @@ namespace VideoConvertWPF.Startup
                     .LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(
-                Component.For<IEncoderFfmpegDVD>()
+                Component.For<IEncoderFfmpegDvd>()
                     .ImplementedBy<EncoderFfmpegDvd>()
                     .LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(
                 Component.For<IEncoderLame>().ImplementedBy<EncoderLame>().LifeStyle.Is(LifestyleType.Singleton));
+
+            this._winContainer.Register(
+                Component.For<IEncoderNeroAac>().ImplementedBy<EncoderNeroAac>().LifeStyle.Is(LifestyleType.Singleton));
+
+            this._winContainer.Register(
+                Component.For<IEncoderOggEnc>().ImplementedBy<EncoderOggEnc>().LifeStyle.Is(LifestyleType.Singleton));
 
             this._winContainer.Register(
                 Component.For<IEncoderX264>().ImplementedBy<EncoderX264>().LifeStyle.Is(LifestyleType.Singleton));
@@ -107,6 +113,9 @@ namespace VideoConvertWPF.Startup
 
             this._winContainer.Register(
                 Component.For<IMuxerMplex>().ImplementedBy<MuxerMplex>().LifeStyle.Is(LifestyleType.Singleton));
+
+            this._winContainer.Register(
+                Component.For<IMuxerSpuMux>().ImplementedBy<MuxerSpuMux>().LifeStyle.Is(LifestyleType.Singleton));
 
             
             // Views
