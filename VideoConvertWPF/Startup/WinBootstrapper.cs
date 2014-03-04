@@ -28,6 +28,8 @@ namespace VideoConvertWPF.Startup
     using VideoConvert.AppServices.Encoder.Interfaces;
     using VideoConvert.AppServices.Muxer;
     using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services;
+    using VideoConvert.AppServices.Services.Interfaces;
     using ViewModels;
     using ViewModels.Interfaces;
 
@@ -117,7 +119,10 @@ namespace VideoConvertWPF.Startup
             this._winContainer.Register(
                 Component.For<IMuxerSpuMux>().ImplementedBy<MuxerSpuMux>().LifeStyle.Is(LifestyleType.Singleton));
 
-            
+            // Queue Handler
+            this._winContainer.Register(
+                Component.For<IQueueProcessor>().ImplementedBy<QueueProcessor>().LifeStyle.Is(LifestyleType.Singleton));
+
             // Views
             this._winContainer.Register(
                 Component.For<IMainViewModel>().ImplementedBy<MainViewModel>().LifeStyle.Is(LifestyleType.Singleton));

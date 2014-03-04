@@ -90,7 +90,9 @@
     <Compile Include="Services\Interfaces\IAppConfigService.cs" />
     <Compile Include="Services\Interfaces\IUserSettingService.cs" />
     <Compile Include="Services\Interfaces\IProcessingService.cs" />
+    <Compile Include="Services\Interfaces\IQueueProcessor.cs" />
     <Compile Include="Services\ProcessingService.cs" />
+    <Compile Include="Services\QueueProcessor.cs" />
     <Compile Include="Services\UserSettingService.cs" />
     <Compile Include="Utilities\AviSynthGenerator.cs" />
     <Compile Include="Utilities\AviSynthHelper.cs" />

@@ -9,7 +9,7 @@
 
 namespace VideoConvertWPF.ViewModels.Interfaces
 {
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using VideoConvert.Interop.Model;
 
     public interface IShellViewModel
@@ -18,8 +18,8 @@ namespace VideoConvertWPF.ViewModels.Interfaces
 
         void DisplayWindow(ShellWin window);
         void DisplayWindow(ShellWin window, EncodeInfo inputInfo);
-        void DisplayWindow(ShellWin window, List<EncodeInfo> jobList);
-        void DisplayWindow(ShellWin window, EncodeInfo inputInfo, List<EncodeInfo> jobList);
+        void DisplayWindow(ShellWin window, ObservableCollection<EncodeInfo> jobList);
+        void DisplayWindow(ShellWin window, EncodeInfo inputInfo, ObservableCollection<EncodeInfo> jobList);
 
         bool CanClose();
     }

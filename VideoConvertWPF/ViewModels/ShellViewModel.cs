@@ -10,7 +10,7 @@
 namespace VideoConvertWPF.ViewModels
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Composition;
     using System.Diagnostics;
@@ -196,12 +196,12 @@ namespace VideoConvertWPF.ViewModels
             DisplayWindow(window, inputInfo, null);
         }
 
-        public void DisplayWindow(ShellWin window, List<EncodeInfo> jobList)
+        public void DisplayWindow(ShellWin window, ObservableCollection<EncodeInfo> jobList)
         {
             DisplayWindow(window, null, jobList);
         }
 
-        public void DisplayWindow(ShellWin window, EncodeInfo inputInfo, List<EncodeInfo> jobList)
+        public void DisplayWindow(ShellWin window, EncodeInfo inputInfo, ObservableCollection<EncodeInfo> jobList)
         {
             if (window == ShellWin.LastView)
                 window = this.LastView;
@@ -251,6 +251,8 @@ namespace VideoConvertWPF.ViewModels
                     ShowChangelog = false;
                     ShowAboutView = false;
                     ShowEncode = true;
+                    if (this.EncodeViewModel != null)
+                        this.EncodeViewModel.StartEncode(jobList);
                     break;
             }
         }
