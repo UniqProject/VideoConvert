@@ -57,7 +57,7 @@ namespace VideoConvert.AppServices.Services.Base
         /// <summary>
         /// Encode process has progressed
         /// </summary>
-        public event EncodeProgessStatus EncodeStatusChanged;
+        public event EncodeProgressStatus EncodeStatusChanged;
 
         #endregion
 

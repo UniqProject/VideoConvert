@@ -9,5 +9,5 @@
     /// <param name="args">
     /// The EncodeProgressEventArgs
     /// </param>
-    public delegate void EncodeProgessStatus(object sender, EncodeProgressEventArgs args);
+    public delegate void EncodeProgressStatus(object sender, EncodeProgressEventArgs args);
 }

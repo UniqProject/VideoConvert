@@ -22,7 +22,7 @@
         /// <summary>
         /// Encode process has progressed
         /// </summary>
-        event EncodeProgessStatus EncodeStatusChanged;
+        event EncodeProgressStatus EncodeStatusChanged;
 
         /// <summary>
         /// A Start Method to be implemented
