@@ -398,8 +398,6 @@ namespace VideoConvert.AppServices.Muxer
                 CurrentFrameRate = 0,
                 EstimatedTimeLeft = remainingTime,
                 PercentComplete = -1,
-                Task = 0,
-                TaskCount = 0,
                 ElapsedTime = elapsedTime,
             };
             this.InvokeEncodeStatusChanged(eventArgs);

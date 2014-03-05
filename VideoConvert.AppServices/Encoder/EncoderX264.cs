@@ -640,10 +640,10 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     AverageFrameRate = codingFps,
                     CurrentFrameRate = fps,
+                    CurrentFrame = current,
+                    TotalFrames = this._frameCount,
                     EstimatedTimeLeft = _remainingTime,
                     PercentComplete = percent,
-                    Task = 0,
-                    TaskCount = 0,
                     ElapsedTime = DateTime.Now - this._startTime,
                 };
 

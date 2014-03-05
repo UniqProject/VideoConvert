@@ -21,7 +21,7 @@ namespace VideoConvert.Interop.EventArgs
         /// Gets or sets PercentComplete.
         /// </summary>
         [DataMember]
-        public float PercentComplete { get; set; }
+        public double PercentComplete { get; set; }
 
         /// <summary>
         /// Gets or sets CurrentFrameRate.
@@ -35,24 +35,23 @@ namespace VideoConvert.Interop.EventArgs
         [DataMember]
         public float AverageFrameRate { get; set; }
 
+        /// <summary>
+        /// Gets or sets CurrentFrame
+        /// </summary>
+        [DataMember]
+        public long CurrentFrame { get; set; }
+
+        /// <summary>
+        /// Gets or sets TotalFrames
+        /// </summary>
+        [DataMember]
+        public long TotalFrames { get; set; }
 
         /// <summary>
         /// Gets or sets EstimatedTimeLeft.
         /// </summary>
         [DataMember]
         public TimeSpan EstimatedTimeLeft { get; set; }
-
-        /// <summary>
-        /// Gets or sets Task.
-        /// </summary>
-        [DataMember]
-        public int Task { get; set; }
-
-        /// <summary>
-        /// Gets or sets TaskCount.
-        /// </summary>
-        [DataMember]
-        public int TaskCount { get; set; }
 
         /// <summary>
         /// Gets or sets ElapsedTime.

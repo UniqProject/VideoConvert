@@ -48,7 +48,7 @@
     <Compile Include="DataProviders\TvdbLang.cs" />
     <Compile Include="EventArgs\EncodeCompletedEventArgs.cs" />
     <Compile Include="EventArgs\EncodeCompletedStatus.cs" />
-    <Compile Include="EventArgs\EncodeProgessStatus.cs" />
+    <Compile Include="EventArgs\EncodeProgressStatus.cs" />
     <Compile Include="EventArgs\EncodeProgressEventArgs.cs" />
     <Compile Include="EventArgs\SettingChangedEventArgs.cs" />
     <Compile Include="Exceptions\GeneralApplicationException.cs" />

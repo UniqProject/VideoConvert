@@ -10,7 +10,6 @@
 namespace VideoConvert.AppServices.Services.Base
 {
     using System;
-    using Encoder.Interfaces;
     using Interop.EventArgs;
     using VideoConvert.AppServices.Services.Base.Interfaces;
     using VideoConvert.AppServices.Services.Interfaces;
@@ -45,12 +44,12 @@ namespace VideoConvert.AppServices.Services.Base
         #region Events
 
         /// <summary>
-        /// Fires when a new CLI QueueTask starts
+        /// Fires when a new Encoder Task starts
         /// </summary>
         public event EventHandler EncodeStarted;
 
         /// <summary>
-        /// Fires when a CLI QueueTask finishes.
+        /// Fires when an Encoder Task finishes.
         /// </summary>
         public event EncodeCompletedStatus EncodeCompleted;
 
@@ -158,8 +157,6 @@ namespace VideoConvert.AppServices.Services.Base
                 CurrentFrameRate = 0,
                 EstimatedTimeLeft = new TimeSpan(),
                 PercentComplete = 0,
-                Task = 0,
-                TaskCount = 0,
                 ElapsedTime = DateTime.Now.TimeOfDay,
             };
 
