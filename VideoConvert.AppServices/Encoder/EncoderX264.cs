@@ -103,6 +103,7 @@ namespace VideoConvert.AppServices.Encoder
         private long _frameCount;
 
         private TimeSpan _remainingTime;
+        
 
         #endregion
 
@@ -276,7 +277,7 @@ namespace VideoConvert.AppServices.Encoder
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    RedirectStandardInput = use64BitEncoder
+                    RedirectStandardInput = true
                 };
 
                 this.EncodeProcess = new Process { StartInfo = cliStart };
@@ -319,6 +320,8 @@ namespace VideoConvert.AppServices.Encoder
 
                 this.EncodeProcess.OutputDataReceived += X264ProcOutputDataReceived;
                 this.EncodeProcess.BeginOutputReadLine();
+
+                this.DecodeProcess.BeginErrorReadLine();
 
                 this._decoderProcessId = this.DecodeProcess.Id;
                 this._encoderProcessId = this.EncodeProcess.Id;
@@ -399,11 +402,19 @@ namespace VideoConvert.AppServices.Encoder
                     Log.Error(exc);
                 }
 
-                if(_pipeReadThread != null && _pipeReadThread.ThreadState == ThreadState.Running)
-                    _pipeReadThread.Abort();
-
                 if (_decodePipe.IsConnected)
+                {
+                    _decodePipe.WaitForPipeDrain();
                     _decodePipe.Disconnect();
+                    if (!this.EncodeProcess.HasExited)
+                        this.EncodeProcess.StandardInput.Close();
+                }
+
+                if (_pipeReadThread != null && _pipeReadThread.ThreadState == ThreadState.Running)
+                {
+                    _pipeReadThread.Abort();
+                }
+                
             }
         }
 
@@ -420,6 +431,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             if (_pipeReadThread != null && _pipeReadThread.ThreadState == ThreadState.Running)
                 _pipeReadThread.Abort();
+
             EncodeProcess.WaitForExit();
 
             try
@@ -495,7 +507,7 @@ namespace VideoConvert.AppServices.Encoder
             }
         }
 
-        private void ReadThreadStart()
+        private async void ReadThreadStart()
         {
             if (!_decodePipe.IsConnected)
             {
@@ -504,7 +516,7 @@ namespace VideoConvert.AppServices.Encoder
 
             try
             {
-                _decodePipe.CopyTo(EncodeProcess.StandardInput.BaseStream);
+                await _decodePipe.CopyToAsync(this.EncodeProcess.StandardInput.BaseStream, 0x10000);
             }
             catch (Exception exc)
             {
@@ -564,7 +576,7 @@ namespace VideoConvert.AppServices.Encoder
 
             var eta = DateTime.Now.Subtract(_startTime);
 
-            long current;
+            long current = 0;
             long framesRemaining;
             long secRemaining;
 
@@ -1529,17 +1541,18 @@ namespace VideoConvert.AppServices.Encoder
                 }
 
                 //add the rest of the commandline regarding the output
-                if ((_encProfile.EncodingMode == 2 || _encProfile.EncodingMode == 3) && (tempPass == 1))
-                    sb.Append("--output NUL ");
-                else if (!String.IsNullOrEmpty(outFile))
+                //if ((_encProfile.EncodingMode == 2 || _encProfile.EncodingMode == 3) && (tempPass == 1))
+                //    sb.Append("--output NUL ");
+                //else if (!String.IsNullOrEmpty(outFile))
+                if (!String.IsNullOrEmpty(outFile))
                     sb.AppendFormat("--output \"{0}\" ", outFile);
 
                 if (!String.IsNullOrEmpty(inFile))
                 {
-                    if (String.CompareOrdinal(inFile, "-") == 0)
+                    if (string.CompareOrdinal(inFile, "-") == 0)
                         sb.AppendFormat("--demuxer y4m - ");
                     else
-                        sb.AppendFormat("\"{0}\" ", inFile);
+                        sb.AppendFormat(" \"{0}\" ", inFile);
                 }
 
                 #endregion
