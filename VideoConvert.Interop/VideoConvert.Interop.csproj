@@ -50,6 +50,10 @@
     <Compile Include="EventArgs\EncodeCompletedStatus.cs" />
     <Compile Include="EventArgs\EncodeProgressStatus.cs" />
     <Compile Include="EventArgs\EncodeProgressEventArgs.cs" />
+    <Compile Include="EventArgs\QueueCompletedEventArgs.cs" />
+    <Compile Include="EventArgs\QueueCompletedStatus.cs" />
+    <Compile Include="EventArgs\QueueProgressEventArgs.cs" />
+    <Compile Include="EventArgs\QueueProgressStatus.cs" />
     <Compile Include="EventArgs\SettingChangedEventArgs.cs" />
     <Compile Include="Exceptions\GeneralApplicationException.cs" />
     <Compile Include="Model\ApiKeys.cs" />

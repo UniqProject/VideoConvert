@@ -9,8 +9,9 @@
 
 namespace VideoConvert.AppServices.Services.Interfaces
 {
-    using System.Collections.Generic;
+    using System;
     using System.Collections.ObjectModel;
+    using VideoConvert.Interop.EventArgs;
     using VideoConvert.Interop.Model;
 
     /// <summary>
@@ -18,6 +19,21 @@ namespace VideoConvert.AppServices.Services.Interfaces
     /// </summary>
     public interface IQueueProcessor
     {
+        /// <summary>
+        /// Fires when Queue processing starts.
+        /// </summary>
+        event EventHandler QueueStarted;
+
+        /// <summary>
+        /// Fires when Queue processing finishes.
+        /// </summary>
+        event QueueCompletedStatus QueueCompleted;
+
+        /// <summary>
+        /// Queue has progressed
+        /// </summary>
+        event QueueProgressStatus QueueProgressChanged;
+
         /// <summary>
         /// Stops queue processing
         /// </summary>

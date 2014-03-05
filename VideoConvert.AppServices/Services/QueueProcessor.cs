@@ -11,6 +11,7 @@ namespace VideoConvert.AppServices.Services
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -62,8 +63,26 @@ namespace VideoConvert.AppServices.Services
         private IEncodeBase _currentEncoder;
 
         private int _processingSteps;
+        private int _finishedSteps;
+
+        private double _fullTaskPercent = 100f;
 
         private EncodeInfo _currentJob;
+
+        /// <summary>
+        /// Fires when Queue processing starts.
+        /// </summary>
+        public event EventHandler QueueStarted;
+
+        /// <summary>
+        /// Fires when Queue processing finishes.
+        /// </summary>
+        public event QueueCompletedStatus QueueCompleted;
+
+        /// <summary>
+        /// Queue has progressed
+        /// </summary>
+        public event QueueProgressStatus QueueProgressChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueueProcessor"/> class.
@@ -168,19 +187,126 @@ namespace VideoConvert.AppServices.Services
             this._spuMux = spuMux;
         }
 
+        /// <summary>
+        /// Invoke the Queue Status Changed Event.
+        /// </summary>
+        /// <param name="e">
+        /// The QueueProgressEventArgs.
+        /// </param>
+        public void InvokeQueueStatusChanged(QueueProgressEventArgs e)
+        {
+            var handler = this.QueueProgressChanged;
+            if (handler != null)
+            {
+                handler(this._currentEncoder, e);
+            }
+        }
+
+        /// <summary>
+        /// Invoke the Encode Completed Event
+        /// </summary>
+        /// <param name="e">
+        /// The QueueCompletedEventArgs.
+        /// </param>
+        public void InvokeQueueCompleted(QueueCompletedEventArgs e)
+        {
+            var handler = this.QueueCompleted;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Invoke the Encode Started Event
+        /// </summary>
+        /// <param name="e">
+        /// The EventArgs.
+        /// </param>
+        public void InvokeQueueStarted(EventArgs e)
+        {
+            var handler = this.QueueStarted;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         private void EncodeCompleted(object sender, EncodeCompletedEventArgs args)
         {
-            //throw new NotImplementedException();
+            this._finishedSteps++;
+
+            this._currentEncoder.EncodeCompleted -= EncodeCompleted;
+            this._currentEncoder.EncodeStarted -= EncodeStarted;
+            this._currentEncoder.EncodeStatusChanged -= EncoderProgressStatus;
+            this._currentEncoder = null;
+
+            DeleteTempFiles();
+
+            this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+            {
+                JobName = string.Empty,
+                AverageFrameRate = 0f,
+                CurrentFrameRate = 0f,
+                CurrentFrame = 0,
+                TotalFrames = 0,
+                ElapsedTime = new TimeSpan(),
+                EstimatedTimeLeft = new TimeSpan(),
+                PercentComplete = 0,
+                TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent)
+            });
+            
+            GetNextStep();
+
+            if (this._currentJob.NextStep == EncodingStep.Done &&
+                this._queueList.IndexOf(this._currentJob) < this._queueList.Count - 1)
+            {
+                GetNextJob();
+                GetNextStep();
+            }
+            else if (this._currentJob.NextStep == EncodingStep.Done &&
+                this._queueList.IndexOf(this._currentJob) == this._queueList.Count - 1)
+            {
+                this.InvokeQueueCompleted(new QueueCompletedEventArgs(true,null,string.Empty));
+                return;
+            }
+
+            ExecuteNextStep();
         }
 
         private void EncoderProgressStatus(object sender, EncodeProgressEventArgs args)
         {
-            //throw new NotImplementedException();
+            double totalPercent = (this._finishedSteps * this._fullTaskPercent) +
+                                  (this._fullTaskPercent * args.PercentComplete / 100d);
+            
+            this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+            {
+                JobName = string.Empty,
+                AverageFrameRate = args.AverageFrameRate,
+                CurrentFrameRate = args.CurrentFrameRate,
+                CurrentFrame = args.CurrentFrame,
+                TotalFrames = args.TotalFrames,
+                ElapsedTime = args.ElapsedTime,
+                EstimatedTimeLeft = args.EstimatedTimeLeft,
+                PercentComplete = args.PercentComplete,
+                TotalPercentComplete = totalPercent
+            });
         }
 
         private void EncodeStarted(object sender, EventArgs eventArgs)
         {
-            //throw new NotImplementedException();
+            this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+            {
+                JobName = this._currentJob.JobName,
+                AverageFrameRate = 0f,
+                CurrentFrameRate = 0f,
+                CurrentFrame = 0,
+                TotalFrames = 0,
+                ElapsedTime = new TimeSpan(),
+                EstimatedTimeLeft = new TimeSpan(),
+                PercentComplete = 0,
+                TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent)
+            });
         }
 
         /// <summary>
@@ -200,20 +326,24 @@ namespace VideoConvert.AppServices.Services
         /// <param name="queue"></param>
         public async void StartProcessing(ObservableCollection<EncodeInfo> queue)
         {
+            this.InvokeQueueStarted(EventArgs.Empty);
+
             this._queueList = queue;
             this._processingSteps = await Task.Run(() => CountProcessingSteps());
+            this._fullTaskPercent = 100f / this._processingSteps;
 
             try
             {
                 this._currentJob = GetNextJob();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 this._currentJob = null;
+                this.InvokeQueueCompleted(new QueueCompletedEventArgs(false, ex, ex.Message)); 
+                return;
             }
 
-            // TODO: FinishEvent
-            if (this._currentJob == null) return;
+            _finishedSteps = 0;
 
             GetNextStep();
 
