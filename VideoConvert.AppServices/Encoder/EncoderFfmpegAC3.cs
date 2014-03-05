@@ -80,6 +80,9 @@ namespace VideoConvert.AppServices.Encoder
         private IAsyncResult _encodePipeState;
         private Thread _pipeReadThread;
 
+        
+        private bool _dataWriteStarted;
+
         #endregion
 
         /// <summary>
@@ -318,7 +321,10 @@ namespace VideoConvert.AppServices.Encoder
 
                     outSampleRate = this._audioProfile.SampleRate;
                     outSampleRate = sampleRateArr[outSampleRate];
+
                     bitrate = this._audioProfile.Bitrate;
+                    bitrate = bitrateList[bitrate];
+
                     drc = this._audioProfile.ApplyDynamicRangeCompression;
                     break;
 
@@ -353,7 +359,6 @@ namespace VideoConvert.AppServices.Encoder
                                                                "encoded.ac3");
 
             sb.AppendFormat("-f wav -i \"{0}\" -c:a ac3", this._appConfig.EncodeNamedPipeFullName);
-            bitrate = bitrateList[bitrate];
             sb.AppendFormat(" -b:a {0:0}k", bitrate);
 
             if (channels == 2 || channels == 3)
@@ -389,7 +394,7 @@ namespace VideoConvert.AppServices.Encoder
             }
         }
 
-        private void ReadThreadStart()
+        private async void ReadThreadStart()
         {
             if (!_encodePipe.IsConnected)
             {
@@ -398,7 +403,14 @@ namespace VideoConvert.AppServices.Encoder
 
             try
             {
-                DecodeProcess.StandardOutput.BaseStream.CopyTo(_encodePipe);
+                // wait for data from bepipe, otherwise ffmpeg aborts after reading wav header with this message:
+                // Invalid data found when processing input
+                while (!this._dataWriteStarted)
+                {
+                    Thread.Sleep(100);
+                }
+
+                await DecodeProcess.StandardOutput.BaseStream.CopyToAsync(_encodePipe, 0x10000);
             }
             catch (Exception exc)
             {
@@ -474,6 +486,9 @@ namespace VideoConvert.AppServices.Encoder
         {
             var line = e.Data;
             if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
+
+            if (line.Contains("Writing Data..."))
+                this._dataWriteStarted = true;
 
             var bePipeMatch = _bePipeReg.Match(line);
             if (bePipeMatch.Success)
