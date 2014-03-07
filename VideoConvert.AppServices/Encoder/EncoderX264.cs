@@ -406,8 +406,6 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     _decodePipe.WaitForPipeDrain();
                     _decodePipe.Disconnect();
-                    if (!this.EncodeProcess.HasExited)
-                        this.EncodeProcess.StandardInput.Close();
                 }
 
                 if (_pipeReadThread != null && _pipeReadThread.ThreadState == ThreadState.Running)
@@ -498,7 +496,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (EncodeProcess != null)
+                if (this.EncodeProcess != null)
                     ReadThreadStart();
             }
             catch (Exception ex)
@@ -507,16 +505,25 @@ namespace VideoConvert.AppServices.Encoder
             }
         }
 
-        private async void ReadThreadStart()
+        private void ReadThreadStart()
         {
-            if (!_decodePipe.IsConnected)
+            if (!this._decodePipe.IsConnected)
             {
-                _decodePipe.WaitForConnection();
+                this._decodePipe.WaitForConnection();
             }
 
             try
             {
-                await _decodePipe.CopyToAsync(this.EncodeProcess.StandardInput.BaseStream, 0x10000);
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = this._decodePipe.Read(buffer, 0, buffer.Length);
+                while (read > 0 && this._decodePipe.IsConnected)
+                {
+                    this.EncodeProcess.StandardInput.BaseStream.Write(buffer, 0, read);
+                    if (this._decodePipe.IsConnected)
+                        read = this._decodePipe.Read(buffer, 0, buffer.Length);
+                }
+                this.EncodeProcess.StandardInput.BaseStream.Close();
             }
             catch (Exception exc)
             {
