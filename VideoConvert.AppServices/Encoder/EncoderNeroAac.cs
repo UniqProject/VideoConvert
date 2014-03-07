@@ -78,6 +78,8 @@ namespace VideoConvert.AppServices.Encoder
         private readonly Regex _pipeObj = new Regex(@"^([\d\,\.]*?)%.*$",
                                                     RegexOptions.Singleline | RegexOptions.Multiline);
 
+        private bool _dataWriteStarted;
+
         #endregion
 
         /// <summary>
@@ -307,7 +309,21 @@ namespace VideoConvert.AppServices.Encoder
 
             try
             {
-                DecodeProcess.StandardOutput.BaseStream.CopyTo(_encodePipe);
+                // wait for decoder to start writing
+                while (!this._dataWriteStarted)
+                {
+                    Thread.Sleep(100);
+                }
+
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+                while (read > 0 && !this.DecodeProcess.HasExited)
+                {
+                    _encodePipe.Write(buffer, 0, read);
+                    if (!this.DecodeProcess.HasExited)
+                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+                }
             }
             catch (Exception exc)
             {
@@ -486,6 +502,9 @@ namespace VideoConvert.AppServices.Encoder
         {
             var line = e.Data;
             if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
+
+            if (line.Contains("Writing Data..."))
+                this._dataWriteStarted = true;
 
             var bePipeMatch = _pipeObj.Match(line);
             if (bePipeMatch.Success)
