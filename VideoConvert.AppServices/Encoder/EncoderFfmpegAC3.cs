@@ -394,7 +394,7 @@ namespace VideoConvert.AppServices.Encoder
             }
         }
 
-        private async void ReadThreadStart()
+        private void ReadThreadStart()
         {
             if (!_encodePipe.IsConnected)
             {
