@@ -451,6 +451,26 @@ namespace VideoConvert.AppServices.Encoder
         /// </param>
         private void EncodeProcessExited(object sender, EventArgs e)
         {
+            if (this._encodePipe != null)
+            {
+                try
+                {
+                    _encodePipe.EndWaitForConnection(_encodePipeState);
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+                try
+                {
+                    _encodePipe.Close();
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+            }
+
             if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
                 this._pipeReadThread.Abort();
             this.EncodeProcess.WaitForExit();
