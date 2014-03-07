@@ -409,8 +409,15 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     Thread.Sleep(100);
                 }
+                var buffer = new byte[0xA00000]; // 10 MB
 
-                await DecodeProcess.StandardOutput.BaseStream.CopyToAsync(_encodePipe, 0x10000);
+                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+                while (read > 0 && !this.DecodeProcess.HasExited)
+                {
+                    _encodePipe.Write(buffer, 0, read);
+                    if (!this.DecodeProcess.HasExited)
+                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+                }
             }
             catch (Exception exc)
             {
