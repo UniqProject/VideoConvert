@@ -44,7 +44,7 @@ namespace VideoConvert.AppServices.Encoder
         private static readonly string[] CliLevelNames =
         {
             "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1",
-            "3.2", "4", "4.1", "4.2", "5", "5.1"
+            "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"
         };
 
         private const string Executable = "x264.exe";
@@ -519,7 +519,7 @@ namespace VideoConvert.AppServices.Encoder
                 int read = this._decodePipe.Read(buffer, 0, buffer.Length);
                 while (read > 0 && this._decodePipe.IsConnected)
                 {
-                    this.EncodeProcess.StandardInput.BaseStream.Write(buffer, 0, read);
+                    this.EncodeProcess.StandardInput.BaseStream.Write(buffer, 0, read);                    
                     if (this._decodePipe.IsConnected)
                         read = this._decodePipe.Read(buffer, 0, buffer.Length);
                 }
@@ -695,10 +695,30 @@ namespace VideoConvert.AppServices.Encoder
                         break;
                 }
 
+                // bitrate
+                var tempBitrate = bitrate;
+                var vbvBuf = GetVBVMaxrate(_encProfile, device);
+
+                if (tempBitrate <= 0)
+                    tempBitrate = _encProfile.VbrSetting;
+
+                if (vbvBuf > 0 && tempBitrate > vbvBuf)   // limit Bitrate to max vbvbuf size
+                    tempBitrate = vbvBuf;
+
                 // AVC Levels
-                if (_encProfile.AvcLevel != 15) // unrestricted
+                if (_encProfile.AvcLevel != 16) // unrestricted
+                {
+                    int avcLevelBackup = _encProfile.AvcLevel;
+
+                    int avcLevel = X264Settings.GetMinLevelForRes(hRes, vRes, fpsN, fpsD, bitrate, _encProfile.EncodingMode, _encProfile.AvcProfile);
+                    if (avcLevel > _encProfile.AvcLevel)
+                        _encProfile.AvcLevel = avcLevel;
+
                     sb.AppendFormat("--level {0} ", CliLevelNames[_encProfile.AvcLevel]);
 
+                    _encProfile.AvcLevel = avcLevelBackup;
+                }
+                    
                 // Blu-Ray compatibility
                 if (_encProfile.UseBluRayCompatibility)
                     sb.Append("--bluray-compat ");
@@ -737,15 +757,6 @@ namespace VideoConvert.AppServices.Encoder
 
                 // Encoding Modes
                 var tempPass = pass;
-
-                var tempBitrate = bitrate;
-                var vbvBuf = GetVBVMaxrate(_encProfile, device);
-
-                if (tempBitrate <= 0)
-                    tempBitrate = _encProfile.VbrSetting;
-
-                if (vbvBuf > 0 && tempBitrate > vbvBuf)   // limit Bitrate to max vbvbuf size
-                    tempBitrate = vbvBuf;
 
                 switch (_encProfile.EncodingMode)
                 {
@@ -1088,7 +1099,7 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     if (!_encProfile.CustomCommandLine.Contains("--aq-mode"))
                     {
-                        if (_encProfile.AdaptiveQuantizersMode != X264Settings.GetDefaultAQMode(_encProfile.Preset, _encProfile.Tuning))
+                        if (_encProfile.AdaptiveQuantizersMode != X264Settings.GetDefaultAqMode(_encProfile.Preset, _encProfile.Tuning))
                             sb.AppendFormat("--aq-mode {0:0} ", _encProfile.AdaptiveQuantizersMode);
                     }
 

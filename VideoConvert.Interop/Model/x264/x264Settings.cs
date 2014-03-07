@@ -83,62 +83,65 @@ namespace VideoConvert.Interop.Model.x264
         /// <returns>number of ref frames</returns>
         public static int GetMaxRefForLevel(int level, int hRes, int vRes)
         {
-            if (level < 0 || hRes <= 0 || vRes <= 0 || level >= 15)  // Unrestricted/Autoguess
+            if (level < 0 || hRes <= 0 || vRes <= 0 || level >= 16)  // Unrestricted/Autoguess
                 return -1;
 
-            var maxDPB = 0;  // the maximum picture decoded buffer for the given level
+            var maxDpb = 0;  // the maximum picture decoded buffer for the given level
             switch (level)
             {
                 case 0: // level 1
-                    maxDPB = 396;
+                    maxDpb = 396;
                     break;
                 case 1: // level 1.1
-                    maxDPB = 900;
+                    maxDpb = 900;
                     break;
                 case 2: // level 1.2
-                    maxDPB = 2376;
+                    maxDpb = 2376;
                     break;
                 case 3: // level 1.3
-                    maxDPB = 2376;
+                    maxDpb = 2376;
                     break;
                 case 4: // level 2
-                    maxDPB = 2376;
+                    maxDpb = 2376;
                     break;
                 case 5: // level 2.1
-                    maxDPB = 4752;
+                    maxDpb = 4752;
                     break;
                 case 6: // level 2.2
-                    maxDPB = 8100;
+                    maxDpb = 8100;
                     break;
                 case 7: // level 3
-                    maxDPB = 8100;
+                    maxDpb = 8100;
                     break;
                 case 8: // level 3.1
-                    maxDPB = 18000;
+                    maxDpb = 18000;
                     break;
                 case 9: // level 3.2
-                    maxDPB = 20480;
+                    maxDpb = 20480;
                     break;
                 case 10: // level 4
-                    maxDPB = 32768;
+                    maxDpb = 32768;
                     break;
                 case 11: // level 4.1
-                    maxDPB = 32768;
+                    maxDpb = 32768;
                     break;
                 case 12: // level 4.2
-                    maxDPB = 34816;
+                    maxDpb = 34816;
                     break;
                 case 13: // level 5
-                    maxDPB = 110400;
+                    maxDpb = 110400;
                     break;
                 case 14: // level 5.1
-                    maxDPB = 184320;
+                    maxDpb = 184320;
+                    break;
+                case 15: // level 5.2
+                    maxDpb = 184320;
                     break;
             }
 
             var frameHeightInMbs = (int)Math.Ceiling((double)vRes / 16);
             var frameWidthInMbs = (int)Math.Ceiling((double)hRes / 16);
-            var maxRef = (int)Math.Floor((double)maxDPB / (frameHeightInMbs * frameWidthInMbs));
+            var maxRef = (int)Math.Floor((double)maxDpb / (frameHeightInMbs * frameWidthInMbs));
             return Math.Min(maxRef, 16);
         }
 
@@ -147,13 +150,13 @@ namespace VideoConvert.Interop.Model.x264
         /// </summary>
         /// <param name="oPresetLevel">encoding preset</param>
         /// <param name="oTuningMode">tuning mode</param>
-        /// <param name="oAVCProfile">AVC-Profile</param>
+        /// <param name="oAvcProfile">AVC-Profile</param>
         /// <param name="oDevice">Target device</param>
         /// <returns>number of b-frames</returns>
-        public static int GetDefaultNumberOfBFrames(int oPresetLevel, int oTuningMode, int oAVCProfile, X264Device oDevice)
+        public static int GetDefaultNumberOfBFrames(int oPresetLevel, int oTuningMode, int oAvcProfile, X264Device oDevice)
         {
             var iDefaultSetting = 0;
-            if (oAVCProfile == 0) // baseline
+            if (oAvcProfile == 0) // baseline
                 return iDefaultSetting;
 
             switch (oPresetLevel)
@@ -185,12 +188,12 @@ namespace VideoConvert.Interop.Model.x264
         /// </summary>
         /// <param name="oPresetLevel">encoding preset</param>
         /// <param name="oTuningMode">tuning mode</param>
-        /// <param name="oAVCProfile">AVC-Profile</param>
+        /// <param name="oAvcProfile">AVC-Profile</param>
         /// <param name="bBlurayCompat">bluray compatibility</param>
         /// <returns>weightp value</returns>
-        public static int GetDefaultNumberOfWeightp(int oPresetLevel, int oTuningMode, int oAVCProfile, bool bBlurayCompat)
+        public static int GetDefaultNumberOfWeightp(int oPresetLevel, int oTuningMode, int oAvcProfile, bool bBlurayCompat)
         {
-            if (oAVCProfile == 0) // baseline
+            if (oAvcProfile == 0) // baseline
                 return 0;
             if (oTuningMode == 6) // Fast Decode
                 return 0;
@@ -218,7 +221,7 @@ namespace VideoConvert.Interop.Model.x264
         /// <param name="oPresetLevel">encoding preset</param>
         /// <param name="oTuningMode">tuning mode</param>
         /// <returns>AQ Mode</returns>
-        public static int GetDefaultAQMode(int oPresetLevel, int oTuningMode)
+        public static int GetDefaultAqMode(int oPresetLevel, int oTuningMode)
         {
             if (oTuningMode == 5) // SSIM
                 return 2;
@@ -227,6 +230,106 @@ namespace VideoConvert.Interop.Model.x264
                 return 0;
 
             return 1;
+        }
+
+        /// <summary>
+        /// Gets minimum required AVC Level for encoding
+        /// </summary>
+        /// <param name="hRes"></param>
+        /// <param name="vRes"></param>
+        /// <param name="fpsN"></param>
+        /// <param name="fpsD"></param>
+        /// <param name="bitrate"></param>
+        /// <param name="encMode"></param>
+        /// <param name="avcProfile"></param>
+        /// <returns></returns>
+        public static int GetMinLevelForRes(int hRes, int vRes, int fpsN, int fpsD, int bitrate, int encMode, int avcProfile)
+        {
+            float fps = (float) fpsN / fpsD;
+
+            int mBlocksWidth = (int) Math.Ceiling((double) hRes / 16);
+            int mBlocksHeight = (int) Math.Ceiling((double) vRes / 16);
+
+            int mBlocksSec = (int) Math.Ceiling(mBlocksWidth * mBlocksHeight * fps);
+
+            int avcLevel = 16;
+
+            if (mBlocksSec <= 1485)
+                avcLevel = 0; // avc level 1 / 1b
+            else if (mBlocksSec <= 3000)
+                avcLevel = 1; // avc level 1.1
+            else if (mBlocksSec <= 6000)
+                avcLevel = 2; // avc level 1.2
+            else if (mBlocksSec <= 11880)
+                avcLevel = 3; // avc level 1.3
+            else if (mBlocksSec <= 19800)
+                avcLevel = 5; // avc level 2.1
+            else if (mBlocksSec <= 20250)
+                avcLevel = 6; // avc level 2.2
+            else if (mBlocksSec <= 40500)
+                avcLevel = 7; // avc level 3
+            else if (mBlocksSec <= 108000)
+                avcLevel = 8; // avc level 3.1
+            else if (mBlocksSec <= 216000)
+                avcLevel = 9; // avc level 3.2
+            else if (mBlocksSec <= 245760)
+                avcLevel = 10; // avc level 4
+            else if (mBlocksSec <= 522240)
+                avcLevel = 12; // avc level 4.2
+            else if (mBlocksSec <= 589824)
+                avcLevel = 13; // avc level 5
+            else if (mBlocksSec <= 983040)
+                avcLevel = 14; // avc level 5.1
+            else if (mBlocksSec <= 2073600)
+                avcLevel = 15; // avc level 5.2
+
+            switch (avcLevel)
+            {
+                case 3: // avc level 1.3
+                    switch (encMode)
+                    {
+                        case 0: // abr
+                        case 2: // 2-pass
+                        case 3: // 3-pass
+                            switch (avcProfile)
+                            {
+                                case 0: // baseline
+                                case 1: // main
+                                    if (bitrate > 768)
+                                        avcLevel = 4; // avc level 2
+                                    break;
+                                default: // high
+                                    if (bitrate > 960)
+                                        avcLevel = 4; // avc level 2
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 10:
+                    switch (encMode)
+                    {
+                        case 0: // abr
+                        case 2: // 2-pass
+                        case 3: // 3-pass
+                            switch (avcProfile)
+                            {
+                                case 0: // baseline
+                                case 1: // main
+                                    if (bitrate > 20000)
+                                        avcLevel = 11; // avc level 4.1
+                                    break;
+                                default: // high
+                                    if (bitrate > 25000)
+                                        avcLevel = 11; // avc level 4.1
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+
+            return avcLevel;
         }
     }
 }
