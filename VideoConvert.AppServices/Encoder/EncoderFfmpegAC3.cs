@@ -375,7 +375,7 @@ namespace VideoConvert.AppServices.Encoder
         private void EncoderConnected(IAsyncResult ar)
         {
             Log.Info("Encoder Pipe connected");
-            this._encodePipeState = ar;
+            this._encodePipe.EndWaitForConnection(ar);
             this._pipeReadThread = new Thread(PipeReadThreadStart);
             this._pipeReadThread.Start();
             this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
@@ -396,11 +396,6 @@ namespace VideoConvert.AppServices.Encoder
 
         private void ReadThreadStart()
         {
-            if (!_encodePipe.IsConnected)
-            {
-                _encodePipe.WaitForConnection();
-            }
-
             try
             {
                 // wait for data from bepipe, otherwise ffmpeg aborts after reading wav header with this message:
@@ -414,7 +409,7 @@ namespace VideoConvert.AppServices.Encoder
                 int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
                 while (read > 0 && !this.DecodeProcess.HasExited)
                 {
-                    _encodePipe.Write(buffer, 0, read);
+                    this._encodePipe.Write(buffer, 0, read);
                     if (!this.DecodeProcess.HasExited)
                         read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
                 }
@@ -431,7 +426,8 @@ namespace VideoConvert.AppServices.Encoder
             {
                 try
                 {
-                    _encodePipe.EndWaitForConnection(_encodePipeState);
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(_encodePipeState);
                 }
                 catch (Exception exc)
                 {
@@ -443,7 +439,7 @@ namespace VideoConvert.AppServices.Encoder
                 this.DecodeProcess.WaitForExit();
 
                 if (this._encodePipe.IsConnected)
-                    _encodePipe.Disconnect();
+                    this._encodePipe.Disconnect();
             }
         }
 
@@ -462,15 +458,17 @@ namespace VideoConvert.AppServices.Encoder
             {
                 try
                 {
-                    _encodePipe.EndWaitForConnection(_encodePipeState);
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
                 }
                 catch (Exception exc)
                 {
                     Log.Error(exc);
                 }
+
                 try
                 {
-                    _encodePipe.Close();
+                    this._encodePipe.Close();
                 }
                 catch (Exception exc)
                 {
