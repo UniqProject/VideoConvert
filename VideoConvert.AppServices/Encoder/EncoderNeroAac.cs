@@ -262,7 +262,8 @@ namespace VideoConvert.AppServices.Encoder
             {
                 try
                 {
-                    _encodePipe.EndWaitForConnection(_encodePipeState);
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
                 }
                 catch (Exception exc)
                 {
@@ -274,14 +275,14 @@ namespace VideoConvert.AppServices.Encoder
                 this.DecodeProcess.WaitForExit();
 
                 if (this._encodePipe.IsConnected)
-                    _encodePipe.Disconnect();
+                    this._encodePipe.Disconnect();
             }
         }
 
         private void EncoderConnected(IAsyncResult ar)
         {
             Log.Info("Encoder Pipe connected");
-            _encodePipeState = ar;
+            this._encodePipe.EndWaitForConnection(ar);
             this._pipeReadThread = new Thread(PipeReadThreadStart);
             this._pipeReadThread.Start();
             this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
@@ -291,7 +292,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (DecodeProcess != null)
+                if (this.DecodeProcess != null)
                     ReadThreadStart();
             }
             catch (Exception ex)
@@ -302,11 +303,6 @@ namespace VideoConvert.AppServices.Encoder
 
         private void ReadThreadStart()
         {
-            if (!_encodePipe.IsConnected)
-            {
-                _encodePipe.WaitForConnection();
-            }
-
             try
             {
                 // wait for decoder to start writing
@@ -451,15 +447,17 @@ namespace VideoConvert.AppServices.Encoder
             {
                 try
                 {
-                    _encodePipe.EndWaitForConnection(_encodePipeState);
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
                 }
                 catch (Exception exc)
                 {
                     Log.Error(exc);
                 }
+
                 try
                 {
-                    _encodePipe.Close();
+                    this._encodePipe.Close();
                 }
                 catch (Exception exc)
                 {
