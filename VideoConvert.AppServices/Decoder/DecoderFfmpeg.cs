@@ -143,7 +143,7 @@ namespace VideoConvert.AppServices.Decoder
             {
                 FileName = localExecutable,
                 Arguments =
-                    String.Format(CInfo, "-i \"{0}\" {1} -f yuv4mpegpipe -y \"{2}\"",
+                    String.Format(CInfo, "-i \"{0}\" {1} -c:v copy -f yuv4mpegpipe -y \"{2}\"",
                                   scriptName, filterChain, pipeName),
                 CreateNoWindow = true,
                 RedirectStandardOutput = false,
