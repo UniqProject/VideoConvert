@@ -3,23 +3,23 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The FileWorker
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Muxer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Threading;
     using Interfaces;
     using Interop.EventArgs;
     using Interop.Model;
     using log4net;
     using Services.Base;
     using Services.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading;
     using ThreadState = System.Threading.ThreadState;
 
     /// <summary>

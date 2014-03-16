@@ -9,6 +9,10 @@
 
 namespace VideoConvert.AppServices.Services
 {
+    using Interfaces;
+    using Interop.Model;
+    using Interop.Utilities;
+    using log4net;
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
@@ -16,10 +20,6 @@ namespace VideoConvert.AppServices.Services
     using System.IO;
     using System.Reflection;
     using System.Threading;
-    using Interfaces;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
 
     /// <summary>
     /// The Application Config Service
@@ -117,8 +117,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool UseAviSynthMT
         {
-            get { return GetSetting<bool>(SettingConstants.UseAviSynthMT); }
-            set { SetSetting(SettingConstants.UseAviSynthMT, value); }
+            get { return GetSetting<bool>(SettingConstants.UseAviSynthMt); }
+            set { SetSetting(SettingConstants.UseAviSynthMt, value); }
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool UseHQDeinterlace
         {
-            get { return GetSetting<bool>(SettingConstants.UseHQDeinterlace); }
-            set { SetSetting(SettingConstants.UseHQDeinterlace, value); }
+            get { return GetSetting<bool>(SettingConstants.UseHqDeinterlace); }
+            set { SetSetting(SettingConstants.UseHqDeinterlace, value); }
         }
 
         /// <summary>
@@ -135,10 +135,10 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool EnableSSIF
         {
-            get { return GetSetting<bool>(SettingConstants.EnableSSIF); }
+            get { return GetSetting<bool>(SettingConstants.EnableSsif); }
             set
             {
-                SetSetting(SettingConstants.EnableSSIF, value);
+                SetSetting(SettingConstants.EnableSsif, value);
             }
         }
 
@@ -365,8 +365,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string LastMKVMergeVer
         {
-            get { return GetSetting<string>(SettingConstants.LastMKVMergeVer); }
-            set { SetSetting(SettingConstants.LastMKVMergeVer, value); }
+            get { return GetSetting<string>(SettingConstants.LastMkvMergeVer); }
+            set { SetSetting(SettingConstants.LastMkvMergeVer, value); }
         }
 
         /// <summary>
@@ -399,8 +399,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string LastTSMuxerVer
         {
-            get { return GetSetting<string>(SettingConstants.LastTSMuxerVer); }
-            set { SetSetting(SettingConstants.LastTSMuxerVer, value); }
+            get { return GetSetting<string>(SettingConstants.LastTsMuxerVer); }
+            set { SetSetting(SettingConstants.LastTsMuxerVer, value); }
         }
 
         /// <summary>
@@ -442,8 +442,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string LastBDSup2SubVer
         {
-            get { return GetSetting<string>(SettingConstants.LastBDSup2SubVer); }
-            set { SetSetting(SettingConstants.LastBDSup2SubVer, value); }
+            get { return GetSetting<string>(SettingConstants.LastBdSup2SubVer); }
+            set { SetSetting(SettingConstants.LastBdSup2SubVer, value); }
         }
 
         /// <summary>
@@ -476,8 +476,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string LastMJPEGToolsVer
         {
-            get { return GetSetting<string>(SettingConstants.LastMJPEGToolsVer); }
-            set { SetSetting(SettingConstants.LastMJPEGToolsVer, value); }
+            get { return GetSetting<string>(SettingConstants.LastMjpegToolsVer); }
+            set { SetSetting(SettingConstants.LastMjpegToolsVer, value); }
         }
 
         /// <summary>
@@ -493,8 +493,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string LastDVDAuthorVer
         {
-            get { return GetSetting<string>(SettingConstants.LastDVDAuthorVer); }
-            set { SetSetting(SettingConstants.LastDVDAuthorVer, value); }
+            get { return GetSetting<string>(SettingConstants.LastDvdAuthorVer); }
+            set { SetSetting(SettingConstants.LastDvdAuthorVer, value); }
         }
 
         /// <summary>
@@ -630,8 +630,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool TSMuxeRUseAsyncIO
         {
-            get { return GetSetting<bool>(SettingConstants.TSMuxeRUseAsyncIO); }
-            set { SetSetting(SettingConstants.TSMuxeRUseAsyncIO, value); }
+            get { return GetSetting<bool>(SettingConstants.TsMuxeRUseAsyncIO); }
+            set { SetSetting(SettingConstants.TsMuxeRUseAsyncIO, value); }
         }
 
         /// <summary>
@@ -639,8 +639,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool TSMuxeRBlurayAudioPES
         {
-            get { return GetSetting<bool>(SettingConstants.TSMuxeRBlurayAudioPES); }
-            set { SetSetting(SettingConstants.TSMuxeRBlurayAudioPES, value); }
+            get { return GetSetting<bool>(SettingConstants.TsMuxeRBlurayAudioPes); }
+            set { SetSetting(SettingConstants.TsMuxeRBlurayAudioPes, value); }
         }
 
         /// <summary>
@@ -648,8 +648,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public int TSMuxerSubtitleAdditionalBorder
         {
-            get { return GetSetting<int>(SettingConstants.TSMuxerSubtitleAdditionalBorder); }
-            set { SetSetting(SettingConstants.TSMuxerSubtitleAdditionalBorder, value); }
+            get { return GetSetting<int>(SettingConstants.TsMuxerSubtitleAdditionalBorder); }
+            set { SetSetting(SettingConstants.TsMuxerSubtitleAdditionalBorder, value); }
         }
 
         /// <summary>
@@ -657,8 +657,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public int TSMuxeRBottomOffset
         {
-            get { return GetSetting<int>(SettingConstants.TSMuxeRBottomOffset); }
-            set { SetSetting(SettingConstants.TSMuxeRBottomOffset, value); }
+            get { return GetSetting<int>(SettingConstants.TsMuxeRBottomOffset); }
+            set { SetSetting(SettingConstants.TsMuxeRBottomOffset, value); }
         }
 
         /// <summary>
@@ -666,8 +666,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string TSMuxeRSubtitleFont
         {
-            get { return GetSetting<string>(SettingConstants.TSMuxeRSubtitleFont); }
-            set { SetSetting(SettingConstants.TSMuxeRSubtitleFont, value); }
+            get { return GetSetting<string>(SettingConstants.TsMuxeRSubtitleFont); }
+            set { SetSetting(SettingConstants.TsMuxeRSubtitleFont, value); }
         }
 
         /// <summary>
@@ -675,8 +675,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string TSMuxeRSubtitleColor
         {
-            get { return GetSetting<string>(SettingConstants.TSMuxeRSubtitleColor); }
-            set { SetSetting(SettingConstants.TSMuxeRSubtitleColor, value); }
+            get { return GetSetting<string>(SettingConstants.TsMuxeRSubtitleColor); }
+            set { SetSetting(SettingConstants.TsMuxeRSubtitleColor, value); }
         }
 
         /// <summary>
@@ -684,8 +684,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public int TSMuxeRSubtitleFontSize
         {
-            get { return GetSetting<int>(SettingConstants.TSMuxeRSubtitleFontSize); }
-            set { SetSetting(SettingConstants.TSMuxeRSubtitleFontSize, value); }
+            get { return GetSetting<int>(SettingConstants.TsMuxeRSubtitleFontSize); }
+            set { SetSetting(SettingConstants.TsMuxeRSubtitleFontSize, value); }
         }
 
         /// <summary>
@@ -693,8 +693,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool TSMuxeRVideoTimingInfo
         {
-            get { return GetSetting<bool>(SettingConstants.TSMuxeRVideoTimingInfo); }
-            set { SetSetting(SettingConstants.TSMuxeRVideoTimingInfo, value); }
+            get { return GetSetting<bool>(SettingConstants.TsMuxeRVideoTimingInfo); }
+            set { SetSetting(SettingConstants.TsMuxeRVideoTimingInfo, value); }
         }
 
         /// <summary>
@@ -702,8 +702,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public bool TSMuxeRAddVideoPPS
         {
-            get { return GetSetting<bool>(SettingConstants.TSMuxeRAddVideoPPS); }
-            set { SetSetting(SettingConstants.TSMuxeRAddVideoPPS, value); }
+            get { return GetSetting<bool>(SettingConstants.TsMuxeRAddVideoPps); }
+            set { SetSetting(SettingConstants.TsMuxeRAddVideoPps, value); }
         }
 
         /// <summary>
@@ -854,8 +854,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string MovieDBLastLanguage
         {
-            get { return GetSetting<string>(SettingConstants.MovieDBLastLanguage); }
-            set { SetSetting(SettingConstants.MovieDBLastLanguage, value); }
+            get { return GetSetting<string>(SettingConstants.MovieDbLastLanguage); }
+            set { SetSetting(SettingConstants.MovieDbLastLanguage, value); }
         }
 
         /// <summary>
@@ -863,8 +863,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string MovieDBLastRatingCountry
         {
-            get { return GetSetting<string>(SettingConstants.MovieDBLastRatingCountry); }
-            set { SetSetting(SettingConstants.MovieDBLastRatingCountry, value); }
+            get { return GetSetting<string>(SettingConstants.MovieDbLastRatingCountry); }
+            set { SetSetting(SettingConstants.MovieDbLastRatingCountry, value); }
         }
 
         /// <summary>
@@ -872,8 +872,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string MovieDBLastFallbackLanguage
         {
-            get { return GetSetting<string>(SettingConstants.MovieDBLastFallbackLanguage); }
-            set { SetSetting(SettingConstants.MovieDBLastFallbackLanguage, value); }
+            get { return GetSetting<string>(SettingConstants.MovieDbLastFallbackLanguage); }
+            set { SetSetting(SettingConstants.MovieDbLastFallbackLanguage, value); }
         }
 
         /// <summary>
@@ -881,8 +881,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string MovieDBLastFallbackRatingCountry
         {
-            get { return GetSetting<string>(SettingConstants.MovieDBLastFallbackRatingCountry); }
-            set { SetSetting(SettingConstants.MovieDBLastFallbackRatingCountry, value); }
+            get { return GetSetting<string>(SettingConstants.MovieDbLastFallbackRatingCountry); }
+            set { SetSetting(SettingConstants.MovieDbLastFallbackRatingCountry, value); }
         }
 
         /// <summary>
@@ -890,8 +890,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string MovieDBPreferredCertPrefix
         {
-            get { return GetSetting<string>(SettingConstants.MovieDBPreferredCertPrefix); }
-            set { SetSetting(SettingConstants.MovieDBPreferredCertPrefix, value); }
+            get { return GetSetting<string>(SettingConstants.MovieDbPreferredCertPrefix); }
+            set { SetSetting(SettingConstants.MovieDbPreferredCertPrefix, value); }
         }
 
         /// <summary>
@@ -899,8 +899,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string MovieDBFallbackCertPrefix
         {
-            get { return GetSetting<string>(SettingConstants.MovieDBFallbackCertPrefix); }
-            set { SetSetting(SettingConstants.MovieDBFallbackCertPrefix, value); }
+            get { return GetSetting<string>(SettingConstants.MovieDbFallbackCertPrefix); }
+            set { SetSetting(SettingConstants.MovieDbFallbackCertPrefix, value); }
         }
 
         /// <summary>
@@ -908,8 +908,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public int MovieDBRatingSrc
         {
-            get { return GetSetting<int>(SettingConstants.MovieDBRatingSrc); }
-            set { SetSetting(SettingConstants.MovieDBRatingSrc, value); }
+            get { return GetSetting<int>(SettingConstants.MovieDbRatingSrc); }
+            set { SetSetting(SettingConstants.MovieDbRatingSrc, value); }
         }
 
         /// <summary>
@@ -919,7 +919,7 @@ namespace VideoConvert.AppServices.Services
         {
             get
             {
-                var strPath = GetSetting<string>(SettingConstants.TvDBCachePath);
+                var strPath = GetSetting<string>(SettingConstants.TvDbCachePath);
 
                 if (string.IsNullOrEmpty(strPath))
                 {
@@ -929,7 +929,7 @@ namespace VideoConvert.AppServices.Services
                 }
                 return strPath;
             }
-            set { SetSetting(SettingConstants.TvDBCachePath, value); }
+            set { SetSetting(SettingConstants.TvDbCachePath, value); }
         }
 
         /// <summary>
@@ -939,12 +939,12 @@ namespace VideoConvert.AppServices.Services
         {
             get
             {
-                var strValue = GetSetting<string>(SettingConstants.TvDBParseString);
+                var strValue = GetSetting<string>(SettingConstants.TvDbParseString);
                 if (string.IsNullOrEmpty(strValue))
                     strValue = "%show% - S%season%E%episode% - %episode_name%";
                 return strValue;
             }
-            set { SetSetting(SettingConstants.TvDBParseString, value); }
+            set { SetSetting(SettingConstants.TvDbParseString, value); }
         }
 
         /// <summary>
@@ -952,8 +952,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string TvDBPreferredLanguage
         {
-            get { return GetSetting<string>(SettingConstants.TvDBPreferredLanguage); }
-            set { SetSetting(SettingConstants.TvDBPreferredLanguage, value); }
+            get { return GetSetting<string>(SettingConstants.TvDbPreferredLanguage); }
+            set { SetSetting(SettingConstants.TvDbPreferredLanguage, value); }
         }
 
         /// <summary>
@@ -961,8 +961,8 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public string TvDBFallbackLanguage
         {
-            get { return GetSetting<string>(SettingConstants.TvDBFallbackLanguage); }
-            set { SetSetting(SettingConstants.TvDBFallbackLanguage, value); }
+            get { return GetSetting<string>(SettingConstants.TvDbFallbackLanguage); }
+            set { SetSetting(SettingConstants.TvDbFallbackLanguage, value); }
         }
 
         /// <summary>

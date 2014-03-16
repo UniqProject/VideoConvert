@@ -9,14 +9,6 @@
 
 namespace VideoConvert.AppServices.Services
 {
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using System.Text;
     using Demuxer;
     using DirectShowLib;
     using Encoder;
@@ -26,6 +18,14 @@ namespace VideoConvert.AppServices.Services
     using Interop.Utilities;
     using log4net;
     using Muxer;
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Text;
     using Utilities;
 
     /// <summary>

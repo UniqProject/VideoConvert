@@ -9,15 +9,15 @@
 
 namespace VideoConvert.AppServices.Services
 {
+    using Interfaces;
+    using Interop.Collections;
+    using Interop.EventArgs;
+    using Interop.Exceptions;
     using System;
     using System.Collections.Specialized;
     using System.IO;
     using System.Linq;
     using System.Xml.Serialization;
-    using Interfaces;
-    using Interop.Collections;
-    using Interop.EventArgs;
-    using Interop.Exceptions;
 
     /// <summary>
     /// The User Settings Service

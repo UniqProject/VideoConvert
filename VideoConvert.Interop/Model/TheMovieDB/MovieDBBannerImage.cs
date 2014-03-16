@@ -12,12 +12,12 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// Banner image for TheMovieDB
     /// </summary>
-    public class MovieDBBannerImage : MovieDBPosterImage
+    public class MovieDbBannerImage : MovieDbPosterImage
     {
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MovieDBBannerImage()
+        public MovieDbBannerImage()
         {
             Aspect = "banner";
         }

@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Encoding profile for MP3 audio
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// </summary>
         public Mp3Profile()
         {
-            Type = ProfileType.MP3;
+            Type = ProfileType.Mp3;
 
             OutputChannels = 0;
             SampleRate = 0;

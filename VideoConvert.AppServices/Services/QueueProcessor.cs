@@ -9,13 +9,12 @@
 
 namespace VideoConvert.AppServices.Services
 {
+    using log4net;
     using System;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using log4net;
     using VideoConvert.AppServices.Decoder.Interfaces;
     using VideoConvert.AppServices.Demuxer.Interfaces;
     using VideoConvert.AppServices.Encoder.Interfaces;
@@ -365,9 +364,9 @@ namespace VideoConvert.AppServices.Services
                 encodingSteps +=
                     job.AudioStreams.Count(
                         aud =>
-                            job.AudioProfile.Type == ProfileType.AC3 || job.AudioProfile.Type == ProfileType.OGG ||
-                            job.AudioProfile.Type == ProfileType.MP3 || job.AudioProfile.Type == ProfileType.AAC ||
-                            job.AudioProfile.Type == ProfileType.FLAC);
+                            job.AudioProfile.Type == ProfileType.Ac3 || job.AudioProfile.Type == ProfileType.Ogg ||
+                            job.AudioProfile.Type == ProfileType.Mp3 || job.AudioProfile.Type == ProfileType.Aac ||
+                            job.AudioProfile.Type == ProfileType.Flac);
 
                 // demux subtitles
                 encodingSteps += job.SubtitleStreams.Count(sub => sub.RawStream == false);
@@ -405,7 +404,7 @@ namespace VideoConvert.AppServices.Services
                             case ProfileType.HcEnc:
                                 encodingSteps += 2;
                                 break;
-                            case ProfileType.VP8:
+                            case ProfileType.Vp8:
                                 var vp8Profile = (Vp8Profile)job.VideoProfile;
                                 if (vp8Profile.EncodingMode == 0)
                                     encodingSteps++;
@@ -539,7 +538,7 @@ namespace VideoConvert.AppServices.Services
                                     break;
                             }
                             break;
-                        case ProfileType.VP8:
+                        case ProfileType.Vp8:
                             encodingPasses += ((Vp8Profile)this._currentJob.VideoProfile).EncodingMode;
                             break;
                     }
@@ -760,16 +759,16 @@ namespace VideoConvert.AppServices.Services
         {
             switch (this._currentJob.AudioProfile.Type)
             {
-                case ProfileType.AC3:
+                case ProfileType.Ac3:
                     this._currentEncoder = this._ffmpegAc3;
                     break;
-                case ProfileType.OGG:
+                case ProfileType.Ogg:
                     this._currentEncoder = this._oggEnc;
                     break;
-                case ProfileType.AAC:
+                case ProfileType.Aac:
                     this._currentEncoder = this._neroAac;
                     break;
-                case ProfileType.MP3:
+                case ProfileType.Mp3:
                     this._currentEncoder = this._lame;
                     break;
                 case ProfileType.Copy:
@@ -832,7 +831,7 @@ namespace VideoConvert.AppServices.Services
                 case ProfileType.Mpeg2Video:
                     this._currentEncoder = this._ffmpegDvd;
                     break;
-                case ProfileType.VP8:
+                case ProfileType.Vp8:
                     // TODO: VPXEnc
                     break;
             }

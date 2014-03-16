@@ -9,10 +9,10 @@
 
 namespace VideoConvert.Interop.Utilities
 {
+    using Model.MediaInfo;
     using System;
     using System.ComponentModel;
     using System.IO;
-    using Model.MediaInfo;
 
     /// <summary>
     /// Generic Helper Class

@@ -9,6 +9,8 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
+    using log4net;
+    using Model.Subtitles;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -17,15 +19,13 @@ namespace VideoConvert.Interop.Utilities.Subtitles
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
-    using log4net;
-    using Model.Subtitles;
 
     /// <summary>
     /// SSA/ASS subtitle reader
     /// </summary>
-    public class SSAReader
+    public class SsaReader
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(SSAReader));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SsaReader));
 
         private static readonly CultureInfo CInfo = CultureInfo.GetCultureInfoByIetfLanguageTag("en-US");
 

@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The TmDbSerializer
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,11 +14,14 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     using System.Xml;
     using System.Xml.Serialization;
 
-    class TMDbSerializer
+    /// <summary>
+    /// The TmDbSerializer
+    /// </summary>
+    public class TmDbSerializer
     {
         private static readonly XmlSerializerNamespaces SerializerNamespaces;
 
-        static TMDbSerializer()
+        static TmDbSerializer()
         {
             SerializerNamespaces = new XmlSerializerNamespaces();
             SerializerNamespaces.Add("", "");

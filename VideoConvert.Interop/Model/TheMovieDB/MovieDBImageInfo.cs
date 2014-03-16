@@ -14,7 +14,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// TheMovieDB image
     /// </summary>
-    public class MovieDBImageInfo
+    public class MovieDbImageInfo
     {
         /// <summary>
         /// image title
@@ -46,7 +46,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MovieDBImageInfo()
+        public MovieDbImageInfo()
         {
             Title = string.Empty;
             UrlPreview = string.Empty;

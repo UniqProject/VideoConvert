@@ -9,6 +9,7 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
+    using Model.Subtitles;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -18,7 +19,6 @@ namespace VideoConvert.Interop.Utilities.Subtitles
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Model.Subtitles;
 
     /// <summary>
     /// PNG (Portable network graphics) container

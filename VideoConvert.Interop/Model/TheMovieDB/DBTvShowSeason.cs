@@ -14,7 +14,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// TV-Show season
     /// </summary>
-    public class DBTvShowSeason
+    public class DbTvShowSeason
     {
         /// <summary>
         /// Season Title
@@ -34,17 +34,17 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// List of episodes
         /// </summary>
-        public List<DBTvShowEpisode> Episodes { get; set; }
+        public List<DbTvShowEpisode> Episodes { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DBTvShowSeason()
+        public DbTvShowSeason()
         {
             Title = string.Empty;
             SeasonNumber = 0;
             IsSpecial = false;
-            Episodes = new List<DBTvShowEpisode>();
+            Episodes = new List<DbTvShowEpisode>();
         }
     }
 }

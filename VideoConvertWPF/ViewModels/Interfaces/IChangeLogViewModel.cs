@@ -7,7 +7,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
 namespace VideoConvertWPF.ViewModels.Interfaces
 {
     public interface IChangeLogViewModel

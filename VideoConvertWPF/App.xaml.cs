@@ -1,6 +1,5 @@
 ﻿namespace VideoConvertWPF
 {
-    using System.Windows.Media;
 
     /// <summary>
     /// Interaktionslogik für "App.xaml"

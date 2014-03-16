@@ -15,7 +15,7 @@ namespace VideoConvert.Interop.Model.IMDB
     /// <summary>
     /// AKA (also known as) movie entry for IMDB
     /// </summary>
-    public class ImdbAKAEntry
+    public class ImdbAkaEntry
     {
         /// <summary>
         /// Remarks
@@ -39,7 +39,7 @@ namespace VideoConvert.Interop.Model.IMDB
         /// <summary>
         /// Default constructor
         /// </summary>
-        public ImdbAKAEntry()
+        public ImdbAkaEntry()
         {
             Remarks = new List<string>();
             Country = string.Empty;

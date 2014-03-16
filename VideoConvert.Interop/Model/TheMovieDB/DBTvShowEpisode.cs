@@ -15,7 +15,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// TV Show Episode
     /// </summary>
-    public class DBTvShowEpisode
+    public class DbTvShowEpisode
     {
         /// <summary>
         /// Episode Title

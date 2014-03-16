@@ -44,7 +44,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// </summary>
         public OggProfile()
         {
-            Type = ProfileType.OGG;
+            Type = ProfileType.Ogg;
 
             OutputChannels = 0;
             SampleRate = 0;

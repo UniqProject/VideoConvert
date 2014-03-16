@@ -9,6 +9,9 @@
 
 namespace VideoConvertWPF.ViewModels
 {
+    using Caliburn.Micro;
+    using Interfaces;
+    using Microsoft.WindowsAPICodePack.Dialogs;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -16,9 +19,6 @@ namespace VideoConvertWPF.ViewModels
     using System.Reflection;
     using System.Threading.Tasks;
     using System.Windows.Media;
-    using Caliburn.Micro;
-    using Interfaces;
-    using Microsoft.WindowsAPICodePack.Dialogs;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model.MediaInfo;

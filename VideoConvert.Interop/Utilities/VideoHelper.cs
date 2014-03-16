@@ -9,13 +9,13 @@
 
 namespace VideoConvert.Interop.Utilities
 {
+    using Model;
+    using Model.MediaInfo;
+    using Model.Profiles;
     using System;
     using System.Drawing;
     using System.Globalization;
     using System.Linq;
-    using Model;
-    using Model.MediaInfo;
-    using Model.Profiles;
 
     /// <summary>
     /// Helper class for video streams

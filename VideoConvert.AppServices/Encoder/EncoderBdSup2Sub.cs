@@ -9,15 +9,6 @@
 
 namespace VideoConvert.AppServices.Encoder
 {
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Globalization;
-    using System.IO;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Xml;
     using Interfaces;
     using Interop.EventArgs;
     using Interop.Model;
@@ -27,6 +18,15 @@ namespace VideoConvert.AppServices.Encoder
     using log4net;
     using Services.Base;
     using Services.Interfaces;
+    using System;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Xml;
 
     /// <summary>
     /// The Encoder BdSup2Sub
@@ -260,7 +260,7 @@ namespace VideoConvert.AppServices.Encoder
             {
                 case "SSA":
                 case "ASS":
-                    textSub = SSAReader.ReadFile(_inputFile);
+                    textSub = SsaReader.ReadFile(_inputFile);
                     break;
                 case "UTF-8":
                     textSub = SrtReader.ReadFile(_inputFile);

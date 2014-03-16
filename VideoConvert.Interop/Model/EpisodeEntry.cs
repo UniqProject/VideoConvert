@@ -119,7 +119,7 @@ namespace VideoConvert.Interop.Model
         /// Poster Image
         /// </summary>
         [XmlElement("thumb")]
-        public MovieDBImageInfo PosterImage { get; set; }
+        public MovieDbImageInfo PosterImage { get; set; }
 
         /// <summary>
         /// MPAA rating
@@ -203,7 +203,7 @@ namespace VideoConvert.Interop.Model
         /// Cast
         /// </summary>
         [XmlElement("actor")]
-        public List<MovieDBCast> Casts { get; set; }
+        public List<MovieDbCast> Casts { get; set; }
 
         /// <summary>
         /// Date added

@@ -9,9 +9,9 @@
 
 namespace VideoConvertWPF.ViewModels
 {
+    using Caliburn.Micro;
     using System.ComponentModel;
     using System.IO;
-    using Caliburn.Micro;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvertWPF.ViewModels.Interfaces;
 

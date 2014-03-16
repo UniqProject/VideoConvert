@@ -9,6 +9,10 @@
 
 namespace VideoConvertWPF.ViewModels
 {
+    using Caliburn.Micro;
+    using Interfaces;
+    using Microsoft.WindowsAPICodePack.Dialogs;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -21,10 +25,6 @@ namespace VideoConvertWPF.ViewModels
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
-    using Caliburn.Micro;
-    using Interfaces;
-    using Microsoft.WindowsAPICodePack.Dialogs;
-    using Newtonsoft.Json;
     using UpdateCore;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;

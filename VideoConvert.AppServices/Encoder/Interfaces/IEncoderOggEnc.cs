@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   IEncoderOggEnc interface
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 

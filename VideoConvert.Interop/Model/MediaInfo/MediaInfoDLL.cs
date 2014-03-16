@@ -27,6 +27,10 @@
 
 
 #pragma warning disable 1591 // Disable XML documentation warnings
+// ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable UnusedMember.Local
+// ReSharper disable RedundantIfElseBlock
 
 namespace VideoConvert.Interop.Model.MediaInfo
 {
@@ -140,6 +144,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
                 Marshal.FreeHGlobal(FileName_Ptr);
                 return ToReturn;
             }
+
             else
                 return (int)MediaInfo_Open(Handle, FileName);
         }
@@ -213,3 +218,8 @@ namespace VideoConvert.Interop.Model.MediaInfo
         public int Count_Get(StreamKind StreamKind) { return Count_Get(StreamKind, -1); }
     }
 } //NameSpace
+
+// ReSharper restore InconsistentNaming
+// ReSharper restore FieldCanBeMadeReadOnly.Local
+// ReSharper restore UnusedMember.Local
+// ReSharper restore RedundantIfElseBlock

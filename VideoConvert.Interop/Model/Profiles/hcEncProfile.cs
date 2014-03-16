@@ -27,7 +27,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// DC precision
         /// </summary>
-        public int DCPrecision { get; set; }
+        public int DcPrecision { get; set; }
 
         /// <summary>
         /// Interlacing
@@ -62,7 +62,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// AQ
         /// </summary>
-        public int AQ { get; set; }
+        public int Aq { get; set; }
 
         /// <summary>
         /// Quant Matrix
@@ -72,7 +72,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Intra VLC
         /// </summary>
-        public int IntraVLC { get; set; }
+        public int IntraVlc { get; set; }
 
         /// <summary>
         /// Target Colorimetry
@@ -82,12 +82,12 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Target MPEG Level
         /// </summary>
-        public int MPGLevel { get; set; }
+        public int MpgLevel { get; set; }
 
         /// <summary>
         /// VBR Bias
         /// </summary>
-        public int VBRBias { get; set; }
+        public int VbrBias { get; set; }
 
         /// <summary>
         /// Enable closed GOPS
@@ -102,17 +102,17 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Enable auto-GOP
         /// </summary>
-        public bool AutoGOP { get; set; }
+        public bool AutoGop { get; set; }
 
         /// <summary>
         /// Enable SMP processing (Multi-CPU)
         /// </summary>
-        public bool SMP { get; set; }
+        public bool Smp { get; set; }
 
         /// <summary>
         /// Check VBV buffer
         /// </summary>
-        public bool VBVCheck { get; set; }
+        public bool VbvCheck { get; set; }
 
         /// <summary>
         /// Encode Last Frame as I-Frame
@@ -143,25 +143,25 @@ namespace VideoConvert.Interop.Model.Profiles
             Type = ProfileType.HcEnc;
             Bitrate = 8000;
             Profile = 2;
-            DCPrecision = 2;
+            DcPrecision = 2;
             Interlacing = 0;
             FieldOrder = 0;
             ChromaDownsampling = 0;
             GopLength = 15;
             BFrames = 2;
             LuminanceGain = 0;
-            AQ = 2;
+            Aq = 2;
             Matrix = 0;
-            IntraVLC = 0;
+            IntraVlc = 0;
             Colorimetry = 0;
-            MPGLevel = 0;
-            VBRBias = 0;
+            MpgLevel = 0;
+            VbrBias = 0;
 
             ClosedGops = true;
             SceneChange = true;
-            AutoGOP = true;
-            SMP = true;
-            VBVCheck = true;
+            AutoGop = true;
+            Smp = true;
+            VbvCheck = true;
             LastIFrame = true;
             SeqEndCode = true;
             Allow3BFrames = false;

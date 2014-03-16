@@ -9,11 +9,11 @@
 
 namespace VideoConvert.Interop.Utilities
 {
-    using System;
     using log4net;
     using Model;
     using Model.MediaInfo;
     using Model.Profiles;
+    using System;
 
     /// <summary>
     /// Audio helper class
@@ -32,11 +32,11 @@ namespace VideoConvert.Interop.Utilities
             int sampleRate = -1, channelOrder = -1;
             switch (aProfile.Type)
             {
-                case ProfileType.AC3:
+                case ProfileType.Ac3:
                     sampleRate = ((Ac3Profile)aProfile).SampleRate;
                     channelOrder = ((Ac3Profile)aProfile).OutputChannels;
                     break;
-                case ProfileType.FLAC:
+                case ProfileType.Flac:
                     break;
                 default:
                     return false;
@@ -53,8 +53,8 @@ namespace VideoConvert.Interop.Utilities
         {
             switch (aProfile.Type)
             {
-                case ProfileType.AC3:
-                case ProfileType.FLAC:
+                case ProfileType.Ac3:
+                case ProfileType.Flac:
                     return true;
                 default:
                     return false;

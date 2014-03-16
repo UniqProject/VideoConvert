@@ -14,7 +14,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// Banner image for TV-Show season
     /// </summary>
-    public class MovieDBSeasonBannerImage : MovieDBBannerImage
+    public class MovieDbSeasonBannerImage : MovieDbBannerImage
     {
         /// <summary>
         /// image type
@@ -31,7 +31,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MovieDBSeasonBannerImage()
+        public MovieDbSeasonBannerImage()
         {
             Type = "season";
             Season = -1;

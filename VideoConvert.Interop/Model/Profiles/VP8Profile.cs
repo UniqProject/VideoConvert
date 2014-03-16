@@ -184,7 +184,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// </summary>
         public Vp8Profile()
         {
-            Type = ProfileType.VP8;
+            Type = ProfileType.Vp8;
 
             EncodingMode = 0;
             Bitrate = 1000;

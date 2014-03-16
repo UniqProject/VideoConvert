@@ -39,7 +39,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// </summary>
         public Ac3Profile()
         {
-            Type = ProfileType.AC3;
+            Type = ProfileType.Ac3;
 
             ApplyDynamicRangeCompression = true;
             OutputChannels = 0;

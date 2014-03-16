@@ -3,12 +3,19 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The MuxerDvdAuthor
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Muxer
 {
+    using Interfaces;
+    using Interop.EventArgs;
+    using Interop.Model;
+    using Interop.Utilities;
+    using log4net;
+    using Services.Base;
+    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -17,13 +24,6 @@ namespace VideoConvert.AppServices.Muxer
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml;
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
 
     /// <summary>
     /// The MuxerDvdAuthor

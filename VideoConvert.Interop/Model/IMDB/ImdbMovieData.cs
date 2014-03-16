@@ -117,7 +117,7 @@ namespace VideoConvert.Interop.Model.IMDB
         /// </summary>
         [XmlArray("also_known_as")]
         [XmlArrayItem("item")]
-        public List<ImdbAKAEntry> AlsoKnownAs { get; set; }
+        public List<ImdbAkaEntry> AlsoKnownAs { get; set; }
 
         /// <summary>
         /// Language list

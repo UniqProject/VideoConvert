@@ -14,19 +14,19 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// Movie Casts
     /// </summary>
-    public class MovieDBCastList
+    public class MovieDbCastList
     {
         /// <summary>
         /// Casts
         /// </summary>
-        public List<MovieDBCast> Casts { get; set; }
+        public List<MovieDbCast> Casts { get; set; }
  
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MovieDBCastList()
+        public MovieDbCastList()
         {
-            Casts = new List<MovieDBCast>();
+            Casts = new List<MovieDbCast>();
         }
     }
 }

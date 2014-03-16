@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
+    using Model.Subtitles;
     using System;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Xml;
-    using Model.Subtitles;
 
     /// <summary>
     /// BDN-Xml file exporter

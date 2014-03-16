@@ -9,16 +9,16 @@
 
 namespace VideoConvertWPF.Startup
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using Caliburn.Metro;
     using Caliburn.Micro;
     using Castle.Core;
     using Castle.Core.Internal;
     using Castle.MicroKernel.Registration;
     using Castle.Windsor;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using VideoConvert.AppServices;
     using VideoConvert.AppServices.Decoder;
     using VideoConvert.AppServices.Decoder.Interfaces;

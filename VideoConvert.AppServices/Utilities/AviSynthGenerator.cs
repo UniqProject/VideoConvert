@@ -3,26 +3,29 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The AviSynth Generator
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Utilities
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Globalization;
-    using System.IO;
-    using System.Text;
     using Interfaces;
     using Interop.Model;
     using Interop.Model.MediaInfo;
     using Interop.Utilities;
     using log4net;
     using Services.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
 
-    class AviSynthGenerator : IAviSynthGenerator
+    /// <summary>
+    /// The AviSynth Generator
+    /// </summary>
+    public class AviSynthGenerator : IAviSynthGenerator
     {
         /// <summary>
         /// Errorlog
@@ -37,6 +40,10 @@ namespace VideoConvert.AppServices.Utilities
         /// </summary>
         public string StereoConfigFile = string.Empty;
 
+        /// <summary>
+        /// The AviSynth Generator Constructor
+        /// </summary>
+        /// <param name="appConfig"></param>
         public AviSynthGenerator(IAppConfigService appConfig)
         {
             _appConfig = appConfig;
@@ -74,7 +81,7 @@ namespace VideoConvert.AppServices.Utilities
             }
 
             //loading plugins
-            sb.AppendLine(ImportFFMPEGSource());  // ffms2
+            sb.AppendLine(ImportFfmpegSource());  // ffms2
 
             if (changeFps || (videoInfo.Interlaced && _appConfig.UseHQDeinterlace))
                 sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
@@ -569,7 +576,7 @@ namespace VideoConvert.AppServices.Utilities
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine(ImportFFMPEGSource()); // ffms2
+            sb.AppendLine(ImportFfmpegSource()); // ffms2
 
             int fpsnum;
             int fpsden;
@@ -689,7 +696,7 @@ namespace VideoConvert.AppServices.Utilities
                     sb.AppendFormat(CInfo, "NicMPG123Source(\"{0}\")", inputFile);
                     break;
                 default:
-                    sb.AppendLine(ImportFFMPEGSource());
+                    sb.AppendLine(ImportFfmpegSource());
                     sb.AppendFormat(CInfo, "FFAudioSource(\"{0}\")", inputFile);
                     break;
             }
@@ -805,7 +812,7 @@ namespace VideoConvert.AppServices.Utilities
         /// Imports ffmpegsource (ffms2) plugin
         /// </summary>
         /// <returns></returns>
-        public string ImportFFMPEGSource()
+        public string ImportFfmpegSource()
         {
             return string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
                                  Path.Combine(_appConfig.AvsPluginsPath, "ffms2.dll"));

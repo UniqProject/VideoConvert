@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
+    using log4net;
+    using Model.Subtitles;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
-    using log4net;
-    using Model.Subtitles;
 
     /// <summary>
     /// SRT Subtitle writer class

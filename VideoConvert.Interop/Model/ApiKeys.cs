@@ -17,11 +17,11 @@ namespace VideoConvert.Interop.Model
         /// <summary>
         /// API key for TheMovieDB
         /// </summary>
-        public static string MovieDBApiKey { get { return "3c0a6fc7bb8fea5432a4e21ec32be907"; } }
+        public static string MovieDbApiKey { get { return "3c0a6fc7bb8fea5432a4e21ec32be907"; } }
 
         /// <summary>
         /// API key for TheTvDB
         /// </summary>
-        public static string TheTVDBApiKey { get { return "1DBEA8A1430711B7"; } }
+        public static string TheTvdbApiKey { get { return "1DBEA8A1430711B7"; } }
     }
 }

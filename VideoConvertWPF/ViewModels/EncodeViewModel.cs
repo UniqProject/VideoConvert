@@ -1,10 +1,10 @@
 ﻿namespace VideoConvertWPF.ViewModels
 {
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using Caliburn.Micro;
     using Interfaces;
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Linq;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.EventArgs;
     using VideoConvert.Interop.Model;

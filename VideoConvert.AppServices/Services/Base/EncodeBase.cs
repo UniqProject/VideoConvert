@@ -9,13 +9,12 @@
 
 namespace VideoConvert.AppServices.Services.Base
 {
-    using System;
     using Interop.EventArgs;
+    using System;
     using VideoConvert.AppServices.Services.Base.Interfaces;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;
-
-
+    
     /// <summary>
     /// Base Encoder class
     /// </summary>

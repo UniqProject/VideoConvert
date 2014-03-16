@@ -44,7 +44,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// </summary>
         public AacProfile()
         {
-            Type = ProfileType.AAC;
+            Type = ProfileType.Aac;
 
             OutputChannels = 0;
             SampleRate = 0;

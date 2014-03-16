@@ -9,10 +9,10 @@
 
 namespace VideoConvert.AppServices.Utilities
 {
-    using System.Drawing;
-    using System.Linq;
     using Interop.Model;
     using Services.Interfaces;
+    using System.Drawing;
+    using System.Linq;
 
     /// <summary>
     /// Avisynth helper class

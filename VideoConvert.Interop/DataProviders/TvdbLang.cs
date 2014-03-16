@@ -9,6 +9,7 @@
 
 namespace VideoConvert.Interop.DataProviders
 {
+    using Model;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -17,7 +18,6 @@ namespace VideoConvert.Interop.DataProviders
     using TvdbLib;
     using TvdbLib.Cache;
     using TvdbLib.Data;
-    using Model;
     using Utilities;
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace VideoConvert.Interop.DataProviders
 
                 if (_handler == null)
                 {
-                    _handler = new TvdbHandler(new XmlCacheProvider(cachePath), ApiKeys.TheTVDBApiKey);
+                    _handler = new TvdbHandler(new XmlCacheProvider(cachePath), ApiKeys.TheTvdbApiKey);
                 }
                 try
                 {

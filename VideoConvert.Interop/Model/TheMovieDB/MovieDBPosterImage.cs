@@ -14,7 +14,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// TheMovieDB poster image
     /// </summary>
-    public class MovieDBPosterImage : MovieDBImageInfo
+    public class MovieDbPosterImage : MovieDbImageInfo
     {
         /// <summary>
         /// image aspect
@@ -25,7 +25,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MovieDBPosterImage()
+        public MovieDbPosterImage()
         {
             Aspect = "poster";
         }

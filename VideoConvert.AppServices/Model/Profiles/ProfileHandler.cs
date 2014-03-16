@@ -9,16 +9,16 @@
 
 namespace VideoConvert.AppServices.Model.Profiles
 {
+    using Interop.Model;
+    using Interop.Model.Profiles;
+    using Interop.Utilities;
+    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Xml;
     using System.Xml.Serialization;
-    using Interop.Model;
-    using Interop.Model.Profiles;
-    using Interop.Utilities;
-    using Services.Interfaces;
 
     /// <summary>
     /// A Helper class which handles the profile xml serialization / deserialization
@@ -161,51 +161,51 @@ namespace VideoConvert.AppServices.Model.Profiles
             var filter = new List<EncoderProfile>();
             if (!_config.LameInstalled)
             {
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.MP3));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Mp3));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.MP3));
+                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.Mp3));
             }
             if (!_config.OggEncInstalled)
             {
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.OGG));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Ogg));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.OGG));
+                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.Ogg));
             }
             if (!_config.NeroAacEncInstalled)
             {
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.AAC));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Aac));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile)profile).AudioProfileType == ProfileType.AAC));
+                        ((QuickSelectProfile)profile).AudioProfileType == ProfileType.Aac));
             }
             if (!_config.FfmpegInstalled)
             {
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.AC3));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Ac3));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.AC3));
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.FLAC));
+                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.Ac3));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Flac));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.FLAC));
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.VP8));
+                        ((QuickSelectProfile) profile).AudioProfileType == ProfileType.Flac));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Vp8));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile)profile).VideoProfileType == ProfileType.VP8));
+                        ((QuickSelectProfile)profile).VideoProfileType == ProfileType.Vp8));
                 filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Mpeg2Video));
                 filter.AddRange(
                     ProfileList.Where(
@@ -235,12 +235,12 @@ namespace VideoConvert.AppServices.Model.Profiles
 
             if (!_config.VpxEncInstalled)
             {
-                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.VP8));
+                filter.AddRange(ProfileList.Where(profile => profile.Type == ProfileType.Vp8));
                 filter.AddRange(
                     ProfileList.Where(
                         profile =>
                         profile.Type == ProfileType.QuickSelect &&
-                        ((QuickSelectProfile)profile).VideoProfileType == ProfileType.VP8));
+                        ((QuickSelectProfile)profile).VideoProfileType == ProfileType.Vp8));
             }
 
             if (!_config.MKVMergeInstalled)
@@ -315,23 +315,23 @@ namespace VideoConvert.AppServices.Model.Profiles
             hcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var vp8Profiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.VP8).Cast<Vp8Profile>().ToList();
+                ProfileList.Where(profile => profile.Type == ProfileType.Vp8).Cast<Vp8Profile>().ToList();
             vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var ac3Profiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.AC3).Cast<Ac3Profile>().ToList();
+                ProfileList.Where(profile => profile.Type == ProfileType.Ac3).Cast<Ac3Profile>().ToList();
             ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var mp3Profiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.MP3).Cast<Mp3Profile>().ToList();
+                ProfileList.Where(profile => profile.Type == ProfileType.Mp3).Cast<Mp3Profile>().ToList();
             mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var oggProfiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.OGG).Cast<OggProfile>().ToList();
+                ProfileList.Where(profile => profile.Type == ProfileType.Ogg).Cast<OggProfile>().ToList();
             oggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var aacProfiles =
-                ProfileList.Where(profile => profile.Type == ProfileType.AAC).Cast<AacProfile>().ToList();
+                ProfileList.Where(profile => profile.Type == ProfileType.Aac).Cast<AacProfile>().ToList();
             aacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var profiles = new XmlProfiles

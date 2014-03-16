@@ -3,20 +3,12 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The EncoderFfmpegDVD
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Encoder
 {
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using Interfaces;
     using Interop.EventArgs;
     using Interop.Model;
@@ -25,6 +17,14 @@ namespace VideoConvert.AppServices.Encoder
     using log4net;
     using Services.Base;
     using Services.Interfaces;
+    using System;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
     using Utilities;
 
     /// <summary>
@@ -347,9 +347,9 @@ namespace VideoConvert.AppServices.Encoder
                 sb.AppendFormat(" -pass {0:0}", this._encodingPass);
             }
 
-            if (this._encProfile.MBDecision > 0)
+            if (this._encProfile.MbDecision > 0)
             {
-                sb.AppendFormat(" -mbd {0}", mbdArray[this._encProfile.MBDecision]);
+                sb.AppendFormat(" -mbd {0}", mbdArray[this._encProfile.MbDecision]);
             }
 
             if (this._encProfile.Trellis > 0)
@@ -357,19 +357,19 @@ namespace VideoConvert.AppServices.Encoder
                 sb.AppendFormat(" -trellis {0:0}", this._encProfile.Trellis);
             }
 
-            if (this._encProfile.CMP > 0)
+            if (this._encProfile.Cmp > 0)
             {
-                sb.AppendFormat(" -cmp {0}", cmpArray[this._encProfile.CMP]);
+                sb.AppendFormat(" -cmp {0}", cmpArray[this._encProfile.Cmp]);
             }
 
-            if (this._encProfile.SubCMP > 0)
+            if (this._encProfile.SubCmp > 0)
             {
-                sb.AppendFormat(" -subcmp {0}", cmpArray[this._encProfile.SubCMP]);
+                sb.AppendFormat(" -subcmp {0}", cmpArray[this._encProfile.SubCmp]);
             }
 
-            if (this._encProfile.DCPrecision > 0)
+            if (this._encProfile.DcPrecision > 0)
             {
-                sb.AppendFormat(" -dc {0}", this._encProfile.DCPrecision);
+                sb.AppendFormat(" -dc {0}", this._encProfile.DcPrecision);
             }
 
             if (this._encProfile.ClosedGops)
@@ -377,7 +377,7 @@ namespace VideoConvert.AppServices.Encoder
                 sb.Append(" -flags cgop -mpv_flags strict_gop -sc_threshold 1000000000");
             }
 
-            if (!this._encProfile.AutoGOP)
+            if (!this._encProfile.AutoGop)
             {
                 sb.AppendFormat(" -g {0:0}", this._encProfile.GopLength);
             }

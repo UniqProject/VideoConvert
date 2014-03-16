@@ -14,7 +14,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
     /// <summary>
     /// Movie cast entry
     /// </summary>
-    public class MovieDBCast
+    public class MovieDbCast
     {
         /// <summary>
         /// Name
@@ -37,7 +37,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MovieDBCast()
+        public MovieDbCast()
         {
             Thumbnail = string.Empty;
             Name = string.Empty;

@@ -22,17 +22,17 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// UseAviSynthMT
         /// </summary>
-        public const string UseAviSynthMT = "UseAviSynthMT";
+        public const string UseAviSynthMt = "UseAviSynthMT";
 
         /// <summary>
         /// UseHQDeinterlace
         /// </summary>
-        public const string UseHQDeinterlace = "UseHQDeinterlace";
+        public const string UseHqDeinterlace = "UseHQDeinterlace";
 
         /// <summary>
         /// EnableSSIF
         /// </summary>
-        public const string EnableSSIF = "EnableSSIF";
+        public const string EnableSsif = "EnableSSIF";
 
         /// <summary>
         /// FilterLoopingPlaylists
@@ -112,7 +112,7 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// LastMKVMergeVer
         /// </summary>
-        public const string LastMKVMergeVer = "LastMKVMergeVer";
+        public const string LastMkvMergeVer = "LastMKVMergeVer";
 
         /// <summary>
         /// LastMplayerVer
@@ -122,7 +122,7 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// LastTSMuxerVer
         /// </summary>
-        public const string LastTSMuxerVer = "LastTSMuxerVer";
+        public const string LastTsMuxerVer = "LastTSMuxerVer";
 
         /// <summary>
         /// LastAviSynthVer
@@ -137,7 +137,7 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// LastBDSup2SubVer
         /// </summary>
-        public const string LastBDSup2SubVer = "LastBDSup2SubVer";
+        public const string LastBdSup2SubVer = "LastBDSup2SubVer";
 
         /// <summary>
         /// LastMp4BoxVer
@@ -147,12 +147,12 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// LastMJPEGToolsVer
         /// </summary>
-        public const string LastMJPEGToolsVer = "LastMJPEGtoolsVer";
+        public const string LastMjpegToolsVer = "LastMJPEGtoolsVer";
 
         /// <summary>
         /// LastDVDAuthorVer
         /// </summary>
-        public const string LastDVDAuthorVer = "LastDVDAuthorVer";
+        public const string LastDvdAuthorVer = "LastDVDAuthorVer";
 
         /// <summary>
         /// LastOggEncVer
@@ -192,47 +192,47 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// TSMuxeRUseAsyncIO
         /// </summary>
-        public const string TSMuxeRUseAsyncIO = "tsMuxeRUseAsyncIO";
+        public const string TsMuxeRUseAsyncIO = "tsMuxeRUseAsyncIO";
 
         /// <summary>
         /// TSMuxeRBlurayAudioPES
         /// </summary>
-        public const string TSMuxeRBlurayAudioPES = "tsMuxeRBlurayAudioPES";
+        public const string TsMuxeRBlurayAudioPes = "tsMuxeRBlurayAudioPES";
 
         /// <summary>
         /// TSMuxerSubtitleAdditionalBorder
         /// </summary>
-        public const string TSMuxerSubtitleAdditionalBorder = "tsMuxerSubtitleAdditionalBorder";
+        public const string TsMuxerSubtitleAdditionalBorder = "tsMuxerSubtitleAdditionalBorder";
 
         /// <summary>
         /// TSMuxeRBottomOffset
         /// </summary>
-        public const string TSMuxeRBottomOffset = "tsMuxeRBottomOffset";
+        public const string TsMuxeRBottomOffset = "tsMuxeRBottomOffset";
 
         /// <summary>
         /// TSMuxeRSubtitleFont
         /// </summary>
-        public const string TSMuxeRSubtitleFont = "tsMuxeRSubtitleFont";
+        public const string TsMuxeRSubtitleFont = "tsMuxeRSubtitleFont";
 
         /// <summary>
         /// TSMuxeRSubtitleColor
         /// </summary>
-        public const string TSMuxeRSubtitleColor = "tsMuxeRSubtitleColor";
+        public const string TsMuxeRSubtitleColor = "tsMuxeRSubtitleColor";
 
         /// <summary>
         /// TSMuxeRSubtitleFontSize
         /// </summary>
-        public const string TSMuxeRSubtitleFontSize = "tsMuxeRSubtitleFontSize";
+        public const string TsMuxeRSubtitleFontSize = "tsMuxeRSubtitleFontSize";
 
         /// <summary>
         /// TSMuxeRVideoTimingInfo
         /// </summary>
-        public const string TSMuxeRVideoTimingInfo = "tsMuxeRVideoTimingInfo";
+        public const string TsMuxeRVideoTimingInfo = "tsMuxeRVideoTimingInfo";
 
         /// <summary>
         /// TSMuxeRAddVideoPPS
         /// </summary>
-        public const string TSMuxeRAddVideoPPS = "tsMuxeRAddVideoPPS";
+        public const string TsMuxeRAddVideoPps = "tsMuxeRAddVideoPPS";
 
         /// <summary>
         /// DeleteCompletedJobs
@@ -312,57 +312,57 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// MovieDBLastLanguage
         /// </summary>
-        public const string MovieDBLastLanguage = "MovieDBLastLanguage";
+        public const string MovieDbLastLanguage = "MovieDBLastLanguage";
 
         /// <summary>
         /// MovieDBLastRatingCountry
         /// </summary>
-        public const string MovieDBLastRatingCountry = "MovieDBLastRatingCountry";
+        public const string MovieDbLastRatingCountry = "MovieDBLastRatingCountry";
 
         /// <summary>
         /// MovieDBLastFallbackLanguage
         /// </summary>
-        public const string MovieDBLastFallbackLanguage = "MovieDBLastFallbackLanguage";
+        public const string MovieDbLastFallbackLanguage = "MovieDBLastFallbackLanguage";
 
         /// <summary>
         /// MovieDBLastFallbackRatingCountry
         /// </summary>
-        public const string MovieDBLastFallbackRatingCountry = "MovieDBLastFallbackRatingCountry";
+        public const string MovieDbLastFallbackRatingCountry = "MovieDBLastFallbackRatingCountry";
 
         /// <summary>
         /// MovieDBPreferredCertPrefix
         /// </summary>
-        public const string MovieDBPreferredCertPrefix = "MovieDBPreferredCertPrefix";
+        public const string MovieDbPreferredCertPrefix = "MovieDBPreferredCertPrefix";
 
         /// <summary>
         /// MovieDBFallbackCertPrefix
         /// </summary>
-        public const string MovieDBFallbackCertPrefix = "MovieDBFallbackCertPrefix";
+        public const string MovieDbFallbackCertPrefix = "MovieDBFallbackCertPrefix";
 
         /// <summary>
         /// MovieDBRatingSrc
         /// </summary>
-        public const string MovieDBRatingSrc = "MovieDBRatingSource";
+        public const string MovieDbRatingSrc = "MovieDBRatingSource";
 
         /// <summary>
         /// TvDBCachePath
         /// </summary>
-        public const string TvDBCachePath = "TvDBCachePath";
+        public const string TvDbCachePath = "TvDBCachePath";
 
         /// <summary>
         /// TvDBParseString
         /// </summary>
-        public const string TvDBParseString = "TvDBParseString";
+        public const string TvDbParseString = "TvDBParseString";
 
         /// <summary>
         /// TvDBPreferredLanguage
         /// </summary>
-        public const string TvDBPreferredLanguage = "TvDBPreferredLanguage";
+        public const string TvDbPreferredLanguage = "TvDBPreferredLanguage";
 
         /// <summary>
         /// TvDBFallbackLanguage
         /// </summary>
-        public const string TvDBFallbackLanguage = "TvDBFallbackLanguage";
+        public const string TvDbFallbackLanguage = "TvDBFallbackLanguage";
 
         /// <summary>
         /// LastSelectedSource

@@ -9,9 +9,9 @@
 
 namespace VideoConvert.AppServices.Services.Interfaces
 {
+    using Interop.Model;
     using System;
     using System.ComponentModel;
-    using Interop.Model;
 
     /// <summary>
     /// The Main Processing Service Interface

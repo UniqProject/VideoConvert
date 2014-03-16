@@ -3,16 +3,19 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The AviSynth Generator Interface
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Utilities.Interfaces
 {
-    using System.Drawing;
     using Interop.Model;
+    using System.Drawing;
 
-    internal interface IAviSynthGenerator
+    /// <summary>
+    /// The AviSynth Generator Interface
+    /// </summary>
+    public interface IAviSynthGenerator
     {
         /// <summary>
         /// Generates AviSynth script used for video encoding
@@ -76,6 +79,6 @@ namespace VideoConvert.AppServices.Utilities.Interfaces
         /// Imports ffmpegsource (ffms2) plugin
         /// </summary>
         /// <returns></returns>
-        string ImportFFMPEGSource();
+        string ImportFfmpegSource();
     }
 }

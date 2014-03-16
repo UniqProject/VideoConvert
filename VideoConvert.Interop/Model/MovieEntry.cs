@@ -95,14 +95,14 @@ namespace VideoConvert.Interop.Model
         /// Poster/cover images
         /// </summary>
         [XmlElement("thumb")]
-        public List<MovieDBPosterImage> PosterImages { get; set; }
+        public List<MovieDbPosterImage> PosterImages { get; set; }
 
         /// <summary>
         /// Fanart / backdrop images
         /// </summary>
         [XmlArray("fanart")]
         [XmlArrayItem("thumb")]
-        public List<MovieDBImageInfo> FanartImages { get; set; }
+        public List<MovieDbImageInfo> FanartImages { get; set; }
 
         /// <summary>
         /// MPAA rating
@@ -198,7 +198,7 @@ namespace VideoConvert.Interop.Model
         /// Casts
         /// </summary>
         [XmlElement("actor")]
-        public List<MovieDBCast> Casts { get; set; }
+        public List<MovieDbCast> Casts { get; set; }
 
         /// <summary>
         /// Date of DB Add

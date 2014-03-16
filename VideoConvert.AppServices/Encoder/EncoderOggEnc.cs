@@ -3,12 +3,19 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The EncoderOggEnc
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Encoder
 {
+    using Decoder;
+    using Interfaces;
+    using Interop.EventArgs;
+    using Interop.Model;
+    using log4net;
+    using Services.Base;
+    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Globalization;
@@ -17,13 +24,6 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using Decoder;
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using VideoConvert.AppServices.Utilities;
     using VideoConvert.Interop.Model.Profiles;
     using VideoConvert.Interop.Utilities;

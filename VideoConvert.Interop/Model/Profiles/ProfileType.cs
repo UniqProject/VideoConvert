@@ -9,6 +9,9 @@
 
 namespace VideoConvert.Interop.Model.Profiles
 {
+    using System.Xml;
+    using System.Xml.Serialization;
+
     /// <summary>
     /// Enumerates a list of implemented profile types
     /// </summary>
@@ -52,31 +55,37 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Profile for the vp8 video encoder
         /// </summary>
-        VP8,
+        [XmlEnum(Name = "VP8")]
+        Vp8,
 
         /// <summary>
         /// Profile for the ac3 audio encoder
         /// </summary>
-        AC3,
+        [XmlEnum(Name="AC3")]
+        Ac3,
 
         /// <summary>
         /// Profile for the flac audio encoder
         /// </summary>
-        FLAC,
+        [XmlEnum(Name="FLAC")]
+        Flac,
 
         /// <summary>
         /// Profile for the ogg audio encoder
         /// </summary>
-        OGG,
+        [XmlEnum(Name = "OGG")]
+        Ogg,
 
         /// <summary>
         /// Profile for the mp3 audio encoder
         /// </summary>
-        MP3,
+        [XmlEnum(Name = "MP3")]
+        Mp3,
 
         /// <summary>
         /// Profile for the aac audio encoder
         /// </summary>
-        AAC
+        [XmlEnum(Name="AAC")]
+        Aac
     };
 }

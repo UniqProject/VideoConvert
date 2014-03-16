@@ -3,7 +3,7 @@
 //   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   Profile for use with a mpeg 2 video encoder
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -27,12 +27,12 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Sets or gets the target intra dc precision
         /// </summary>
-        public int DCPrecision { get; set; }
+        public int DcPrecision { get; set; }
 
         /// <summary>
         /// Gets or sets the Macroblock Decision Algorithm (high quality mode)
         /// </summary>
-        public int MBDecision { get; set; }
+        public int MbDecision { get; set; }
 
         /// <summary>
         /// Gets or sets Trellis (rate-distortion optimal quantization)
@@ -42,12 +42,12 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Gets or sets full-pel ME compare function
         /// </summary>
-        public int CMP { get; set; }
+        public int Cmp { get; set; }
 
         /// <summary>
         /// Gets or sets sub-pel ME compare function
         /// </summary>
-        public int SubCMP { get; set; }
+        public int SubCmp { get; set; }
 
         /// <summary>
         /// Sets or gets the target amount of B-Frames
@@ -72,7 +72,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Sets or gets the use of auto calculated GOP
         /// </summary>
-        public bool AutoGOP { get; set; }
+        public bool AutoGop { get; set; }
 
         /// <summary>
         /// Default constructor. Creates an Mpeg2Video Profile with default settings.
@@ -82,17 +82,17 @@ namespace VideoConvert.Interop.Model.Profiles
             Type = ProfileType.Mpeg2Video;
             EncodingMode = 1;
             Bitrate = 8000;
-            DCPrecision = 2;
-            MBDecision = 0;
+            DcPrecision = 2;
+            MbDecision = 0;
             Trellis = 0;
-            CMP = 0;
-            SubCMP = 0;
+            Cmp = 0;
+            SubCmp = 0;
             BFrames = 2;
             GopLength = 15;
             FieldOrder = 0;
             
             ClosedGops = true;
-            AutoGOP = true;
+            AutoGop = true;
         }
 
         

@@ -9,12 +9,12 @@
 
 namespace VideoConvert.AppServices.Services.Interfaces
 {
+    using Interop.Model;
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Globalization;
     using System.Threading;
-    using Interop.Model;
 
     /// <summary>
     /// The Application Config Service Interface

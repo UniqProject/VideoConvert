@@ -9,6 +9,7 @@
 
 namespace VideoConvert.AppServices.Decoder
 {
+    using log4net;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -16,7 +17,6 @@ namespace VideoConvert.AppServices.Decoder
     using System.Globalization;
     using System.IO;
     using System.Text.RegularExpressions;
-    using log4net;
 
     /// <summary>
     /// Helper class for creation of ffmpeg decoding processes

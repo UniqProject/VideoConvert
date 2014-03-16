@@ -9,6 +9,13 @@
 
 namespace VideoConvertWPF.ViewModels
 {
+    using Interfaces;
+    using log4net;
+    using log4net.Appender;
+    using log4net.Config;
+    using log4net.Core;
+    using log4net.Filter;
+    using log4net.Layout;
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -17,13 +24,6 @@ namespace VideoConvertWPF.ViewModels
     using System.IO;
     using System.Linq;
     using System.Text;
-    using Interfaces;
-    using log4net;
-    using log4net.Appender;
-    using log4net.Config;
-    using log4net.Core;
-    using log4net.Filter;
-    using log4net.Layout;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;

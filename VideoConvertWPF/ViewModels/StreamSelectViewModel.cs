@@ -9,6 +9,11 @@
 
 namespace VideoConvertWPF.ViewModels
 {
+    using BDInfoLib.BDROM;
+    using Caliburn.Micro;
+    using Interfaces;
+    using SharpDvdInfo;
+    using SharpDvdInfo.DvdTypes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -17,11 +22,6 @@ namespace VideoConvertWPF.ViewModels
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Text;
-    using BDInfoLib.BDROM;
-    using Caliburn.Micro;
-    using Interfaces;
-    using SharpDvdInfo;
-    using SharpDvdInfo.DvdTypes;
     using VideoConvert.AppServices.Model.Profiles;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;

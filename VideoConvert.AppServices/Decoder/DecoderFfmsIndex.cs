@@ -3,23 +3,23 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   
+//   The DecoderFfmsIndex
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace VideoConvert.AppServices.Decoder
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using Interfaces;
     using Interop.EventArgs;
     using Interop.Model;
     using log4net;
     using Services.Base;
     using Services.Interfaces;
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Text;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// The DecoderFfmsIndex
