@@ -51,6 +51,7 @@ namespace VideoConvert.AppServices.Services
         private readonly IEncoderNeroAac _neroAac;
         private readonly IEncoderOggEnc _oggEnc;
         private readonly IEncoderX264 _x264;
+        private readonly IEncoderFfmpegX264 _ffmpegX264;
 
         private readonly IFileWorker _fileWorker;
         private readonly IMuxerDvdAuthor _dvdAuthor;
@@ -128,6 +129,9 @@ namespace VideoConvert.AppServices.Services
         /// <param name="x264">
         /// x264 encoder Interface
         /// </param>
+        /// <param name="ffmpegX264">
+        /// ffmpeg x264 encoder Interface
+        /// </param>
         /// <param name="fileWorker">
         /// FileWorker Interface
         /// </param>
@@ -155,7 +159,7 @@ namespace VideoConvert.AppServices.Services
                               //encoder
                               IEncoderBdSup2Sub bdSup2Sub, IEncoderFfmpegAc3 ffmpegAc3,
                               IEncoderFfmpegDvd ffmpegDvd, IEncoderLame lame, IEncoderNeroAac neroAac,
-                              IEncoderOggEnc oggEnc,IEncoderX264 x264,
+                              IEncoderOggEnc oggEnc, IEncoderX264 x264, IEncoderFfmpegX264 ffmpegX264,
                               //muxer
                               IFileWorker fileWorker, IMuxerDvdAuthor dvdAuthor, IMuxerMkvMerge mkvMerge,
                               IMuxerMp4Box mp4Box, IMuxerMplex mplex, IMuxerSpuMux spuMux)
@@ -177,6 +181,7 @@ namespace VideoConvert.AppServices.Services
             this._neroAac = neroAac;
             this._oggEnc = oggEnc;
             this._x264 = x264;
+            this._ffmpegX264 = ffmpegX264;
 
             this._fileWorker = fileWorker;
             this._dvdAuthor = dvdAuthor;
@@ -838,7 +843,8 @@ namespace VideoConvert.AppServices.Services
             switch (this._currentJob.VideoProfile.Type)
             {
                 case ProfileType.X264:
-                    this._currentEncoder = this._x264;
+                    //this._currentEncoder = this._x264;
+                    this._currentEncoder = this._ffmpegX264;
                     break;
                 case ProfileType.Mpeg2Video:
                     this._currentEncoder = this._ffmpegDvd;

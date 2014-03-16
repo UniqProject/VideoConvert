@@ -58,12 +58,14 @@
     <Compile Include="Encoder\EncoderBdSup2Sub.cs" />
     <Compile Include="Encoder\EncoderFfmpegAC3.cs" />
     <Compile Include="Encoder\EncoderFfmpegDVD.cs" />
+    <Compile Include="Encoder\EncoderFfmpegX264.cs" />
     <Compile Include="Encoder\EncoderLame.cs" />
     <Compile Include="Encoder\EncoderNeroAac.cs" />
     <Compile Include="Encoder\EncoderOggEnc.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderBdSup2Sub.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderFfmpegAC3.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderFfmpegDVD.cs" />
+    <Compile Include="Encoder\Interfaces\IEncoderFfmpegX264.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderLame.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderNeroAac.cs" />
     <Compile Include="Encoder\Interfaces\IEncoderOggEnc.cs" />
@@ -276,7 +278,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

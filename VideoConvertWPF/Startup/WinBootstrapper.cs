@@ -99,6 +99,10 @@ namespace VideoConvertWPF.Startup
             this._winContainer.Register(
                 Component.For<IEncoderX264>().ImplementedBy<EncoderX264>().LifeStyle.Is(LifestyleType.Singleton));
 
+            this._winContainer.Register(
+                Component.For<IEncoderFfmpegX264>()
+                    .ImplementedBy<EncoderFfmpegX264>()
+                    .LifeStyle.Is(LifestyleType.Singleton));
 
             // Muxers
             this._winContainer.Register(

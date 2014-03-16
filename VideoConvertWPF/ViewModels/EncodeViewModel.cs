@@ -146,6 +146,7 @@
                     processingTool = "Audio: Encoding to OGG...";
                     break;
                 case "EncoderX264":
+                case "EncoderFfmpegX264":
                     processingTool = "Video: Encoding to h.264...";
                     break;
                 case "FileWorker":
