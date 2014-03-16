@@ -62,7 +62,7 @@ namespace VideoConvert.AppServices.Muxer
         private int _muxStep;
         private float _singleStep;
 
-        private readonly Regex _importingRegex = new Regex(@"^Importing ([\w-\d]*|ISO File): \|.+?\| \((\d+?)\/\d+?\)$",
+        private readonly Regex _importingRegex = new Regex(@"^Importing ([\w-\d\(\) ]*|ISO File): \|.+?\| \((\d+?)\/\d+?\)$",
                                                            RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly Regex _progressRegex = new Regex(@"^ISO File Writing: \|.+?\| \((\d+?)\/\d+?\)$",
                                                         RegexOptions.Singleline | RegexOptions.Multiline);
@@ -489,6 +489,9 @@ namespace VideoConvert.AppServices.Muxer
 
         private void ProcessLogMessage(string line)
         {
+            if (string.IsNullOrEmpty(line)) return;
+            
+            line = line.Trim();
             if (string.IsNullOrEmpty(line)) return;
 
             var progressResult = _progressRegex.Match(line);
