@@ -250,7 +250,7 @@ namespace VideoConvert.AppServices.Muxer
                 (this._currentTask.Input == InputType.InputAvi && !this._currentTask.VideoStream.Encoded) ||
                 this._currentTask.VideoStream.Encoded)
                 vidStream = 0;
-            else if (!this._currentTask.VideoStream.Encoded && (tempExt == ".mp4" || tempExt == ".mkv"))
+            else if (!this._currentTask.VideoStream.Encoded && (tempExt == ".mp4" || tempExt == ".mkv" || tempExt == ".ts"))
                 vidStream = Math.Max(this._currentTask.VideoStream.StreamId - 1, 0);
             else
                 vidStream = this._currentTask.VideoStream.StreamId;
