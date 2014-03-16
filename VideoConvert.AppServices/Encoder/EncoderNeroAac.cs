@@ -316,10 +316,11 @@ namespace VideoConvert.AppServices.Encoder
                 int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
                 while (read > 0 && !this.DecodeProcess.HasExited)
                 {
-                    _encodePipe.Write(buffer, 0, read);
+                    this._encodePipe.Write(buffer, 0, read);
                     if (!this.DecodeProcess.HasExited)
                         read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
                 }
+                this._encodePipe.Close();
             }
             catch (Exception exc)
             {
