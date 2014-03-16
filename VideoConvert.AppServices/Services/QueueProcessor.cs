@@ -241,36 +241,48 @@ namespace VideoConvert.AppServices.Services
             this._currentEncoder = null;
 
             DeleteTempFiles();
-
-            this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+            if (this._currentJob != null && this._currentJob.ExitCode == 0)
             {
-                JobName = string.Empty,
-                AverageFrameRate = 0f,
-                CurrentFrameRate = 0f,
-                CurrentFrame = 0,
-                TotalFrames = 0,
-                ElapsedTime = new TimeSpan(),
-                EstimatedTimeLeft = new TimeSpan(),
-                PercentComplete = 0,
-                TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent)
-            });
+                this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+                {
+                    JobName = string.Empty,
+                    AverageFrameRate = 0f,
+                    CurrentFrameRate = 0f,
+                    CurrentFrame = 0,
+                    TotalFrames = 0,
+                    ElapsedTime = new TimeSpan(),
+                    EstimatedTimeLeft = new TimeSpan(),
+                    PercentComplete = 0,
+                    TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent)
+                });
             
-            GetNextStep();
-
-            if (this._currentJob.NextStep == EncodingStep.Done &&
-                this._queueList.IndexOf(this._currentJob) < this._queueList.Count - 1)
-            {
-                GetNextJob();
                 GetNextStep();
-            }
-            else if (this._currentJob.NextStep == EncodingStep.Done &&
-                this._queueList.IndexOf(this._currentJob) == this._queueList.Count - 1)
-            {
-                this.InvokeQueueCompleted(new QueueCompletedEventArgs(true,null,string.Empty));
-                return;
-            }
 
-            ExecuteNextStep();
+                if (this._currentJob.NextStep == EncodingStep.Done &&
+                    this._queueList.IndexOf(this._currentJob) < this._queueList.Count - 1)
+                {
+                    this._currentJob = GetNextJob();
+                    GetNextStep();
+                }
+                else if (this._currentJob.NextStep == EncodingStep.Done &&
+                         this._queueList.IndexOf(this._currentJob) == this._queueList.Count - 1)
+                {
+                    this.InvokeQueueCompleted(new QueueCompletedEventArgs(true,null,string.Empty));
+                    return;
+                }
+
+                ExecuteNextStep();
+            }
+            else
+            {
+                var currentJob = this._currentJob;
+                var exitCode = -1;
+                if (currentJob != null)
+                    exitCode = currentJob.ExitCode;
+                this.InvokeQueueCompleted(new QueueCompletedEventArgs(false,
+                    new ApplicationException("Encoder exited with code " + exitCode),
+                    "Encoder exited with code " + exitCode));
+            }
         }
 
         private void EncoderProgressStatus(object sender, EncodeProgressEventArgs args)

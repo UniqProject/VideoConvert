@@ -177,7 +177,10 @@ namespace VideoConvert.AppServices.Encoder
             try
             {
                 if (this.IsEncoding)
+                {
+                    encodeQueueTask.ExitCode = -1;
                     throw new Exception("lame is already running");
+                }
 
                 var use64BitEncoder = this._appConfig.Use64BitEncoders &&
                                        this._appConfig.Lame64Installed &&

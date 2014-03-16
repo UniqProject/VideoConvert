@@ -215,6 +215,7 @@ namespace VideoConvert.AppServices.Encoder
             {
                 if (this.IsEncoding)
                 {
+                    encodeQueueTask.ExitCode = -1;
                     throw new Exception("x264 is already encoding.");
                 }
 
@@ -349,6 +350,7 @@ namespace VideoConvert.AppServices.Encoder
             {
                 Log.Error(exc);
                 this._currentTask.ExitCode = -1;
+                this.IsEncoding = false;
                 this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
@@ -375,6 +377,7 @@ namespace VideoConvert.AppServices.Encoder
             {
                 Log.Error(exc);
             }
+            this.IsEncoding = false;
         }
 
         /// <summary>

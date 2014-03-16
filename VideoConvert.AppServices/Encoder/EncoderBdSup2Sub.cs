@@ -162,7 +162,10 @@ namespace VideoConvert.AppServices.Encoder
             try
             {
                 if (this.IsEncoding)
+                {
+                    encodeQueueTask.ExitCode = -1;
                     throw new Exception("BDSup2Sub is already running");
+                }
 
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
@@ -206,6 +209,7 @@ namespace VideoConvert.AppServices.Encoder
             {
                 Log.Error(exc);
                 this._currentTask.ExitCode = -1;
+                this.IsEncoding = false;
                 this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
@@ -226,6 +230,7 @@ namespace VideoConvert.AppServices.Encoder
             {
                 Log.Error(exc);
             }
+            this.IsEncoding = false;
         }
 
         /// <summary>
@@ -379,6 +384,7 @@ namespace VideoConvert.AppServices.Encoder
             }
 
             this._currentTask.CompletedStep = this._currentTask.NextStep;
+            this.IsEncoding = false;
             this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 

@@ -148,7 +148,10 @@ namespace VideoConvert.AppServices.Demuxer
             try
             {
                 if (this.IsEncoding)
+                {
+                    encodeQueueTask.ExitCode = -1;
                     throw new Exception("eac3to is already running");
+                }
 
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;

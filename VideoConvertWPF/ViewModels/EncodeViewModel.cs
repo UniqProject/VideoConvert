@@ -87,12 +87,25 @@
 
         private void QueueCompleted(object sender, QueueCompletedEventArgs args)
         {
+            this._queueProcessor.QueueCompleted -= QueueCompleted;
+            this._queueProcessor.QueueProgressChanged -= QueueProgressChanged;
+            this._queueProcessor.QueueStarted -= QueueStarted;
+
+            Execute.OnUIThread(() =>
+            {
+                var finishedList = JobCollection.Where(encodeInfo => encodeInfo.NextStep == EncodingStep.Done).ToList();
+                foreach (var encodeInfo in finishedList)
+                {
+                    this.JobCollection.Remove(encodeInfo);
+                }
+            }); 
             Abort();
         }
 
         private void QueueProgressChanged(object sender, QueueProgressEventArgs args)
         {
             Type senderType;
+            string processingTool = string.Empty;
             try
             {
                 senderType = sender.GetType();
@@ -103,7 +116,56 @@
             }
             switch (senderType.Name)
             {
-                    
+                case "DecoderFfmpegGetCrop":
+                    processingTool = "Video: Calculating Crop Rectangle...";
+                    break;
+                case "DecoderFfmsIndex":
+                    processingTool = "Video: Indexing...";
+                    break;
+                case "DemuxerEac3To":
+                case "DemuxerFfmpeg":
+                case "DemuxerMplayer":
+                    processingTool = "Source: Demultiplexing Streams...";
+                    break;
+                case "EncoderBdSup2Sub":
+                    processingTool = "Subtitle: Processing captions...";
+                    break;
+                case "EncoderFfmpegAc3":
+                    processingTool = "Audio: Encoding to AC-3...";
+                    break;
+                case "EncoderFfmpegDvd":
+                    processingTool = "Video: Encoding DVD Compliant stream...";
+                    break;
+                case "EncoderLame":
+                    processingTool = "Audio: Encoding to MP3...";
+                    break;
+                case "EncoderNeroAac":
+                    processingTool = "Audio: Encoding to AAC...";
+                    break;
+                case "EncoderOggEnc":
+                    processingTool = "Audio: Encoding to OGG...";
+                    break;
+                case "EncoderX264":
+                    processingTool = "Video: Encoding to h.264...";
+                    break;
+                case "FileWorker":
+                    processingTool = "Copying / Moving Files...";
+                    break;
+                case "MuxerDvdAuthor":
+                    processingTool = "Output: Authoring DVD Structure...";
+                    break;
+                case "MuxerMkvMerge":
+                    processingTool = "Output: Multiplexing Streams to MKV (Matroska) File...";
+                    break;
+                case "MuxerMp4Box":
+                    processingTool = "Output: Multiplexing Streams to MP4 File...";
+                    break;
+                case "MuxerMplex":
+                    processingTool = "Output: Multiplexing Media Streams to MPEG Package...";
+                    break;
+                case "MuxerSpuMux":
+                    processingTool = "Output: Multiplexing Subtitle Stream into MPEG Package...";
+                    break;
             }
 
             this.ProgressValue = args.PercentComplete;
@@ -111,12 +173,14 @@
 
             if (!string.IsNullOrEmpty(args.JobName))
             {
-                Execute.OnUIThread(() =>    LogEntries.Add(new LogEntry
-                                            {
-                                                EntryTime = DateTime.Now,
-                                                JobName = args.JobName,
-                                                LogText = "Processing started"
-                                            }));
+                Execute.OnUIThread(() => LogEntries.Add(new LogEntry
+                                                        {
+                                                            EntryTime = DateTime.Now,
+                                                            JobName = args.JobName,
+                                                            LogText = string.IsNullOrEmpty(processingTool) 
+                                                                        ? "Processing started" 
+                                                                        : processingTool
+                                                        }));
 
             }
         }

@@ -183,7 +183,10 @@ namespace VideoConvert.AppServices.Encoder
             try
             {
                 if (this.IsEncoding)
+                {
+                    encodeQueueTask.ExitCode = -1;
                     throw new Exception("neroAacEnc is already running");
+                }
 
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;

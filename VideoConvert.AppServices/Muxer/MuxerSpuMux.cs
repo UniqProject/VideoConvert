@@ -152,7 +152,10 @@ namespace VideoConvert.AppServices.Muxer
             try
             {
                 if (this.IsEncoding)
+                {
+                    encodeQueueTask.ExitCode = -1;
                     throw new Exception("spumux is already running");
+                }
 
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
