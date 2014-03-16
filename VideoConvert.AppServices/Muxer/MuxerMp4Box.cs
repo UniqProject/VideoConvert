@@ -431,7 +431,7 @@ namespace VideoConvert.AppServices.Muxer
                                         AppConfigService.GetAppVersion().ToString(4));
             var tempPath = this._appConfig.DemuxLocation;
 
-            sb.AppendFormat("-itags tool=\"{0}\" -tmp \"{1}\" -v -new \"{2}\"", tool, tempPath, _outputFile);
+            sb.AppendFormat("-itags tool=\"{0}\" -tmp \"{1}\" -new \"{2}\"", tool, tempPath, _outputFile);
 
             return sb.ToString();
         }
