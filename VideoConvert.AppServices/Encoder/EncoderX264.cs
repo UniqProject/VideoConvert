@@ -221,13 +221,13 @@ namespace VideoConvert.AppServices.Encoder
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                var use64BitEncoder = _appConfig.Use64BitEncoders &&
-                                       _appConfig.X26464Installed &&
-                                       Environment.Is64BitOperatingSystem;
+                var use64BitEncoder = this._appConfig.Use64BitEncoders &&
+                                      this._appConfig.X26464Installed &&
+                                      Environment.Is64BitOperatingSystem;
 
                 // TODO: this one is very ugly
 
-                _encProfile = (X264Profile)this._currentTask.VideoProfile;
+                this._encProfile = (X264Profile)this._currentTask.VideoProfile;
 
                 if (!this._currentTask.EncodingProfile.Deinterlace && this._currentTask.VideoStream.Interlaced)
                     this._currentTask.VideoStream.Interlaced = false;
@@ -242,33 +242,33 @@ namespace VideoConvert.AppServices.Encoder
 
                 var inputFile = this._currentTask.AviSynthScript;
 
-                _outFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
-                    string.IsNullOrEmpty(this._currentTask.TempOutput) 
-                        ? this._currentTask.BaseName 
-                        : this._currentTask.TempOutput,
-                    "encoded.264");
+                this._outFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
+                                                                string.IsNullOrEmpty(this._currentTask.TempOutput) 
+                                                                    ? this._currentTask.BaseName 
+                                                                    : this._currentTask.TempOutput,
+                                                                "encoded.264");
 
                 var targetBitrate = 0;
                 if (this._currentTask.EncodingProfile.TargetFileSize > 0)
                     targetBitrate = VideoHelper.CalculateVideoBitrate(this._currentTask);
 
-                _encodeMode = this._encProfile.EncodingMode;
-                _frameCount = this._currentTask.VideoStream.FrameCount;
-                _encodePass = this._currentTask.StreamId;
+                this._encodeMode = this._encProfile.EncodingMode;
+                this._frameCount = this._currentTask.VideoStream.FrameCount;
+                this._encodePass = this._currentTask.StreamId;
 
                 var x264CliPath = Path.Combine(this._appConfig.ToolsPath,
                                                   use64BitEncoder ? Executable64 : Executable);
 
-                var query = GenerateCommandLine(targetBitrate,
-                                                   resizeTo.Width,
-                                                   resizeTo.Height,
-                                                   this._encodePass,
-                                                   this._currentTask.VideoStream.FrameRateEnumerator,
-                                                   this._currentTask.VideoStream.FrameRateDenominator,
-                                                   this._currentTask.EncodingProfile.StereoType,
-                                                   this._currentTask.VideoStream.PicSize,
-                                                   "-", 
-                                                   _outFile);
+                var query = this.GenerateCommandLine(targetBitrate,
+                                                     resizeTo.Width,
+                                                     resizeTo.Height,
+                                                     this._encodePass,
+                                                     this._currentTask.VideoStream.FrameRateEnumerator,
+                                                     this._currentTask.VideoStream.FrameRateDenominator,
+                                                     this._currentTask.EncodingProfile.StereoType,
+                                                     this._currentTask.VideoStream.PicSize,
+                                                     "-", 
+                                                     this._outFile);
 
                 var cliStart = new ProcessStartInfo(x264CliPath, query)
                 {
@@ -288,7 +288,7 @@ namespace VideoConvert.AppServices.Encoder
                                                              3,
                                                              PipeTransmissionMode.Byte,
                                                              PipeOptions.Asynchronous);
-                this._decodePipeState = this._decodePipe.BeginWaitForConnection(DecoderConnected, null);
+                this._decodePipeState = this._decodePipe.BeginWaitForConnection(this.DecoderConnected, null);
 
                 var originalSize = new Size(this._currentTask.VideoStream.Width, this._currentTask.VideoStream.Height);
                 if (this._currentTask.VideoStream.Width <
@@ -391,28 +391,28 @@ namespace VideoConvert.AppServices.Encoder
 
         private void DecodeProcessExited(object sender, EventArgs e)
         {
-            if (_decodePipe != null)
+            if (this._decodePipe != null)
             {
                 try
                 {
-                    _decodePipe.EndWaitForConnection(_decodePipeState);
+                    if (!this._decodePipeState.IsCompleted)
+                        this._decodePipe.EndWaitForConnection(this._decodePipeState);
                 }
                 catch (Exception exc)
                 {
                     Log.Error(exc);
                 }
 
-                if (_decodePipe.IsConnected)
+                if (this._decodePipe.IsConnected)
                 {
-                    _decodePipe.WaitForPipeDrain();
-                    _decodePipe.Disconnect();
+                    this._decodePipe.WaitForPipeDrain();
+                    this._decodePipe.Disconnect();
                 }
 
-                if (_pipeReadThread != null && _pipeReadThread.ThreadState == ThreadState.Running)
+                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
                 {
-                    _pipeReadThread.Abort();
+                    this._pipeReadThread.Abort();
                 }
-                
             }
         }
 
@@ -427,10 +427,10 @@ namespace VideoConvert.AppServices.Encoder
         /// </param>
         private void EncodeProcessExited(object sender, EventArgs e)
         {
-            if (_pipeReadThread != null && _pipeReadThread.ThreadState == ThreadState.Running)
-                _pipeReadThread.Abort();
+            if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
+                this._pipeReadThread.Abort();
 
-            EncodeProcess.WaitForExit();
+            this.EncodeProcess.WaitForExit();
 
             try
             {
@@ -442,20 +442,20 @@ namespace VideoConvert.AppServices.Encoder
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
+            this._currentTask.ExitCode = this.EncodeProcess.ExitCode;
             Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
 
             if (this._currentTask.ExitCode == 0)
             {
-                if ((_encodeMode == 2 && this._encodePass == 2) ||
-                    (_encodeMode == 3 && this._encodePass == 3) ||
-                    (_encodeMode < 2 || this._encodePass > 3))
+                if ((this._encodeMode == 2 && this._encodePass == 2) ||
+                    (this._encodeMode == 3 && this._encodePass == 3) ||
+                    (this._encodeMode < 2 || this._encodePass > 3))
                 {
                     this._currentTask.VideoStream.Encoded = true;
                     this._currentTask.VideoStream.IsRawStream = true;
 
                     this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
-                    this._currentTask.VideoStream.TempFile = _outFile;
+                    this._currentTask.VideoStream.TempFile = this._outFile;
 
                     try
                     {
@@ -470,8 +470,8 @@ namespace VideoConvert.AppServices.Encoder
                                                                               this._currentTask.VideoStream,
                                                                               this._currentTask.EncodingProfile.OutFormat ==
                                                                               OutputType.OutputBluRay);
-                    this._currentTask.TempFiles.Add(Path.Combine(_appConfig.DemuxLocation, "x264_2pass.log"));
-                    this._currentTask.TempFiles.Add(Path.Combine(_appConfig.DemuxLocation, "x264_2pass.log.mbtree"));
+                    this._currentTask.TempFiles.Add(Path.Combine(this._appConfig.DemuxLocation, "x264_2pass.log"));
+                    this._currentTask.TempFiles.Add(Path.Combine(this._appConfig.DemuxLocation, "x264_2pass.log.mbtree"));
                     this._currentTask.TempFiles.Add(this._currentTask.AviSynthScript);
                     this._currentTask.TempFiles.Add(this._currentTask.FfIndexFile);
                     this._currentTask.TempFiles.Add(this._currentTask.AviSynthStereoConfig);
@@ -486,7 +486,7 @@ namespace VideoConvert.AppServices.Encoder
         private void DecoderConnected(IAsyncResult ar)
         {
             Log.Info("Decoder Pipe connected");
-            _decodePipeState = ar;
+            this._decodePipe.EndWaitForConnection(ar);
             _pipeReadThread = new Thread(PipeReadThreadStart);
             _pipeReadThread.Start();
             _pipeReadThread.Priority = _appConfig.GetThreadPriority();
@@ -507,11 +507,6 @@ namespace VideoConvert.AppServices.Encoder
 
         private void ReadThreadStart()
         {
-            if (!this._decodePipe.IsConnected)
-            {
-                this._decodePipe.WaitForConnection();
-            }
-
             try
             {
                 var buffer = new byte[0xA00000]; // 10 MB
