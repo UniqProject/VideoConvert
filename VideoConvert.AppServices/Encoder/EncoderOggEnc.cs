@@ -78,7 +78,7 @@ namespace VideoConvert.AppServices.Encoder
         private readonly Regex _pipeObj = new Regex(@"^([\d\,\.]*?)%.*$",
             RegexOptions.Singleline | RegexOptions.Multiline);
 
-        
+        private bool _dataWriteStarted;
 
         #endregion
 
@@ -377,7 +377,7 @@ namespace VideoConvert.AppServices.Encoder
             }
 
             sb.AppendFormat("-o \"{0}\" ", this._outputFile);
-            sb.Append("--ignorelength - ");
+            sb.AppendFormat("--ignorelength \"{0}\" ", this._appConfig.EncodeNamedPipeFullName);
 
             return sb.ToString();
         }
@@ -393,6 +393,28 @@ namespace VideoConvert.AppServices.Encoder
         /// </param>
         private void EncodeProcessExited(object sender, EventArgs e)
         {
+            if (this._encodePipe != null)
+            {
+                try
+                {
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+
+                try
+                {
+                    this._encodePipe.Close();
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+            }
+
             if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
                 this._pipeReadThread.Abort();
             this.EncodeProcess.WaitForExit();
@@ -430,7 +452,8 @@ namespace VideoConvert.AppServices.Encoder
             {
                 try
                 {
-                    _encodePipe.EndWaitForConnection(_encodePipeState);
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
                 }
                 catch (Exception exc)
                 {
@@ -472,6 +495,9 @@ namespace VideoConvert.AppServices.Encoder
         {
             var line = e.Data;
             if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
+
+            if (line.Contains("Writing Data..."))
+                this._dataWriteStarted = true;
 
             var bePipeMatch = _pipeObj.Match(line);
             if (bePipeMatch.Success)
@@ -519,7 +545,7 @@ namespace VideoConvert.AppServices.Encoder
         private void EncoderConnected(IAsyncResult ar)
         {
             Log.Info("Encoder Pipe connected");
-            _encodePipeState = ar;
+            this._encodePipe.EndWaitForConnection(ar);
             this._pipeReadThread = new Thread(PipeReadThreadStart);
             this._pipeReadThread.Start();
             this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
@@ -529,7 +555,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (DecodeProcess != null)
+                if (this.DecodeProcess != null)
                     ReadThreadStart();
             }
             catch (Exception ex)
@@ -540,14 +566,24 @@ namespace VideoConvert.AppServices.Encoder
 
         private void ReadThreadStart()
         {
-            if (!_encodePipe.IsConnected)
-            {
-                _encodePipe.WaitForConnection();
-            }
-
             try
             {
-                DecodeProcess.StandardOutput.BaseStream.CopyTo(_encodePipe);
+                // wait for decoder to start writing
+                while (!this._dataWriteStarted)
+                {
+                    Thread.Sleep(100);
+                }
+
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+
+                while (read > 0 && !this.DecodeProcess.HasExited)
+                {
+                    _encodePipe.Write(buffer, 0, read);
+                    if (!this.DecodeProcess.HasExited)
+                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+                }
             }
             catch (Exception exc)
             {
