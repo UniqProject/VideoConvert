@@ -27,7 +27,6 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text.RegularExpressions;
     using System.Threading;
     using Utilities;
-    using ThreadState = System.Threading.ThreadState;
 
     /// <summary>
     /// The EncoderLame
@@ -74,7 +73,10 @@ namespace VideoConvert.AppServices.Encoder
         private IAsyncResult _encodePipeState;
         private Thread _pipeReadThread;
         private int _decoderProcessId;
+        
         private bool _dataWriteStarted;
+        private bool _decoderIsRunning;
+        private bool _encoderIsRunning;
 
         #endregion
 
@@ -232,12 +234,14 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     this.EncodeProcess.EnableRaisingEvents = true;
                     this.EncodeProcess.Exited += EncodeProcessExited;
+                    this._encoderIsRunning = true;
                 }
 
                 if (this._decoderProcessId != -1)
                 {
                     this.DecodeProcess.EnableRaisingEvents = true;
                     this.DecodeProcess.Exited += DecodeProcessExited;
+                    this._decoderIsRunning = true;
                 }
 
                 this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
@@ -251,8 +255,128 @@ namespace VideoConvert.AppServices.Encoder
                 Log.Error(exc);
                 this._currentTask.ExitCode = -1;
                 this.IsEncoding = false;
+                this._encoderIsRunning = false;
+                this._decoderIsRunning = false;
                 this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
+        }
+
+        /// <summary>
+        /// Kill the CLI process
+        /// </summary>
+        public override void Stop()
+        {
+            try
+            {
+                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                {
+                    this._encoderIsRunning = false;
+                    Thread.Sleep(200);
+                    this.EncodeProcess.Kill();
+                }
+                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
+                {
+                    this._decoderIsRunning = false;
+                    Thread.Sleep(200);
+                    this.DecodeProcess.Kill();
+                }
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+            this.IsEncoding = false;
+        }
+
+        /// <summary>
+        /// Shutdown the service.
+        /// </summary>
+        public void Shutdown()
+        {
+            // Nothing to do.
+        }
+
+        #endregion
+
+        #region Private Helper Methods
+
+        /// <summary>
+        /// The bepipe decode process has exited.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The EventArgs.
+        /// </param>
+        private void DecodeProcessExited(object sender, EventArgs e)
+        {
+            if (this._encodePipe == null) return;
+
+            try
+            {
+                if (!this._encodePipeState.IsCompleted)
+                    this._encodePipe.EndWaitForConnection(this._encodePipeState);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+
+            this._decoderIsRunning = false;
+        }
+
+        /// <summary>
+        /// The lame process has exited.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The EventArgs.
+        /// </param>
+        private void EncodeProcessExited(object sender, EventArgs e)
+        {
+            if (this._encodePipe != null)
+            {
+                try
+                {
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+            }
+
+            try
+            {
+                this.EncodeProcess.CancelErrorRead();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+
+            this._encoderIsRunning = false;
+
+            this._currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+
+            if (this._currentTask.ExitCode == 0)
+            {
+                this._currentTask.TempFiles.Add(this._inputFile);
+                this._currentTask.TempFiles.Add(_audio.TempFile);
+                this._currentTask.TempFiles.Add(_audio.TempFile + ".d2a");
+                this._currentTask.TempFiles.Add(_audio.TempFile + ".ffindex");
+                _audio.TempFile = _outputFile;
+                AudioHelper.GetStreamInfo(_audio);
+            }
+
+            this._currentTask.CompletedStep = this._currentTask.NextStep;
+            this.IsEncoding = false;
+            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
@@ -302,33 +426,36 @@ namespace VideoConvert.AppServices.Encoder
                 Log.InfoFormat("bepipe: {0}", line);
         }
 
-        private void DecodeProcessExited(object sender, EventArgs e)
+        /// <summary>
+        /// process received data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (this._encodePipe != null)
+            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
             {
-                try
-                {
-                    if (!this._encodePipeState.IsCompleted)
-                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-
-                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                    this._pipeReadThread.Abort();
-                this.DecodeProcess.WaitForExit();
-
-                if (this._encodePipe.IsConnected)
-                    this._encodePipe.Disconnect();
+                this.ProcessLogMessage(e.Data);
             }
+        }
+
+        private void ProcessLogMessage(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return;
+
+            var result = _pipeObj.Match(line);
+            if (!result.Success)
+                Log.InfoFormat("lame: {0}", line);
         }
 
         private void EncoderConnected(IAsyncResult ar)
         {
             Log.Info("Encoder Pipe connected");
-            this._encodePipe.EndWaitForConnection(ar);
+            lock (this._encodePipe)
+            {
+                this._encodePipe.EndWaitForConnection(ar);
+            }
+            
             this._pipeReadThread = new Thread(PipeReadThreadStart);
             this._pipeReadThread.Start();
             this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
@@ -338,7 +465,7 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (DecodeProcess != null)
+                if (this.DecodeProcess != null && this.EncodeProcess != null)
                     ReadThreadStart();
             }
             catch (Exception ex)
@@ -352,20 +479,24 @@ namespace VideoConvert.AppServices.Encoder
             try
             {
                 // wait for decoder to start writing
-                while (!this._dataWriteStarted)
+                while (!this._dataWriteStarted || !this._decoderIsRunning || !this._encoderIsRunning)
                 {
                     Thread.Sleep(100);
                 }
 
                 var buffer = new byte[0xA00000]; // 10 MB
 
-                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                while (read > 0 && !this.DecodeProcess.HasExited)
+                int read = 0;
+                do
                 {
-                    this._encodePipe.Write(buffer, 0, read);
-                    if (!this.DecodeProcess.HasExited)
+                    if (this._decoderIsRunning)
                         read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                }
+
+                    if (this._encoderIsRunning)
+                        this._encodePipe.Write(buffer, 0, read);
+
+                } while (read > 0 && this._decoderIsRunning && this._encoderIsRunning);
+
                 this._encodePipe.Close();
             }
             catch (Exception exc)
@@ -373,41 +504,6 @@ namespace VideoConvert.AppServices.Encoder
                 Log.Error(exc);
             }
         }
-
-        /// <summary>
-        /// Kill the CLI process
-        /// </summary>
-        public override void Stop()
-        {
-            try
-            {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
-                {
-                    this.EncodeProcess.Kill();
-                }
-                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
-                {
-                    this.DecodeProcess.Kill();
-                }
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
-            }
-            this.IsEncoding = false;
-        }
-
-        /// <summary>
-        /// Shutdown the service.
-        /// </summary>
-        public void Shutdown()
-        {
-            // Nothing to do.
-        }
-
-        #endregion
-
-        #region Private Helper Methods
 
         private string GenerateCommandLine()
         {
@@ -483,92 +579,6 @@ namespace VideoConvert.AppServices.Encoder
             sb.AppendFormat("\"{0}\" ", _outputFile);
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// The lame process has exited.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The EventArgs.
-        /// </param>
-        private void EncodeProcessExited(object sender, EventArgs e)
-        {
-            if (this._encodePipe != null)
-            {
-                try
-                {
-                    if (!this._encodePipeState.IsCompleted)
-                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-
-                try
-                {
-                    this._encodePipe.Close();
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-            }
-
-            if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                this._pipeReadThread.Abort();
-            this.EncodeProcess.WaitForExit();
-
-            try
-            {
-                this.EncodeProcess.CancelErrorRead();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
-            }
-
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
-
-            if (this._currentTask.ExitCode == 0)
-            {
-                this._currentTask.TempFiles.Add(this._inputFile);
-                this._currentTask.TempFiles.Add(_audio.TempFile);
-                this._currentTask.TempFiles.Add(_audio.TempFile + ".d2a");
-                this._currentTask.TempFiles.Add(_audio.TempFile + ".ffindex");
-                _audio.TempFile = _outputFile;
-                AudioHelper.GetStreamInfo(_audio);
-            }
-
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
-        }
-
-        /// <summary>
-        /// process received data
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
-            {
-                this.ProcessLogMessage(e.Data);
-            }
-        }
-
-        private void ProcessLogMessage(string line)
-        {
-            if (string.IsNullOrEmpty(line)) return;
-
-            var result = _pipeObj.Match(line);
-            if (!result.Success)
-                Log.InfoFormat("lame: {0}", line);
         }
 
         #endregion

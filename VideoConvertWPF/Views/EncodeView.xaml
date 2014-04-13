@@ -29,12 +29,12 @@
         </GroupBox>
         <GroupBox Header="Progress" Margin="10,0,0,0" Grid.Row="1">
             <StackPanel Orientation="Vertical" Margin="10,10,20,0" HorizontalAlignment="Stretch">
-                <Label Content="{Binding JobStatus, FallbackValue=Job}" FontSize="14" Margin="0,0,0,5" />
+                <Label Content="{Binding JobStatus, FallbackValue=Job}" FontSize="13" Margin="0,0,0,5" FontFamily="Lucida Console" Padding="0" />
                 
                 <ProgressBar Height="20" Margin="6,0,6,0" x:Name="ActualProgress" VerticalAlignment="Top"
                              Value="{Binding ProgressValue, FallbackValue=0}"/>
 
-                <Label Content="Total" FontSize="14" Margin="0,15,0,5"/>
+                <Label Content="Total" FontSize="14" Margin="0,15,0,5" FontFamily="Lucida Console" Padding="0"/>
                 
                 <ProgressBar Height="20" Margin="6,0,6,0" x:Name="TotalProgress" VerticalAlignment="Top"
                              Value="{Binding TotalProgressValue, FallbackValue=0}"/>

@@ -20,12 +20,14 @@ namespace VideoConvert.AppServices
     /// </summary>
     public class ServicesWindsorInstaller  : IWindsorInstaller
     {
+
         #region Implementation of IWindsorInstaller
 
         /// <summary>
-        /// Performs the installation in the <see cref="T:Castle.Windsor.IWindsorContainer"/>.
+        ///   Performs the installation in the <see cref = "IWindsorContainer" />.
         /// </summary>
-        /// <param name="container">The container.</param><param name="store">The configuration store.</param>
+        /// <param name = "container">The container.</param>
+        /// <param name = "store">The configuration store.</param>
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(Component.For<IUserSettingService>().ImplementedBy<UserSettingService>());

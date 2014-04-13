@@ -245,96 +245,6 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
-        private string GenerateCommandLine()
-        {
-            var sb = new StringBuilder();
-            var localExecutable = Path.Combine(this._appConfig.ToolsPath, Executable);
-            sb.AppendFormat("-jar \"{0}\" ", localExecutable);
-
-            this._subtitle = this._currentTask.SubtitleStreams[this._currentTask.StreamId];
-
-            var targetRes = -1;
-
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                targetRes = this._currentTask.EncodingProfile.SystemType == 0 ? 576 : 480;
-
-            _inputFile = _subtitle.TempFile;
-
-            TextSubtitle textSub = null;
-            switch (_subtitle.Format)
-            {
-                case "SSA":
-                case "ASS":
-                    textSub = SsaReader.ReadFile(_inputFile);
-                    break;
-                case "UTF-8":
-                    textSub = SrtReader.ReadFile(_inputFile);
-                    break;
-            }
-
-            var inFileDir = Path.GetDirectoryName(_inputFile);
-            if (string.IsNullOrEmpty(inFileDir))
-                inFileDir = string.Empty;
-
-            var inFileName = Path.GetFileNameWithoutExtension(_inputFile);
-            if (string.IsNullOrEmpty(inFileName))
-                inFileName = string.Empty;
-
-            var outPath = Path.Combine(inFileDir, inFileName);
-
-            if (Directory.Exists(outPath))
-                Directory.Delete(outPath, true);
-            Directory.CreateDirectory(outPath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
-
-            var inFileFullName = Path.GetFileName(_inputFile);
-            if (string.IsNullOrEmpty(inFileFullName))
-                inFileFullName = string.Empty;
-
-            _outputFile = Path.Combine(outPath, inFileFullName);
-
-            if (textSub != null)
-            {
-                var xmlFile = Path.ChangeExtension(_outputFile, "xml");
-                if (BdnExport.WriteBdnXmlFile(textSub,
-                                              xmlFile,
-                                              this._currentTask.VideoStream.Width,
-                                              this._currentTask.VideoStream.Height,
-                                              this._currentTask.VideoStream.Fps))
-                {
-                    _subtitle.Format = "XML";
-                    this._currentTask.TempFiles.Add(_inputFile);
-                    _subtitle.TempFile = xmlFile;
-                    _inputFile = xmlFile;
-                }
-            }
-
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                _outputFile = Path.ChangeExtension(_outputFile, "processed.xml");
-            else if (_subtitle.KeepOnlyForcedCaptions)
-                _outputFile = Path.ChangeExtension(_outputFile, "forced.sup");
-            else if (_subtitle.Format == "XML" || _subtitle.Format == "VobSub")
-                _outputFile = Path.ChangeExtension(_outputFile, "sup");
-
-            var targetFps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
-                              ? this._currentTask.VideoStream.Fps * 2
-                              : this._currentTask.VideoStream.Fps;
-            var fpsMode = "keep";
-
-            if (Math.Abs(targetFps - this._currentTask.VideoStream.Fps) > 0)
-                fpsMode = targetFps.ToString("0.000", _appConfig.CInfo);
-
-            sb.AppendFormat(_appConfig.CInfo, "\"{0}\" --output \"{1}\" --fps-target {2} --palette-mode keep ",
-                            _inputFile, _outputFile, fpsMode);
-
-            if (_subtitle.KeepOnlyForcedCaptions)
-                sb.AppendFormat("--forced-only ");
-
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                sb.AppendFormat(_appConfig.CInfo, " --resolution {0:0} ", targetRes);
-
-            return sb.ToString();
-        }
-
         /// <summary>
         /// The BDSup2Sub process has exited.
         /// </summary>
@@ -457,6 +367,96 @@ namespace VideoConvert.AppServices.Encoder
                 };
                 this.InvokeEncodeStatusChanged(eventArgs);
             }
+        }
+
+        private string GenerateCommandLine()
+        {
+            var sb = new StringBuilder();
+            var localExecutable = Path.Combine(this._appConfig.ToolsPath, Executable);
+            sb.AppendFormat("-jar \"{0}\" ", localExecutable);
+
+            this._subtitle = this._currentTask.SubtitleStreams[this._currentTask.StreamId];
+
+            var targetRes = -1;
+
+            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                targetRes = this._currentTask.EncodingProfile.SystemType == 0 ? 576 : 480;
+
+            _inputFile = _subtitle.TempFile;
+
+            TextSubtitle textSub = null;
+            switch (_subtitle.Format)
+            {
+                case "SSA":
+                case "ASS":
+                    textSub = SsaReader.ReadFile(_inputFile);
+                    break;
+                case "UTF-8":
+                    textSub = SrtReader.ReadFile(_inputFile);
+                    break;
+            }
+
+            var inFileDir = Path.GetDirectoryName(_inputFile);
+            if (string.IsNullOrEmpty(inFileDir))
+                inFileDir = string.Empty;
+
+            var inFileName = Path.GetFileNameWithoutExtension(_inputFile);
+            if (string.IsNullOrEmpty(inFileName))
+                inFileName = string.Empty;
+
+            var outPath = Path.Combine(inFileDir, inFileName);
+
+            if (Directory.Exists(outPath))
+                Directory.Delete(outPath, true);
+            Directory.CreateDirectory(outPath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
+
+            var inFileFullName = Path.GetFileName(_inputFile);
+            if (string.IsNullOrEmpty(inFileFullName))
+                inFileFullName = string.Empty;
+
+            _outputFile = Path.Combine(outPath, inFileFullName);
+
+            if (textSub != null)
+            {
+                var xmlFile = Path.ChangeExtension(_outputFile, "xml");
+                if (BdnExport.WriteBdnXmlFile(textSub,
+                                              xmlFile,
+                                              this._currentTask.VideoStream.Width,
+                                              this._currentTask.VideoStream.Height,
+                                              this._currentTask.VideoStream.Fps))
+                {
+                    _subtitle.Format = "XML";
+                    this._currentTask.TempFiles.Add(_inputFile);
+                    _subtitle.TempFile = xmlFile;
+                    _inputFile = xmlFile;
+                }
+            }
+
+            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                _outputFile = Path.ChangeExtension(_outputFile, "processed.xml");
+            else if (_subtitle.KeepOnlyForcedCaptions)
+                _outputFile = Path.ChangeExtension(_outputFile, "forced.sup");
+            else if (_subtitle.Format == "XML" || _subtitle.Format == "VobSub")
+                _outputFile = Path.ChangeExtension(_outputFile, "sup");
+
+            var targetFps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
+                              ? this._currentTask.VideoStream.Fps * 2
+                              : this._currentTask.VideoStream.Fps;
+            var fpsMode = "keep";
+
+            if (Math.Abs(targetFps - this._currentTask.VideoStream.Fps) > 0)
+                fpsMode = targetFps.ToString("0.000", _appConfig.CInfo);
+
+            sb.AppendFormat(_appConfig.CInfo, "\"{0}\" --output \"{1}\" --fps-target {2} --palette-mode keep ",
+                            _inputFile, _outputFile, fpsMode);
+
+            if (_subtitle.KeepOnlyForcedCaptions)
+                sb.AppendFormat("--forced-only ");
+
+            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                sb.AppendFormat(_appConfig.CInfo, " --resolution {0:0} ", targetRes);
+
+            return sb.ToString();
         }
 
         private void GetTempImages(string inFile)

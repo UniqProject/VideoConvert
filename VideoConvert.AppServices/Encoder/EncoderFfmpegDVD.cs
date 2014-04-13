@@ -240,155 +240,6 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
-        private string GenerateCommandLine()
-        {
-            string[] mbdArray = {"simple", "bits", "rd"};
-            string[] cmpArray = {"sad", "sse", "satd", "dct", "psnr", "bit", "rd"};
-
-            var sb = new StringBuilder();
-            this._encProfile = this._currentTask.VideoProfile as Mpeg2VideoProfile;
-
-            if (this._encProfile == null) return string.Empty;
-
-            this._inputFile = this._currentTask.VideoStream.TempFile;
-            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, 
-                                                               this._inputFile,
-                                                               "encoded.m2v");
-
-            this._frameCount = this._currentTask.VideoStream.FrameCount;
-
-            #region AviSynth script generation
-
-            var targetSys = this._currentTask.EncodingProfile.SystemType;
-            int targetHeight;
-
-            var sourceFps = (float)Math.Round(this._currentTask.VideoStream.Fps, 3);
-            var targetFps = 0f;
-            var changeFps = false;
-
-            var sourceAspect = (float)Math.Round(this._currentTask.VideoStream.AspectRatio, 3);
-
-            var targetWidth = sourceAspect >= 1.4f ? 1024 : 720;
-
-            if (this._currentTask.Input == InputType.InputDvd)
-                this._currentTask.VideoStream.Width =
-                    (int)Math.Round(this._currentTask.VideoStream.Height * sourceAspect, 0);
-
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
-            {
-                if (targetSys == 0)
-                {
-                    targetHeight = 576;
-                    if (Math.Abs(sourceFps - 25f) > 0)
-                        changeFps = true;
-                    targetFps = 25f;
-                }
-                else
-                {
-                    targetHeight = 480;
-                    if (Math.Abs(sourceFps - 29.970f) > 0 && Math.Abs(sourceFps - 23.976f) > 0)
-                        changeFps = true;
-                    targetFps = (float)Math.Round(30000f / 1001f, 3);
-                }
-            }
-            else
-            {
-                targetWidth = this._currentTask.EncodingProfile.TargetWidth;
-                targetHeight = (int)Math.Floor(targetWidth / sourceAspect);
-            }
-
-            var resizeTo = new Size(targetWidth, targetHeight);
-
-            var sub = this._currentTask.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
-            var subFile = string.Empty;
-            var keepOnlyForced = false;
-            if (sub != null)
-            {
-                subFile = sub.TempFile;
-                keepOnlyForced = sub.KeepOnlyForcedCaptions;
-            }
-
-            if (string.IsNullOrEmpty(this._currentTask.AviSynthScript))
-            {
-                var avs = new AviSynthGenerator(this._appConfig);
-                this._currentTask.AviSynthScript = avs.Generate(this._currentTask.VideoStream,
-                                                                changeFps,
-                                                                targetFps,
-                                                                resizeTo,
-                                                                StereoEncoding.None,
-                                                                new StereoVideoInfo(),
-                                                                true,
-                                                                subFile,
-                                                                keepOnlyForced,
-                                                                false);
-            }
-
-            #endregion
-
-            #region bitrate calculation
-
-            var bitrate = this._currentTask.EncodingProfile.TargetFileSize > 1
-                ? VideoHelper.CalculateVideoBitrate(this._currentTask)
-                : this._encProfile.Bitrate;
-
-            var audBitrate = this._currentTask.AudioStreams.Sum(stream => (int)stream.Bitrate / 1000);
-            var maxRate = 9800 - audBitrate;
-
-            #endregion
-
-            
-            this._encodingPass = this._encProfile.EncodingMode == 0 ? 0 : this._currentTask.StreamId;
-
-            sb.AppendFormat(" -i \"{0}\" -map 0:v", this._currentTask.AviSynthScript);
-            sb.AppendFormat(" -target {0}-dvd", targetSys == 0 ? "pal" : "ntsc");
-            sb.AppendFormat(" -b:v {0:0}k -maxrate {1:0}k -qmin 1", bitrate, maxRate);
-
-            sb.AppendFormat(this._appConfig.CInfo, " -aspect {0:0.000}", sourceAspect);
-
-            if (this._encodingPass > 0)
-            {
-                sb.AppendFormat(" -pass {0:0}", this._encodingPass);
-            }
-
-            if (this._encProfile.MbDecision > 0)
-            {
-                sb.AppendFormat(" -mbd {0}", mbdArray[this._encProfile.MbDecision]);
-            }
-
-            if (this._encProfile.Trellis > 0)
-            {
-                sb.AppendFormat(" -trellis {0:0}", this._encProfile.Trellis);
-            }
-
-            if (this._encProfile.Cmp > 0)
-            {
-                sb.AppendFormat(" -cmp {0}", cmpArray[this._encProfile.Cmp]);
-            }
-
-            if (this._encProfile.SubCmp > 0)
-            {
-                sb.AppendFormat(" -subcmp {0}", cmpArray[this._encProfile.SubCmp]);
-            }
-
-            if (this._encProfile.DcPrecision > 0)
-            {
-                sb.AppendFormat(" -dc {0}", this._encProfile.DcPrecision);
-            }
-
-            if (this._encProfile.ClosedGops)
-            {
-                sb.Append(" -flags cgop -mpv_flags strict_gop -sc_threshold 1000000000");
-            }
-
-            if (!this._encProfile.AutoGop)
-            {
-                sb.AppendFormat(" -g {0:0}", this._encProfile.GopLength);
-            }
-
-            sb.AppendFormat(" -f rawvideo -y \"{0}\"", _outputFile);
-            return sb.ToString();
-        }
-
         /// <summary>
         /// The ffmpeg process has exited.
         /// </summary>
@@ -519,6 +370,155 @@ namespace VideoConvert.AppServices.Encoder
             }
             else
                 Log.InfoFormat("ffmpeg: {0}", line);
+        }
+
+        private string GenerateCommandLine()
+        {
+            string[] mbdArray = { "simple", "bits", "rd" };
+            string[] cmpArray = { "sad", "sse", "satd", "dct", "psnr", "bit", "rd" };
+
+            var sb = new StringBuilder();
+            this._encProfile = this._currentTask.VideoProfile as Mpeg2VideoProfile;
+
+            if (this._encProfile == null) return string.Empty;
+
+            this._inputFile = this._currentTask.VideoStream.TempFile;
+            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
+                                                               this._inputFile,
+                                                               "encoded.m2v");
+
+            this._frameCount = this._currentTask.VideoStream.FrameCount;
+
+            #region AviSynth script generation
+
+            var targetSys = this._currentTask.EncodingProfile.SystemType;
+            int targetHeight;
+
+            var sourceFps = (float)Math.Round(this._currentTask.VideoStream.Fps, 3);
+            var targetFps = 0f;
+            var changeFps = false;
+
+            var sourceAspect = (float)Math.Round(this._currentTask.VideoStream.AspectRatio, 3);
+
+            var targetWidth = sourceAspect >= 1.4f ? 1024 : 720;
+
+            if (this._currentTask.Input == InputType.InputDvd)
+                this._currentTask.VideoStream.Width =
+                    (int)Math.Round(this._currentTask.VideoStream.Height * sourceAspect, 0);
+
+            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+            {
+                if (targetSys == 0)
+                {
+                    targetHeight = 576;
+                    if (Math.Abs(sourceFps - 25f) > 0)
+                        changeFps = true;
+                    targetFps = 25f;
+                }
+                else
+                {
+                    targetHeight = 480;
+                    if (Math.Abs(sourceFps - 29.970f) > 0 && Math.Abs(sourceFps - 23.976f) > 0)
+                        changeFps = true;
+                    targetFps = (float)Math.Round(30000f / 1001f, 3);
+                }
+            }
+            else
+            {
+                targetWidth = this._currentTask.EncodingProfile.TargetWidth;
+                targetHeight = (int)Math.Floor(targetWidth / sourceAspect);
+            }
+
+            var resizeTo = new Size(targetWidth, targetHeight);
+
+            var sub = this._currentTask.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
+            var subFile = string.Empty;
+            var keepOnlyForced = false;
+            if (sub != null)
+            {
+                subFile = sub.TempFile;
+                keepOnlyForced = sub.KeepOnlyForcedCaptions;
+            }
+
+            if (string.IsNullOrEmpty(this._currentTask.AviSynthScript))
+            {
+                var avs = new AviSynthGenerator(this._appConfig);
+                this._currentTask.AviSynthScript = avs.Generate(this._currentTask.VideoStream,
+                                                                changeFps,
+                                                                targetFps,
+                                                                resizeTo,
+                                                                StereoEncoding.None,
+                                                                new StereoVideoInfo(),
+                                                                true,
+                                                                subFile,
+                                                                keepOnlyForced,
+                                                                false);
+            }
+
+            #endregion
+
+            #region bitrate calculation
+
+            var bitrate = this._currentTask.EncodingProfile.TargetFileSize > 1
+                ? VideoHelper.CalculateVideoBitrate(this._currentTask)
+                : this._encProfile.Bitrate;
+
+            var audBitrate = this._currentTask.AudioStreams.Sum(stream => (int)stream.Bitrate / 1000);
+            var maxRate = 9800 - audBitrate;
+
+            #endregion
+
+
+            this._encodingPass = this._encProfile.EncodingMode == 0 ? 0 : this._currentTask.StreamId;
+
+            sb.AppendFormat(" -i \"{0}\" -map 0:v", this._currentTask.AviSynthScript);
+            sb.AppendFormat(" -target {0}-dvd", targetSys == 0 ? "pal" : "ntsc");
+            sb.AppendFormat(" -b:v {0:0}k -maxrate {1:0}k -qmin 1", bitrate, maxRate);
+
+            sb.AppendFormat(this._appConfig.CInfo, " -aspect {0:0.000}", sourceAspect);
+
+            if (this._encodingPass > 0)
+            {
+                sb.AppendFormat(" -pass {0:0}", this._encodingPass);
+            }
+
+            if (this._encProfile.MbDecision > 0)
+            {
+                sb.AppendFormat(" -mbd {0}", mbdArray[this._encProfile.MbDecision]);
+            }
+
+            if (this._encProfile.Trellis > 0)
+            {
+                sb.AppendFormat(" -trellis {0:0}", this._encProfile.Trellis);
+            }
+
+            if (this._encProfile.Cmp > 0)
+            {
+                sb.AppendFormat(" -cmp {0}", cmpArray[this._encProfile.Cmp]);
+            }
+
+            if (this._encProfile.SubCmp > 0)
+            {
+                sb.AppendFormat(" -subcmp {0}", cmpArray[this._encProfile.SubCmp]);
+            }
+
+            if (this._encProfile.DcPrecision > 0)
+            {
+                sb.AppendFormat(" -dc {0}", this._encProfile.DcPrecision);
+            }
+
+            if (this._encProfile.ClosedGops)
+            {
+                sb.Append(" -flags cgop -mpv_flags strict_gop -sc_threshold 1000000000");
+            }
+
+            if (!this._encProfile.AutoGop)
+            {
+                sb.AppendFormat(" -g {0:0}", this._encProfile.GopLength);
+            }
+
+            sb.AppendFormat(" -f rawvideo -y \"{0}\"", _outputFile);
+            return sb.ToString();
         }
 
         #endregion

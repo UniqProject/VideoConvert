@@ -39,7 +39,7 @@ namespace VideoConvert.AppServices.Decoder
         /// <summary>
         /// Gets the Encoder Process ID
         /// </summary>
-        private int _encoderProcessId;
+        private int _decoderProcessId;
 
         /// <summary>
         /// Start time of the current Encode;
@@ -74,7 +74,7 @@ namespace VideoConvert.AppServices.Decoder
         /// <summary>
         /// Gets or sets the ffmsindex Process
         /// </summary>
-        protected Process EncodeProcess { get; set; }
+        protected Process DecodeProcess { get; set; }
 
         #endregion
 
@@ -110,25 +110,25 @@ namespace VideoConvert.AppServices.Decoder
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
+                this.DecodeProcess = new Process {StartInfo = cliStart};
                 Log.InfoFormat("start parameter: ffmsindex {0}", query);
 
-                this.EncodeProcess.Start();
+                this.DecodeProcess.Start();
 
                 this._startTime = DateTime.Now;
 
-                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
+                this.DecodeProcess.OutputDataReceived += DecodeProcessDataReceived;
+                this.DecodeProcess.BeginOutputReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                this._decoderProcessId = this.DecodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (this._decoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    this.DecodeProcess.EnableRaisingEvents = true;
+                    this.DecodeProcess.Exited += DecodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                this.DecodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
@@ -151,9 +151,9 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    this.DecodeProcess.Kill();
                 }
             }
             catch (Exception exc)
@@ -195,18 +195,18 @@ namespace VideoConvert.AppServices.Decoder
         /// <param name="e">
         /// The EventArgs.
         /// </param>
-        private void EncodeProcessExited(object sender, EventArgs e)
+        private void DecodeProcessExited(object sender, EventArgs e)
         {
             try
             {
-                this.EncodeProcess.CancelOutputRead();
+                this.DecodeProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
+            this._currentTask.ExitCode = DecodeProcess.ExitCode;
             Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
 
             if (this._currentTask.ExitCode == 0)
@@ -224,7 +224,7 @@ namespace VideoConvert.AppServices.Decoder
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
+        private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
             {

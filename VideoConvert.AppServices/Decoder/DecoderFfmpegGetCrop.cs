@@ -43,7 +43,7 @@ namespace VideoConvert.AppServices.Decoder
         /// <summary>
         /// Gets the Encoder Process ID
         /// </summary>
-        private int _encoderProcessId;
+        private int _decoderProcessId;
 
         /// <summary>
         /// Start time of the current Encode;
@@ -82,7 +82,7 @@ namespace VideoConvert.AppServices.Decoder
         /// <summary>
         /// Gets or sets the ffmpeg Process
         /// </summary>
-        protected Process EncodeProcess { get; set; }
+        protected Process DecodeProcess { get; set; }
 
         #endregion
 
@@ -102,7 +102,7 @@ namespace VideoConvert.AppServices.Decoder
 
             var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
-            using (var encoder = new Process())
+            using (var decoder = new Process())
             {
                 var parameter = new ProcessStartInfo(localExecutable)
                 {
@@ -110,12 +110,12 @@ namespace VideoConvert.AppServices.Decoder
                     UseShellExecute = false,
                     RedirectStandardError = true
                 };
-                encoder.StartInfo = parameter;
+                decoder.StartInfo = parameter;
 
                 bool started;
                 try
                 {
-                    started = encoder.Start();
+                    started = decoder.Start();
                 }
                 catch (Exception ex)
                 {
@@ -125,16 +125,16 @@ namespace VideoConvert.AppServices.Decoder
 
                 if (started)
                 {
-                    var output = encoder.StandardError.ReadToEnd();
+                    var output = decoder.StandardError.ReadToEnd();
                     var regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
                     var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
-                    encoder.WaitForExit(10000);
-                    if (!encoder.HasExited)
-                        encoder.Kill();
+                    decoder.WaitForExit(10000);
+                    if (!decoder.HasExited)
+                        decoder.Kill();
                 }
             }
 
@@ -178,30 +178,28 @@ namespace VideoConvert.AppServices.Decoder
                     UseShellExecute = false,
                     RedirectStandardError = true,
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
+                this.DecodeProcess = new Process {StartInfo = cliStart};
                 Log.InfoFormat("start parameter: ffmpeg {0}", query);
 
-                this.EncodeProcess.Start();
+                this.DecodeProcess.Start();
 
                 this._startTime = DateTime.Now;
 
-                this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginErrorReadLine();
+                this.DecodeProcess.ErrorDataReceived += DecodeProcessDataReceived;
+                this.DecodeProcess.BeginErrorReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                this._decoderProcessId = this.DecodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (this._decoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    this.DecodeProcess.EnableRaisingEvents = true;
+                    this.DecodeProcess.Exited += DecodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                this.DecodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
-
-                
             }
             catch (Exception exc)
             {
@@ -219,9 +217,9 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    this.DecodeProcess.Kill();
                 }
             }
             catch (Exception exc)
@@ -275,18 +273,18 @@ namespace VideoConvert.AppServices.Decoder
         /// <param name="e">
         /// The EventArgs.
         /// </param>
-        private void EncodeProcessExited(object sender, EventArgs e)
+        private void DecodeProcessExited(object sender, EventArgs e)
         {
             try
             {
-                this.EncodeProcess.CancelErrorRead();
+                this.DecodeProcess.CancelErrorRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
+            this._currentTask.ExitCode = DecodeProcess.ExitCode;
             Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
 
             if (this._currentTask.ExitCode == 0)
@@ -332,7 +330,7 @@ namespace VideoConvert.AppServices.Decoder
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
+        private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
             {

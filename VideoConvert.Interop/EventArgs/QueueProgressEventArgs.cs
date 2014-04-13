@@ -69,5 +69,11 @@ namespace VideoConvert.Interop.EventArgs
         /// </summary>
         [DataMember]
         public TimeSpan ElapsedTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets Encoding Pass
+        /// </summary>
+        [DataMember]
+        public int Pass { get; set; }
     }
 }

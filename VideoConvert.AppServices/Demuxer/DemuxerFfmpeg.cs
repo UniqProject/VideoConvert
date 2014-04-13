@@ -41,7 +41,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// <summary>
         /// Gets the Encoder Process ID
         /// </summary>
-        private int _encoderProcessId;
+        private int _demuxerProcessId;
 
         /// <summary>
         /// Start time of the current Encode;
@@ -77,7 +77,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// <summary>
         /// Gets or sets The x264 Process
         /// </summary>
-        protected Process EncodeProcess { get; set; }
+        protected Process DemuxProcess { get; set; }
 
         #endregion
 
@@ -97,7 +97,7 @@ namespace VideoConvert.AppServices.Demuxer
 
             var localExecutable = Path.Combine(encPath, use64Bit ? Executable64 : Executable);
 
-            using (var encoder = new Process())
+            using (var demuxer = new Process())
             {
                 var parameter = new ProcessStartInfo(localExecutable)
                 {
@@ -105,12 +105,12 @@ namespace VideoConvert.AppServices.Demuxer
                     UseShellExecute = false,
                     RedirectStandardError = true
                 };
-                encoder.StartInfo = parameter;
+                demuxer.StartInfo = parameter;
 
                 bool started;
                 try
                 {
-                    started = encoder.Start();
+                    started = demuxer.Start();
                 }
                 catch (Exception ex)
                 {
@@ -120,16 +120,16 @@ namespace VideoConvert.AppServices.Demuxer
 
                 if (started)
                 {
-                    var output = encoder.StandardError.ReadToEnd();
+                    var output = demuxer.StandardError.ReadToEnd();
                     var regObj = new Regex(@"^.*ffmpeg version ([\w\d\.\-_]+)[, ].*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
                     var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
-                    encoder.WaitForExit(10000);
-                    if (!encoder.HasExited)
-                        encoder.Kill();
+                    demuxer.WaitForExit(10000);
+                    if (!demuxer.HasExited)
+                        demuxer.Kill();
                 }
             }
 
@@ -201,26 +201,26 @@ namespace VideoConvert.AppServices.Demuxer
                     UseShellExecute = false,
                     RedirectStandardError = true
                 };
-                this.EncodeProcess = new Process { StartInfo = cliStart };
+                this.DemuxProcess = new Process { StartInfo = cliStart };
                 Log.InfoFormat("start parameter: ffmpeg {0}", query);
 
-                this.EncodeProcess.Start();
+                this.DemuxProcess.Start();
 
                 this._startTime = DateTime.Now;
 
-                this.EncodeProcess.ErrorDataReceived += DemuxerDataReceived;
-                this.EncodeProcess.BeginErrorReadLine();
+                this.DemuxProcess.ErrorDataReceived += DemuxDataReceived;
+                this.DemuxProcess.BeginErrorReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                this._demuxerProcessId = this.DemuxProcess.Id;
 
                 // Set the encoder process exit trigger
-                if (this._encoderProcessId != -1)
+                if (this._demuxerProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    this.DemuxProcess.EnableRaisingEvents = true;
+                    this.DemuxProcess.Exited += DemuxProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                this.DemuxProcess.PriorityClass = this._appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
@@ -241,9 +241,9 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (this.DemuxProcess != null && !this.DemuxProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    this.DemuxProcess.Kill();
                 }
             }
             catch (Exception exc)
@@ -264,6 +264,98 @@ namespace VideoConvert.AppServices.Demuxer
         #endregion
 
         #region Private Helper Methods
+
+        /// <summary>
+        /// The ffmpeg process has exited.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The EventArgs.
+        /// </param>
+        private void DemuxProcessExited(object sender, EventArgs e)
+        {
+            try
+            {
+                this.DemuxProcess.CancelErrorRead();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+
+            this._currentTask.ExitCode = DemuxProcess.ExitCode;
+            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+
+            if (this._currentTask.ExitCode == 0)
+            {
+                if (this._currentTask.Input == InputType.InputDvd)
+                {
+                    this._currentTask.TempFiles.Add(this._inputFile);
+                }
+            }
+
+            this._currentTask.CompletedStep = this._currentTask.NextStep;
+            this.IsEncoding = false;
+            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+        }
+
+        /// <summary>
+        /// process received data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DemuxDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            {
+                this.ProcessLogMessage(e.Data);
+            }
+        }
+
+        private void ProcessLogMessage(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return;
+
+            var result = _demuxReg.Match(line);
+            
+            double processingSpeed = 0f;
+            var secRemaining = 0;
+
+            if (result.Success)
+            {
+                TimeSpan streamPosition;
+                TimeSpan.TryParseExact(result.Groups[2].Value, @"hh\:mm\:ss\.ff", _appConfig.CInfo, out streamPosition);
+                var secDemux = streamPosition.TotalSeconds;
+
+                var remainingStreamTime = this._currentTask.VideoStream.Length - secDemux;
+                
+                var elapsedTime = DateTime.Now - this._startTime;
+
+                if (elapsedTime.TotalSeconds > 0)
+                    processingSpeed = secDemux / elapsedTime.TotalSeconds;
+
+                if (processingSpeed > 0)
+                    secRemaining = (int) Math.Round(remainingStreamTime/processingSpeed, MidpointRounding.ToEven);
+
+                var remainingTime = new TimeSpan(0, 0, secRemaining);
+
+                var progress = (float) Math.Round(secDemux/this._currentTask.VideoStream.Length*100d);
+
+                var eventArgs = new EncodeProgressEventArgs
+                {
+                    AverageFrameRate = 0,
+                    CurrentFrameRate = 0,
+                    EstimatedTimeLeft = remainingTime,
+                    PercentComplete = progress,
+                    ElapsedTime = elapsedTime,
+                };
+                this.InvokeEncodeStatusChanged(eventArgs);
+            }
+            else
+                Log.InfoFormat("ffmpeg: {0}", line);
+        }
 
         private string GenerateCommandLine()
         {
@@ -356,98 +448,6 @@ namespace VideoConvert.AppServices.Demuxer
             }
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// The ffmpeg process has exited.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The EventArgs.
-        /// </param>
-        private void EncodeProcessExited(object sender, EventArgs e)
-        {
-            try
-            {
-                this.EncodeProcess.CancelErrorRead();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
-            }
-
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
-
-            if (this._currentTask.ExitCode == 0)
-            {
-                if (this._currentTask.Input == InputType.InputDvd)
-                {
-                    this._currentTask.TempFiles.Add(this._inputFile);
-                }
-            }
-
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
-        }
-
-        /// <summary>
-        /// process received data
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DemuxerDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
-            {
-                this.ProcessLogMessage(e.Data);
-            }
-        }
-
-        private void ProcessLogMessage(string line)
-        {
-            if (string.IsNullOrEmpty(line)) return;
-
-            var result = _demuxReg.Match(line);
-            
-            double processingSpeed = 0f;
-            var secRemaining = 0;
-
-            if (result.Success)
-            {
-                TimeSpan streamPosition;
-                TimeSpan.TryParseExact(result.Groups[2].Value, @"hh\:mm\:ss\.ff", _appConfig.CInfo, out streamPosition);
-                var secDemux = streamPosition.TotalSeconds;
-
-                var remainingStreamTime = this._currentTask.VideoStream.Length - secDemux;
-                
-                var elapsedTime = DateTime.Now - this._startTime;
-
-                if (elapsedTime.TotalSeconds > 0)
-                    processingSpeed = secDemux / elapsedTime.TotalSeconds;
-
-                if (processingSpeed > 0)
-                    secRemaining = (int) Math.Round(remainingStreamTime/processingSpeed, MidpointRounding.ToEven);
-
-                var remainingTime = new TimeSpan(0, 0, secRemaining);
-
-                var progress = (float) Math.Round(secDemux/this._currentTask.VideoStream.Length*100d);
-
-                var eventArgs = new EncodeProgressEventArgs
-                {
-                    AverageFrameRate = 0,
-                    CurrentFrameRate = 0,
-                    EstimatedTimeLeft = remainingTime,
-                    PercentComplete = progress,
-                    ElapsedTime = elapsedTime,
-                };
-                this.InvokeEncodeStatusChanged(eventArgs);
-            }
-            else
-                Log.InfoFormat("ffmpeg: {0}", line);
         }
 
         #endregion

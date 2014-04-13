@@ -40,7 +40,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// <summary>
         /// Gets the Encoder Process ID
         /// </summary>
-        private int _encoderProcessId;
+        private int _demuxerProcessId;
 
         /// <summary>
         /// Start time of the current Encode;
@@ -77,7 +77,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// <summary>
         /// Gets or sets the eac3to Process
         /// </summary>
-        protected Process EncodeProcess { get; set; }
+        protected Process DemuxProcess { get; set; }
 
         #endregion
 
@@ -94,7 +94,7 @@ namespace VideoConvert.AppServices.Demuxer
 
             var localExecutable = Path.Combine(encPath, Executable);
 
-            using (var encoder = new Process())
+            using (var demuxer = new Process())
             {
                 var parameter = new ProcessStartInfo(localExecutable)
                 {
@@ -102,12 +102,12 @@ namespace VideoConvert.AppServices.Demuxer
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                encoder.StartInfo = parameter;
+                demuxer.StartInfo = parameter;
 
                 bool started;
                 try
                 {
-                    started = encoder.Start();
+                    started = demuxer.Start();
                 }
                 catch (Exception ex)
                 {
@@ -117,16 +117,16 @@ namespace VideoConvert.AppServices.Demuxer
 
                 if (started)
                 {
-                    var output = encoder.StandardOutput.ReadToEnd();
+                    var output = demuxer.StandardOutput.ReadToEnd();
                     var regObj = new Regex(@"^.*eac3to v([\d\.]+),.*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
                     var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
-                    encoder.WaitForExit(10000);
-                    if (!encoder.HasExited)
-                        encoder.Kill();
+                    demuxer.WaitForExit(10000);
+                    if (!demuxer.HasExited)
+                        demuxer.Kill();
                 }
             }
 
@@ -166,25 +166,25 @@ namespace VideoConvert.AppServices.Demuxer
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
+                this.DemuxProcess = new Process {StartInfo = cliStart};
                 Log.InfoFormat("start parameter: eac3to {0}", query);
 
-                this.EncodeProcess.Start();
+                this.DemuxProcess.Start();
 
                 this._startTime = DateTime.Now;
 
-                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
+                this.DemuxProcess.OutputDataReceived += DemuxProcessDataReceived;
+                this.DemuxProcess.BeginOutputReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                this._demuxerProcessId = this.DemuxProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (this._demuxerProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    this.DemuxProcess.EnableRaisingEvents = true;
+                    this.DemuxProcess.Exited += DemuxProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                this.DemuxProcess.PriorityClass = this._appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
@@ -205,9 +205,9 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (this.DemuxProcess != null && !this.DemuxProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    this.DemuxProcess.Kill();
                 }
             }
             catch (Exception exc)
@@ -331,18 +331,18 @@ namespace VideoConvert.AppServices.Demuxer
         /// <param name="e">
         /// The EventArgs.
         /// </param>
-        private void EncodeProcessExited(object sender, EventArgs e)
+        private void DemuxProcessExited(object sender, EventArgs e)
         {
             try
             {
-                this.EncodeProcess.CancelOutputRead();
+                this.DemuxProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
+            this._currentTask.ExitCode = DemuxProcess.ExitCode;
             Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
 
             if (this._currentTask.ExitCode == 0)
@@ -361,7 +361,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
+        private void DemuxProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
             {

@@ -258,7 +258,8 @@ namespace VideoConvert.AppServices.Services
                     ElapsedTime = new TimeSpan(),
                     EstimatedTimeLeft = new TimeSpan(),
                     PercentComplete = 0,
-                    TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent)
+                    TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent),
+                    Pass = 0,
                 });
             
                 GetNextStep();
@@ -305,7 +306,8 @@ namespace VideoConvert.AppServices.Services
                 ElapsedTime = args.ElapsedTime,
                 EstimatedTimeLeft = args.EstimatedTimeLeft,
                 PercentComplete = args.PercentComplete,
-                TotalPercentComplete = totalPercent
+                TotalPercentComplete = totalPercent,
+                Pass = args.Pass,
             });
         }
 
@@ -321,7 +323,8 @@ namespace VideoConvert.AppServices.Services
                 ElapsedTime = new TimeSpan(),
                 EstimatedTimeLeft = new TimeSpan(),
                 PercentComplete = 0,
-                TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent)
+                TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent),
+                Pass = this._currentJob.StreamId,
             });
         }
 

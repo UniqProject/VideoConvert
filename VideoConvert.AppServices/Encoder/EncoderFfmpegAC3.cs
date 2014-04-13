@@ -27,7 +27,6 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text.RegularExpressions;
     using System.Threading;
     using Utilities;
-    using ThreadState = System.Threading.ThreadState;
 
     /// <summary>
     /// The EncoderFfmpegAC3
@@ -45,29 +44,17 @@ namespace VideoConvert.AppServices.Encoder
         private const string Executable = "ffmpeg.exe";
         private const string Executable64 = "ffmpeg_64.exe";
 
-        /// <summary>
-        /// Gets the Encoder Process ID
-        /// </summary>
         private int _encoderProcessId;
-
         private int _decoderProcessId;
 
-        /// <summary>
-        /// Start time of the current Encode;
-        /// </summary>
         private DateTime _startTime;
 
-        /// <summary>
-        /// The Current Task
-        /// </summary>
         private EncodeInfo _currentTask;
 
         private string _inputFile;
-
         private string _outputFile;
 
         private AudioInfo _audio;
-
         private Ac3Profile _audioProfile;
 
         private readonly Regex _ac3EncReg = new Regex(@"^size=.\s*?([\d]*?)kB\s*?time=\s*?([\d\.\:]*)\s*?bitrate=\s*?([\d\.]*?)kbit.*$",
@@ -80,8 +67,9 @@ namespace VideoConvert.AppServices.Encoder
         private IAsyncResult _encodePipeState;
         private Thread _pipeReadThread;
 
-        
         private bool _dataWriteStarted;
+        private bool _decoderIsRunning;
+        private bool _encoderIsRunning;
 
         #endregion
 
@@ -236,12 +224,14 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     this.EncodeProcess.EnableRaisingEvents = true;
                     this.EncodeProcess.Exited += EncodeProcessExited;
+                    this._encoderIsRunning = true;
                 }
 
                 if (this._decoderProcessId != -1)
                 {
                     this.DecodeProcess.EnableRaisingEvents = true;
                     this.DecodeProcess.Exited += DecodeProcessExited;
+                    this._decoderIsRunning = true;
                 }
 
                 this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
@@ -255,6 +245,8 @@ namespace VideoConvert.AppServices.Encoder
                 Log.Error(exc);
                 this._currentTask.ExitCode = -1;
                 this.IsEncoding = false;
+                this._encoderIsRunning = false;
+                this._decoderIsRunning = false;
                 this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
@@ -268,11 +260,15 @@ namespace VideoConvert.AppServices.Encoder
             {
                 if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
                 {
+                    this._encoderIsRunning = false;
+                    Thread.Sleep(200);
                     this.EncodeProcess.Kill();
                 }
 
                 if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
                 {
+                    this._decoderIsRunning = false;
+                    Thread.Sleep(200);
                     this.DecodeProcess.Kill();
                 }
             }
@@ -295,155 +291,20 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
-        private string GenerateCommandLine()
+        private void DecodeProcessExited(object sender, EventArgs e)
         {
-            int[] bitrateList = {64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640};
-            int[] sampleRateArr = { 0, 8000, 11025, 22050, 44100, 48000 };
-            int[] channelArr = { 0, 2, 3, 4, 1 };
+            if (this._encodePipe == null) return;
 
-            this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
-            this._audioProfile = (Ac3Profile) this._currentTask.AudioProfile;
-
-            var sb = new StringBuilder();
-
-            var outChannels = -1;
-            var outSampleRate = -1;
-            var bitrate = 0;
-            var channels = 0;
-            var drc = false;
-
-            switch (this._currentTask.AudioProfile.Type)
-            {
-                case ProfileType.Ac3:
-                    outChannels = this._audioProfile.OutputChannels;
-                    channels = this._audioProfile.OutputChannels;
-
-                    outChannels = channelArr[outChannels];
-                    if (this._audio.ChannelCount > 6)
-                        outChannels = 6;
-
-                    outSampleRate = this._audioProfile.SampleRate;
-                    outSampleRate = sampleRateArr[outSampleRate];
-
-                    bitrate = this._audioProfile.Bitrate;
-                    bitrate = bitrateList[bitrate];
-
-                    drc = this._audioProfile.ApplyDynamicRangeCompression;
-                    break;
-
-                case ProfileType.Copy:
-                    outChannels = this._audio.ChannelCount > 6 ? 6 : this._audio.ChannelCount;
-                    channels = this._audioProfile.OutputChannels;
-                    outSampleRate = this._audio.SampleRate;
-                    bitrate = this._audioProfile.Bitrate;
-                    if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd
-                        && (outSampleRate != 48000 || bitrate > 10))
-                    {
-                        outSampleRate = 48000;
-                        if (bitrate > 10)
-                            bitrate = 10;
-
-                    }
-                    break;
-            }
-
-            var avs = new AviSynthGenerator(this._appConfig);
-
-            this._inputFile = avs.GenerateAudioScript(this._audio.TempFile,
-                                                      this._audio.Format,
-                                                      this._audio.FormatProfile,
-                                                      this._audio.ChannelCount,
-                                                      outChannels,
-                                                      this._audio.SampleRate,
-                                                      outSampleRate);
-
-            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
-                                                               this._audio.TempFile,
-                                                               "encoded.ac3");
-
-            sb.AppendFormat("-f wav -i \"{0}\" -c:a ac3", this._appConfig.EncodeNamedPipeFullName);
-            sb.AppendFormat(" -b:a {0:0}k", bitrate);
-
-            if (channels == 2 || channels == 3)
-                sb.Append(" -dsur_mode 1");
-
-            if (drc)
-                sb.Append(" -dialnorm -27");
-
-            sb.AppendFormat(" -vn -y \"{0}\"", _outputFile);
-
-            return sb.ToString();
-        }
-
-        private void EncoderConnected(IAsyncResult ar)
-        {
-            Log.Info("Encoder Pipe connected");
-            this._encodePipe.EndWaitForConnection(ar);
-            this._pipeReadThread = new Thread(PipeReadThreadStart);
-            this._pipeReadThread.Start();
-            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
-        }
-
-        private void PipeReadThreadStart()
-        {
             try
             {
-                if (DecodeProcess != null)
-                    ReadThreadStart();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-        }
-
-        private void ReadThreadStart()
-        {
-            try
-            {
-                // wait for data from bepipe, otherwise ffmpeg aborts after reading wav header with this message:
-                // Invalid data found when processing input
-                while (!this._dataWriteStarted)
-                {
-                    Thread.Sleep(100);
-                }
-                var buffer = new byte[0xA00000]; // 10 MB
-
-                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                while (read > 0 && !this.DecodeProcess.HasExited)
-                {
-                    this._encodePipe.Write(buffer, 0, read);
-                    if (!this.DecodeProcess.HasExited)
-                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                }
+                if (!this._encodePipeState.IsCompleted)
+                    this._encodePipe.EndWaitForConnection(_encodePipeState);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-        }
-
-        private void DecodeProcessExited(object sender, EventArgs e)
-        {
-            if (this._encodePipe != null)
-            {
-                try
-                {
-                    if (!this._encodePipeState.IsCompleted)
-                        this._encodePipe.EndWaitForConnection(_encodePipeState);
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-
-                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                    this._pipeReadThread.Abort();
-                this.DecodeProcess.WaitForExit();
-
-                if (this._encodePipe.IsConnected)
-                    this._encodePipe.Disconnect();
-            }
+            this._decoderIsRunning = false;
         }
 
         /// <summary>
@@ -468,20 +329,7 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     Log.Error(exc);
                 }
-
-                try
-                {
-                    this._encodePipe.Close();
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
             }
-
-            if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                this._pipeReadThread.Abort();
-            this.EncodeProcess.WaitForExit();
 
             try
             {
@@ -491,6 +339,8 @@ namespace VideoConvert.AppServices.Encoder
             {
                 Log.Error(exc);
             }
+
+            this._encoderIsRunning = false;
 
             this._currentTask.ExitCode = EncodeProcess.ExitCode;
             Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
@@ -576,6 +426,144 @@ namespace VideoConvert.AppServices.Encoder
             var result = _ac3EncReg.Match(line);
             if (!result.Success)
                 Log.InfoFormat("ffmpeg: {0}", line);
+        }
+
+        private void EncoderConnected(IAsyncResult ar)
+        {
+            Log.Info("Encoder Pipe connected");
+            lock (this._encodePipe)
+            {
+                this._encodePipe.EndWaitForConnection(ar);
+            }
+
+            this._pipeReadThread = new Thread(PipeReadThreadStart);
+            this._pipeReadThread.Start();
+            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
+        }
+
+        private void PipeReadThreadStart()
+        {
+            try
+            {
+                if (this.DecodeProcess != null && this.EncodeProcess != null)
+                    ReadThreadStart();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private void ReadThreadStart()
+        {
+            try
+            {
+                // wait for data from bepipe, otherwise ffmpeg aborts after reading wav header with this message:
+                // Invalid data found when processing input
+                while (!this._dataWriteStarted || !this._decoderIsRunning || !this._encoderIsRunning)
+                {
+                    Thread.Sleep(100);
+                }
+
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = 0;
+                do
+                {
+                    if (this._decoderIsRunning)
+                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+
+                    if (this._encoderIsRunning)
+                        this._encodePipe.Write(buffer, 0, read);
+
+                } while (read > 0 && this._decoderIsRunning && this._encoderIsRunning);
+
+                this._encodePipe.Close();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+        }
+
+        private string GenerateCommandLine()
+        {
+            int[] bitrateList = { 64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640 };
+            int[] sampleRateArr = { 0, 8000, 11025, 22050, 44100, 48000 };
+            int[] channelArr = { 0, 2, 3, 4, 1 };
+
+            this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
+            this._audioProfile = (Ac3Profile)this._currentTask.AudioProfile;
+
+            var sb = new StringBuilder();
+
+            var outChannels = -1;
+            var outSampleRate = -1;
+            var bitrate = 0;
+            var channels = 0;
+            var drc = false;
+
+            switch (this._currentTask.AudioProfile.Type)
+            {
+                case ProfileType.Ac3:
+                    outChannels = this._audioProfile.OutputChannels;
+                    channels = this._audioProfile.OutputChannels;
+
+                    outChannels = channelArr[outChannels];
+                    if (this._audio.ChannelCount > 6)
+                        outChannels = 6;
+
+                    outSampleRate = this._audioProfile.SampleRate;
+                    outSampleRate = sampleRateArr[outSampleRate];
+
+                    bitrate = this._audioProfile.Bitrate;
+                    bitrate = bitrateList[bitrate];
+
+                    drc = this._audioProfile.ApplyDynamicRangeCompression;
+                    break;
+
+                case ProfileType.Copy:
+                    outChannels = this._audio.ChannelCount > 6 ? 6 : this._audio.ChannelCount;
+                    channels = this._audioProfile.OutputChannels;
+                    outSampleRate = this._audio.SampleRate;
+                    bitrate = this._audioProfile.Bitrate;
+                    if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd
+                        && (outSampleRate != 48000 || bitrate > 10))
+                    {
+                        outSampleRate = 48000;
+                        if (bitrate > 10)
+                            bitrate = 10;
+
+                    }
+                    break;
+            }
+
+            var avs = new AviSynthGenerator(this._appConfig);
+
+            this._inputFile = avs.GenerateAudioScript(this._audio.TempFile,
+                                                      this._audio.Format,
+                                                      this._audio.FormatProfile,
+                                                      this._audio.ChannelCount,
+                                                      outChannels,
+                                                      this._audio.SampleRate,
+                                                      outSampleRate);
+
+            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
+                                                               this._audio.TempFile,
+                                                               "encoded.ac3");
+
+            sb.AppendFormat("-f wav -i \"{0}\" -c:a ac3", this._appConfig.EncodeNamedPipeFullName);
+            sb.AppendFormat(" -b:a {0:0}k", bitrate);
+
+            if (channels == 2 || channels == 3)
+                sb.Append(" -dsur_mode 1");
+
+            if (drc)
+                sb.Append(" -dialnorm -27");
+
+            sb.AppendFormat(" -vn -y \"{0}\"", _outputFile);
+
+            return sb.ToString();
         }
 
         #endregion

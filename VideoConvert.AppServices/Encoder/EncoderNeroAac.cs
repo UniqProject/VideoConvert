@@ -27,7 +27,6 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text.RegularExpressions;
     using System.Threading;
     using Utilities;
-    using ThreadState = System.Threading.ThreadState;
 
     /// <summary>
     /// The EncoderNeroAac
@@ -79,6 +78,8 @@ namespace VideoConvert.AppServices.Encoder
                                                     RegexOptions.Singleline | RegexOptions.Multiline);
 
         private bool _dataWriteStarted;
+        private bool _decoderIsRunning;
+        private bool _encoderIsRunning;
 
         #endregion
 
@@ -174,10 +175,12 @@ namespace VideoConvert.AppServices.Encoder
         }
 
         /// <summary>
-        /// 
+        /// Execute a neroaacenc process.
+        /// This should only be called from the UI thread.
         /// </summary>
-        /// <param name="encodeQueueTask"></param>
-        /// <exception cref="Exception"></exception>
+        /// <param name="encodeQueueTask">
+        /// The encodeQueueTask.
+        /// </param>
         public override void Start(EncodeInfo encodeQueueTask)
         {
             try
@@ -234,12 +237,14 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     this.EncodeProcess.EnableRaisingEvents = true;
                     this.EncodeProcess.Exited += EncodeProcessExited;
+                    this._encoderIsRunning = true;
                 }
 
                 if (this._decoderProcessId != -1)
                 {
                     this.DecodeProcess.EnableRaisingEvents = true;
                     this.DecodeProcess.Exited += DecodeProcessExited;
+                    this._decoderIsRunning = true;
                 }
 
                 this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
@@ -247,87 +252,15 @@ namespace VideoConvert.AppServices.Encoder
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
-
-                
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
                 this._currentTask.ExitCode = -1;
                 this.IsEncoding = false;
+                this._encoderIsRunning = false;
+                this._decoderIsRunning = false;
                 this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
-            }
-        }
-
-        private void DecodeProcessExited(object sender, EventArgs e)
-        {
-            if (this._encodePipe != null)
-            {
-                try
-                {
-                    if (!this._encodePipeState.IsCompleted)
-                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-
-                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                    this._pipeReadThread.Abort();
-                this.DecodeProcess.WaitForExit();
-
-                if (this._encodePipe.IsConnected)
-                    this._encodePipe.Disconnect();
-            }
-        }
-
-        private void EncoderConnected(IAsyncResult ar)
-        {
-            Log.Info("Encoder Pipe connected");
-            this._encodePipe.EndWaitForConnection(ar);
-            this._pipeReadThread = new Thread(PipeReadThreadStart);
-            this._pipeReadThread.Start();
-            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
-        }
-
-        private void PipeReadThreadStart()
-        {
-            try
-            {
-                if (this.DecodeProcess != null)
-                    ReadThreadStart();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-        }
-
-        private void ReadThreadStart()
-        {
-            try
-            {
-                // wait for decoder to start writing
-                while (!this._dataWriteStarted)
-                {
-                    Thread.Sleep(100);
-                }
-
-                var buffer = new byte[0xA00000]; // 10 MB
-
-                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                while (read > 0 && !this.DecodeProcess.HasExited)
-                {
-                    this._encodePipe.Write(buffer, 0, read);
-                    if (!this.DecodeProcess.HasExited)
-                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                }
-                this._encodePipe.Close();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
             }
         }
 
@@ -340,10 +273,14 @@ namespace VideoConvert.AppServices.Encoder
             {
                 if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
                 {
+                    this._encoderIsRunning = false;
+                    Thread.Sleep(200);
                     this.EncodeProcess.Kill();
                 }
                 if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
                 {
+                    this._decoderIsRunning = false;
+                    Thread.Sleep(200);
                     this.DecodeProcess.Kill();
                 }
             }
@@ -366,74 +303,21 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
-        private string GenerateCommandLine()
+        private void DecodeProcessExited(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
+            if (this._encodePipe == null) return;
 
-            this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
-
-            var outChannels = ((AacProfile)this._currentTask.AudioProfile).OutputChannels;
-            switch (outChannels)
+            try
             {
-                case 1:
-                    outChannels = 2;
-                    break;
-                case 2:
-                    outChannels = 1;
-                    break;
+                if (!this._encodePipeState.IsCompleted)
+                    this._encodePipe.EndWaitForConnection(this._encodePipeState);
             }
-            var outSampleRate = ((AacProfile)this._currentTask.AudioProfile).SampleRate;
-            switch (outSampleRate)
+            catch (Exception exc)
             {
-                case 1:
-                    outSampleRate = 8000;
-                    break;
-                case 2:
-                    outSampleRate = 11025;
-                    break;
-                case 3:
-                    outSampleRate = 22050;
-                    break;
-                case 4:
-                    outSampleRate = 44100;
-                    break;
-                case 5:
-                    outSampleRate = 48000;
-                    break;
-                default:
-                    outSampleRate = 0;
-                    break;
+                Log.Error(exc);
             }
 
-            var encMode = ((AacProfile)this._currentTask.AudioProfile).EncodingMode;
-            var bitrate = ((AacProfile)this._currentTask.AudioProfile).Bitrate * 1000;
-            var quality = ((AacProfile)this._currentTask.AudioProfile).Quality;
-
-            var avs = new AviSynthGenerator(this._appConfig);
-
-            this._inputFile = avs.GenerateAudioScript(this._audio.TempFile, this._audio.Format, this._audio.FormatProfile,
-                                                      this._audio.ChannelCount, outChannels, this._audio.SampleRate,
-                                                      outSampleRate);
-
-            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, this._audio.TempFile, "encoded.m4a");
-
-            switch (encMode)
-            {
-                case 0:
-                    sb.AppendFormat(this._appConfig.CInfo, "-br {0:0} ", bitrate);
-                    break;
-                case 1:
-                    sb.AppendFormat(this._appConfig.CInfo, "-cbr {0:0} ", bitrate);
-                    break;
-                case 2:
-                    sb.AppendFormat(this._appConfig.CInfo, "-q {0:0.00} ", quality);
-                    break;
-            }
-
-            sb.AppendFormat("-ignorelength -if {0} ", this._appConfig.EncodeNamedPipeFullName);
-            sb.AppendFormat("-of \"{0}\" ", this._outputFile);
-
-            return sb.ToString();
+            this._decoderIsRunning = false;
         }
 
         /// <summary>
@@ -458,20 +342,7 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     Log.Error(exc);
                 }
-
-                try
-                {
-                    this._encodePipe.Close();
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
             }
-
-            if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                this._pipeReadThread.Abort();
-            this.EncodeProcess.WaitForExit();
 
             try
             {
@@ -481,6 +352,8 @@ namespace VideoConvert.AppServices.Encoder
             {
                 Log.Error(exc);
             }
+
+            this._encoderIsRunning = false;
 
             this._currentTask.ExitCode = EncodeProcess.ExitCode;
             Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
@@ -567,6 +440,133 @@ namespace VideoConvert.AppServices.Encoder
             var result = _encObj.Match(line);
             if (!result.Success)
                 Log.InfoFormat("neroAacEnc: {0}", line);
+        }
+
+        private void EncoderConnected(IAsyncResult ar)
+        {
+            Log.Info("Encoder Pipe connected");
+            lock (this._encodePipe)
+            {
+                this._encodePipe.EndWaitForConnection(ar);
+            }
+
+            this._pipeReadThread = new Thread(PipeReadThreadStart);
+            this._pipeReadThread.Start();
+            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
+        }
+
+        private void PipeReadThreadStart()
+        {
+            try
+            {
+                if (this.DecodeProcess != null && this.EncodeProcess != null)
+                    ReadThreadStart();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private void ReadThreadStart()
+        {
+            try
+            {
+                // wait for decoder to start writing
+                while (!this._dataWriteStarted || !this._decoderIsRunning || !this._encoderIsRunning)
+                {
+                    Thread.Sleep(100);
+                }
+
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = 0;
+                do
+                {
+                    if (this._decoderIsRunning)
+                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+
+                    if (this._encoderIsRunning)
+                        this._encodePipe.Write(buffer, 0, read);
+
+                } while (read > 0 && this._decoderIsRunning && this._encoderIsRunning);
+
+                this._encodePipe.Close();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+        }
+
+        private string GenerateCommandLine()
+        {
+            var sb = new StringBuilder();
+
+            this._audio = this._currentTask.AudioStreams[this._currentTask.StreamId];
+
+            var outChannels = ((AacProfile)this._currentTask.AudioProfile).OutputChannels;
+            switch (outChannels)
+            {
+                case 1:
+                    outChannels = 2;
+                    break;
+                case 2:
+                    outChannels = 1;
+                    break;
+            }
+            var outSampleRate = ((AacProfile)this._currentTask.AudioProfile).SampleRate;
+            switch (outSampleRate)
+            {
+                case 1:
+                    outSampleRate = 8000;
+                    break;
+                case 2:
+                    outSampleRate = 11025;
+                    break;
+                case 3:
+                    outSampleRate = 22050;
+                    break;
+                case 4:
+                    outSampleRate = 44100;
+                    break;
+                case 5:
+                    outSampleRate = 48000;
+                    break;
+                default:
+                    outSampleRate = 0;
+                    break;
+            }
+
+            var encMode = ((AacProfile)this._currentTask.AudioProfile).EncodingMode;
+            var bitrate = ((AacProfile)this._currentTask.AudioProfile).Bitrate * 1000;
+            var quality = ((AacProfile)this._currentTask.AudioProfile).Quality;
+
+            var avs = new AviSynthGenerator(this._appConfig);
+
+            this._inputFile = avs.GenerateAudioScript(this._audio.TempFile, this._audio.Format, this._audio.FormatProfile,
+                                                      this._audio.ChannelCount, outChannels, this._audio.SampleRate,
+                                                      outSampleRate);
+
+            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, this._audio.TempFile, "encoded.m4a");
+
+            switch (encMode)
+            {
+                case 0:
+                    sb.AppendFormat(this._appConfig.CInfo, "-br {0:0} ", bitrate);
+                    break;
+                case 1:
+                    sb.AppendFormat(this._appConfig.CInfo, "-cbr {0:0} ", bitrate);
+                    break;
+                case 2:
+                    sb.AppendFormat(this._appConfig.CInfo, "-q {0:0.00} ", quality);
+                    break;
+            }
+
+            sb.AppendFormat("-ignorelength -if {0} ", this._appConfig.EncodeNamedPipeFullName);
+            sb.AppendFormat("-of \"{0}\" ", this._outputFile);
+
+            return sb.ToString();
         }
 
         #endregion

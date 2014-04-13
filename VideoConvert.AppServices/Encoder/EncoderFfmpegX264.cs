@@ -31,7 +31,6 @@ namespace VideoConvert.AppServices.Encoder
     using VideoConvert.Interop.Model.Profiles;
     using VideoConvert.Interop.Model.x264;
     using VideoConvert.Interop.Utilities;
-    using ThreadState = System.Threading.ThreadState;
 
     /// <summary>
     /// The ffmpeg x264 encoder class
@@ -102,7 +101,6 @@ namespace VideoConvert.AppServices.Encoder
         private long _frameCount;
 
         private TimeSpan _remainingTime;
-        
 
         #endregion
 
@@ -410,18 +408,6 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     Log.Error(exc);
                 }
-
-                if (this._decodePipe.IsConnected)
-                {
-                    this._decodePipe.WaitForPipeDrain();
-                    this._decodePipe.Disconnect();
-                }
-
-                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                {
-                    this._pipeReadThread.Abort();
-                }
-                
             }
         }
 
@@ -447,24 +433,7 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     Log.Error(exc);
                 }
-
-                if (this._encodePipe.IsConnected)
-                {
-                    this._encodePipe.WaitForPipeDrain();
-                    this._encodePipe.Disconnect();
-                }
-
-                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                {
-                    this._pipeReadThread.Abort();
-                }
-
             }
-
-            if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                this._pipeReadThread.Abort();
-
-            this.EncodeProcess.WaitForExit();
 
             try
             {
@@ -515,64 +484,6 @@ namespace VideoConvert.AppServices.Encoder
             this._currentTask.CompletedStep = this._currentTask.NextStep;
             this.IsEncoding = false;
             this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
-        }
-
-        private void DecoderConnected(IAsyncResult ar)
-        {
-            Log.Info("Decoder Pipe connected");
-            this._decodePipe.EndWaitForConnection(ar);
-        }
-
-        private void EncoderConnected(IAsyncResult ar)
-        {
-            Log.Info("Encoder Pipe connected");
-            this._encodePipe.EndWaitForConnection(ar);
-            this._pipeReadThread = new Thread(PipeReadThreadStart);
-            this._pipeReadThread.Start();
-            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
-        }
-
-        private void PipeReadThreadStart()
-        {
-            try
-            {
-                if (this.EncodeProcess != null)
-                    ReadThreadStart();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-        }
-
-        private void ReadThreadStart()
-        {
-            try
-            {
-                do
-                {
-                    Thread.Sleep(50);   
-                } while (!this._decodePipe.IsConnected || !this._encodePipe.IsConnected);
-
-                var buffer = new byte[0xA00000]; // 10 MB
-
-                int read = this._decodePipe.Read(buffer, 0, buffer.Length);
-                var enc = new ASCIIEncoding();
-                Log.Info(enc.GetString(buffer, 0, 58));
-                while (read > 0 && this._decodePipe.IsConnected && !this.EncodeProcess.HasExited)
-                {
-                    this._encodePipe.Write(buffer, 0, read);
-
-                    if (this._decodePipe.IsConnected)
-                        read = this._decodePipe.Read(buffer, 0, buffer.Length);
-                }
-                this._encodePipe.Close();
-                this._decodePipe.Close();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
-            }
         }
 
         /// <summary>
@@ -635,7 +546,7 @@ namespace VideoConvert.AppServices.Encoder
 
             if (frameMatch.Success)
             {
-                long current = 0;
+                long current;
                 Int64.TryParse(frameMatch.Groups[1].Value, NumberStyles.Number,
                     _appConfig.CInfo, out current);
                 long framesRemaining = _frameCount - current;
@@ -657,7 +568,7 @@ namespace VideoConvert.AppServices.Encoder
                 if (secRemaining > 0)
                     _remainingTime = new TimeSpan(0, 0, (int)secRemaining);
 
-                var fps = 0f;
+                float fps;
                 Single.TryParse(frameMatch.Groups[2].Value, NumberStyles.Number,
                     _appConfig.CInfo, out fps);
                 float encBitrate;
@@ -673,6 +584,7 @@ namespace VideoConvert.AppServices.Encoder
                     EstimatedTimeLeft = _remainingTime,
                     PercentComplete = percent,
                     ElapsedTime = DateTime.Now - this._startTime,
+                    Pass = this._encodePass,
                 };
 
                 this.InvokeEncodeStatusChanged(eventArgs);
@@ -680,6 +592,73 @@ namespace VideoConvert.AppServices.Encoder
             else
             {
                 Log.InfoFormat("ffmpeg: {0}", line);
+            }
+        }
+
+        private void DecoderConnected(IAsyncResult ar)
+        {
+            Log.Info("Decoder Pipe connected");
+            lock (this._decodePipe)
+            {
+                this._decodePipe.EndWaitForConnection(ar);
+            }
+        }
+
+        private void EncoderConnected(IAsyncResult ar)
+        {
+            Log.Info("Encoder Pipe connected");
+            lock (this._encodePipe)
+            {
+                this._encodePipe.EndWaitForConnection(ar);
+            }
+
+            this._pipeReadThread = new Thread(PipeReadThreadStart);
+            this._pipeReadThread.Start();
+            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
+        }
+
+        private void PipeReadThreadStart()
+        {
+            try
+            {
+                if (this.EncodeProcess != null && this.DecodeProcess != null)
+                    ReadThreadStart();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private void ReadThreadStart()
+        {
+            try
+            {
+                do
+                {
+                    Thread.Sleep(100);
+                } while (!this._decodePipe.IsConnected || !this._encodePipe.IsConnected);
+
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = 0;
+
+                do
+                {
+                    if (this._decodePipe.IsConnected)
+                        read = this._decodePipe.Read(buffer, 0, buffer.Length);
+
+                    if (this._encodePipe.IsConnected)
+                        this._encodePipe.Write(buffer, 0, read);
+
+                } while (read > 0 && this._decodePipe.IsConnected && this._encodePipe.IsConnected);
+
+                this._encodePipe.Close();
+                this._decodePipe.Close();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
             }
         }
 

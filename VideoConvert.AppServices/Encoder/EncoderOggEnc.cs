@@ -27,7 +27,6 @@ namespace VideoConvert.AppServices.Encoder
     using VideoConvert.AppServices.Utilities;
     using VideoConvert.Interop.Model.Profiles;
     using VideoConvert.Interop.Utilities;
-    using ThreadState = System.Threading.ThreadState;
 
     /// <summary>
     /// The EncoderOggEnc
@@ -79,6 +78,8 @@ namespace VideoConvert.AppServices.Encoder
             RegexOptions.Singleline | RegexOptions.Multiline);
 
         private bool _dataWriteStarted;
+        private bool _decoderIsRunning;
+        private bool _encoderIsRunning;
 
         #endregion
 
@@ -238,12 +239,14 @@ namespace VideoConvert.AppServices.Encoder
                 {
                     this.EncodeProcess.EnableRaisingEvents = true;
                     this.EncodeProcess.Exited += EncodeProcessExited;
+                    this._encoderIsRunning = true;
                 }
 
                 if (this._decoderProcessId != -1)
                 {
                     this.DecodeProcess.EnableRaisingEvents = true;
                     this.DecodeProcess.Exited += DecodeProcessExited;
+                    this._decoderIsRunning = true;
                 }
 
                 this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
@@ -251,14 +254,14 @@ namespace VideoConvert.AppServices.Encoder
 
                 // Fire the Encode Started Event
                 this.InvokeEncodeStarted(EventArgs.Empty);
-
-                
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
                 this._currentTask.ExitCode = -1;
                 this.IsEncoding = false;
+                this._encoderIsRunning = false;
+                this._decoderIsRunning = false;
                 this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
@@ -272,10 +275,14 @@ namespace VideoConvert.AppServices.Encoder
             {
                 if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
                 {
+                    this._encoderIsRunning = false;
+                    Thread.Sleep(200);
                     this.EncodeProcess.Kill();
                 }
                 if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
                 {
+                    this._decoderIsRunning = false;
+                    Thread.Sleep(200);
                     this.DecodeProcess.Kill();
                 }
             }
@@ -298,7 +305,204 @@ namespace VideoConvert.AppServices.Encoder
 
         #region Private Helper Methods
 
-        private static string BuildExecutable (bool optimized, IAppConfigService appConfig)
+        private void DecodeProcessExited(object sender, EventArgs e)
+        {
+            if (this._encodePipe != null)
+            {
+                try
+                {
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+            }
+
+            this._decoderIsRunning = false;
+        }
+
+        /// <summary>
+        /// The OggEnc process has exited.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The EventArgs.
+        /// </param>
+        private void EncodeProcessExited(object sender, EventArgs e)
+        {
+            if (this._encodePipe != null)
+            {
+                try
+                {
+                    if (!this._encodePipeState.IsCompleted)
+                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
+                }
+                catch (Exception exc)
+                {
+                    Log.Error(exc);
+                }
+            }
+
+            try
+            {
+                this.EncodeProcess.CancelErrorRead();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+
+            this._encoderIsRunning = false;
+
+            this._currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+
+            if (this._currentTask.ExitCode == 0)
+            {
+                this._currentTask.TempFiles.Add(this._inputFile);
+                this._currentTask.TempFiles.Add(this._audio.TempFile);
+                this._currentTask.TempFiles.Add(this._audio.TempFile + ".d2a");
+                this._currentTask.TempFiles.Add(this._audio.TempFile + ".ffindex");
+                this._audio.TempFile = this._outputFile;
+                AudioHelper.GetStreamInfo(this._audio);
+            }
+
+            this._currentTask.CompletedStep = this._currentTask.NextStep;
+            this.IsEncoding = false;
+            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+        }
+
+        private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            var line = e.Data;
+            if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
+
+            if (line.Contains("Writing Data..."))
+                this._dataWriteStarted = true;
+
+            var bePipeMatch = _pipeObj.Match(line);
+            if (bePipeMatch.Success)
+            {
+                float progress;
+                var tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");
+                Single.TryParse(tempProgress, NumberStyles.Number, this._appConfig.CInfo, out progress);
+
+                var progressRemaining = 100f - progress;
+                var elapsedTime = DateTime.Now - _startTime;
+
+                long secRemaining = 0;
+                if (elapsedTime.TotalSeconds > 0)
+                {
+                    var speed = Math.Round(progress / elapsedTime.TotalSeconds, 6);
+
+                    if (speed > 0)
+                        secRemaining = (long)Math.Round(progressRemaining / speed, 0);
+                    else
+                        secRemaining = 0;
+                }
+                if (secRemaining < 0)
+                    secRemaining = 0;
+
+                var remainingTime = TimeSpan.FromSeconds(secRemaining);
+
+                var eventArgs = new EncodeProgressEventArgs
+                {
+                    AverageFrameRate = 0,
+                    CurrentFrameRate = 0,
+                    EstimatedTimeLeft = remainingTime,
+                    PercentComplete = progress,
+                    ElapsedTime = elapsedTime,
+                };
+                this.InvokeEncodeStatusChanged(eventArgs);
+            }
+            else
+                Log.InfoFormat("bepipe: {0}", line);
+        }
+
+        /// <summary>
+        /// process received data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            {
+                this.ProcessLogMessage(e.Data);
+            }
+        }
+
+        private void ProcessLogMessage(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return;
+
+            var result = _encObj.Match(line);
+            if (!result.Success)
+                Log.InfoFormat("OggEnc: {0}", line);
+        }
+
+        private void EncoderConnected(IAsyncResult ar)
+        {
+            Log.Info("Encoder Pipe connected");
+            lock (this._encodePipe)
+            {
+                this._encodePipe.EndWaitForConnection(ar);
+            }
+
+            this._pipeReadThread = new Thread(PipeReadThreadStart);
+            this._pipeReadThread.Start();
+            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
+        }
+
+        private void PipeReadThreadStart()
+        {
+            try
+            {
+                if (this.DecodeProcess != null && this.EncodeProcess != null)
+                    ReadThreadStart();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private void ReadThreadStart()
+        {
+            try
+            {
+                // wait for decoder to start writing
+                while (!this._dataWriteStarted || !this._decoderIsRunning || !this._encoderIsRunning)
+                {
+                    Thread.Sleep(100);
+                }
+
+                var buffer = new byte[0xA00000]; // 10 MB
+
+                int read = 0;
+                do
+                {
+                    if (this._decoderIsRunning)
+                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+
+                    if (this._encoderIsRunning)
+                        this._encodePipe.Write(buffer, 0, read);
+
+                } while (read > 0 && this._decoderIsRunning && this._encoderIsRunning);
+
+                this._encodePipe.Close();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc);
+            }
+        }
+
+        private static string BuildExecutable(bool optimized, IAppConfigService appConfig)
         {
             string fName = "oggenc2";
             if (optimized)
@@ -383,215 +587,6 @@ namespace VideoConvert.AppServices.Encoder
             sb.AppendFormat("--ignorelength \"{0}\" ", this._appConfig.EncodeNamedPipeFullName);
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// The OggEnc process has exited.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The EventArgs.
-        /// </param>
-        private void EncodeProcessExited(object sender, EventArgs e)
-        {
-            if (this._encodePipe != null)
-            {
-                try
-                {
-                    if (!this._encodePipeState.IsCompleted)
-                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-
-                try
-                {
-                    this._encodePipe.Close();
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-            }
-
-            if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                this._pipeReadThread.Abort();
-            this.EncodeProcess.WaitForExit();
-
-            try
-            {
-                this.EncodeProcess.CancelErrorRead();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
-            }
-
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
-
-            if (this._currentTask.ExitCode == 0)
-            {
-                this._currentTask.TempFiles.Add(this._inputFile);
-                this._currentTask.TempFiles.Add(this._audio.TempFile);
-                this._currentTask.TempFiles.Add(this._audio.TempFile + ".d2a");
-                this._currentTask.TempFiles.Add(this._audio.TempFile + ".ffindex");
-                this._audio.TempFile = this._outputFile;
-                AudioHelper.GetStreamInfo(this._audio);
-            }
-
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
-        }
-
-        private void DecodeProcessExited(object sender, EventArgs e)
-        {
-            if (this._encodePipe != null)
-            {
-                try
-                {
-                    if (!this._encodePipeState.IsCompleted)
-                        this._encodePipe.EndWaitForConnection(this._encodePipeState);
-                }
-                catch (Exception exc)
-                {
-                    Log.Error(exc);
-                }
-
-                if (this._pipeReadThread != null && this._pipeReadThread.ThreadState == ThreadState.Running)
-                    this._pipeReadThread.Abort();
-                this.DecodeProcess.WaitForExit();
-
-                if (this._encodePipe.IsConnected)
-                    _encodePipe.Disconnect();
-            }
-        }
-
-        /// <summary>
-        /// process received data
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
-            {
-                this.ProcessLogMessage(e.Data);
-            }
-        }
-
-        private void ProcessLogMessage(string line)
-        {
-            if (string.IsNullOrEmpty(line)) return;
-
-            var result = _encObj.Match(line);
-            if (!result.Success)
-                Log.InfoFormat("OggEnc: {0}", line);
-        }
-
-        private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            var line = e.Data;
-            if (string.IsNullOrEmpty(line) || !this.IsEncoding) return;
-
-            if (line.Contains("Writing Data..."))
-                this._dataWriteStarted = true;
-
-            var bePipeMatch = _pipeObj.Match(line);
-            if (bePipeMatch.Success)
-            {
-                float progress;
-                var tempProgress = bePipeMatch.Groups[1].Value.Replace(",", ".");
-                Single.TryParse(tempProgress, NumberStyles.Number, this._appConfig.CInfo, out progress);
-
-                var progressRemaining = 100f - progress;
-                var elapsedTime = DateTime.Now - _startTime;
-
-                long secRemaining = 0;
-                if (elapsedTime.TotalSeconds > 0)
-                {
-                    var speed = Math.Round(progress/elapsedTime.TotalSeconds, 6);
-
-                    if (speed > 0)
-                        secRemaining = (long) Math.Round(progressRemaining/speed, 0);
-                    else
-                        secRemaining = 0;
-                }
-                if (secRemaining < 0)
-                    secRemaining = 0;
-
-                var remainingTime = TimeSpan.FromSeconds(secRemaining);
-
-                var eventArgs = new EncodeProgressEventArgs
-                {
-                    AverageFrameRate = 0,
-                    CurrentFrameRate = 0,
-                    EstimatedTimeLeft = remainingTime,
-                    PercentComplete = progress,
-                    ElapsedTime = elapsedTime,
-                };
-                this.InvokeEncodeStatusChanged(eventArgs);
-            }
-            else
-                Log.InfoFormat("bepipe: {0}", line);
-        }
-
-        #endregion
-
-        #region Stream Piping functions
-
-        private void EncoderConnected(IAsyncResult ar)
-        {
-            Log.Info("Encoder Pipe connected");
-            this._encodePipe.EndWaitForConnection(ar);
-            this._pipeReadThread = new Thread(PipeReadThreadStart);
-            this._pipeReadThread.Start();
-            this._pipeReadThread.Priority = this._appConfig.GetThreadPriority();
-        }
-
-        private void PipeReadThreadStart()
-        {
-            try
-            {
-                if (this.DecodeProcess != null)
-                    ReadThreadStart();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-        }
-
-        private void ReadThreadStart()
-        {
-            try
-            {
-                // wait for decoder to start writing
-                while (!this._dataWriteStarted)
-                {
-                    Thread.Sleep(100);
-                }
-
-                var buffer = new byte[0xA00000]; // 10 MB
-
-                int read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-
-                while (read > 0 && !this.DecodeProcess.HasExited)
-                {
-                    _encodePipe.Write(buffer, 0, read);
-                    if (!this.DecodeProcess.HasExited)
-                        read = this.DecodeProcess.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-                }
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc);
-            }
         }
 
         #endregion
