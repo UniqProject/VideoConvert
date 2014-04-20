@@ -14,6 +14,14 @@ namespace VideoConvert.AppServices
     using Castle.Windsor;
     using Services;
     using Services.Interfaces;
+    using VideoConvert.AppServices.Decoder;
+    using VideoConvert.AppServices.Decoder.Interfaces;
+    using VideoConvert.AppServices.Demuxer;
+    using VideoConvert.AppServices.Demuxer.Interfaces;
+    using VideoConvert.AppServices.Encoder;
+    using VideoConvert.AppServices.Encoder.Interfaces;
+    using VideoConvert.AppServices.Muxer;
+    using VideoConvert.AppServices.Muxer.Interfaces;
 
     /// <summary>
     /// Services installer for Castle.Windsor
@@ -33,6 +41,36 @@ namespace VideoConvert.AppServices
             container.Register(Component.For<IUserSettingService>().ImplementedBy<UserSettingService>());
             container.Register(Component.For<IAppConfigService>().ImplementedBy<AppConfigService>());
             container.Register(Component.For<IProcessingService>().ImplementedBy<ProcessingService>());
+
+            // Decoder
+            container.Register(Component.For<IDecoderFfmpegGetCrop>().ImplementedBy<DecoderFfmpegGetCrop>());
+            container.Register(Component.For<IDecoderFfmsIndex>().ImplementedBy<DecoderFfmsIndex>());
+
+            // Demuxer
+            container.Register(Component.For<IDemuxerEac3To>().ImplementedBy<DemuxerEac3To>());
+            container.Register(Component.For<IDemuxerFfmpeg>().ImplementedBy<DemuxerFfmpeg>());
+            container.Register(Component.For<IDemuxerMplayer>().ImplementedBy<DemuxerMplayer>());
+
+            // Encoder
+            container.Register(Component.For<IEncoderBdSup2Sub>().ImplementedBy<EncoderBdSup2Sub>());
+            container.Register(Component.For<IEncoderFfmpegAc3>().ImplementedBy<EncoderFfmpegAc3>());
+            container.Register(Component.For<IEncoderFfmpegDvd>().ImplementedBy<EncoderFfmpegDvd>());
+            container.Register(Component.For<IEncoderLame>().ImplementedBy<EncoderLame>());
+            container.Register(Component.For<IEncoderNeroAac>().ImplementedBy<EncoderNeroAac>());
+            container.Register(Component.For<IEncoderOggEnc>().ImplementedBy<EncoderOggEnc>());
+            container.Register(Component.For<IEncoderX264>().ImplementedBy<EncoderX264>());
+            container.Register(Component.For<IEncoderFfmpegX264>().ImplementedBy<EncoderFfmpegX264>());
+
+            // Muxer
+            container.Register(Component.For<IFileWorker>().ImplementedBy<FileWorker>());
+            container.Register(Component.For<IMuxerDvdAuthor>().ImplementedBy<MuxerDvdAuthor>());
+            container.Register(Component.For<IMuxerMkvMerge>().ImplementedBy<MuxerMkvMerge>());
+            container.Register(Component.For<IMuxerMp4Box>().ImplementedBy<MuxerMp4Box>());
+            container.Register(Component.For<IMuxerMplex>().ImplementedBy<MuxerMplex>());
+            container.Register(Component.For<IMuxerSpuMux>().ImplementedBy<MuxerSpuMux>());
+
+            // Queue Handler
+            container.Register(Component.For<IQueueProcessor>().ImplementedBy<QueueProcessor>());
         }
 
         #endregion
