@@ -43,6 +43,7 @@ namespace VideoConvert.AppServices.Services
         private readonly IDemuxerEac3To _eac3To;
         private readonly IDemuxerFfmpeg _ffmpegDemuxer;
         private readonly IDemuxerMplayer _mplayerDemuxer;
+        private readonly IDemuxerMkvExtractSubtitle _mkvExtractSubtitle;
 
         private readonly IEncoderBdSup2Sub _bdSup2Sub;
         private readonly IEncoderFfmpegAc3 _ffmpegAc3;
@@ -108,6 +109,9 @@ namespace VideoConvert.AppServices.Services
         /// <param name="mplayerDemuxer">
         /// mplayer demux interface
         /// </param>
+        /// <param name="mkvExtractSubtitle">
+        /// mkvextract subtitle demux interface
+        /// </param>
         /// <param name="bdSup2Sub">
         /// BDSup2Sub interface
         /// </param>
@@ -155,7 +159,7 @@ namespace VideoConvert.AppServices.Services
                               IDecoderFfmpegGetCrop ffmpegGetCrop, IDecoderFfmsIndex ffmsIndex,
                               //demuxer
                               IDemuxerEac3To eac3To, IDemuxerFfmpeg ffmpegDemuxer,
-                              IDemuxerMplayer mplayerDemuxer,
+                              IDemuxerMplayer mplayerDemuxer, IDemuxerMkvExtractSubtitle mkvExtractSubtitle,
                               //encoder
                               IEncoderBdSup2Sub bdSup2Sub, IEncoderFfmpegAc3 ffmpegAc3,
                               IEncoderFfmpegDvd ffmpegDvd, IEncoderLame lame, IEncoderNeroAac neroAac,
@@ -173,6 +177,7 @@ namespace VideoConvert.AppServices.Services
             this._eac3To = eac3To;
             this._ffmpegDemuxer = ffmpegDemuxer;
             this._mplayerDemuxer = mplayerDemuxer;
+            this._mkvExtractSubtitle = mkvExtractSubtitle;
 
             this._bdSup2Sub = bdSup2Sub;
             this._ffmpegAc3 = ffmpegAc3;
@@ -805,9 +810,7 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteDemuxSubtitle()
         {
-            // TODO: mkvmerge demux interface
-
-            this._currentEncoder = this._mkvMerge;
+            this._currentEncoder = this._mkvExtractSubtitle;
 
             ExecuteGenericEncoder();
         }

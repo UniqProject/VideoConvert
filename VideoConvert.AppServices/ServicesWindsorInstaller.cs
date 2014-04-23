@@ -50,6 +50,7 @@ namespace VideoConvert.AppServices
             container.Register(Component.For<IDemuxerEac3To>().ImplementedBy<DemuxerEac3To>());
             container.Register(Component.For<IDemuxerFfmpeg>().ImplementedBy<DemuxerFfmpeg>());
             container.Register(Component.For<IDemuxerMplayer>().ImplementedBy<DemuxerMplayer>());
+            container.Register(Component.For<IDemuxerMkvExtractSubtitle>().ImplementedBy<DemuxerMkvExtractSubtitle>());
 
             // Encoder
             container.Register(Component.For<IEncoderBdSup2Sub>().ImplementedBy<EncoderBdSup2Sub>());

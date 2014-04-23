@@ -151,9 +151,11 @@ namespace VideoConvert.AppServices.Muxer
         }
 
         /// <summary>
-        /// 
+        /// execute a mp4box mux process
         /// </summary>
-        /// <param name="encodeQueueTask"></param>
+        /// <param name="encodeQueueTask">
+        /// The encodeQueueTask.
+        /// </param>
         /// <exception cref="Exception"></exception>
         public override void Start(EncodeInfo encodeQueueTask)
         {
