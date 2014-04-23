@@ -398,11 +398,11 @@ namespace VideoConvert.AppServices.Services
 
             _configService.LastNeroAacEncVer = EncoderNeroAac.GetVersionInfo(encPath);
 
+            _configService.LastTSMuxerVer = MuxerTsMuxeR.GetVersionInfo(encPath);
+
             //LsDvd lsdvd = new LsDvd();
             //ConfigService.LastlsdvdVer = lsdvd.GetVersionInfo(encPath);
 
-            //TsMuxeR tsmuxer = new TsMuxeR();
-            //ConfigService.LastTSMuxerVer = tsmuxer.GetVersionInfo(encPath);
 
             //HcEnc hcenc = new HcEnc();
             //ConfigService.LastHcEncVer = hcenc.GetVersionInfo(encPath);

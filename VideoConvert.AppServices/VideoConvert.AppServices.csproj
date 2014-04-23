@@ -79,11 +79,13 @@
     <Compile Include="Muxer\Interfaces\IMuxerMp4Box.cs" />
     <Compile Include="Muxer\Interfaces\IMuxerMplex.cs" />
     <Compile Include="Muxer\Interfaces\IMuxerSpuMux.cs" />
+    <Compile Include="Muxer\Interfaces\IMuxerTsMuxeR.cs" />
     <Compile Include="Muxer\MuxerDvdAuthor.cs" />
     <Compile Include="Muxer\MuxerMkvMerge.cs" />
     <Compile Include="Muxer\MuxerMp4Box.cs" />
     <Compile Include="Muxer\MuxerMplex.cs" />
     <Compile Include="Muxer\MuxerSpuMux.cs" />
+    <Compile Include="Muxer\MuxerTsMuxeR.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServicesWindsorInstaller.cs" />
     <Compile Include="Services\AppConfigService.cs" />
@@ -280,7 +282,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
+      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

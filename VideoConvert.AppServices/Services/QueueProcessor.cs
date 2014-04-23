@@ -60,6 +60,7 @@ namespace VideoConvert.AppServices.Services
         private readonly IMuxerMp4Box _mp4Box;
         private readonly IMuxerMplex _mplex;
         private readonly IMuxerSpuMux _spuMux;
+        private readonly IMuxerTsMuxeR _tsMuxeR;
 
         private IEncodeBase _currentEncoder;
 
@@ -154,6 +155,9 @@ namespace VideoConvert.AppServices.Services
         /// <param name="spuMux">
         /// SpuMux Interface
         /// </param>
+        /// <param name="tsMuxeR">
+        /// tsMuxeR Interface
+        /// </param>
         public QueueProcessor(IAppConfigService appConfig, IProcessingService processingService,
                               //decoder
                               IDecoderFfmpegGetCrop ffmpegGetCrop, IDecoderFfmsIndex ffmsIndex,
@@ -166,7 +170,7 @@ namespace VideoConvert.AppServices.Services
                               IEncoderOggEnc oggEnc, IEncoderX264 x264, IEncoderFfmpegX264 ffmpegX264,
                               //muxer
                               IFileWorker fileWorker, IMuxerDvdAuthor dvdAuthor, IMuxerMkvMerge mkvMerge,
-                              IMuxerMp4Box mp4Box, IMuxerMplex mplex, IMuxerSpuMux spuMux)
+                              IMuxerMp4Box mp4Box, IMuxerMplex mplex, IMuxerSpuMux spuMux, IMuxerTsMuxeR tsMuxeR)
         {
             this._appConfig = appConfig;
             this._processingService = processingService;
@@ -194,6 +198,7 @@ namespace VideoConvert.AppServices.Services
             this._mp4Box = mp4Box;
             this._mplex = mplex;
             this._spuMux = spuMux;
+            this._tsMuxeR = tsMuxeR;
         }
 
         /// <summary>
@@ -892,7 +897,7 @@ namespace VideoConvert.AppServices.Services
                 case OutputType.OutputM2Ts:
                 case OutputType.OutputBluRay:
                 case OutputType.OutputAvchd:
-                    // TODO: TsMuxeR
+                    this._currentEncoder = this._tsMuxeR;
                     break;
                 case OutputType.OutputDvd:
                     this._currentEncoder = this._dvdAuthor;

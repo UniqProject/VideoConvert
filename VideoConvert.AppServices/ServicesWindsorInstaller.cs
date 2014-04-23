@@ -69,6 +69,7 @@ namespace VideoConvert.AppServices
             container.Register(Component.For<IMuxerMp4Box>().ImplementedBy<MuxerMp4Box>());
             container.Register(Component.For<IMuxerMplex>().ImplementedBy<MuxerMplex>());
             container.Register(Component.For<IMuxerSpuMux>().ImplementedBy<MuxerSpuMux>());
+            container.Register(Component.For<IMuxerTsMuxeR>().ImplementedBy<MuxerTsMuxeR>());
 
             // Queue Handler
             container.Register(Component.For<IQueueProcessor>().ImplementedBy<QueueProcessor>());
