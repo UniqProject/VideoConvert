@@ -419,11 +419,26 @@ namespace VideoConvert.AppServices.Services
 
             var avsFile = new AviSynthGenerator(_configService).GenerateTestFile();
 
-            var result = graphBuilder.RenderFile(avsFile, null);
+            // workaround for crashes while in debug mode
+            var result = 0;
+            if (!Debugger.IsAttached)
+            {
+                try
+                {
+                    result = graphBuilder.RenderFile(avsFile, null);
 
+                    graphBuilder.Abort();
+                    graphBuilder = null;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            }
+            
             Log.DebugFormat("RenderFile Result: {0}", result);
 
-            if (result < 0)
+            if (result < 0 && !Debugger.IsAttached)
                 Log.Debug("AviSynth is not installed");
             else
             {
@@ -434,7 +449,15 @@ namespace VideoConvert.AppServices.Services
                 _configService.LastAviSynthVer = appVer;
             }
 
-            File.Delete(avsFile);
+            try
+            {
+                File.Delete(avsFile);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.InnerException);
+            }
+            
             #endregion
 
             GetAviSynthPluginsVer();
