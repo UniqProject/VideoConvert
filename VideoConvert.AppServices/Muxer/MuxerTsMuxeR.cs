@@ -12,7 +12,6 @@ namespace VideoConvert.AppServices.Muxer
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Drawing;
     using System.Globalization;
     using System.IO;
     using System.Text;
@@ -92,9 +91,9 @@ namespace VideoConvert.AppServices.Muxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
             using (var encoder = new Process())
             {
@@ -119,10 +118,10 @@ namespace VideoConvert.AppServices.Muxer
 
                 if (started)
                 {
-                    string output = encoder.StandardOutput.ReadToEnd();
-                    var regObj = new Regex(@"^.*?SmartLabs tsMuxeR\.  Version ([\d\.]+?) .*$",
+                    var output = encoder.StandardOutput.ReadToEnd();
+                    var regObj = new Regex(@"^.*?Network Optix tsMuxeR\.  Version ([\d\.]+?)\. .*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -157,8 +156,8 @@ namespace VideoConvert.AppServices.Muxer
                 this.IsEncoding = true;
                 this._currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
@@ -284,7 +283,7 @@ namespace VideoConvert.AppServices.Muxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _muxRegex.Match(line);
+            var result = _muxRegex.Match(line);
 
             if (result.Success)
             {
@@ -328,7 +327,7 @@ namespace VideoConvert.AppServices.Muxer
                                 ? this._currentTask.TempOutput
                                 : this._currentTask.OutputFile;
 
-            int vidStream = 0;
+            var vidStream = 0;
             string codec;
 
             meta.Append("MUXOPT --no-pcr-on-video-pid ");
@@ -355,7 +354,7 @@ namespace VideoConvert.AppServices.Muxer
             {
                 case OutputType.OutputBluRay:
                 case OutputType.OutputAvchd:
-                    Size targetSize = VideoHelper.GetVideoDimensions(this._currentTask.VideoStream.PicSize,
+                    var targetSize = VideoHelper.GetVideoDimensions(this._currentTask.VideoStream.PicSize,
                                                                      this._currentTask.VideoStream.AspectRatio,
                                                                      this._currentTask.EncodingProfile.OutFormat);
                     if (this._currentTask.VideoStream.Width < targetSize.Width ||
@@ -368,7 +367,7 @@ namespace VideoConvert.AppServices.Muxer
             {
                 var chapTimes = new List<string>();
                 var actualTime = new TimeSpan();
-                bool isDvd = this._currentTask.Input == InputType.InputDvd;
+                var isDvd = this._currentTask.Input == InputType.InputDvd;
                 
                 foreach (var chapter in this._currentTask.Chapters)
                 {
@@ -382,7 +381,7 @@ namespace VideoConvert.AppServices.Muxer
 
             meta.AppendLine("--vbv-len=500");
 
-            string sourceVidCodec = this._currentTask.VideoStream.Format;
+            var sourceVidCodec = this._currentTask.VideoStream.Format;
             switch (this._currentTask.Input)
             {
                 case InputType.InputAvi:
@@ -404,7 +403,7 @@ namespace VideoConvert.AppServices.Muxer
                     break;
             }
 
-            float fps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
+            var fps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
                         ? this._currentTask.VideoStream.Fps * 2
                         : this._currentTask.VideoStream.Fps;
 
@@ -425,7 +424,7 @@ namespace VideoConvert.AppServices.Muxer
                     break;
             }
 
-            string inFile = string.Format("\"{0}\"", this._currentTask.VideoStream.TempFile);
+            var inFile = string.Format("\"{0}\"", this._currentTask.VideoStream.TempFile);
 
             if (!string.IsNullOrEmpty(codec))
             {
@@ -447,7 +446,7 @@ namespace VideoConvert.AppServices.Muxer
 
             foreach (var item in this._currentTask.AudioStreams)
             {
-                string itemlang = item.LangCode;
+                var itemlang = item.LangCode;
                 if ((itemlang == "xx") || (string.IsNullOrEmpty(itemlang)))
                     itemlang = "und";
 
@@ -481,7 +480,7 @@ namespace VideoConvert.AppServices.Muxer
                         continue;
                 }
 
-                string delayString = string.Empty;
+                var delayString = string.Empty;
 
                 if (item.Delay != 0)
                     delayString = string.Format(this._appConfig.CInfo, "timeshift={0:#}ms,", item.Delay);
@@ -496,7 +495,7 @@ namespace VideoConvert.AppServices.Muxer
             {
                 if (item.HardSubIntoVideo || !File.Exists(item.TempFile)) continue;
 
-                string itemlang = item.LangCode;
+                var itemlang = item.LangCode;
                 if ((itemlang == "xx") || (string.IsNullOrEmpty(itemlang)))
                     itemlang = "und";
 
@@ -513,8 +512,8 @@ namespace VideoConvert.AppServices.Muxer
                         continue;
                 }
 
-                string tempFile = string.Empty;
-                int subId = -1;
+                var tempFile = string.Empty;
+                var subId = -1;
 
                 if (!string.IsNullOrEmpty(item.TempFile))
                 {
@@ -522,7 +521,7 @@ namespace VideoConvert.AppServices.Muxer
                     subId = 1;
                 }
 
-                string delayString = string.Empty;
+                var delayString = string.Empty;
                 if (item.Delay != int.MinValue)
                     delayString = string.Format(this._appConfig.CInfo, "timeshift={0:#}ms,", item.Delay);
 

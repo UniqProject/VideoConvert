@@ -249,9 +249,7 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                if (_selectedNode != null)
-                    return _selectedNode.Data;
-                return null;
+                return _selectedNode != null ? _selectedNode.Data : null;
             }
         }
 
@@ -259,17 +257,13 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                if (_selectedNode != null)
-                    return _selectedNode.MatroskaDefault;
-                return false;
+                return _selectedNode != null && _selectedNode.MatroskaDefault;
             }
             set
             {
-                if (_selectedNode != null)
-                {
-                    _selectedNode.MatroskaDefault = value;
-                    this.NotifyOfPropertyChange(()=>MatroskaDefault);
-                }
+                if (_selectedNode == null) return;
+                _selectedNode.MatroskaDefault = value;
+                this.NotifyOfPropertyChange(()=>MatroskaDefault);
             }
         }
 
@@ -277,17 +271,13 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                if (_selectedNode != null)
-                    return _selectedNode.HardcodeIntoVideo;
-                return false;
+                return _selectedNode != null && _selectedNode.HardcodeIntoVideo;
             }
             set
             {
-                if (_selectedNode != null)
-                {
-                    _selectedNode.HardcodeIntoVideo = value;
-                    this.NotifyOfPropertyChange(() => HardcodeIntoVideo);
-                }
+                if (_selectedNode == null) return;
+                _selectedNode.HardcodeIntoVideo = value;
+                this.NotifyOfPropertyChange(() => HardcodeIntoVideo);
             }
         }
 
@@ -295,17 +285,13 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                if (_selectedNode != null)
-                    return _selectedNode.KeepOnlyForced;
-                return false;
+                return _selectedNode != null && _selectedNode.KeepOnlyForced;
             }
             set
             {
-                if (_selectedNode != null)
-                {
-                    _selectedNode.KeepOnlyForced = value;
-                    this.NotifyOfPropertyChange(() => KeepOnlyForced);
-                }
+                if (_selectedNode == null) return;
+                _selectedNode.KeepOnlyForced = value;
+                this.NotifyOfPropertyChange(() => KeepOnlyForced);
             }
         }
 
@@ -426,10 +412,15 @@ namespace VideoConvertWPF.ViewModels
                     break;
 
                 case "MatroskaDefault":
-                    if (myStreamTree.Data.GetType().Name == "SubtitleInfo")
-                        ((SubtitleInfo)myStreamTree.Data).MkvDefault = myStreamTree.MatroskaDefault;
-                    else if (myStreamTree.Data.GetType().Name == "AudioInfo")
-                        ((AudioInfo)myStreamTree.Data).MkvDefault = myStreamTree.MatroskaDefault;
+                    switch (myStreamTree.Data.GetType().Name)
+                    {
+                        case "SubtitleInfo":
+                            ((SubtitleInfo)myStreamTree.Data).MkvDefault = myStreamTree.MatroskaDefault;
+                            break;
+                        case "AudioInfo":
+                            ((AudioInfo)myStreamTree.Data).MkvDefault = myStreamTree.MatroskaDefault;
+                            break;
+                    }
 
                     this.NotifyOfPropertyChange(() => this.MatroskaDefault);
 
@@ -480,11 +471,9 @@ namespace VideoConvertWPF.ViewModels
                     JobInfo.InputFile = (string)item.Data;
                 else if (dataType == typeof(VideoInfo))
                 {
-                    if (!videoSet)
-                    {
-                        JobInfo.VideoStream = (VideoInfo)item.Data;
-                        videoSet = true;
-                    }
+                    if (videoSet) continue;
+                    JobInfo.VideoStream = (VideoInfo)item.Data;
+                    videoSet = true;
                 }
                 else if (dataType == typeof(StereoVideoInfo))
                     JobInfo.StereoVideoStream = (StereoVideoInfo)item.Data;
@@ -1252,9 +1241,9 @@ namespace VideoConvertWPF.ViewModels
             if (streamTree.IsChecked)
                 items.Add(streamTree);
 
-            if (streamTree.Children.Count > 0)
-                foreach (var child in streamTree.Children)
-                    items.AddRange(GetCheckedItems(child));
+            if (streamTree.Children.Count <= 0) return items;
+            foreach (var child in streamTree.Children)
+                items.AddRange(GetCheckedItems(child));
 
             return items;
         }
@@ -1274,11 +1263,9 @@ namespace VideoConvertWPF.ViewModels
                 topParent = iParent.Parent;
             }
 
-            if (topParent != null)
-            {
-                topParent.IsExpanded = true;
-                topParent.IsChecked = true;
-            }
+            if (topParent == null) return;
+            topParent.IsExpanded = true;
+            topParent.IsChecked = true;
         }
 
         public void CheckSubItems(StreamTreeNode node)
