@@ -34,11 +34,11 @@
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo RenderOptions.ClearTypeHint="Enabled" />
     </Window.TaskbarItemInfo>
-    <controls:MetroWindow.WindowCommands>
+    <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button Content="About" micro:Message.Attach="ShowAbout"/>
         </controls:WindowCommands>
-    </controls:MetroWindow.WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <controls:MetroContentControl x:Name="MainViewModel" Visibility="{Binding ShowMainView, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}"/>
         <controls:MetroContentControl x:Name="OptionsViewModel" Visibility="{Binding ShowOptions, Converter={StaticResource BoolToVisConverter}, ConverterParameter=false}"/>
