@@ -44,6 +44,7 @@ namespace VideoConvert.AppServices.Services
         private readonly IDemuxerFfmpeg _ffmpegDemuxer;
         private readonly IDemuxerMplayer _mplayerDemuxer;
         private readonly IDemuxerMkvExtractSubtitle _mkvExtractSubtitle;
+        private readonly IDemuxerTsMuxeR _demuxerTsMuxeR;
 
         private readonly IEncoderBdSup2Sub _bdSup2Sub;
         private readonly IEncoderFfmpegAc3 _ffmpegAc3;
@@ -113,6 +114,9 @@ namespace VideoConvert.AppServices.Services
         /// <param name="mkvExtractSubtitle">
         /// mkvextract subtitle demux interface
         /// </param>
+        /// <param name="demuxerTsMuxeR">
+        /// tsMuxeR demux interface
+        /// </param>
         /// <param name="bdSup2Sub">
         /// BDSup2Sub interface
         /// </param>
@@ -164,6 +168,7 @@ namespace VideoConvert.AppServices.Services
                               //demuxer
                               IDemuxerEac3To eac3To, IDemuxerFfmpeg ffmpegDemuxer,
                               IDemuxerMplayer mplayerDemuxer, IDemuxerMkvExtractSubtitle mkvExtractSubtitle,
+                              IDemuxerTsMuxeR demuxerTsMuxeR,
                               //encoder
                               IEncoderBdSup2Sub bdSup2Sub, IEncoderFfmpegAc3 ffmpegAc3,
                               IEncoderFfmpegDvd ffmpegDvd, IEncoderLame lame, IEncoderNeroAac neroAac,
@@ -182,6 +187,7 @@ namespace VideoConvert.AppServices.Services
             this._ffmpegDemuxer = ffmpegDemuxer;
             this._mplayerDemuxer = mplayerDemuxer;
             this._mkvExtractSubtitle = mkvExtractSubtitle;
+            this._demuxerTsMuxeR = demuxerTsMuxeR;
 
             this._bdSup2Sub = bdSup2Sub;
             this._ffmpegAc3 = ffmpegAc3;
@@ -764,6 +770,8 @@ namespace VideoConvert.AppServices.Services
             switch (this._currentJob.Input)
             {
                 case InputType.InputBluRay:
+                    this._currentEncoder = this._demuxerTsMuxeR;
+                    break;
                 case InputType.InputAvchd:
                 case InputType.InputHddvd:
                     this._currentEncoder = this._eac3To;
@@ -854,6 +862,7 @@ namespace VideoConvert.AppServices.Services
             switch (this._currentJob.VideoProfile.Type)
             {
                 case ProfileType.X264:
+                    // TODO: Switch encoder based on settings
                     //this._currentEncoder = this._x264;
                     this._currentEncoder = this._ffmpegX264;
                     break;

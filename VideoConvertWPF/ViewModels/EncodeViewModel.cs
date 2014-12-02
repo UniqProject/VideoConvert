@@ -141,6 +141,7 @@
                 case "DemuxerEac3To":
                 case "DemuxerFfmpeg":
                 case "DemuxerMplayer":
+                case "DemuxerTsMuxeR":
                     processingTool = "Source: Demultiplexing Streams...";
                     progress = string.Format("Demultiplexing Streams: {0,3:0}%, Time elapsed: {1}, ETA: {2}",
                                              args.PercentComplete, elapsedTime, eta);

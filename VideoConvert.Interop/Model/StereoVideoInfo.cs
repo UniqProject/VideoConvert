@@ -22,6 +22,11 @@ namespace VideoConvert.Interop.Model
         public int LeftStreamId { get; set; }
 
         /// <summary>
+        /// stream id from disc for left eye
+        /// </summary>
+        public int DemuxLeftStreamId { get; set; }
+
+        /// <summary>
         /// temp file for left eye
         /// </summary>
         public string LeftTempFile { get; set; }
@@ -40,6 +45,11 @@ namespace VideoConvert.Interop.Model
         /// stream id for right eye
         /// </summary>
         public int RightStreamId { get; set; }
+
+        /// <summary>
+        /// stream id from disc for right eye
+        /// </summary>
+        public int DemuxRightStreamId { get; set; }
 
         /// <summary>
         /// temp file for right eye

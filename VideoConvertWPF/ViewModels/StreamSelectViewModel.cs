@@ -493,10 +493,7 @@ namespace VideoConvertWPF.ViewModels
                 else if (dataType == typeof(SubtitleInfo))
                 {
                     var sub = (SubtitleInfo)item.Data;
-                    var isBd = JobInfo.Input == InputType.InputBluRay || JobInfo.Input == InputType.InputAvchd ||
-                                JobInfo.Input == InputType.InputHddvd;
-                    if ((sub.Format == "PGS" || sub.Format == "VobSub" || sub.Format == "UTF-8" || sub.Format == "ASS" || sub.Format == "SSA") && ((isBd && _bdInfo != null && !_bdInfo.Is3D) || !isBd))
-                        // don't extract subtitles on 3d blurays, because eac3to can't handle them
+                    if (sub.Format == "PGS" || sub.Format == "VobSub" || sub.Format == "UTF-8" || sub.Format == "ASS" || sub.Format == "SSA")
                         JobInfo.SubtitleStreams.Add(sub);
                 }
                 else if (dataType == typeof(List<TimeSpan>))
@@ -830,6 +827,7 @@ namespace VideoConvertWPF.ViewModels
 
                 var videoDescStereo = string.Empty;
                 var leftVideoStreamID = -1;
+                var leftVideoDiscStreamID = -1;
                 foreach (var clip in item.VideoStreams)
                 {
                     streamIndex++;
@@ -844,6 +842,7 @@ namespace VideoConvertWPF.ViewModels
                         videoDescStereo = videoDesc;
                         videoCodec += " (left eye)";
                         leftVideoStreamID = streamIndex;
+                        leftVideoDiscStreamID = clip.PID;
                     }
                     if ((clip.StreamType == TSStreamType.MVC_VIDEO) && (item.VideoStreams.Count > 1)
                         && (item.VideoStreams[item.VideoStreams.Count - 1].PID == clip.PID)
@@ -908,7 +907,9 @@ namespace VideoConvertWPF.ViewModels
                                 var vid = new StereoVideoInfo
                                 {
                                     RightStreamId = streamIndex,
-                                    LeftStreamId = leftVideoStreamID
+                                    DemuxRightStreamId = clip.PID,
+                                    LeftStreamId = leftVideoStreamID,
+                                    DemuxLeftStreamId = leftVideoDiscStreamID
                                 };
                                 CreateNode(videoStreamTree, videoStreamFormat, vid);
                             }

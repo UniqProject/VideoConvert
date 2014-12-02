@@ -53,10 +53,12 @@
     <Compile Include="Demuxer\DemuxerFfmpeg.cs" />
     <Compile Include="Demuxer\DemuxerMkvExtractSubtitle.cs" />
     <Compile Include="Demuxer\DemuxerMplayer.cs" />
+    <Compile Include="Demuxer\DemuxerTsMuxeR.cs" />
     <Compile Include="Demuxer\Interfaces\IDemuxerEac3To.cs" />
     <Compile Include="Demuxer\Interfaces\IDemuxerFfmpeg.cs" />
     <Compile Include="Demuxer\Interfaces\IDemuxerMkvExtractSubtitle.cs" />
     <Compile Include="Demuxer\Interfaces\IDemuxerMplayer.cs" />
+    <Compile Include="Demuxer\Interfaces\IDemuxerTsMuxeR.cs" />
     <Compile Include="Encoder\EncoderBdSup2Sub.cs" />
     <Compile Include="Encoder\EncoderFfmpegAC3.cs" />
     <Compile Include="Encoder\EncoderFfmpegDVD.cs" />
@@ -282,7 +284,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.MonthAndDayStamp.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
