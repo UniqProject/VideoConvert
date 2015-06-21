@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Model
 {
+    using MediaInfo;
+    using Profiles;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using MediaInfo;
-    using Profiles;
     using Utilities;
 
     /// <summary>

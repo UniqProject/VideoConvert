@@ -9,6 +9,12 @@
 
 namespace VideoConvert.AppServices.Muxer
 {
+    using Interfaces;
+    using Interop.EventArgs;
+    using Interop.Model;
+    using log4net;
+    using Services.Base;
+    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -16,12 +22,6 @@ namespace VideoConvert.AppServices.Muxer
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using VideoConvert.Interop.Utilities;
 
     /// <summary>

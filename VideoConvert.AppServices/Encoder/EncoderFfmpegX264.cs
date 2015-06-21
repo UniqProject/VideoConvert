@@ -9,6 +9,8 @@
 
 namespace VideoConvert.AppServices.Encoder
 {
+    using DarLib;
+    using log4net;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -19,8 +21,6 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using DarLib;
-    using log4net;
     using VideoConvert.AppServices.Decoder;
     using VideoConvert.AppServices.Encoder.Interfaces;
     using VideoConvert.AppServices.Services.Base;
