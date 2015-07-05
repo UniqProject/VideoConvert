@@ -25,9 +25,9 @@ namespace UacUpdater
             {
                 parameters = Environment.GetCommandLineArgs();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
+                // ignored
             }
             if (parameters == null || parameters.Length < 3) return;
 

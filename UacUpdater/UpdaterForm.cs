@@ -47,7 +47,7 @@ namespace UacUpdater
                 {
                     _updateList = Updater.LoadUpdateList(_updateFile);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Log.AppendText("Malformed update file:");
                     Log.AppendText(Environment.NewLine);
@@ -175,12 +175,11 @@ namespace UacUpdater
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    
-                    
+                    // ignored
                 }
-                
+
 
                 File.Delete(pInfo.PackageLocation);
                 bwWorker.ReportProgress(-6);
