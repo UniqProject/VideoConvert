@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JT-Soft")]
 [assembly: AssemblyProduct("VideoConvert")]
-[assembly: AssemblyCopyright("Copyright © JT-Soft 2011-2013")]
+[assembly: AssemblyCopyright("Copyright © JT-Soft 2011-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
