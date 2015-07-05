@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
              xmlns:converters="clr-namespace:Converters;assembly=Converters"
              xmlns:metroConverters="http://metro.mahapps.com/winfx/xaml/shared"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:cal="http://www.caliburnproject.org"
              d:DesignHeight="500" 
              d:DesignWidth="1015"
              mc:Ignorable="d" 
-             micro:Message.Attach="[Event Loaded] = [Action Load]" 
+             cal:Message.Attach="[Event Loaded] = [Action Load]" 
              TextOptions.TextFormattingMode="Display">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -142,13 +142,13 @@
                   SelectedValuePath="Name" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="DemiBold"
                   SelectedItem="{Binding SelectedTitleInfo}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
 
-        <Button micro:Message.Attach="[Event Click] = [Action ClickOk]" Content="OK"  HorizontalAlignment="Stretch"
+        <Button cal:Message.Attach="[Event Click] = [Action ClickOk]" Content="OK"  HorizontalAlignment="Stretch"
                 Margin="10,0" Name="OkButton" VerticalAlignment="Center" Grid.Column="3" Grid.Row="0" SnapsToDevicePixels="True" />
 
         <Button Content="Cancel"  HorizontalAlignment="Stretch" IsCancel="True" Margin="10,0" Name="CancelButton"
                 VerticalAlignment="Center" Grid.Column="4" Grid.Row="0" SnapsToDevicePixels="True" />
 
-        <Button micro:Message.Attach="[Event Click] = [Action ClickMediaInfo]" Content="Media Info" 
+        <Button cal:Message.Attach="[Event Click] = [Action ClickMediaInfo]" Content="Media Info" 
                 HorizontalAlignment="Stretch" Margin="10,0" Name="XbmcMediaInfo" VerticalAlignment="Center" 
                 Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" SnapsToDevicePixels="True" />
 
@@ -156,7 +156,7 @@
                   HorizontalAlignment="Stretch" Grid.Row="3" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Column="1" SnapsToDevicePixels="True">
             <Grid>
                 <TreeView HorizontalAlignment="Stretch" ItemsSource="{Binding SelectedTitleInfo.Children}" Name="TitleInfo" 
-                          micro:Message.Attach="[Event SelectedItemChanged] = [Action SetSelectedItem($this.SelectedItem)]" 
+                          cal:Message.Attach="[Event SelectedItemChanged] = [Action SetSelectedItem($this.SelectedItem)]" 
                           HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource MetroCheckBoxTreeViewItem}" />
             </Grid>
         </GroupBox>

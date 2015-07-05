@@ -3,17 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:myconverters="clr-namespace:Converters;assembly=Converters"
              xmlns:theMovieDb="clr-namespace:VideoConvert.Interop.Model.TheMovieDB;assembly=VideoConvert.Interop"
              xmlns:setHandler="clr-namespace:VideoConvert.Interop.DataProviders;assembly=VideoConvert.Interop"
              xmlns:controls="clr-namespace:VideoConvertWPF.Controls"
+             xmlns:cal="http://www.caliburnproject.org"
              Name="OptionsViewWin"
              d:DesignHeight="680" 
              d:DesignWidth="1015"
              mc:Ignorable="d" 
-             micro:Message.Attach="[Event Loaded] = [Action Load]" 
+             cal:Message.Attach="[Event Loaded] = [Action Load]" 
              TextOptions.TextFormattingMode="Display">
     <UserControl.Resources>
         <ObjectDataProvider MethodName="get_SortedLangList" 
@@ -168,7 +168,7 @@
                                                  VerticalAlignment="Center" HorizontalAlignment="Stretch" />
                                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" 
                                                 Name="SelectDemuxLocation" VerticalAlignment="Center"
-                                                micro:Message.Attach="[Event Click] = [Action SelectTempLocation]" />
+                                                cal:Message.Attach="[Event Click] = [Action SelectTempLocation]" />
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -184,7 +184,7 @@
                                                  Text="{Binding OutputLocation}" VerticalAlignment="Center" />
                                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" 
                                                 Name="BrowseOutputLocation" VerticalAlignment="Center"
-                                                micro:Message.Attach="[Event Click] = [Action SelectOutputLocation]" />
+                                                cal:Message.Attach="[Event Click] = [Action SelectOutputLocation]" />
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -206,10 +206,10 @@
                                                  Text="{Binding ToolsPath}" VerticalAlignment="Center" />
                                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" 
                                                 Name="SelectEncoderPath" VerticalAlignment="Center" 
-                                                micro:Message.Attach="[Event Click] = [Action SelectEncoderLocation]"/>
+                                                cal:Message.Attach="[Event Click] = [Action SelectEncoderLocation]"/>
                                         <Button Grid.Column="2" Content="Check installed" HorizontalAlignment="Stretch" 
                                                 Name="ReloadEncoders" VerticalAlignment="Center" IsEnabled="{Binding ReloadButtonEnabled}"
-                                                micro:Message.Attach="[Event Click] = [Action ReloadEncoders]"/>
+                                                cal:Message.Attach="[Event Click] = [Action ReloadEncoders]"/>
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -225,7 +225,7 @@
                                                  Text="{Binding JavaInstallPath}" VerticalAlignment="Center" />
                                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch"
                                                 Name="JavaPathSelection" VerticalAlignment="Center"
-                                                micro:Message.Attach="[Event Click] = [Action SelectJavaLocation]"/>
+                                                cal:Message.Attach="[Event Click] = [Action SelectJavaLocation]"/>
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -389,7 +389,7 @@
             								VerticalContentAlignment="Center" />
                                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Stretch" x:Name="TvDbCachePathLocateBtn"
             								VerticalAlignment="Center" Margin="1,0,10,0" 
-            								micro:Message.Attach="[Event Click] = [Action SelectTvDbCachePath]"/>
+            								cal:Message.Attach="[Event Click] = [Action SelectTvDbCachePath]"/>
                                     </Grid>
                                 </StackPanel>
                             </StackPanel>
@@ -555,7 +555,7 @@
                               Message="{Binding StatusLabel}"
                               SubMessage="Please Wait ..." Grid.Row="0" />
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" >
-            <Button Content="Close" IsDefault="True" micro:Message.Attach="[Event Click] = [Action Close]"
+            <Button Content="Close" IsDefault="True" cal:Message.Attach="[Event Click] = [Action Close]"
                     HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="100" />
         </StackPanel>
     </Grid>

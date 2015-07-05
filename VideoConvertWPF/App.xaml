@@ -1,8 +1,8 @@
 ﻿<Application x:Class="VideoConvertWPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:startup="clr-namespace:VideoConvertWPF.Startup"
              xmlns:converters="clr-namespace:Converters;assembly=Converters"
+             xmlns:startup="clr-namespace:VideoConvertWPF.Startup"
              ShutdownMode="OnMainWindowClose" Startup="StartupHandler">
     <Application.Resources>
         <ResourceDictionary>

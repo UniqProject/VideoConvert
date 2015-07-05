@@ -3,13 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
         xmlns:converters="clr-namespace:Converters;assembly=Converters"
         xmlns:controls="clr-namespace:VideoConvertWPF.Controls"
+        xmlns:cal="http://www.caliburnproject.org"
         d:DesignHeight="680" 
         d:DesignWidth="1015"
         mc:Ignorable="d" 
-        micro:Message.Attach="[Event Loaded] = [Action Load]" TextOptions.TextFormattingMode="Display">
+        cal:Message.Attach="[Event Loaded] = [Action Load]" TextOptions.TextFormattingMode="Display">
     <UserControl.Resources>
         <converters:Int32ToBooleanInvertedConverter x:Key="Int32ToBoolInvertedConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -21,47 +21,47 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Height="64" Margin="5,5,5,0" Name="MainPanel" Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" HorizontalAlignment="Stretch">
-            <Button micro:Message.Attach="[Event Click] = [Action AddFiles]" Name="AddFilesBtn" ToolTip="Add File (s)" Margin="0,0,5,0">
+            <Button cal:Message.Attach="[Event Click] = [Action AddFiles]" Name="AddFilesBtn" ToolTip="Add File (s)" Margin="0,0,5,0">
                 <StackPanel Orientation="Horizontal">
                     <Image Name="AddFilesBtnImage" Source="/VideoConvertWPF;component/Resources/edit_add.png" />
                     <TextBlock Name="AddFilesBtnLabel" Text="Add File (s)" VerticalAlignment="Center" Margin="5"/>
                 </StackPanel>
             </Button>
-            <Button micro:Message.Attach="[Event Click] = [Action AddFolder]" Name="AddFolderBtn" ToolTip="Add Disk" >
+            <Button cal:Message.Attach="[Event Click] = [Action AddFolder]" Name="AddFolderBtn" ToolTip="Add Disk" >
                 <StackPanel Orientation="Horizontal">
                     <Image Name="AddFolderBtnImage" Source="/VideoConvertWPF;component/Resources/db_add.png" />
                     <TextBlock Name="AddFolderBtnLabel" Text="Add Folder" VerticalAlignment="Center" Margin="5"/>
                 </StackPanel>
             </Button>
             <Separator Width="2" Margin="5,0" />
-            <Button micro:Message.Attach="[Event Click] = [Action RemoveItem]" Name="RemoveItemBtn" ToolTip="Remove Entry" Margin="0,0,5,0">
+            <Button cal:Message.Attach="[Event Click] = [Action RemoveItem]" Name="RemoveItemBtn" ToolTip="Remove Entry" Margin="0,0,5,0">
                 <StackPanel Orientation="Horizontal">
                     <Image Name="RemoveItemBtnImage" Source="/VideoConvertWPF;component/Resources/editcut.png" />
                     <TextBlock Name="RemoveItemBtnLabel" Text="Remove Entry" VerticalAlignment="Center" Margin="5" />
                 </StackPanel>
             </Button>
-            <Button micro:Message.Attach="[Event Click] = [Action ClearList]" Name="ClearListBtn" ToolTip="Clear List" >
+            <Button cal:Message.Attach="[Event Click] = [Action ClearList]" Name="ClearListBtn" ToolTip="Clear List" >
                 <StackPanel Orientation="Horizontal">
                     <Image Name="ClearListBtnImage" Source="/VideoConvertWPF;component/Resources/editdelete.png" />
                     <TextBlock Name="ClearListBtnLabel" Text="Clear List" VerticalAlignment="Center" Margin="5" />
                 </StackPanel>
             </Button>
             <Separator Width="2" Margin="5,0" />
-            <Button micro:Message.Attach="[Event Click] = [Action StartEncode]" Name="RunEncodeBtn" ToolTip="Encode"
+            <Button cal:Message.Attach="[Event Click] = [Action StartEncode]" Name="RunEncodeBtn" ToolTip="Encode"
                         IsEnabled="{Binding Converter={StaticResource Int32ToBoolInvertedConverter}, Path=JobCount, ConverterParameter=0}" Margin="0,0,5,0">
                 <StackPanel Orientation="Horizontal">
                     <Image Name="RunEncodeBtnImage" Source="/VideoConvertWPF;component/Resources/run.png" />
                     <TextBlock Name="RunEncodeBtnLabel" Text="Encode" VerticalAlignment="Center" Margin="5" />
                 </StackPanel>
             </Button>
-            <Button micro:Message.Attach="[Event Click] = [Action ShowSettings]" Name="ShowSettingsBtn" ToolTip="Settings">
+            <Button cal:Message.Attach="[Event Click] = [Action ShowSettings]" Name="ShowSettingsBtn" ToolTip="Settings">
                 <StackPanel Orientation="Horizontal">
                     <Image Name="ShowSettingsBtnImage" Source="/VideoConvertWPF;component/Resources/configure.png" />
                     <TextBlock Name="ShowSettingsBtnLabel" Text="Settings" VerticalAlignment="Center" Margin="5" />
                 </StackPanel>
             </Button>
             <Separator Width="2" Margin="5,0" Visibility="{Binding Path=UpdateAvail, ConverterParameter=false, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            <Button micro:Message.Attach="[Event Click] = [Action ShowUpdate]" Name="ShowUpdateWinBtn" ToolTip="Update" 
+            <Button cal:Message.Attach="[Event Click] = [Action ShowUpdate]" Name="ShowUpdateWinBtn" ToolTip="Update" 
                         Visibility="{Binding Path=UpdateAvail, ConverterParameter=false, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
                     <Image Name="ShowUpdateWinBtnImage" Source="/VideoConvertWPF;component/Resources/Apps-system-software-update-icon.png"/>

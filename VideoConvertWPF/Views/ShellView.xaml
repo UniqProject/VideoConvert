@@ -4,13 +4,14 @@
         xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
         xmlns:converters="clr-namespace:Converters;assembly=Converters"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:cal="http://www.caliburnproject.org"
         Title="{Binding Path=WindowTitle}"
         Width="1015"
         Height="680"
         MinWidth="1015"
         MinHeight="670"
         AllowDrop="True"
-        micro:Message.Attach="[Event Loaded] = [Action Load]"
+        cal:Message.Attach="[Event Loaded] = [Action Load]"
         SnapsToDevicePixels="True"
         UseLayoutRounding="True"
         WindowStartupLocation="CenterScreen"
@@ -36,7 +37,7 @@
     </Window.TaskbarItemInfo>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Content="About" micro:Message.Attach="ShowAbout"/>
+            <Button Content="About" cal:Message.Attach="ShowAbout"/>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
