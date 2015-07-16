@@ -18,24 +18,20 @@ namespace VideoConvert.Interop.Utilities
     /// </summary>
     public class LanguageHelper
     {
-        private readonly string _iso1Lang;
-        private readonly string _iso2Lang;
-        private readonly string _fullLang;
-
         /// <summary>
         /// ISO639-1 language code
         /// </summary>
-        public string Iso1Lang { get { return _iso1Lang; } }
+        public string Iso1Lang { get; }
 
         /// <summary>
         /// ISO639-2 language code
         /// </summary>
-        public string Iso2Lang { get { return _iso2Lang; } }
+        public string Iso2Lang { get; }
 
         /// <summary>
         /// Full language name
         /// </summary>
-        public string FullLang { get { return _fullLang; } }
+        public string FullLang { get; }
 
         /// <summary>
         /// Default constructor
@@ -45,9 +41,9 @@ namespace VideoConvert.Interop.Utilities
         /// <param name="full">Full language name</param>
         public LanguageHelper(string iso1, string iso2, string full)
         {
-            _iso1Lang = iso1;
-            _iso2Lang = iso2;
-            _fullLang = full;
+            Iso1Lang = iso1;
+            Iso2Lang = iso2;
+            FullLang = full;
         }
 
         /// <summary>
@@ -65,19 +61,19 @@ namespace VideoConvert.Interop.Utilities
                 switch (lang.Length)
                 {
                     case 2:
-                        ret = (langList.Where(c => c._iso1Lang == lang)).First();
+                        ret = (langList.Where(c => c.Iso1Lang == lang)).First();
                         break;
                     case 3:
-                        ret = (langList.Where(c => c._iso2Lang == lang)).First();
+                        ret = (langList.Where(c => c.Iso2Lang == lang)).First();
                         break;
                     default:
-                        ret = (langList.Where(c => c._fullLang == lang)).First();
+                        ret = (langList.Where(c => c.FullLang == lang)).First();
                         break;
                 }
             }
             catch (Exception)
             {
-                ret = (langList.Where(c => c._iso1Lang == "xx")).First();
+                ret = (langList.Where(c => c.Iso1Lang == "xx")).First();
             }
             return ret;
         }

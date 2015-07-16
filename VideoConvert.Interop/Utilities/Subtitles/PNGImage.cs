@@ -9,7 +9,6 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
-    using Model.Subtitles;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -19,6 +18,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using VideoConvert.Interop.Model.Subtitles;
 
     /// <summary>
     /// PNG (Portable network graphics) container
@@ -49,7 +49,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             var baseName = Path.GetFileNameWithoutExtension(baseFName);
             if (string.IsNullOrEmpty(basePath) || string.IsNullOrEmpty(baseName)) return new ImageHolder();
             
-            result.FileName = string.Format("{0}_{1:00000}.png", Path.Combine(basePath, baseName), number);
+            result.FileName = $"{Path.Combine(basePath, baseName)}_{number:00000}.png";
             var imgSize = new SizeF();
 
             var styleFontStyle = FontStyle.Regular;

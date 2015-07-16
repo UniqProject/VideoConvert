@@ -9,7 +9,6 @@
 
 namespace VideoConvert.AppServices.Decoder
 {
-    using System;
     using System.Diagnostics;
     using System.IO;
 
@@ -35,8 +34,7 @@ namespace VideoConvert.AppServices.Decoder
             var info = new ProcessStartInfo
             {
                 FileName = localExecutable,
-                Arguments =
-                    String.Format("--script \"Import(^{0}^)\"", scriptName),
+                Arguments = $"--script \"Import(^{scriptName}^)\"",
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

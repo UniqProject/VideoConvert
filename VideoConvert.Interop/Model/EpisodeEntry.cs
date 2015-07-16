@@ -11,7 +11,7 @@ namespace VideoConvert.Interop.Model
 {
     using System.Collections.Generic;
     using System.Xml.Serialization;
-    using TheMovieDB;
+    using VideoConvert.Interop.Model.TheMovieDB;
 
     /// <summary>
     /// TV-Show episode

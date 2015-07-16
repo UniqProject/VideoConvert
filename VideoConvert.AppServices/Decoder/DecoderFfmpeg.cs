@@ -9,14 +9,13 @@
 
 namespace VideoConvert.AppServices.Decoder
 {
-    using log4net;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Drawing;
-    using System.Globalization;
     using System.IO;
     using System.Text.RegularExpressions;
+    using log4net;
 
     /// <summary>
     /// Helper class for creation of ffmpeg decoding processes
@@ -29,11 +28,6 @@ namespace VideoConvert.AppServices.Decoder
         /// Executable filename
         /// </summary>
         private const string Executable = "ffmpeg.exe";
-
-        /// <summary>
-        /// <see cref="CultureInfo"/> for use at string formatting
-        /// </summary>
-        private static readonly CultureInfo CInfo = CultureInfo.GetCultureInfoByIetfLanguageTag("en-US");
 
         /// <summary>
         /// <see cref="Regex"/> which helps to reduce decoder verbosity in the log file
@@ -79,7 +73,7 @@ namespace VideoConvert.AppServices.Decoder
                     if ((cropRect.X > 0) || (cropRect.Y > 0) || (cropRect.Width < originalSize.Width) ||
                         (cropRect.Height < originalSize.Height))
                     {
-                        filterArray.Add(string.Format("crop={0:D}:{1:D}:{2:D}:{3:D}", cropRect.Width, cropRect.Height, cropRect.X, cropRect.Y));
+                        filterArray.Add($"crop={cropRect.Width:D}:{cropRect.Height:D}:{cropRect.X:D}:{cropRect.Y:D}");
                     }
                 }
                 var calculatedWidth = originalSize.Width;
@@ -122,29 +116,26 @@ namespace VideoConvert.AppServices.Decoder
                         calculatedHeight += temp;
                     }
 
-                    filterArray.Add(string.Format("scale={0:D}:{1:D}", calculatedWidth, calculatedHeight));
+                    filterArray.Add($"scale={calculatedWidth:D}:{calculatedHeight:D}");
                 }
 
                 if (!resize.IsEmpty && (calculatedHeight < resize.Height || calculatedWidth < resize.Width))
                 {
                     var posLeft = (int)Math.Ceiling((decimal)(resize.Width - calculatedWidth) / 2);
                     var posTop = (int)Math.Ceiling((decimal)(resize.Height - calculatedHeight) / 2);
-                    filterArray.Add(string.Format("pad={0:D}:{1:D}:{2:D}:{3:D}", resize.Width, resize.Height,
-                        posLeft > 0 ? posLeft : 0, posTop > 0 ? posTop : 0));
+                    filterArray.Add($"pad={resize.Width:D}:{resize.Height:D}:{(posLeft > 0 ? posLeft : 0):D}:{(posTop > 0 ? posTop : 0):D}");
                 }
             }
 
             if (filterArray.Count > 0)
             {
-                filterChain = string.Format("-vf \"{0}\" ", string.Join(",", filterArray));
+                filterChain = $"-vf \"{string.Join(",", filterArray)}\" ";
             }
 
             var info = new ProcessStartInfo
             {
                 FileName = localExecutable,
-                Arguments =
-                    String.Format(CInfo, "-i \"{0}\" {1} -c:v copy -f yuv4mpegpipe -y \"{2}\"",
-                                  scriptName, filterChain, pipeName),
+                Arguments = $"-i \"{scriptName}\" {filterChain} -c:v copy -f yuv4mpegpipe -y \"{pipeName}\"",
                 CreateNoWindow = true,
                 RedirectStandardOutput = false,
                 RedirectStandardError = true,

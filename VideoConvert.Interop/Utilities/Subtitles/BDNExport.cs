@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
-    using Model.Subtitles;
     using System;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Xml;
+    using VideoConvert.Interop.Model.Subtitles;
 
     /// <summary>
     /// BDN-Xml file exporter
@@ -64,8 +64,8 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             descNode.AppendChild(workNode);
 
             workNode = outputDocument.CreateElement("Format");
-            AppendAttribute(workNode, "VideoFormat", string.Format("{0:0}p", videoHeight), outputDocument);
-            AppendAttribute(workNode, "FrameRate", string.Format(CInfo, "{0:0.000}", fps), outputDocument);
+            AppendAttribute(workNode, "VideoFormat", $"{videoHeight:0}p", outputDocument);
+            AppendAttribute(workNode, "FrameRate", $"{fps:0.000}".ToString(CInfo), outputDocument);
             AppendAttribute(workNode, "DropFrame", "False", outputDocument);
             descNode.AppendChild(workNode);
 

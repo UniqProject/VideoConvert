@@ -9,12 +9,12 @@
 
 namespace VideoConvert.AppServices.Services.Base
 {
-    using Interop.EventArgs;
     using System;
     using VideoConvert.AppServices.Services.Base.Interfaces;
     using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
     using VideoConvert.Interop.Model;
-    
+
     /// <summary>
     /// Base Encoder class
     /// </summary>
@@ -37,7 +37,7 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public EncodeBase(IAppConfigService appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Events
@@ -77,11 +77,8 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public void InvokeEncodeStatusChanged(EncodeProgressEventArgs e)
         {
-            var handler = this.EncodeStatusChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            var handler = EncodeStatusChanged;
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -92,11 +89,8 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public void InvokeEncodeCompleted(EncodeCompletedEventArgs e)
         {
-            var handler = this.EncodeCompleted;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            var handler = EncodeCompleted;
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -107,11 +101,8 @@ namespace VideoConvert.AppServices.Services.Base
         /// </param>
         public void InvokeEncodeStarted(EventArgs e)
         {
-            var handler = this.EncodeStarted;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            var handler = EncodeStarted;
+            handler?.Invoke(this, e);
         }
 
         #endregion

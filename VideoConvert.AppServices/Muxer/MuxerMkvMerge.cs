@@ -9,13 +9,6 @@
 
 namespace VideoConvert.AppServices.Muxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Globalization;
@@ -23,6 +16,13 @@ namespace VideoConvert.AppServices.Muxer
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The MuxerMkvMerge
@@ -70,7 +70,7 @@ namespace VideoConvert.AppServices.Muxer
         /// </param>
         public MuxerMkvMerge(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -115,7 +115,7 @@ namespace VideoConvert.AppServices.Muxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("mkvmerge exception: {0}", ex);
+                    Log.Error($"mkvmerge exception: {ex}");
                 }
 
                 if (started)
@@ -138,7 +138,7 @@ namespace VideoConvert.AppServices.Muxer
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("mkvmerge \"{0}\" found", verInfo);
+                Log.Debug($"mkvmerge \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -154,55 +154,55 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("mkvmerge is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var mkvmergeCliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var mkvmergeCliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(mkvmergeCliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.EncodeProcess = new Process { StartInfo = cliStart };
-                Log.InfoFormat("start parameter: mkvmerge {0}", query);
+                EncodeProcess = new Process { StartInfo = cliStart };
+                Log.Info($"start parameter: mkvmerge {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.OutputDataReceived += MuxerDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
+                EncodeProcess.OutputDataReceived += MuxerDataReceived;
+                EncodeProcess.BeginOutputReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
                 // Set the encoder process exit trigger
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this.IsEncoding = false;
-                this._currentTask.ExitCode = -1;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                IsEncoding = false;
+                _currentTask.ExitCode = -1;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -213,16 +213,16 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -242,45 +242,41 @@ namespace VideoConvert.AppServices.Muxer
             var sb = new StringBuilder();
             sb.Append(DefaultParams);
 
-            var fps = this._currentTask.VideoStream.Fps;
+            var fps = _currentTask.VideoStream.Fps;
             int vidStream;
 
-            var tempExt = Path.GetExtension(this._currentTask.VideoStream.TempFile);
-            if (this._currentTask.VideoStream.IsRawStream ||
-                (this._currentTask.Input == InputType.InputAvi && !this._currentTask.VideoStream.Encoded) ||
-                this._currentTask.VideoStream.Encoded)
+            var tempExt = Path.GetExtension(_currentTask.VideoStream.TempFile);
+            if (_currentTask.VideoStream.IsRawStream ||
+                (_currentTask.Input == InputType.InputAvi && !_currentTask.VideoStream.Encoded) ||
+                _currentTask.VideoStream.Encoded)
                 vidStream = 0;
-            else if (!this._currentTask.VideoStream.Encoded && (tempExt == ".mp4" || tempExt == ".mkv" || tempExt == ".ts"))
-                vidStream = Math.Max(this._currentTask.VideoStream.StreamId - 1, 0);
+            else if (!_currentTask.VideoStream.Encoded && (tempExt == ".mp4" || tempExt == ".mkv" || tempExt == ".ts"))
+                vidStream = Math.Max(_currentTask.VideoStream.StreamId - 1, 0);
             else
-                vidStream = this._currentTask.VideoStream.StreamId;
+                vidStream = _currentTask.VideoStream.StreamId;
 
-            var streamOrder = string.Format(" --track-order 0:{0:g}", vidStream);
+            var streamOrder = $" --track-order 0:{vidStream:g}";
 
-            _outFile = !string.IsNullOrEmpty(this._currentTask.TempOutput)
-                       ? this._currentTask.TempOutput
-                       : this._currentTask.OutputFile;
+            _outFile = !string.IsNullOrEmpty(_currentTask.TempOutput)
+                       ? _currentTask.TempOutput
+                       : _currentTask.OutputFile;
 
-            sb.AppendFormat("-o \"{0}\" ", _outFile);
+            sb.Append($"-o \"{_outFile}\" ");
 
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputWebM)
+            if (_currentTask.EncodingProfile.OutFormat == OutputType.OutputWebM)
                 sb.Append("--webm ");
 
             var fpsStr = string.Empty;
-            if (this._currentTask.VideoStream.IsRawStream)
+            if (_currentTask.VideoStream.IsRawStream)
             {
-                if (this._currentTask.VideoStream.FrameRateEnumerator == 0)
-                    fpsStr = string.Format(_appConfig.CInfo, "--default-duration {1:g}:{0:0.000}fps", fps, vidStream);
-                else
-                    fpsStr = string.Format(_appConfig.CInfo, "--default-duration {0:g}:{1:g}/{2:g}fps",
-                                           vidStream,
-                                           this._currentTask.VideoStream.FrameRateEnumerator,
-                                           this._currentTask.VideoStream.FrameRateDenominator);
+                fpsStr = _currentTask.VideoStream.FrameRateEnumerator == 0
+                    ? $"--default-duration {vidStream:0}:{fps:0.000}fps".ToString(_appConfig.CInfo)
+                    : $"--default-duration {vidStream:0}:{_currentTask.VideoStream.FrameRateEnumerator:0}/{_currentTask.VideoStream.FrameRateDenominator:0}fps";
             }
 
             int stereoMode;
 
-            switch (this._currentTask.EncodingProfile.StereoType)
+            switch (_currentTask.EncodingProfile.StereoType)
             {
                 case StereoEncoding.None:
                     stereoMode = 0;
@@ -297,20 +293,16 @@ namespace VideoConvert.AppServices.Muxer
                     throw new ArgumentOutOfRangeException();
             }
 
-            sb.AppendFormat(_appConfig.CInfo,
-                            "--language {1:g}:eng {0:s} --default-track {1:g}:yes --forced-track {1:g}:yes ",
-                            fpsStr, vidStream);
+            sb.Append($"--language {vidStream:0}:eng {fpsStr} --default-track {vidStream:0}:yes --forced-track {vidStream:0}:yes ");
 
             if (stereoMode > 0)
-                sb.AppendFormat(_appConfig.CInfo, "--stereo-mode {1:g}:{0:g} ", stereoMode, vidStream);
+                sb.Append($"--stereo-mode {vidStream:0}:{stereoMode:0} ");
 
-            sb.AppendFormat(_appConfig.CInfo,
-                            "-d {1:g} -A -S --no-global-tags --no-chapters --compression {1:g}:none \"{0:s}\" ",
-                            this._currentTask.VideoStream.TempFile, vidStream);
+            sb.Append($"-d {vidStream:0} -A -S --no-global-tags --no-chapters --compression {vidStream:0}:none \"{_currentTask.VideoStream.TempFile}\" ");
 
             var i = 1;
             var defaultAudioExists = false;
-            foreach (var item in this._currentTask.AudioStreams)
+            foreach (var item in _currentTask.AudioStreams)
             {
                 string isDefault;
                 if (item.MkvDefault && !defaultAudioExists)
@@ -329,31 +321,24 @@ namespace VideoConvert.AppServices.Muxer
                 var delayString = string.Empty;
 
                 if (item.Delay != 0)
-                    delayString = string.Format(_appConfig.CInfo, "--sync 0:{0:#}", item.Delay);
+                    delayString = $"--sync 0:{item.Delay:0}";
 
                 var itemStream = 0;
 
                 if (Path.GetExtension(item.TempFile) == ".mkv")
                     itemStream = 1;
 
-                sb.AppendFormat(_appConfig.CInfo,
-                                "--language {0:g}:{1:s} {2:s} --default-track {0:g}:{3:s} --forced-track {0:g}:no -D -a {0:g} ",
-                                itemStream,
-                                itemlang,
-                                delayString,
-                                isDefault);
-                sb.AppendFormat(_appConfig.CInfo,
-                                "-S --no-global-tags --no-chapters --compression {1:g}:none \"{0:s}\" ",
-                                item.TempFile, itemStream);
+                sb.Append($"--language {itemStream:0}:{itemlang} {delayString} --default-track {itemStream:0}:{isDefault} --forced-track {itemStream:0}:no -D -a {itemStream:0} ");
+                sb.Append($"-S --no-global-tags --no-chapters --compression {itemStream:0}:none \"{item.TempFile}\" ");
 
-                streamOrder += string.Format(_appConfig.CInfo, ",{0:g}:0", i);
+                streamOrder += $",{i:0}:0";
                 i++;
             }
 
             var defaultSubExists = false;
-            if (this._currentTask.EncodingProfile.OutFormat != OutputType.OutputWebM)
+            if (_currentTask.EncodingProfile.OutFormat != OutputType.OutputWebM)
             {
-                foreach (var item in this._currentTask.SubtitleStreams.Where(item => !item.HardSubIntoVideo && File.Exists(item.TempFile)))
+                foreach (var item in _currentTask.SubtitleStreams.Where(item => !item.HardSubIntoVideo && File.Exists(item.TempFile)))
                 {
                     string isDefault;
                     if (item.MkvDefault && !defaultSubExists)
@@ -375,7 +360,7 @@ namespace VideoConvert.AppServices.Muxer
 
                     if (string.IsNullOrEmpty(subFile))
                     {
-                        subFile = this._currentTask.InputFile;
+                        subFile = _currentTask.InputFile;
                         subId = item.Id;
                     }
                     else
@@ -383,81 +368,52 @@ namespace VideoConvert.AppServices.Muxer
 
                     var delayString = string.Empty;
 
-                    if (subFile != this._currentTask.InputFile && (item.Delay != 0 && item.Delay != int.MinValue))
-                        delayString = string.Format(_appConfig.CInfo, "--sync {0:g}:{1:g}", subId, item.Delay);
+                    if (subFile != _currentTask.InputFile && (item.Delay != 0 && item.Delay != int.MinValue))
+                        delayString = $"--sync {subId:0}:{item.Delay:0}";
 
-                    sb.AppendFormat(_appConfig.CInfo,
-                                    "--language {0:g}:{1:s} {2:s} --default-track {0:g}:{3:s} --forced-track {0:g}:no -s {0:g} ",
-                                    subId,
-                                    itemlang,
-                                    delayString,
-                                    isDefault);
+                    sb.Append($"--language {subId:0}:{itemlang} {delayString} --default-track {subId:0}:{isDefault} --forced-track {subId:0}:no -s {subId:0} ");
 
-                    sb.AppendFormat(_appConfig.CInfo,
-                                    "-D -A --no-global-tags --no-chapters --compression {1:g}:none \"{0:s}\" ",
-                                    subFile, subId);
+                    sb.Append($"-D -A --no-global-tags --no-chapters --compression {subId:0}:none \"{subFile}\" ");
 
-                    streamOrder += string.Format(_appConfig.CInfo, ",{0:g}:{1:g}", i, subId);
+                    streamOrder += $",{i:g}:{subId:g}";
                     i++;
                 }
             }
 
             var chapterString = string.Empty;
 
-            if (this._currentTask.Chapters.Count > 1 && this._currentTask.EncodingProfile.OutFormat != OutputType.OutputWebM)
+            if (_currentTask.Chapters.Count > 1 && _currentTask.EncodingProfile.OutFormat != OutputType.OutputWebM)
             {
                 var chapterFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
-                                                                    !string.IsNullOrEmpty(this._currentTask.TempOutput)
-                                                                        ? this._currentTask.TempOutput
-                                                                        : this._currentTask.OutputFile,
+                                                                    !string.IsNullOrEmpty(_currentTask.TempOutput)
+                                                                        ? _currentTask.TempOutput
+                                                                        : _currentTask.OutputFile,
                                                                     "chapters.txt");
 
                 using (var chapters = new StreamWriter(chapterFile))
                 {
+                    var actualTime = new TimeSpan();
 
-                    string chapterFormatTimes;
-                    string chapterFormatNames;
-
-                    if (this._currentTask.Chapters.Count > 100)
+                    for (var j = 0; j < _currentTask.Chapters.Count; j++)
                     {
-                        chapterFormatTimes = "CHAPTER{0:000}={1:s}";
-                        chapterFormatNames = "CHAPTER{0:000}NAME=Chapter {0:g}";
-                    }
-                    else
-                    {
-                        chapterFormatTimes = "CHAPTER{0:00}={1:s}";
-                        chapterFormatNames = "CHAPTER{0:00}NAME=Chapter {0:g}";
-                    }
-
-                    DateTime dt;
-
-                    if (this._currentTask.Input != InputType.InputDvd)
-                    {
-                        for (var j = 0; j < this._currentTask.Chapters.Count; j++)
+                        DateTime dt;
+                        if (_currentTask.Input != InputType.InputDvd)
+                            dt = DateTime.MinValue.Add(_currentTask.Chapters[j]);
+                        else
                         {
-                            dt = DateTime.MinValue.Add(this._currentTask.Chapters[j]);
-                            chapters.WriteLine(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff"));
-                            chapters.WriteLine(chapterFormatNames, j + 1);
-                        }
-                    }
-                    else
-                    {
-                        var actualTime = new TimeSpan();
-                        for (var j = 0; j < this._currentTask.Chapters.Count; j++)
-                        {
-                            actualTime = actualTime.Add(this._currentTask.Chapters[j]);
+                            actualTime = actualTime.Add(_currentTask.Chapters[j]);
                             dt = DateTime.MinValue.Add(actualTime);
-                            chapters.WriteLine(chapterFormatTimes, j + 1, dt.ToString("H:mm:ss.fff"));
-                            chapters.WriteLine(chapterFormatNames, j + 1);
                         }
+                        chapters.WriteLine($"CHAPTER{j + 1:000}={dt.ToString("H:mm:ss.fff")}");
+                        chapters.WriteLine($"CHAPTER{j + 1:000}NAME=Chapter {j + 1:0}");
                     }
                 }
 
-                chapterString = string.Format(" --chapters \"{0}\"", chapterFile);
-                this._currentTask.TempFiles.Add(chapterFile);
+                chapterString = $" --chapters \"{chapterFile}\"";
+                _currentTask.TempFiles.Add(chapterFile);
             }
 
-            sb.AppendFormat("{0} --compression -1:none {1}", chapterString, streamOrder);
+            sb.Append($"{chapterString} --compression -1:none {streamOrder}");
 
             return sb.ToString();
         }
@@ -475,30 +431,30 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                this.EncodeProcess.CancelOutputRead();
+                EncodeProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode < 2)
+            if (_currentTask.ExitCode < 2)
             {
-                this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
-                foreach (var item in this._currentTask.AudioStreams)
-                    this._currentTask.TempFiles.Add(item.TempFile);
-                foreach (var item in this._currentTask.SubtitleStreams)
-                    this._currentTask.TempFiles.Add(item.TempFile);
+                _currentTask.TempFiles.Add(_currentTask.VideoStream.TempFile);
+                foreach (var item in _currentTask.AudioStreams)
+                    _currentTask.TempFiles.Add(item.TempFile);
+                foreach (var item in _currentTask.SubtitleStreams)
+                    _currentTask.TempFiles.Add(item.TempFile);
 
-                this._currentTask.ExitCode = 0;
+                _currentTask.ExitCode = 0;
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -508,9 +464,9 @@ namespace VideoConvert.AppServices.Muxer
         /// <param name="e"></param>
         private void MuxerDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -525,9 +481,9 @@ namespace VideoConvert.AppServices.Muxer
             if (result.Success)
             {
                 int progress;
-                Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo, out progress);
+                int.TryParse(result.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo, out progress);
 
-                var elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - _startTime;
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = progress / elapsedTime.TotalSeconds;
@@ -545,10 +501,10 @@ namespace VideoConvert.AppServices.Muxer
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
             }
             else
-                Log.InfoFormat("mkvmerge: {0}", line);
+                Log.Info($"mkvmerge: {line}");
         }
 
         #endregion

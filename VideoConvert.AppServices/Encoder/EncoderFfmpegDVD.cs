@@ -9,14 +9,6 @@
 
 namespace VideoConvert.AppServices.Encoder
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Model.Profiles;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Drawing;
@@ -25,7 +17,15 @@ namespace VideoConvert.AppServices.Encoder
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
-    using Utilities;
+    using log4net;
+    using VideoConvert.AppServices.Encoder.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.AppServices.Utilities;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.Profiles;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The EncoderFfmpegDVD
@@ -80,7 +80,7 @@ namespace VideoConvert.AppServices.Encoder
         /// </param>
         public EncoderFfmpegDvd(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -123,7 +123,7 @@ namespace VideoConvert.AppServices.Encoder
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
+                    Log.Error($"ffmpeg exception: {ex}");
                 }
 
                 if (started)
@@ -144,7 +144,7 @@ namespace VideoConvert.AppServices.Encoder
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("ffmpeg \"{0}\" found", verInfo);
+                Log.Debug($"ffmpeg \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -158,54 +158,54 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("ffmpeg is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardError = true,
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: ffmpeg {0}", query);
+                EncodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: ffmpeg {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginErrorReadLine();
+                EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
+                EncodeProcess.BeginErrorReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -216,16 +216,16 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -253,47 +253,47 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                this.EncodeProcess.CancelErrorRead();
+                EncodeProcess.CancelErrorRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                if (this._encProfile.EncodingMode == 0 ||
-                    (this._encProfile.EncodingMode == 1 && this._encodingPass == 2))
+                if (_encProfile.EncodingMode == 0 ||
+                    (_encProfile.EncodingMode == 1 && _encodingPass == 2))
                 {
-                    this._currentTask.VideoStream.IsRawStream = false;
-                    this._currentTask.VideoStream.Encoded = true;
+                    _currentTask.VideoStream.IsRawStream = false;
+                    _currentTask.VideoStream.Encoded = true;
 
-                    this._currentTask.TempFiles.Add(_inputFile);
-                    this._currentTask.VideoStream.TempFile = _outputFile;
-                    this._currentTask.TempFiles.Add(this._currentTask.AviSynthScript);
+                    _currentTask.TempFiles.Add(_inputFile);
+                    _currentTask.VideoStream.TempFile = _outputFile;
+                    _currentTask.TempFiles.Add(_currentTask.AviSynthScript);
 
                     try
                     {
-                        this._currentTask.MediaInfo = GenHelper.GetMediaInfo(this._currentTask.VideoStream.TempFile);
+                        _currentTask.MediaInfo = GenHelper.GetMediaInfo(_currentTask.VideoStream.TempFile);
                     }
                     catch (TimeoutException ex)
                     {
                         Log.Error(ex);
                     }
 
-                    this._currentTask.VideoStream = VideoHelper.GetStreamInfo(this._currentTask.MediaInfo,
-                                                    this._currentTask.VideoStream,
-                                                    this._currentTask.EncodingProfile.OutFormat == OutputType.OutputBluRay);
-                    this._currentTask.TempFiles.Add(this._currentTask.FfIndexFile);
+                    _currentTask.VideoStream = VideoHelper.GetStreamInfo(_currentTask.MediaInfo,
+                                                    _currentTask.VideoStream,
+                                                    _currentTask.EncodingProfile.OutFormat == OutputType.OutputBluRay);
+                    _currentTask.TempFiles.Add(_currentTask.FfIndexFile);
                 }
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -303,9 +303,9 @@ namespace VideoConvert.AppServices.Encoder
         /// <param name="e"></param>
         private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -324,7 +324,7 @@ namespace VideoConvert.AppServices.Encoder
             if (result.Success)
             {
                 long current;
-                Int64.TryParse(result.Groups[1].Value, NumberStyles.Number,
+                long.TryParse(result.Groups[1].Value, NumberStyles.Number,
                                _appConfig.CInfo, out current);
 
                 var framesRemaining = _frameCount - current;
@@ -345,13 +345,13 @@ namespace VideoConvert.AppServices.Encoder
                     secRemaining = 0;
 
                 if (secRemaining > 0)
-                    this._remainingTime = new TimeSpan(0, 0, (int)secRemaining);
+                    _remainingTime = new TimeSpan(0, 0, (int)secRemaining);
 
                 float fps;
-                Single.TryParse(result.Groups[2].Value, NumberStyles.Number,
+                float.TryParse(result.Groups[2].Value, NumberStyles.Number,
                                 _appConfig.CInfo, out fps);
                 float encBitrate;
-                Single.TryParse(result.Groups[4].Value, NumberStyles.Number,
+                float.TryParse(result.Groups[4].Value, NumberStyles.Number,
                                 _appConfig.CInfo, out encBitrate);
 
                 
@@ -360,16 +360,16 @@ namespace VideoConvert.AppServices.Encoder
                     AverageFrameRate = codingFps,
                     CurrentFrameRate = fps,
                     CurrentFrame = current,
-                    TotalFrames = this._frameCount,
-                    EstimatedTimeLeft = this._remainingTime,
+                    TotalFrames = _frameCount,
+                    EstimatedTimeLeft = _remainingTime,
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
                 
             }
             else
-                Log.InfoFormat("ffmpeg: {0}", line);
+                Log.Info($"ffmpeg: {line}");
         }
 
         private string GenerateCommandLine()
@@ -378,35 +378,35 @@ namespace VideoConvert.AppServices.Encoder
             string[] cmpArray = { "sad", "sse", "satd", "dct", "psnr", "bit", "rd" };
 
             var sb = new StringBuilder();
-            this._encProfile = this._currentTask.VideoProfile as Mpeg2VideoProfile;
+            _encProfile = _currentTask.VideoProfile as Mpeg2VideoProfile;
 
-            if (this._encProfile == null) return string.Empty;
+            if (_encProfile == null) return string.Empty;
 
-            this._inputFile = this._currentTask.VideoStream.TempFile;
-            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
-                                                               this._inputFile,
+            _inputFile = _currentTask.VideoStream.TempFile;
+            _outputFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
+                                                               _inputFile,
                                                                "encoded.m2v");
 
-            this._frameCount = this._currentTask.VideoStream.FrameCount;
+            _frameCount = _currentTask.VideoStream.FrameCount;
 
             #region AviSynth script generation
 
-            var targetSys = this._currentTask.EncodingProfile.SystemType;
+            var targetSys = _currentTask.EncodingProfile.SystemType;
             int targetHeight;
 
-            var sourceFps = (float)Math.Round(this._currentTask.VideoStream.Fps, 3);
+            var sourceFps = (float)Math.Round(_currentTask.VideoStream.Fps, 3);
             var targetFps = 0f;
             var changeFps = false;
 
-            var sourceAspect = (float)Math.Round(this._currentTask.VideoStream.AspectRatio, 3);
+            var sourceAspect = (float)Math.Round(_currentTask.VideoStream.AspectRatio, 3);
 
             var targetWidth = sourceAspect >= 1.4f ? 1024 : 720;
 
-            if (this._currentTask.Input == InputType.InputDvd)
-                this._currentTask.VideoStream.Width =
-                    (int)Math.Round(this._currentTask.VideoStream.Height * sourceAspect, 0);
+            if (_currentTask.Input == InputType.InputDvd)
+                _currentTask.VideoStream.Width =
+                    (int)Math.Round(_currentTask.VideoStream.Height * sourceAspect, 0);
 
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+            if (_currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
             {
                 if (targetSys == 0)
                 {
@@ -425,13 +425,13 @@ namespace VideoConvert.AppServices.Encoder
             }
             else
             {
-                targetWidth = this._currentTask.EncodingProfile.TargetWidth;
+                targetWidth = _currentTask.EncodingProfile.TargetWidth;
                 targetHeight = (int)Math.Floor(targetWidth / sourceAspect);
             }
 
             var resizeTo = new Size(targetWidth, targetHeight);
 
-            var sub = this._currentTask.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
+            var sub = _currentTask.SubtitleStreams.FirstOrDefault(item => item.HardSubIntoVideo);
             var subFile = string.Empty;
             var keepOnlyForced = false;
             if (sub != null)
@@ -440,10 +440,10 @@ namespace VideoConvert.AppServices.Encoder
                 keepOnlyForced = sub.KeepOnlyForcedCaptions;
             }
 
-            if (string.IsNullOrEmpty(this._currentTask.AviSynthScript))
+            if (string.IsNullOrEmpty(_currentTask.AviSynthScript))
             {
-                var avs = new AviSynthGenerator(this._appConfig);
-                this._currentTask.AviSynthScript = avs.Generate(this._currentTask.VideoStream,
+                var avs = new AviSynthGenerator(_appConfig);
+                _currentTask.AviSynthScript = avs.Generate(_currentTask.VideoStream,
                                                                 changeFps,
                                                                 targetFps,
                                                                 resizeTo,
@@ -459,65 +459,67 @@ namespace VideoConvert.AppServices.Encoder
 
             #region bitrate calculation
 
-            var bitrate = this._currentTask.EncodingProfile.TargetFileSize > 1
-                ? VideoHelper.CalculateVideoBitrate(this._currentTask)
-                : this._encProfile.Bitrate;
+            var bitrate = _currentTask.EncodingProfile.TargetFileSize > 1
+                ? VideoHelper.CalculateVideoBitrate(_currentTask)
+                : _encProfile.Bitrate;
 
-            var audBitrate = this._currentTask.AudioStreams.Sum(stream => (int)stream.Bitrate / 1000);
+            var audBitrate = _currentTask.AudioStreams.Sum(stream => (int)stream.Bitrate / 1000);
             var maxRate = 9800 - audBitrate;
 
             #endregion
 
 
-            this._encodingPass = this._encProfile.EncodingMode == 0 ? 0 : this._currentTask.StreamId;
+            _encodingPass = _encProfile.EncodingMode == 0 ? 0 : _currentTask.StreamId;
 
-            sb.AppendFormat(" -i \"{0}\" -map 0:v", this._currentTask.AviSynthScript);
-            sb.AppendFormat(" -target {0}-dvd", targetSys == 0 ? "pal" : "ntsc");
-            sb.AppendFormat(" -b:v {0:0}k -maxrate {1:0}k -qmin 1", bitrate, maxRate);
+            var targetSysStr = targetSys == 0 ? "pal" : "ntsc";
 
-            sb.AppendFormat(this._appConfig.CInfo, " -aspect {0:0.000}", sourceAspect);
+            sb.Append($" -i \"{_currentTask.AviSynthScript}\" -map 0:v");
+            sb.Append($" -target {targetSysStr}-dvd");
+            sb.Append($" -b:v {bitrate:0}k -maxrate {maxRate:0}k -qmin 1");
 
-            if (this._encodingPass > 0)
+            sb.Append($" -aspect {sourceAspect:0.000}".ToString(_appConfig.CInfo));
+
+            if (_encodingPass > 0)
             {
-                sb.AppendFormat(" -pass {0:0}", this._encodingPass);
+                sb.Append($" -pass {_encodingPass:0}");
             }
 
-            if (this._encProfile.MbDecision > 0)
+            if (_encProfile.MbDecision > 0)
             {
-                sb.AppendFormat(" -mbd {0}", mbdArray[this._encProfile.MbDecision]);
+                sb.Append($" -mbd {mbdArray[_encProfile.MbDecision]}");
             }
 
-            if (this._encProfile.Trellis > 0)
+            if (_encProfile.Trellis > 0)
             {
-                sb.AppendFormat(" -trellis {0:0}", this._encProfile.Trellis);
+                sb.Append($" -trellis {_encProfile.Trellis:0}");
             }
 
-            if (this._encProfile.Cmp > 0)
+            if (_encProfile.Cmp > 0)
             {
-                sb.AppendFormat(" -cmp {0}", cmpArray[this._encProfile.Cmp]);
+                sb.Append($" -cmp {cmpArray[_encProfile.Cmp]}");
             }
 
-            if (this._encProfile.SubCmp > 0)
+            if (_encProfile.SubCmp > 0)
             {
-                sb.AppendFormat(" -subcmp {0}", cmpArray[this._encProfile.SubCmp]);
+                sb.Append($" -subcmp {cmpArray[_encProfile.SubCmp]}");
             }
 
-            if (this._encProfile.DcPrecision > 0)
+            if (_encProfile.DcPrecision > 0)
             {
-                sb.AppendFormat(" -dc {0}", this._encProfile.DcPrecision);
+                sb.Append($" -dc {_encProfile.DcPrecision}");
             }
 
-            if (this._encProfile.ClosedGops)
+            if (_encProfile.ClosedGops)
             {
                 sb.Append(" -flags cgop -mpv_flags strict_gop -sc_threshold 1000000000");
             }
 
-            if (!this._encProfile.AutoGop)
+            if (!_encProfile.AutoGop)
             {
-                sb.AppendFormat(" -g {0:0}", this._encProfile.GopLength);
+                sb.Append($" -g {_encProfile.GopLength:0}");
             }
 
-            sb.AppendFormat(" -f rawvideo -y \"{0}\"", _outputFile);
+            sb.Append($" -f rawvideo -y \"{_outputFile}\"");
             return sb.ToString();
         }
 

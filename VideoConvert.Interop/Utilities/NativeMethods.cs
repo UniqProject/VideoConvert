@@ -812,7 +812,7 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// Specifies attributes of the SID. This value contains up to 32 one-bit flags. Its meaning depends on the definition and use of the SID.
         /// </summary>
-        public UInt32 Attributes;
+        public uint Attributes;
     }
 
     /// <summary>
@@ -824,7 +824,7 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// A nonzero value if the token has elevated privileges; otherwise, a zero value.
         /// </summary>
-        public Int32 TokenIsElevated;
+        public int TokenIsElevated;
     }
 
     /// <summary>
@@ -894,12 +894,12 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// Combines DELETE, READ_CONTROL, WRITE_DAC, and WRITE_OWNER access.
         /// </summary>
-        public const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
+        public const uint STANDARD_RIGHTS_REQUIRED = 0x000F0000;
 
         /// <summary>
         /// Currently defined to equal READ_CONTROL.
         /// </summary>
-        public const UInt32 STANDARD_RIGHTS_READ = 0x00020000;
+        public const uint STANDARD_RIGHTS_READ = 0x00020000;
 
         // An application cannot change the access control list of an object unless the application has the rights to do so. 
         // These rights are controlled by a security descriptor in the access token for the object. For more information about security, see Access Control Model.
@@ -914,57 +914,57 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// Required to attach a primary token to a process. The SE_ASSIGNPRIMARYTOKEN_NAME privilege is also required to accomplish this task.
         /// </summary>
-        public const UInt32 TOKEN_ASSIGN_PRIMARY = 0x0001;
+        public const uint TOKEN_ASSIGN_PRIMARY = 0x0001;
 
         /// <summary>
         /// Required to duplicate an access token.
         /// </summary>
-        public const UInt32 TOKEN_DUPLICATE = 0x0002;
+        public const uint TOKEN_DUPLICATE = 0x0002;
 
         /// <summary>
         /// Required to attach an impersonation access token to a process.
         /// </summary>
-        public const UInt32 TOKEN_IMPERSONATE = 0x0004;
+        public const uint TOKEN_IMPERSONATE = 0x0004;
 
         /// <summary>
         /// Required to query an access token.
         /// </summary>
-        public const UInt32 TOKEN_QUERY = 0x0008;
+        public const uint TOKEN_QUERY = 0x0008;
 
         /// <summary>
         /// Required to query the source of an access token.
         /// </summary>
-        public const UInt32 TOKEN_QUERY_SOURCE = 0x0010;
+        public const uint TOKEN_QUERY_SOURCE = 0x0010;
 
         /// <summary>
         /// Required to enable or disable the privileges in an access token.
         /// </summary>
-        public const UInt32 TOKEN_ADJUST_PRIVILEGES = 0x0020;
+        public const uint TOKEN_ADJUST_PRIVILEGES = 0x0020;
 
         /// <summary>
         /// Required to adjust the attributes of the groups in an access token.
         /// </summary>
-        public const UInt32 TOKEN_ADJUST_GROUPS = 0x0040;
+        public const uint TOKEN_ADJUST_GROUPS = 0x0040;
 
         /// <summary>
         /// Required to change the default owner, primary group, or DACL of an access token.
         /// </summary>
-        public const UInt32 TOKEN_ADJUST_DEFAULT = 0x0080;
+        public const uint TOKEN_ADJUST_DEFAULT = 0x0080;
 
         /// <summary>
         /// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
         /// </summary>
-        public const UInt32 TOKEN_ADJUST_SESSIONID = 0x0100;
+        public const uint TOKEN_ADJUST_SESSIONID = 0x0100;
 
         /// <summary>
         /// Combines STANDARD_RIGHTS_READ and TOKEN_QUERY.
         /// </summary>
-        public const UInt32 TOKEN_READ = (STANDARD_RIGHTS_READ | TOKEN_QUERY);
+        public const uint TOKEN_READ = (STANDARD_RIGHTS_READ | TOKEN_QUERY);
 
         /// <summary>
         /// Combines all possible access rights for a token.
         /// </summary>
-        public const UInt32 TOKEN_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED |
+        public const uint TOKEN_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED |
             TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_IMPERSONATE |
             TOKEN_QUERY | TOKEN_QUERY_SOURCE | TOKEN_ADJUST_PRIVILEGES |
             TOKEN_ADJUST_GROUPS | TOKEN_ADJUST_DEFAULT | TOKEN_ADJUST_SESSIONID);
@@ -973,7 +973,7 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// The data area passed to a system call is too small.
         /// </summary>
-        public const Int32 ERROR_INSUFFICIENT_BUFFER = 122;
+        public const int ERROR_INSUFFICIENT_BUFFER = 122;
 
 
         // Integrity Levels
@@ -985,27 +985,27 @@ namespace VideoConvert.Interop.Utilities
         /// <summary>
         /// Untrusted level
         /// </summary>
-        public const Int32 SECURITY_MANDATORY_UNTRUSTED_RID = 0x00000000;
+        public const int SECURITY_MANDATORY_UNTRUSTED_RID = 0x00000000;
 
         /// <summary>
         /// Low integrity level
         /// </summary>
-        public const Int32 SECURITY_MANDATORY_LOW_RID = 0x00001000;
+        public const int SECURITY_MANDATORY_LOW_RID = 0x00001000;
 
         /// <summary>
         /// Medium integrity level
         /// </summary>
-        public const Int32 SECURITY_MANDATORY_MEDIUM_RID = 0x00002000;
+        public const int SECURITY_MANDATORY_MEDIUM_RID = 0x00002000;
 
         /// <summary>
         /// High integrity level
         /// </summary>
-        public const Int32 SECURITY_MANDATORY_HIGH_RID = 0x00003000;
+        public const int SECURITY_MANDATORY_HIGH_RID = 0x00003000;
 
         /// <summary>
         /// System integrity level
         /// </summary>
-        public const Int32 SECURITY_MANDATORY_SYSTEM_RID = 0x00004000;
+        public const int SECURITY_MANDATORY_SYSTEM_RID = 0x00004000;
 
 
         /// <summary>
@@ -1026,7 +1026,7 @@ namespace VideoConvert.Interop.Utilities
         [DllImport("advapi32", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool OpenProcessToken(IntPtr hProcess,
-            UInt32 desiredAccess, out SafeTokenHandle hToken);
+            uint desiredAccess, out SafeTokenHandle hToken);
 
 
         /// <summary>
@@ -1082,15 +1082,15 @@ namespace VideoConvert.Interop.Utilities
             SafeTokenHandle hToken,
             TOKEN_INFORMATION_CLASS tokenInfoClass,
             IntPtr pTokenInfo,
-            Int32 tokenInfoLength,
-            out Int32 returnLength);
+            int tokenInfoLength,
+            out int returnLength);
 
 
         /// <summary>
         /// Sets the elevation required state for a specified button or 
         /// command link to display an elevated icon. 
         /// </summary>
-        public const UInt32 BCM_SETSHIELD = 0x160C;
+        public const uint BCM_SETSHIELD = 0x160C;
 
 
         /// <summary>
@@ -1111,7 +1111,7 @@ namespace VideoConvert.Interop.Utilities
         /// </param>
         /// <returns></returns>
         [DllImport("user32", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern int SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, IntPtr lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, IntPtr lParam);
 
 
         /// <summary>
@@ -1136,7 +1136,7 @@ namespace VideoConvert.Interop.Utilities
         /// parameter is out of bounds.
         /// </returns>
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr GetSidSubAuthority(IntPtr pSid, UInt32 nSubAuthority);
+        public static extern IntPtr GetSidSubAuthority(IntPtr pSid, uint nSubAuthority);
     }
 }
 // ReSharper restore InconsistentNaming

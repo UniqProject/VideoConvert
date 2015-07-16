@@ -10,7 +10,7 @@
 namespace VideoConvertWPF.ViewModels
 {
     using Caliburn.Micro;
-    using Interfaces;
+    using VideoConvertWPF.ViewModels.Interfaces;
 
     public class AboutViewModel : ViewModelBase, IAboutViewModel
     {
@@ -18,24 +18,24 @@ namespace VideoConvertWPF.ViewModels
 
         public string WindowTitle
         {
-            get { return this.Title; }
+            get { return Title; }
             set
             {
-                this.Title = value;
-                this.NotifyOfPropertyChange(() => this.Title);
+                Title = value;
+                NotifyOfPropertyChange(() => Title);
             }
         }
 
         public AboutViewModel(IShellViewModel shellViewModel, IWindowManager windowManager)
         {
-            this._shellViewModel = shellViewModel;
-            this.WindowManager = windowManager;
-            this.WindowTitle = "About";
+            _shellViewModel = shellViewModel;
+            WindowManager = windowManager;
+            WindowTitle = "About";
         }
 
         public void Close()
         {
-            this._shellViewModel.DisplayWindow(ShellWin.LastView);
+            _shellViewModel.DisplayWindow(ShellWin.LastView);
         }
     }
 }

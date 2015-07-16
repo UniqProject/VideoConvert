@@ -1,4 +1,13 @@
-﻿using System.Reflection;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the VideoConvertWPF source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -51,4 +60,4 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.50.1202.621")]
 [assembly: AssemblyFileVersion("0.50.1202.621")]
-[assembly: GuidAttribute("2EB13068-8C2E-41A2-88AE-0ADCEB00AB33")]
+[assembly: Guid("2EB13068-8C2E-41A2-88AE-0ADCEB00AB33")]

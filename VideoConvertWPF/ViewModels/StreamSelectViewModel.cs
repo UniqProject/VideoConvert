@@ -9,11 +9,6 @@
 
 namespace VideoConvertWPF.ViewModels
 {
-    using BDInfoLib.BDROM;
-    using Caliburn.Micro;
-    using Interfaces;
-    using SharpDvdInfo;
-    using SharpDvdInfo.DvdTypes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -22,15 +17,19 @@ namespace VideoConvertWPF.ViewModels
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Text;
+    using BDInfoLib.BDROM;
+    using Caliburn.Micro;
+    using SharpDvdInfo;
+    using SharpDvdInfo.DvdTypes;
     using VideoConvert.AppServices.Model.Profiles;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;
     using VideoConvert.Interop.Model.MediaInfo;
     using VideoConvert.Interop.Model.Profiles;
     using VideoConvert.Interop.Utilities;
+    using VideoConvertWPF.ViewModels.Interfaces;
     using ILog = log4net.ILog;
     using LogManager = log4net.LogManager;
-    using StreamTreeNode = VideoConvert.Interop.Model.StreamTreeNode;
 
     public class StreamSelectViewModel : ViewModelBase, IStreamSelectViewModel
     {
@@ -72,7 +71,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _jobInfo = value;
-                this.NotifyOfPropertyChange(()=>this.JobInfo);
+                NotifyOfPropertyChange(()=>JobInfo);
             }
         }
 
@@ -85,7 +84,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 JobInfo.JobName = value;
-                this.NotifyOfPropertyChange(()=>JobTitle);
+                NotifyOfPropertyChange(()=>JobTitle);
             }
         }
 
@@ -98,7 +97,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _profiles = value;
-                this.NotifyOfPropertyChange(()=>this.Profiles);
+                NotifyOfPropertyChange(()=>Profiles);
             }
         }
 
@@ -111,7 +110,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _selectedProfile = value;
-                this.NotifyOfPropertyChange(()=>this.SelectedProfile);
+                NotifyOfPropertyChange(()=>SelectedProfile);
             }
         }
 
@@ -119,7 +118,7 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._configService.LastSelectedProfile; 
+                return _configService.LastSelectedProfile; 
             }
             set { _selectedProfileName = value; }
         }
@@ -133,7 +132,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tree = value;
-                this.NotifyOfPropertyChange(()=>this.Tree);
+                NotifyOfPropertyChange(()=>Tree);
             }
         }
 
@@ -146,7 +145,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _selectedTitleInfo = value;
-                this.NotifyOfPropertyChange(()=>this.SelectedTitleInfo);
+                NotifyOfPropertyChange(()=>SelectedTitleInfo);
             }
         }
 
@@ -159,7 +158,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _bdInfo = value;
-                this.NotifyOfPropertyChange(()=>this.BdRom);
+                NotifyOfPropertyChange(()=>BdRom);
             }
         }
 
@@ -172,7 +171,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _treeNodeID = value;
-                this.NotifyOfPropertyChange(()=>this.TreeNodeID);
+                NotifyOfPropertyChange(()=>TreeNodeID);
             }
         }
 
@@ -185,7 +184,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _defaultSelection = value;
-                this.NotifyOfPropertyChange(()=>this.DefaultSelection);
+                NotifyOfPropertyChange(()=>DefaultSelection);
             }
         }
 
@@ -198,7 +197,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _resultMovieData = value;
-                this.NotifyOfPropertyChange(()=>this.ResultMovieData);
+                NotifyOfPropertyChange(()=>ResultMovieData);
             }
         }
 
@@ -211,7 +210,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _resultEpisodeData = value;
-                this.NotifyOfPropertyChange(()=>this.ResultEpisodeData);
+                NotifyOfPropertyChange(()=>ResultEpisodeData);
             }
         }
 
@@ -224,7 +223,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _selectedIndex = value;
-                this.NotifyOfPropertyChange(()=>this.SelectedIndex);
+                NotifyOfPropertyChange(()=>SelectedIndex);
             }
         }
 
@@ -237,21 +236,15 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _selectedNode = value;
-                this.NotifyOfPropertyChange(() => this.SelectedNode);
-                this.NotifyOfPropertyChange(() => this.SelectedNodeData);
-                this.NotifyOfPropertyChange(() => this.MatroskaDefault);
-                this.NotifyOfPropertyChange(() => this.HardcodeIntoVideo);
-                this.NotifyOfPropertyChange(() => this.KeepOnlyForced);
+                NotifyOfPropertyChange(() => SelectedNode);
+                NotifyOfPropertyChange(() => SelectedNodeData);
+                NotifyOfPropertyChange(() => MatroskaDefault);
+                NotifyOfPropertyChange(() => HardcodeIntoVideo);
+                NotifyOfPropertyChange(() => KeepOnlyForced);
             }
         }
 
-        public object SelectedNodeData
-        {
-            get
-            {
-                return _selectedNode != null ? _selectedNode.Data : null;
-            }
-        }
+        public object SelectedNodeData => _selectedNode?.Data;
 
         public bool MatroskaDefault
         {
@@ -263,7 +256,7 @@ namespace VideoConvertWPF.ViewModels
             {
                 if (_selectedNode == null) return;
                 _selectedNode.MatroskaDefault = value;
-                this.NotifyOfPropertyChange(()=>MatroskaDefault);
+                NotifyOfPropertyChange(()=>MatroskaDefault);
             }
         }
 
@@ -277,7 +270,7 @@ namespace VideoConvertWPF.ViewModels
             {
                 if (_selectedNode == null) return;
                 _selectedNode.HardcodeIntoVideo = value;
-                this.NotifyOfPropertyChange(() => HardcodeIntoVideo);
+                NotifyOfPropertyChange(() => HardcodeIntoVideo);
             }
         }
 
@@ -291,7 +284,7 @@ namespace VideoConvertWPF.ViewModels
             {
                 if (_selectedNode == null) return;
                 _selectedNode.KeepOnlyForced = value;
-                this.NotifyOfPropertyChange(() => KeepOnlyForced);
+                NotifyOfPropertyChange(() => KeepOnlyForced);
             }
         }
 
@@ -302,10 +295,10 @@ namespace VideoConvertWPF.ViewModels
         public StreamSelectViewModel(IAppConfigService config, IShellViewModel shellViewModel,
             IWindowManager windowManager, IProcessingService processing)
         {
-            this._shellViewModel = shellViewModel;
-            this.WindowManager = windowManager;
-            this._configService = config;
-            this._processingService = processing;
+            _shellViewModel = shellViewModel;
+            WindowManager = windowManager;
+            _configService = config;
+            _processingService = processing;
         }
 
         public override void OnLoad()
@@ -349,8 +342,8 @@ namespace VideoConvertWPF.ViewModels
                 }
             }
 
-            this.NotifyOfPropertyChange(() => JobInfo);
-            this.NotifyOfPropertyChange(() => Tree);
+            NotifyOfPropertyChange(() => JobInfo);
+            NotifyOfPropertyChange(() => Tree);
             SelectedIndex = DefaultSelection;
         }
 
@@ -359,7 +352,7 @@ namespace VideoConvertWPF.ViewModels
             switch (JobInfo.Input)
             {
                 case InputType.InputUndefined:
-                    this.DialogResult = false;
+                    DialogResult = false;
                     return;
                 case InputType.InputBluRay:
                 case InputType.InputAvchd:
@@ -381,13 +374,13 @@ namespace VideoConvertWPF.ViewModels
 
         private void ProfilesWorkerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.NotifyOfPropertyChange(()=>this.Profiles);
-            this.NotifyOfPropertyChange(()=> this.SelectedProfileName);
+            NotifyOfPropertyChange(()=>Profiles);
+            NotifyOfPropertyChange(()=> SelectedProfileName);
         }
 
         private void ProfilesWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-            var profHandler = new ProfilesHandler(this._configService);
+            var profHandler = new ProfilesHandler(_configService);
             _profiles = profHandler.FilteredList.Where(p => p.Type == ProfileType.QuickSelect).ToList();
         }
 
@@ -407,7 +400,7 @@ namespace VideoConvertWPF.ViewModels
                         CheckSubItems(myStreamTree);
                     }
 
-                    this.NotifyOfPropertyChange(() => Tree);
+                    NotifyOfPropertyChange(() => Tree);
 
                     break;
 
@@ -422,7 +415,7 @@ namespace VideoConvertWPF.ViewModels
                             break;
                     }
 
-                    this.NotifyOfPropertyChange(() => this.MatroskaDefault);
+                    NotifyOfPropertyChange(() => MatroskaDefault);
 
                     break;
 
@@ -430,7 +423,7 @@ namespace VideoConvertWPF.ViewModels
                     if (myStreamTree.Data.GetType().Name == "SubtitleInfo")
                         ((SubtitleInfo)myStreamTree.Data).HardSubIntoVideo = myStreamTree.HardcodeIntoVideo;
 
-                    this.NotifyOfPropertyChange(() => this.HardcodeIntoVideo);
+                    NotifyOfPropertyChange(() => HardcodeIntoVideo);
 
                     break;
 
@@ -438,7 +431,7 @@ namespace VideoConvertWPF.ViewModels
                     if (myStreamTree.Data.GetType().Name == "SubtitleInfo")
                         ((SubtitleInfo)myStreamTree.Data).KeepOnlyForcedCaptions = myStreamTree.KeepOnlyForced;
 
-                    this.NotifyOfPropertyChange(() => this.KeepOnlyForced);
+                    NotifyOfPropertyChange(() => KeepOnlyForced);
 
                     break;
             }
@@ -447,8 +440,8 @@ namespace VideoConvertWPF.ViewModels
         public void SetSelectedItem(StreamTreeNode myNode)
         {
             SelectedNode = myNode;
-            this.NotifyOfPropertyChange(() => this.SelectedNode);
-            this.NotifyOfPropertyChange(() => this.SelectedNodeData);
+            NotifyOfPropertyChange(() => SelectedNode);
+            NotifyOfPropertyChange(() => SelectedNodeData);
         }
 
         public void ClickOk()
@@ -490,13 +483,13 @@ namespace VideoConvertWPF.ViewModels
                 else if (dataType == typeof(Dictionary<string, object>))
                 {
                     object itemData;
-                    (item.Data as Dictionary<string, object>).TryGetValue("Name", out itemData);
+                    ((Dictionary<string, object>) item.Data).TryGetValue("Name", out itemData);
                     if (itemData != null)
                         JobInfo.InputFile = (string)itemData;
-                    (item.Data as Dictionary<string, object>).TryGetValue("PlaylistIndex", out itemData);
+                    ((Dictionary<string, object>) item.Data).TryGetValue("PlaylistIndex", out itemData);
                     if (itemData != null)
                         JobInfo.StreamId = (int)itemData;
-                    (item.Data as Dictionary<string, object>).TryGetValue("TrackID", out itemData);
+                    ((Dictionary<string, object>) item.Data).TryGetValue("TrackID", out itemData);
                     if (itemData != null)
                         JobInfo.TrackId = (int)itemData;
                 }
@@ -512,9 +505,9 @@ namespace VideoConvertWPF.ViewModels
                     JobInfo.EncodingProfile.VideoProfileType);
             }
 
-            this._configService.LastSelectedProfile = SelectedProfile.Name;
+            _configService.LastSelectedProfile = SelectedProfile.Name;
 
-            if (this._configService.CreateXbmcInfoFile)
+            if (_configService.CreateXbmcInfoFile)
             {
                 if (_resultMovieData != null)
                     JobInfo.MovieInfo = ResultMovieData;
@@ -523,7 +516,7 @@ namespace VideoConvertWPF.ViewModels
             }
 
             _bdInfo = null;
-            this.TryClose(true);
+            TryClose(true);
         }
 
         #endregion
@@ -557,9 +550,6 @@ namespace VideoConvertWPF.ViewModels
 
             JobInfo.MediaInfo = mi;
 
-            const string fileTitleFormat = "{0} / {1} / Length: {2}";
-            const string fileAudioFormat = "{0:g} Channels ({1}) / {2:g}Hz / {3:g} bit / {4:g} kbit/s";
-            const string fileVideoFormat = "{0:d}x{1:d} {2} / Profile: {3} / {4:0.000}fps";
             const string strChapters = "Chapters";
             const string strVideo = "Video";
             const string strAudio = "Audio";
@@ -569,7 +559,7 @@ namespace VideoConvertWPF.ViewModels
             var duration = mi.General.DurationTime.ToString("H:mm:ss.fff");
             var shortFileName = mi.General.FileName + "." + mi.General.FileExtension;
 
-            var treeRoot = string.Format(fileTitleFormat, shortFileName, containerFormat, duration);
+            var treeRoot = $"{shortFileName} / {containerFormat} / Length: {duration}";
 
             var root = new StreamTreeNode
             {
@@ -590,7 +580,7 @@ namespace VideoConvertWPF.ViewModels
 
             if (mi.Chapters.Count > 0)
             {
-                var chaptersTitle = string.Format("{0:0} {1}", mi.Chapters.Count, strChapters);
+                var chaptersTitle = $"{mi.Chapters.Count:0} {strChapters}";
 
                 CreateNode(chaptersStreamTree, chaptersTitle, mi.Chapters);
             }
@@ -605,11 +595,9 @@ namespace VideoConvertWPF.ViewModels
                 var videoPid = clip.ID;
                 var videoCodec = clip.FormatInfo;
                 var videoCodecShort = clip.Format;
-                var videoDesc = string.Format(fileVideoFormat, clip.Width, clip.Height, clip.ScanType,
-                                                 clip.FormatProfile, clip.FrameRate);
 
-                var videoStreamTitle = string.Format("{3:g}: {0} ({1}), {2}", videoCodec, videoCodecShort, videoDesc,
-                                                        streamIndex);
+                var videoDesc = $"{clip.Width:0}x{clip.Height:0} {clip.ScanType} / Profile: {clip.FormatProfile} / {clip.FrameRate:0.000}fps";
+                var videoStreamTitle = $"{streamIndex:0}: {videoCodec} ({videoCodecShort}), {videoDesc}";
 
                 var vid = new VideoInfo();
                 if (JobInfo.Input == InputType.InputAvi)
@@ -627,7 +615,7 @@ namespace VideoConvertWPF.ViewModels
                 vid.FrameCount = clip.FrameCount;
                 vid.StreamSize = clip.StreamSize;
                 vid.Length = mi.General.DurationTime.TimeOfDay.TotalSeconds;
-                Single.TryParse(clip.DisplayAspectRatio, NumberStyles.Number, this._configService.CInfo, out vid.AspectRatio);
+                float.TryParse(clip.DisplayAspectRatio, NumberStyles.Number, _configService.CInfo, out vid.AspectRatio);
                 vid.FrameRateEnumerator = clip.FrameRateEnumerator;
                 vid.FrameRateDenominator = clip.FrameRateDenominator;
                 vid.FrameMode = clip.FormatFrameMode;
@@ -647,12 +635,10 @@ namespace VideoConvertWPF.ViewModels
                 var audioLanguage = audio.LanguageFull;
                 var audioStreamKindID = audio.StreamKindID;
 
-                var audioDesc = string.Format(fileAudioFormat, audio.Channels, audio.ChannelPositions,
-                                                 audio.SamplingRate, audio.BitDepth, audio.BitRate / 1000);
+                var audioDesc = $"{audio.Channels:0} Channels ({audio.ChannelPositions}) / {audio.SamplingRate:0}Hz / ";
+                audioDesc +=    $"{audio.BitDepth:0} bit / {audio.BitRate/1000:0} kbit/s";
 
-                var audioStreamTitle = string.Format("{5:g}: {0} ({1}) / {2} ({3}) / {4}", audioCodec,
-                                                        audioCodecShort, audioLangCode, audioLanguage, audioDesc,
-                                                        streamIndex);
+                var audioStreamTitle = $"{streamIndex:0}: {audioCodec} ({audioCodecShort}) / {audioLangCode} ({audioLanguage}) / {audioDesc}";
 
                 if (JobInfo.Input == InputType.InputAvi)
                     audioPid += 1;
@@ -693,8 +679,7 @@ namespace VideoConvertWPF.ViewModels
                 var subLanguage = sub.LanguageFull;
                 var subStreamKindID = sub.StreamKindID;
 
-                var subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
-                                                      subLangCode, subLanguage, streamIndex);
+                var subStreamTitle = $"{streamIndex:0}: {subCodec} ({subCodecShort}) / {subLangCode} ({subLanguage})";
 
                 var subInfo = new SubtitleInfo
                 {
@@ -719,8 +704,7 @@ namespace VideoConvertWPF.ViewModels
                 var subLanguage = sub.LanguageFull;
                 var subStreamKindID = sub.StreamKindID;
 
-                var subStreamTitle = string.Format("{4:g}: {0} ({1}) / {2} ({3})", subCodec, subCodecShort,
-                                                      subLangCode, subLanguage, streamIndex);
+                var subStreamTitle = $"{streamIndex:0}: {subCodec} ({subCodecShort}) / {subLangCode} ({subLanguage})";
                 var subInfo = new SubtitleInfo
                 {
                     Id = sub.ID,
@@ -737,7 +721,7 @@ namespace VideoConvertWPF.ViewModels
 
             subStreamTree.IsChecked = subStreamTree.Children.Count > 0;
 
-            this.NotifyOfPropertyChange(() => this.Tree);
+            NotifyOfPropertyChange(() => Tree);
         }
 
         public void GetBdInfo()
@@ -746,10 +730,6 @@ namespace VideoConvertWPF.ViewModels
             const string strVideo = "Video";    //ProcessingService.GetResourceString("streamselect_video");
             const string strAudio = "Audio";    //ProcessingService.GetResourceString("streamselect_audio");
             const string strSubtitles = "Subtitles";    //ProcessingService.GetResourceString("streamselect_subtitles");
-
-            const string bdTitleFormat = "Title: {0:g} ({1}), Length: {2}";    //ProcessingService.GetResourceString("streamselect_bd_general");
-            const string bdAudioFormat = "{5:g}: {0} ({1}) / {2} ({3}) / {4}";
-            const string bdSubFormat = "{3:g}: {0} / {1} ({2}); {4}";
 
             _bdInfo = new BDROM(JobInfo.InputFile);
             _bdInfo.Scan();
@@ -772,15 +752,13 @@ namespace VideoConvertWPF.ViewModels
 
                 duration = duration.AddSeconds(item.TotalLength);
 
-                var treeRoot = string.Format(bdTitleFormat, playlistIndex, item.Name,
-                                                duration.ToString("H:mm:ss.fff"));
+                var treeRoot = $"Title: {playlistIndex:0} ({item.Name}), Length: {duration.ToString("H:mm:ss.fff")}";
 
                 var treeData = new Dictionary<string, object>
                     {
                         {
                             "Name",
-                            Path.Combine(_bdInfo.DirectoryPLAYLIST.FullName,
-                                         item.Name)
+                            Path.Combine(_bdInfo.DirectoryPLAYLIST.FullName, item.Name)
                         },
                         {"PlaylistIndex", playlistIndex}
                     };
@@ -809,7 +787,7 @@ namespace VideoConvertWPF.ViewModels
 
                     streamChapters.AddRange(item.Chapters.Select(TimeSpan.FromSeconds));
 
-                    var chaptersFormat = string.Format("{0:0} {1}", streamChapters.Count, strChapters);
+                    var chaptersFormat = $"{streamChapters.Count:0} {strChapters}";
 
                     CreateNode(chaptersStreamTree, chaptersFormat, streamChapters);
                 }
@@ -829,7 +807,8 @@ namespace VideoConvertWPF.ViewModels
                         && (item.VideoStreams[item.VideoStreams.Count - 1].StreamType == TSStreamType.MVC_VIDEO))
                     {
                         videoDescStereo = videoDesc;
-                        videoCodec += " (left eye)";
+                        videoCodec += item.MVCBaseViewR ? " (right eye)" : " (left eye)";
+
                         leftVideoStreamID = streamIndex;
                         leftVideoDiscStreamID = clip.PID;
                     }
@@ -838,11 +817,11 @@ namespace VideoConvertWPF.ViewModels
                         && (item.VideoStreams[0].StreamType == TSStreamType.AVC_VIDEO))
                     {
                         videoDesc = videoDescStereo;
-                        videoCodec = "MPEG-4 MVC Video (right eye)";
+                        videoCodec = "MPEG-4 MVC Video";
+                        videoCodec += item.MVCBaseViewR ? " (right eye)" : " (left eye)";
                     }
-                    /* */
-                    var videoStreamFormat = string.Format("{3:g}: {0} ({1}), {2}", videoCodec, videoCodecShort,
-                                                                   videoDesc, streamIndex);
+
+                    var videoStreamFormat = $"{streamIndex:0}: {videoCodec} ({videoCodecShort}), {videoDesc}";
                     switch (clip.StreamType)
                     {
                         case TSStreamType.AVC_VIDEO:
@@ -869,8 +848,8 @@ namespace VideoConvertWPF.ViewModels
                                     Height = clip.Height
                                 };
 
-                                Int32.TryParse(item.Name.Substring(0, item.Name.LastIndexOf('.')), NumberStyles.Number,
-                                               this._configService.CInfo, out vid.DemuxPlayList);
+                                int.TryParse(item.Name.Substring(0, item.Name.LastIndexOf('.')), NumberStyles.Number,
+                                               _configService.CInfo, out vid.DemuxPlayList);
 
                                 foreach (var streamClip in item.StreamClips)
                                     vid.DemuxStreamNames.Add(streamClip.StreamFile.FileInfo.FullName);
@@ -915,8 +894,7 @@ namespace VideoConvertWPF.ViewModels
                     var audioLangCode = audio.LanguageCode;
                     var audioLanguage = audio.LanguageName;
 
-                    var audioStreamFormat = string.Format(bdAudioFormat, audioCodec, audioCodecShort, audioLangCode,
-                                                             audioLanguage, audioDesc, streamIndex);
+                    var audioStreamFormat = $"{streamIndex:0}: {audioCodec} ({audioCodecShort}) / {audioLangCode} ({audioLanguage}) / {audioDesc}";
 
                     var aud = new AudioInfo
                     {
@@ -950,8 +928,7 @@ namespace VideoConvertWPF.ViewModels
                     var subLangCode = sub.LanguageCode;
                     var subLanguage = sub.LanguageName;
 
-                    var subStreamFormat = string.Format(bdSubFormat, subCodecShort, subLangCode, subLanguage,
-                                                           streamIndex, subDesc);
+                    var subStreamFormat = $"{streamIndex:0}: {subCodecShort} / {subLangCode} ({subLanguage}); {subDesc}";
 
                     var subInfo = new SubtitleInfo
                     {
@@ -976,8 +953,7 @@ namespace VideoConvertWPF.ViewModels
                     var subLangCode = sub.LanguageCode;
                     var subLanguage = sub.LanguageName;
 
-                    var subStreamFormat = string.Format(bdSubFormat, subCodecShort, subLangCode, subLanguage,
-                                                           streamIndex, subDesc);
+                    var subStreamFormat = $"{streamIndex:0}: {subCodecShort} / {subLangCode} ({subLanguage}); {subDesc}";
 
                     var subInfo = new SubtitleInfo
                     {
@@ -1024,12 +1000,6 @@ namespace VideoConvertWPF.ViewModels
             const string strAudio = "Audio";
             const string strSubtitles = "Subtitles";
 
-            const string dvdTitleFormat = "Title: {0:g}, Length: {1}";
-            const string dvdAudioFormat = "Track {0:g} ({1:g}), {2} ({3} - {4}), {5} {6:g} Channels {7:g} Hz, {8}";
-            const string dvdSubFormat = "Track {0:g} ({1:g}), {2} ({3} - {4})";
-
-            const string dvdVideoStreamFormat = "{0} {1} {2} ({3}) {4} {5:0.000} fps";
-
             var dvd = new DvdInfoContainer(JobInfo.InputFile);
 
             foreach (var info in dvd.Titles)
@@ -1059,7 +1029,7 @@ namespace VideoConvertWPF.ViewModels
                 int vtsID = info.TitleSetNumber;
 
                 var duration = DateTime.MinValue.Add(info.VideoStream.Runtime);
-                var treeRoot = string.Format(dvdTitleFormat, videoId, duration.ToString("H:mm:ss.fff"));
+                var treeRoot = $"Title: {videoId:0}, Length: {duration.ToString("H:mm:ss.fff")}";
 
                 var treeData = new Dictionary<string, object>
                 {
@@ -1084,12 +1054,11 @@ namespace VideoConvertWPF.ViewModels
 
                 if (info.Chapters != null && info.Chapters.Count > 0)
                 {
-                    var chaptersFormat = string.Format("{0:0} {1}", info.Chapters.Count, strChapters);
+                    var chaptersFormat = $"{info.Chapters.Count:0} {strChapters}";
                     CreateNode(chaptersTree, chaptersFormat, info.Chapters);
                 }
 
-                var videoStream = string.Format(dvdVideoStreamFormat, codec, resolution, aspect, letterboxed, videoFormat,
-                                                   fps);
+                var videoStream = $"{codec} {resolution} {aspect} ({letterboxed}) {videoFormat} {fps:0.000} fps";
                 var vid = new VideoInfo
                 {
                     VtsId = vtsID,
@@ -1125,8 +1094,8 @@ namespace VideoConvertWPF.ViewModels
                     var content = _processingService.StringValueOf(stream.Extension);
                     var streamID = stream.StreamId;
 
-                    var audioStream = string.Format(dvdAudioFormat, audioID, streamID, langCode, language,
-                                                           content, format, channels, frequency, quantization);
+                    var audioStream =
+                        $"Track {audioID:0} ({streamID:0}), {langCode} ({language} - {content}), {format} {channels:0} Channels {frequency:0} Hz, {quantization}";
 
                     var aud = new AudioInfo
                     {
@@ -1157,7 +1126,7 @@ namespace VideoConvertWPF.ViewModels
                     var content = _processingService.StringValueOf(stream.Extension);
                     var streamID = stream.StreamId;
 
-                    var subtitleStream = string.Format(dvdSubFormat, subID, streamID, langCode, language, content);
+                    var subtitleStream = $"Track {subID:0} ({streamID:0}), {langCode} ({language} - {content})";
 
                     var subInfo = new SubtitleInfo
                     {
@@ -1230,7 +1199,7 @@ namespace VideoConvertWPF.ViewModels
 
         public EncoderProfile GetProfile(string pName, ProfileType pType)
         {
-            var profHandler = new ProfilesHandler(this._configService);
+            var profHandler = new ProfilesHandler(_configService);
             return profHandler.FilteredList.Find(ep => (ep.Name == pName) && (ep.Type == pType));
         }
 

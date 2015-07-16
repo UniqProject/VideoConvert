@@ -9,10 +9,6 @@
 
 namespace VideoConvert.AppServices.Services
 {
-    using Interfaces;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
@@ -20,6 +16,10 @@ namespace VideoConvert.AppServices.Services
     using System.IO;
     using System.Reflection;
     using System.Threading;
+    using log4net;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The Application Config Service
@@ -42,8 +42,7 @@ namespace VideoConvert.AppServices.Services
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, e);
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -53,8 +52,7 @@ namespace VideoConvert.AppServices.Services
         protected virtual void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -63,54 +61,38 @@ namespace VideoConvert.AppServices.Services
         /// <param name="settings"><see cref="IUserSettingService"/></param>
         public AppConfigService(IUserSettingService settings)
         {
-            this._settings = settings;
+            _settings = settings;
         }
 
         private T GetSetting<T>(string sName)
         {
-            if (_settings == null) return default(T);
-
-            return _settings.GetUserSetting<T>(sName);
+            return _settings == null ? default(T) : _settings.GetUserSetting<T>(sName);
         }
 
         private void SetSetting(string sName, object sValue)
         {
-            if (_settings == null) return;
-
-            _settings.SetUserSetting(sName, sValue);
+            _settings?.SetUserSetting(sName, sValue);
         }
 
         /// <summary>
         /// Internal decoding Named Pipe
         /// </summary>
-        public string DecodeNamedPipeName
-        {
-            get { return String.Format("{0}_decodePipe", GetProductName()); }
-        }
+        public string DecodeNamedPipeName => $"{GetProductName()}_decodePipe";
 
         /// <summary>
         /// External decoding Named Pipe
         /// </summary>
-        public string DecodeNamedPipeFullName
-        {
-            get { return String.Format(@"\\.\pipe\{0}", DecodeNamedPipeName); }
-        }
+        public string DecodeNamedPipeFullName => $@"\\.\pipe\{DecodeNamedPipeName}";
 
         /// <summary>
         /// Internal encoding Named Pipe
         /// </summary>
-        public string EncodeNamedPipeName
-        {
-            get { return String.Format("{0}_encodePipe", GetProductName()); }
-        }
+        public string EncodeNamedPipeName => $"{GetProductName()}_encodePipe";
 
         /// <summary>
         /// External encoding Named Pipe
         /// </summary>
-        public string EncodeNamedPipeFullName
-        {
-            get { return String.Format(@"\\.\pipe\{0}", EncodeNamedPipeName); }
-        }
+        public string EncodeNamedPipeFullName => $@"\\.\pipe\{EncodeNamedPipeName}";
 
         /// <summary>
         /// Use MT-Enabled AviSynth
@@ -198,7 +180,7 @@ namespace VideoConvert.AppServices.Services
             get
             {
                 var tPath = GetSetting<string>(SettingConstants.ToolsPath);
-                if (String.IsNullOrEmpty(tPath))
+                if (string.IsNullOrEmpty(tPath))
                     tPath = Path.Combine(CommonAppSettingsPath, "codecs");
                 return tPath;
             }
@@ -218,10 +200,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is Java installed?
         /// </summary>
-        public bool JavaInstalled
-        {
-            get { return !String.IsNullOrEmpty(JavaInstallPath); }
-        }
+        public bool JavaInstalled => !string.IsNullOrEmpty(JavaInstallPath);
 
         /// <summary>
         /// Path to output files
@@ -253,10 +232,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is x264 installed?
         /// </summary>
-        public bool X264Installed
-        {
-            get { return !String.IsNullOrEmpty(Lastx264Ver); }
-        }
+        public bool X264Installed => !string.IsNullOrEmpty(Lastx264Ver);
 
         /// <summary>
         /// Last detected x264 version - 64bit build
@@ -270,10 +246,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is 64bit build of x264 installed?
         /// </summary>
-        public bool X26464Installed
-        {
-            get { return !String.IsNullOrEmpty(Lastx26464Ver); }
-        }
+        public bool X26464Installed => !string.IsNullOrEmpty(Lastx26464Ver);
 
         /// <summary>
         /// Last detected ffmpeg version
@@ -287,10 +260,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is ffmpeg installed?
         /// </summary>
-        public bool FfmpegInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastffmpegVer); }
-        }
+        public bool FfmpegInstalled => !string.IsNullOrEmpty(LastffmpegVer);
 
         /// <summary>
         /// Last detected 64bit ffmpeg version
@@ -304,10 +274,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is 64bit ffmpeg installed?
         /// </summary>
-        public bool Ffmpeg64Installed
-        {
-            get { return !String.IsNullOrEmpty(Lastffmpeg64Ver); }
-        }
+        public bool Ffmpeg64Installed => !string.IsNullOrEmpty(Lastffmpeg64Ver);
 
         /// <summary>
         /// Last detected eac3to version
@@ -321,10 +288,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is eac3to installed
         /// </summary>
-        public bool Eac3ToInstalled
-        {
-            get { return !String.IsNullOrEmpty(Lasteac3ToVer); }
-        }
+        public bool Eac3ToInstalled => !string.IsNullOrEmpty(Lasteac3ToVer);
 
         /// <summary>
         /// Last detected hcEnc version
@@ -338,10 +302,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is hcEnc installed?
         /// </summary>
-        public bool HcEncInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastHcEncVer); }
-        }
+        public bool HcEncInstalled => !string.IsNullOrEmpty(LastHcEncVer);
 
         /// <summary>
         /// Last detected lsdvd version
@@ -355,10 +316,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is lsdvd installed?
         /// </summary>
-        public bool LsDvdInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastlsdvdVer); }
-        }
+        public bool LsDvdInstalled => !string.IsNullOrEmpty(LastlsdvdVer);
 
         /// <summary>
         /// Last detected mkvmerge version
@@ -372,10 +330,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is mkvmerge installed?
         /// </summary>
-        public bool MKVMergeInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastMKVMergeVer); }
-        }
+        public bool MKVMergeInstalled => !string.IsNullOrEmpty(LastMKVMergeVer);
 
         /// <summary>
         /// Last detected mplayer version
@@ -389,10 +344,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is mplayer installed?
         /// </summary>
-        public bool MplayerInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastMplayerVer); }
-        }
+        public bool MplayerInstalled => !string.IsNullOrEmpty(LastMplayerVer);
 
         /// <summary>
         /// Last detected tsMuxeR version
@@ -406,10 +358,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is tsMuxeR installed?
         /// </summary>
-        public bool TsMuxerInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastTSMuxerVer); }
-        }
+        public bool TsMuxerInstalled => !string.IsNullOrEmpty(LastTSMuxerVer);
 
         /// <summary>
         /// Last detected AviSynth version
@@ -423,10 +372,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is AviSynth installed?
         /// </summary>
-        public bool AviSynthInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastAviSynthVer); }
-        }
+        public bool AviSynthInstalled => !string.IsNullOrEmpty(LastAviSynthVer);
 
         /// <summary>
         /// Last detected AviSynth plugins version
@@ -449,10 +395,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is BDSup2Sub installed?
         /// </summary>
-        public bool BDSup2SubInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastBDSup2SubVer); }
-        }
+        public bool BDSup2SubInstalled => !string.IsNullOrEmpty(LastBDSup2SubVer);
 
         /// <summary>
         /// Last detected mp4box version
@@ -466,10 +409,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is mp4box installed?
         /// </summary>
-        public bool MP4BoxInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastMp4BoxVer); }
-        }
+        public bool MP4BoxInstalled => !string.IsNullOrEmpty(LastMp4BoxVer);
 
         /// <summary>
         /// Last detected mjpeg tools version
@@ -483,10 +423,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is mjpeg tools installed?
         /// </summary>
-        public bool MjpegToolsInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastMJPEGToolsVer); }
-        }
+        public bool MjpegToolsInstalled => !string.IsNullOrEmpty(LastMJPEGToolsVer);
 
         /// <summary>
         /// Last detected DVDAuthor version
@@ -500,10 +437,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is DVDAuthor installed?
         /// </summary>
-        public bool DVDAuthorInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastDVDAuthorVer); }
-        }
+        public bool DVDAuthorInstalled => !string.IsNullOrEmpty(LastDVDAuthorVer);
 
         /// <summary>
         /// Last detected oggenc version
@@ -517,10 +451,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is oggenc installed?
         /// </summary>
-        public bool OggEncInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastOggEncVer); }
-        }
+        public bool OggEncInstalled => !string.IsNullOrEmpty(LastOggEncVer);
 
         /// <summary>
         /// Last detected Lancer build of oggenc
@@ -534,10 +465,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is Lancer build of oggenc installed?
         /// </summary>
-        public bool OggEncLancerInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastOggEncLancerVer); }
-        }
+        public bool OggEncLancerInstalled => !string.IsNullOrEmpty(LastOggEncLancerVer);
 
         /// <summary>
         /// Last detected NeroAacEnc version
@@ -551,10 +479,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is NeroAacEnc installed?
         /// </summary>
-        public bool NeroAacEncInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastNeroAacEncVer); }
-        }
+        public bool NeroAacEncInstalled => !string.IsNullOrEmpty(LastNeroAacEncVer);
 
         /// <summary>
         /// Last detected Lame version
@@ -568,10 +493,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is Lame installed?
         /// </summary>
-        public bool LameInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastLameVer); }
-        }
+        public bool LameInstalled => !string.IsNullOrEmpty(LastLameVer);
 
         /// <summary>
         /// Last detected 64bit Lame version
@@ -585,10 +507,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is 64bit Lame installed?
         /// </summary>
-        public bool Lame64Installed
-        {
-            get { return !String.IsNullOrEmpty(LastLame64Ver); }
-        }
+        public bool Lame64Installed => !string.IsNullOrEmpty(LastLame64Ver);
 
         /// <summary>
         /// Last detected VpxEnc version
@@ -602,10 +521,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Is VpxEnc installed?
         /// </summary>
-        public bool VpxEncInstalled
-        {
-            get { return !String.IsNullOrEmpty(LastVpxEncVer); }
-        }
+        public bool VpxEncInstalled => !string.IsNullOrEmpty(LastVpxEncVer);
 
         /// <summary>
         /// Is this the first time application launch?
@@ -921,12 +837,12 @@ namespace VideoConvert.AppServices.Services
             {
                 var strPath = GetSetting<string>(SettingConstants.TvDbCachePath);
 
-                if (string.IsNullOrEmpty(strPath))
-                {
-                    strPath = Path.Combine(CommonAppSettingsPath, "TvDBCache");
-                    if (!Directory.Exists(strPath))
-                        Directory.CreateDirectory(strPath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
-                }
+                if (!string.IsNullOrEmpty(strPath)) return strPath;
+
+                strPath = Path.Combine(CommonAppSettingsPath, "TvDBCache");
+                if (!Directory.Exists(strPath))
+                    Directory.CreateDirectory(strPath, DirSecurity.CreateDirSecurity(SecurityClass.Everybody));
+
                 return strPath;
             }
             set { SetSetting(SettingConstants.TvDbCachePath, value); }
@@ -1011,7 +927,7 @@ namespace VideoConvert.AppServices.Services
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
@@ -1032,7 +948,7 @@ namespace VideoConvert.AppServices.Services
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
@@ -1064,7 +980,7 @@ namespace VideoConvert.AppServices.Services
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
@@ -1085,7 +1001,7 @@ namespace VideoConvert.AppServices.Services
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
@@ -1093,10 +1009,7 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Global culture info
         /// </summary>
-        public CultureInfo CInfo
-        {
-            get { return CultureInfo.GetCultureInfoByIetfLanguageTag("en-US"); }
-        }
+        public CultureInfo CInfo => CultureInfo.GetCultureInfoByIetfLanguageTag("en-US");
 
         /// <summary>
         /// Version of our Updater
@@ -1120,10 +1033,7 @@ namespace VideoConvert.AppServices.Services
             }
             set
             {
-                var tVersion = String.Format("{0:0}.{1:0}.{2:0}.{3:0}", value.Major,
-                                                                           value.Minor,
-                                                                           value.Build,
-                                                                           value.Revision);
+                var tVersion = $"{value.Major:0}.{value.Minor:0}.{value.Build:0}.{value.Revision:0}";
                 SetSetting(SettingConstants.UpdaterVersion, tVersion);
             }
         }
@@ -1131,18 +1041,12 @@ namespace VideoConvert.AppServices.Services
         /// <summary>
         /// Path to our Updater
         /// </summary>
-        public string UpdaterPath
-        {
-            get { return Path.Combine(CommonAppSettingsPath, "Updater"); }
-        }
+        public string UpdaterPath => Path.Combine(CommonAppSettingsPath, "Updater");
 
         /// <summary>
         /// Path to AviSynth plugins
         /// </summary>
-        public string AvsPluginsPath
-        {
-            get { return Path.Combine(AppPath, "AvsPlugins"); }
-        }
+        public string AvsPluginsPath => Path.Combine(AppPath, "AvsPlugins");
 
         /// <summary>
         /// Get Process Priority from stored setting
@@ -1210,11 +1114,7 @@ namespace VideoConvert.AppServices.Services
         public static string GetAppVersionStr()
         {
             var version = GetAppVersion();
-            return string.Format("{0:0}.{1:0}.{2:0}.{3:0}",
-                                  version.Major, 
-                                  version.Minor, 
-                                  version.Build, 
-                                  version.Revision);
+            return $"{version.Major:0}.{version.Minor:0}.{version.Build:0}.{version.Revision:0}";
         }
 
         /// <summary>
@@ -1223,18 +1123,17 @@ namespace VideoConvert.AppServices.Services
         /// <returns>Company Name</returns>
         public static string GetCompanyName()
         {
-            var companyName = String.Empty;
+            var companyName = string.Empty;
 
             var myAssembly = GetAssembly();
             var attributes = myAssembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
 
-            if (attributes.Length > 0)
-            {
-                var aca = attributes[0] as AssemblyCompanyAttribute;
+            if (attributes.Length <= 0) return companyName;
 
-                if (aca != null)
-                    companyName = aca.Company;
-            }
+            var aca = attributes[0] as AssemblyCompanyAttribute;
+
+            if (aca != null)
+                companyName = aca.Company;
 
             return companyName;
         }
@@ -1245,18 +1144,17 @@ namespace VideoConvert.AppServices.Services
         /// <returns>Product Name</returns>
         public static string GetProductName()
         {
-            var productName = String.Empty;
+            var productName = string.Empty;
 
             var myAssembly = GetAssembly();
             var attributes = myAssembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
 
-            if (attributes.Length > 0)
-            {
-                var apa = attributes[0] as AssemblyProductAttribute;
+            if (attributes.Length <= 0) return productName;
 
-                if (apa != null)
-                    productName = apa.Product;
-            }
+            var apa = attributes[0] as AssemblyProductAttribute;
+
+            if (apa != null)
+                productName = apa.Product;
             return productName;
         }
     }

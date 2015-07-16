@@ -9,7 +9,7 @@
 
 namespace VideoConvert.AppServices.Muxer.Interfaces
 {
-    using Services.Base.Interfaces;
+    using VideoConvert.AppServices.Services.Base.Interfaces;
 
     /// <summary>
     /// IMuxerTsMuxeR interface

@@ -9,18 +9,17 @@
 
 namespace VideoConvert.AppServices.Muxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading;
-    using ThreadState = System.Threading.ThreadState;
+    using log4net;
+    using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
 
     /// <summary>
     /// The FileWorker
@@ -75,43 +74,43 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("FileCopy is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
-                this._copyThread = new Thread(CopyWorker);
-                this._copyThread.Start();
+                _copyThread = new Thread(CopyWorker);
+                _copyThread.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
         private void CopyWorker()
         {
-            if (this._currentTask.NextStep == EncodingStep.CopyTempFile)
+            if (_currentTask.NextStep == EncodingStep.CopyTempFile)
             {
-                this._inputFile = this._currentTask.InputFile;
-                this._outputFile = this._currentTask.TempInput;
+                _inputFile = _currentTask.InputFile;
+                _outputFile = _currentTask.TempInput;
             }
             else
             {
-                this._inputFile = this._currentTask.TempOutput;
-                this._outputFile = this._currentTask.OutputFile;
+                _inputFile = _currentTask.TempOutput;
+                _outputFile = _currentTask.OutputFile;
             }
 
             var fileList = new List<FileInfo>();
@@ -135,9 +134,8 @@ namespace VideoConvert.AppServices.Muxer
 
             if (isDir)
             {
-                foreach (var info in dirList)
+                foreach (var targetDir in dirList.Select(info => info.FullName.Replace(_inputFile, _outputFile)))
                 {
-                    var targetDir = info.FullName.Replace(_inputFile, _outputFile);
                     Directory.CreateDirectory(targetDir);
                 }
             }
@@ -150,19 +148,19 @@ namespace VideoConvert.AppServices.Muxer
 
 
             // handle temp files
-            if (isDir && this._currentTask.NextStep == EncodingStep.MoveOutFile)
+            if (isDir && _currentTask.NextStep == EncodingStep.MoveOutFile)
             {
                 foreach (var info in dirList)
                 {
-                    this._currentTask.TempFiles.Add(info.FullName);
+                    _currentTask.TempFiles.Add(info.FullName);
                 }
             }
 
             // finish worker
-            this._currentTask.ExitCode = 0;
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.ExitCode = 0;
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         private void ExecuteCopy(string inFile, string outFile)
@@ -173,7 +171,7 @@ namespace VideoConvert.AppServices.Muxer
                 var reportTime = DateTime.Now;
                 var totalFile = fromStream.Length;
                 long current = 0;
-                var buffer = new Byte[1048576]; // 1 mbyte buffer
+                var buffer = new byte[1048576]; // 1 mbyte buffer
                 var secRemaining = 0;
 
                 do
@@ -181,16 +179,16 @@ namespace VideoConvert.AppServices.Muxer
                     var read = fromStream.Read(buffer, 0, buffer.Length);
                     toStream.Write(buffer, 0, read);
                     current += read;
-                    this._totalCopied += read;
+                    _totalCopied += read;
 
-                    var progress = (float) this._totalCopied / this._fileSizeToCopy * 100f;
-                    var elapsedTime = DateTime.Now - this._startTime;
-                    var remainingSize = this._fileSizeToCopy - this._totalCopied;
+                    var progress = (float) _totalCopied / _fileSizeToCopy * 100f;
+                    var elapsedTime = DateTime.Now - _startTime;
+                    var remainingSize = _fileSizeToCopy - _totalCopied;
 
                     var speed = 0d;
                     if (elapsedTime.TotalSeconds > 0)
                     {
-                        speed = this._totalCopied/elapsedTime.TotalSeconds;
+                        speed = _totalCopied/elapsedTime.TotalSeconds;
                     }
 
                     if (speed > 0)
@@ -200,25 +198,24 @@ namespace VideoConvert.AppServices.Muxer
 
                     var remainingTime = TimeSpan.FromSeconds(secRemaining);
 
-                    if (reportTime.AddSeconds(1) <= DateTime.Now)
+                    if (reportTime.AddSeconds(1) > DateTime.Now) continue;
+
+                    var eventArgs = new EncodeProgressEventArgs
                     {
-                        var eventArgs = new EncodeProgressEventArgs
-                        {
-                            AverageFrameRate = 0,
-                            CurrentFrameRate = 0,
-                            EstimatedTimeLeft = remainingTime,
-                            PercentComplete = progress,
-                            ElapsedTime = elapsedTime,
-                        };
-                        this.InvokeEncodeStatusChanged(eventArgs);
-                        reportTime = DateTime.Now;
-                    }
+                        AverageFrameRate = 0,
+                        CurrentFrameRate = 0,
+                        EstimatedTimeLeft = remainingTime,
+                        PercentComplete = progress,
+                        ElapsedTime = elapsedTime,
+                    };
+                    InvokeEncodeStatusChanged(eventArgs);
+                    reportTime = DateTime.Now;
                 } while (totalFile != current);
             }
 
             // handle temp files
-            if (this._currentTask.NextStep == EncodingStep.MoveOutFile)
-                this._currentTask.TempFiles.Add(inFile);
+            if (_currentTask.NextStep == EncodingStep.MoveOutFile)
+                _currentTask.TempFiles.Add(inFile);
         }
 
         /// <summary>
@@ -228,14 +225,14 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this._copyThread != null && this._copyThread.ThreadState == ThreadState.Running)
-                    this._copyThread.Abort();
+                if (_copyThread != null && _copyThread.ThreadState == ThreadState.Running)
+                    _copyThread.Abort();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// List of Certification countries supported by TheMovieDB Lib
         /// </summary>
-        public static List<MovieDbCertCountry> CountryList { get { return GenerateCountryList(); } }
+        public static List<MovieDbCertCountry> CountryList => GenerateCountryList();
 
         /// <summary>
         /// Generates a List of Certification countries supported by TheMovieDB Lib

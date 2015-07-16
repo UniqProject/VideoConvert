@@ -9,10 +9,10 @@
 
 namespace VideoConvert.AppServices.Utilities
 {
-    using Interop.Model;
-    using Services.Interfaces;
     using System.Drawing;
     using System.Linq;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.Model;
 
     /// <summary>
     /// Avisynth helper class
@@ -27,7 +27,7 @@ namespace VideoConvert.AppServices.Utilities
         /// <param name="appConfig">Application configuration service</param>
         public AviSynthHelper(IAppConfigService appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         /// <summary>

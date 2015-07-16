@@ -32,9 +32,9 @@ namespace VideoConvert.Interop.EventArgs
         /// </param>
         public QueueCompletedEventArgs(bool sucessful, Exception exception, string errorInformation)
         {
-            this.Successful = sucessful;
-            this.Exception = exception;
-            this.ErrorInformation = errorInformation;
+            Successful = sucessful;
+            Exception = exception;
+            ErrorInformation = errorInformation;
         }
 
         /// <summary>

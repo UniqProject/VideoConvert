@@ -9,16 +9,16 @@
 
 namespace VideoConvert.AppServices.Model.Profiles
 {
-    using Interop.Model;
-    using Interop.Model.Profiles;
-    using Interop.Utilities;
-    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Xml;
     using System.Xml.Serialization;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.Profiles;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// A Helper class which handles the profile xml serialization / deserialization
@@ -122,31 +122,31 @@ namespace VideoConvert.AppServices.Model.Profiles
             var copyProfile = new StreamCopyProfile();
             importedProfiles.Add(copyProfile);
 
-            xmlProfiles.QuickSelectProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.QuickSelectProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.QuickSelectProfiles);
 
-            xmlProfiles.X264Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.X264Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.X264Profiles);
 
-            xmlProfiles.HcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.HcEncProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.HcEncProfiles);
 
-            xmlProfiles.Mpeg2VideoProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.Mpeg2VideoProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.Mpeg2VideoProfiles);
 
-            xmlProfiles.Vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.Vp8Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.Vp8Profiles);
 
-            xmlProfiles.Ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.Ac3Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.Ac3Profiles);
 
-            xmlProfiles.OggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.OggProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.OggProfiles);
 
-            xmlProfiles.Mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.Mp3Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.Mp3Profiles);
 
-            xmlProfiles.AacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            xmlProfiles.AacProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
             importedProfiles.AddRange(xmlProfiles.AacProfiles);
             xmlTextReader.Close();
 
@@ -304,35 +304,35 @@ namespace VideoConvert.AppServices.Model.Profiles
         {
             var quickSelectProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.QuickSelect).Cast<QuickSelectProfile>().ToList();
-            quickSelectProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            quickSelectProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var x264Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.X264).Cast<X264Profile>().ToList();
-            x264Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            x264Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var hcEncProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.HcEnc).Cast<HcEncProfile>().ToList();
-            hcEncProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            hcEncProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var vp8Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.Vp8).Cast<Vp8Profile>().ToList();
-            vp8Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            vp8Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var ac3Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.Ac3).Cast<Ac3Profile>().ToList();
-            ac3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            ac3Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var mp3Profiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.Mp3).Cast<Mp3Profile>().ToList();
-            mp3Profiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            mp3Profiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var oggProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.Ogg).Cast<OggProfile>().ToList();
-            oggProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            oggProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var aacProfiles =
                 ProfileList.Where(profile => profile.Type == ProfileType.Aac).Cast<AacProfile>().ToList();
-            aacProfiles.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+            aacProfiles.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
 
             var profiles = new XmlProfiles
             {

@@ -40,11 +40,10 @@ namespace VideoConvert.Interop.Model
             }
             set
             {
-                if (value != null && !value.Equals(_data))
-                {
-                    _data = value;
-                    OnPropertyChanged("Data");
-                }
+                if (value == null || value.Equals(_data)) return;
+
+                _data = value;
+                OnPropertyChanged("Data");
             }
         }
 
@@ -61,11 +60,10 @@ namespace VideoConvert.Interop.Model
             }
             set
             {
-                if (value != _isChecked)
-                {
-                    _isChecked = value;
-                    OnPropertyChanged("IsChecked");
-                }
+                if (value == _isChecked) return;
+
+                _isChecked = value;
+                OnPropertyChanged("IsChecked");
             }
         }
 
@@ -99,11 +97,10 @@ namespace VideoConvert.Interop.Model
             }
             set
             {
-                if (value != _hardcodeIntoVideo)
-                {
-                    _hardcodeIntoVideo = value;
-                    OnPropertyChanged("HardcodeIntoVideo");
-                }
+                if (value == _hardcodeIntoVideo) return;
+
+                _hardcodeIntoVideo = value;
+                OnPropertyChanged("HardcodeIntoVideo");
             }
         }
 
@@ -118,11 +115,10 @@ namespace VideoConvert.Interop.Model
             }
             set
             {
-                if (value != _matroskaDefault)
-                {
-                    _matroskaDefault = value;
-                    OnPropertyChanged("MatroskaDefault");
-                }
+                if (value == _matroskaDefault) return;
+
+                _matroskaDefault = value;
+                OnPropertyChanged("MatroskaDefault");
             }
         }
 
@@ -137,11 +133,10 @@ namespace VideoConvert.Interop.Model
             }
             set
             {
-                if (value != _keepOnlyForced)
-                {
-                    _keepOnlyForced = value;
-                    OnPropertyChanged("KeepOnlyForced");
-                }
+                if (value == _keepOnlyForced) return;
+
+                _keepOnlyForced = value;
+                OnPropertyChanged("KeepOnlyForced");
             }
         }
 
@@ -158,8 +153,7 @@ namespace VideoConvert.Interop.Model
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, e);
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -169,8 +163,7 @@ namespace VideoConvert.Interop.Model
         protected virtual void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

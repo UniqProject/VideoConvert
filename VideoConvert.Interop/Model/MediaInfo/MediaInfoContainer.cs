@@ -12,7 +12,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using Utilities;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// MediaInfo file properties
@@ -268,7 +268,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
             /// <summary>
             /// Stream frame count
             /// </summary>
-            public Int64 FrameCount;
+            public long FrameCount;
 
             /// <summary>
             /// Stream bitdepth
@@ -394,7 +394,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
             /// <summary>
             /// Stream duration
             /// </summary>
-            public Int64 Duration;
+            public long Duration;
 
             /// <summary>
             /// Stream bitrate mode
@@ -702,9 +702,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
             {
                 var videoStream = new VideoStreamInfo();
 
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamKindID);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamKindPos"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamKindPos);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "ID"), numStyle, CultureInfo.InvariantCulture, out videoStream.ID);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamKindID);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamKindPos"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamKindPos);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "ID"), numStyle, CultureInfo.InvariantCulture, out videoStream.ID);
                 videoStream.Format              = resultInfo.Get(StreamKind.Video, i, "Format");
                 videoStream.FormatInfo          = resultInfo.Get(StreamKind.Video, i, "Format/Info");
                 videoStream.FormatVersion       = resultInfo.Get(StreamKind.Video, i, "Format_Version");
@@ -719,27 +719,27 @@ namespace VideoConvert.Interop.Model.MediaInfo
                 videoStream.CodecIDDescription  = resultInfo.Get(StreamKind.Video, i, "CodecID_Description");
                 DateTime.TryParse(resultInfo.Get(StreamKind.Video, i, "Duration/String3"), CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out videoStream.DurationTime);
                 videoStream.BitRateMode         = resultInfo.Get(StreamKind.Video, i, "BitRate_Mode");
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRate);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRateMin);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRateNom);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate_Maximum"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRateMax);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "Width"), numStyle, CultureInfo.InvariantCulture, out videoStream.Width);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "Height"), numStyle, CultureInfo.InvariantCulture, out videoStream.Height);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRate);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRateMin);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRateNom);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "BitRate_Maximum"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitRateMax);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "Width"), numStyle, CultureInfo.InvariantCulture, out videoStream.Width);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "Height"), numStyle, CultureInfo.InvariantCulture, out videoStream.Height);
                 videoStream.PixelAspectRatio    = resultInfo.Get(StreamKind.Video, i, "PixelAspectRatio");
                 videoStream.DisplayAspectRatio  = resultInfo.Get(StreamKind.Video, i, "DisplayAspectRatio");
                 videoStream.FrameRateMode       = resultInfo.Get(StreamKind.Video, i, "FrameRate_Mode");
 
-                Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRate);
+                float.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRate);
                 VideoHelper.GetFpsNumDenom(videoStream.FrameRate, out videoStream.FrameRateEnumerator, out videoStream.FrameRateDenominator);
 
-                Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateMin);
-                Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateNom);
-                Single.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Maximum"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateMax);
-                Int64.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameCount"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameCount);
-                Int32.TryParse(resultInfo.Get(StreamKind.Video, i, "BitDepth"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitDepth);
+                float.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateMin);
+                float.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateNom);
+                float.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameRate_Maximum"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameRateMax);
+                long.TryParse(resultInfo.Get(StreamKind.Video, i, "FrameCount"), numStyle, CultureInfo.InvariantCulture, out videoStream.FrameCount);
+                int.TryParse(resultInfo.Get(StreamKind.Video, i, "BitDepth"), numStyle, CultureInfo.InvariantCulture, out videoStream.BitDepth);
                 videoStream.ScanType            = resultInfo.Get(StreamKind.Video, i, "ScanType");
                 videoStream.ScanOrder           = resultInfo.Get(StreamKind.Video, i, "ScanOrder");
-                UInt64.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamSize);
+                ulong.TryParse(resultInfo.Get(StreamKind.Video, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out videoStream.StreamSize);
                 videoStream.EncodedApplication  = resultInfo.Get(StreamKind.Video, i, "Encoded_Application");
                 videoStream.EncodedApplicationUrl = resultInfo.Get(StreamKind.Video, i, "Encoded_Application/Url");
                 videoStream.EncodedLibrary      = resultInfo.Get(StreamKind.Video, i, "Encoded_Library");
@@ -783,9 +783,9 @@ namespace VideoConvert.Interop.Model.MediaInfo
             {
                 var audioStream = new AudioStreamInfo();
 
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamKindID);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamKindPos"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamKindPos);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "ID"), numStyle, CultureInfo.InvariantCulture, out audioStream.ID);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamKindID);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamKindPos"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamKindPos);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "ID"), numStyle, CultureInfo.InvariantCulture, out audioStream.ID);
                 audioStream.Format              = resultInfo.Get(StreamKind.Audio, i, "Format");
                 audioStream.FormatInfo          = resultInfo.Get(StreamKind.Audio, i, "Format/Info");
                 audioStream.FormatVersion       = resultInfo.Get(StreamKind.Audio, i, "Format_Version");
@@ -794,20 +794,20 @@ namespace VideoConvert.Interop.Model.MediaInfo
                 audioStream.CodecIDInfo         = resultInfo.Get(StreamKind.Audio, i, "CodecID/Info");
                 audioStream.CodecIDUrl          = resultInfo.Get(StreamKind.Audio, i, "CodecID/Url");
                 audioStream.CodecIDDescription  = resultInfo.Get(StreamKind.Audio, i, "CodecID_Description");
-                Int64.TryParse(resultInfo.Get(StreamKind.Audio, i, "Duration"), numStyle, CultureInfo.InvariantCulture, out audioStream.Duration);
+                long.TryParse(resultInfo.Get(StreamKind.Audio, i, "Duration"), numStyle, CultureInfo.InvariantCulture, out audioStream.Duration);
                 audioStream.BitRateMode         = resultInfo.Get(StreamKind.Audio, i, "BitRate_Mode");
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRate);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRateMin);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRateNom);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate_Maximum"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRateMax);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "Channel(s)"), numStyle, CultureInfo.InvariantCulture, out audioStream.Channels);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRate);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate_Minimum"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRateMin);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate_Nominal"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRateNom);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitRate_Maximum"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitRateMax);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "Channel(s)"), numStyle, CultureInfo.InvariantCulture, out audioStream.Channels);
                 audioStream.ChannelsString      = resultInfo.Get(StreamKind.Audio, i, "Channel(s)/String");
                 audioStream.ChannelPositions    = resultInfo.Get(StreamKind.Audio, i, "ChannelPositions");
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "SamplingRate"), numStyle, CultureInfo.InvariantCulture, out audioStream.SamplingRate);
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitDepth"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitDepth);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "SamplingRate"), numStyle, CultureInfo.InvariantCulture, out audioStream.SamplingRate);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "BitDepth"), numStyle, CultureInfo.InvariantCulture, out audioStream.BitDepth);
                 audioStream.CompressionMode     = resultInfo.Get(StreamKind.Audio, i, "Compression_Mode");
-                Int32.TryParse(resultInfo.Get(StreamKind.Audio, i, "Delay"), numStyle, CultureInfo.InvariantCulture, out audioStream.Delay);
-                UInt64.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamSize);
+                int.TryParse(resultInfo.Get(StreamKind.Audio, i, "Delay"), numStyle, CultureInfo.InvariantCulture, out audioStream.Delay);
+                ulong.TryParse(resultInfo.Get(StreamKind.Audio, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out audioStream.StreamSize);
                 audioStream.EncodedLibrary      = resultInfo.Get(StreamKind.Audio, i, "Encoded_Library");
                 audioStream.EncodedLibraryName  = resultInfo.Get(StreamKind.Audio, i, "Encoded_Library/Name");
                 audioStream.EncodedLibraryVersion = resultInfo.Get(StreamKind.Audio, i, "Encoded_Library/Version");
@@ -826,11 +826,11 @@ namespace VideoConvert.Interop.Model.MediaInfo
             {
                 var imageStream = new ImageStreamInfo();
 
-                Int32.TryParse(resultInfo.Get(StreamKind.Image, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out imageStream.StreamKindID);
-                Int32.TryParse(resultInfo.Get(StreamKind.Image, i, "ID"), numStyle, CultureInfo.InvariantCulture, out imageStream.ID);
+                int.TryParse(resultInfo.Get(StreamKind.Image, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out imageStream.StreamKindID);
+                int.TryParse(resultInfo.Get(StreamKind.Image, i, "ID"), numStyle, CultureInfo.InvariantCulture, out imageStream.ID);
                 imageStream.Format                  = resultInfo.Get(StreamKind.Image, i, "Format");
                 imageStream.CodecIDInfo             = resultInfo.Get(StreamKind.Image, i, "CodecID/Info");
-                UInt64.TryParse(resultInfo.Get(StreamKind.Image, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out imageStream.StreamSize);
+                ulong.TryParse(resultInfo.Get(StreamKind.Image, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out imageStream.StreamSize);
                 imageStream.LanguageFull            = resultInfo.Get(StreamKind.Image, i, "Language/String1");
                 imageStream.LanguageIso6392         = resultInfo.Get(StreamKind.Image, i, "Language/String3");
 
@@ -843,12 +843,12 @@ namespace VideoConvert.Interop.Model.MediaInfo
             {
                 var textStream = new TextStreamInfo();
 
-                Int32.TryParse(resultInfo.Get(StreamKind.Text, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out textStream.StreamKindID);
-                Int32.TryParse(resultInfo.Get(StreamKind.Text, i, "ID"), numStyle, CultureInfo.InvariantCulture, out textStream.ID);
+                int.TryParse(resultInfo.Get(StreamKind.Text, i, "StreamKindID"), numStyle, CultureInfo.InvariantCulture, out textStream.StreamKindID);
+                int.TryParse(resultInfo.Get(StreamKind.Text, i, "ID"), numStyle, CultureInfo.InvariantCulture, out textStream.ID);
                 textStream.Format                   = resultInfo.Get(StreamKind.Text, i, "Format");
                 textStream.CodecIDInfo              = resultInfo.Get(StreamKind.Text, i, "CodecID/Info");
-                Int32.TryParse(resultInfo.Get(StreamKind.Text, i, "Delay"), numStyle, CultureInfo.InvariantCulture, out textStream.Delay);
-                UInt64.TryParse(resultInfo.Get(StreamKind.Text, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out textStream.StreamSize);
+                int.TryParse(resultInfo.Get(StreamKind.Text, i, "Delay"), numStyle, CultureInfo.InvariantCulture, out textStream.Delay);
+                ulong.TryParse(resultInfo.Get(StreamKind.Text, i, "StreamSize"), numStyle, CultureInfo.InvariantCulture, out textStream.StreamSize);
                 textStream.LanguageFull             = resultInfo.Get(StreamKind.Text, i, "Language/String1");
                 textStream.LanguageIso6392          = resultInfo.Get(StreamKind.Text, i, "Language/String3");
 
@@ -861,8 +861,8 @@ namespace VideoConvert.Interop.Model.MediaInfo
             {
                 var menuStream = new MenuStreamInfo();
                 
-                Int32.TryParse(resultInfo.Get(StreamKind.Menu, i, "Chapters_Pos_Begin"), numStyle, CultureInfo.InvariantCulture, out menuStream.ChaptersPosBegin);
-                Int32.TryParse(resultInfo.Get(StreamKind.Menu, i, "Chapters_Pos_End"), numStyle, CultureInfo.InvariantCulture, out menuStream.ChaptersPosEnd);
+                int.TryParse(resultInfo.Get(StreamKind.Menu, i, "Chapters_Pos_Begin"), numStyle, CultureInfo.InvariantCulture, out menuStream.ChaptersPosBegin);
+                int.TryParse(resultInfo.Get(StreamKind.Menu, i, "Chapters_Pos_End"), numStyle, CultureInfo.InvariantCulture, out menuStream.ChaptersPosEnd);
 
                 for (var j = menuStream.ChaptersPosBegin; j < menuStream.ChaptersPosEnd; j++)
                 {

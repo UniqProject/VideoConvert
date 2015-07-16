@@ -9,9 +9,6 @@
 
 namespace VideoConvertWPF.ViewModels
 {
-    using Caliburn.Micro;
-    using Interfaces;
-    using Microsoft.WindowsAPICodePack.Dialogs;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -19,9 +16,12 @@ namespace VideoConvertWPF.ViewModels
     using System.Reflection;
     using System.Threading.Tasks;
     using System.Windows.Media;
+    using Caliburn.Micro;
+    using Microsoft.WindowsAPICodePack.Dialogs;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model.MediaInfo;
+    using VideoConvertWPF.ViewModels.Interfaces;
     using Action = System.Action;
 
     public class OptionsViewModel : ViewModelBase, IOptionsViewModel
@@ -91,16 +91,14 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return string.IsNullOrEmpty(this._statusLabel) ? "Ready" : this._statusLabel;
+                return string.IsNullOrEmpty(_statusLabel) ? "Ready" : _statusLabel;
             }
 
             set
             {
-                if (!Equals(this._statusLabel, value))
-                {
-                    this._statusLabel = value;
-                    this.NotifyOfPropertyChange(() => this.StatusLabel);
-                }
+                if (Equals(_statusLabel, value)) return;
+                _statusLabel = value;
+                NotifyOfPropertyChange(() => StatusLabel);
             }
         }
 
@@ -108,30 +106,27 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showStatusWindow;
+                return _showStatusWindow;
             }
 
             set
             {
-                this._showStatusWindow = value;
-                this.NotifyOfPropertyChange(() => this.ShowStatusWindow);
+                _showStatusWindow = value;
+                NotifyOfPropertyChange(() => ShowStatusWindow);
             }
         }
 
         public string WindowTitle
         {
-            get { return this.Title; }
+            get { return Title; }
             set
             {
-                this.Title = value;
-                this.NotifyOfPropertyChange(() => this.Title);
+                Title = value;
+                NotifyOfPropertyChange(() => Title);
             }
         }
 
-        public string Version
-        {
-            get { return AppConfigService.GetAppVersionStr(); }
-        }
+        public string Version => AppConfigService.GetAppVersionStr();
 
         public int SelectedTab
         {
@@ -142,7 +137,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _selectedTab = value;
-                this.NotifyOfPropertyChange(() => this.SelectedTab);
+                NotifyOfPropertyChange(() => SelectedTab);
             }
         }
 
@@ -155,7 +150,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _keepStreamOrder = value;
-                this.NotifyOfPropertyChange(() => this.KeepStreamOrder);
+                NotifyOfPropertyChange(() => KeepStreamOrder);
             }
         }
 
@@ -168,7 +163,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _filterLoopingPlaylists = value;
-                this.NotifyOfPropertyChange(() => this.FilterLoopingPlaylists);
+                NotifyOfPropertyChange(() => FilterLoopingPlaylists);
             }
         }
 
@@ -181,7 +176,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _filterShortPlaylists = value;
-                this.NotifyOfPropertyChange(() => this.FilterShortPlaylists);
+                NotifyOfPropertyChange(() => FilterShortPlaylists);
             }
         }
 
@@ -194,7 +189,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _filterShortPlaylistsValue = value;
-                this.NotifyOfPropertyChange(() => this.FilterShortPlaylistsValue);
+                NotifyOfPropertyChange(() => FilterShortPlaylistsValue);
             }
         }
 
@@ -207,7 +202,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _enableSsifScan = value;
-                this.NotifyOfPropertyChange(() => this.EnableSsifScan);
+                NotifyOfPropertyChange(() => EnableSsifScan);
             }
         }
 
@@ -220,7 +215,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _useHardwareRendering = value;
-                this.NotifyOfPropertyChange(() => this.UseHardwareRendering);
+                NotifyOfPropertyChange(() => UseHardwareRendering);
             }
         }
 
@@ -233,7 +228,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _showChangeLog = value;
-                this.NotifyOfPropertyChange(() => this.ShowChangeLog);
+                NotifyOfPropertyChange(() => ShowChangeLog);
             }
         }
 
@@ -246,7 +241,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _processPriority = value;
-                this.NotifyOfPropertyChange(() => this.ProcessPriority);
+                NotifyOfPropertyChange(() => ProcessPriority);
             }
         }
 
@@ -259,7 +254,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _updateFrequency = value;
-                this.NotifyOfPropertyChange(() => this.UpdateFrequency);
+                NotifyOfPropertyChange(() => UpdateFrequency);
             }
         }
 
@@ -272,7 +267,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _lastUpdateRun = value;
-                this.NotifyOfPropertyChange(() => this.LastUpdateRun);
+                NotifyOfPropertyChange(() => LastUpdateRun);
             }
         }
 
@@ -285,7 +280,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _createXbmcInfoFile = value;
-                this.NotifyOfPropertyChange(() => this.CreateXbmcInfoFile);
+                NotifyOfPropertyChange(() => CreateXbmcInfoFile);
             }
         }
 
@@ -298,7 +293,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _limitDecoderThreads = value;
-                this.NotifyOfPropertyChange(() => this.LimitDecoderThreads);
+                NotifyOfPropertyChange(() => LimitDecoderThreads);
             }
         }
 
@@ -311,7 +306,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _useOptimizedEncoders = value;
-                this.NotifyOfPropertyChange(() => this.UseOptimizedEncoders);
+                NotifyOfPropertyChange(() => UseOptimizedEncoders);
             }
         }
 
@@ -324,7 +319,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _useFfmpegScaling = value;
-                this.NotifyOfPropertyChange(() => this.UseFfmpegScaling);
+                NotifyOfPropertyChange(() => UseFfmpegScaling);
             }
         }
 
@@ -337,7 +332,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _use64BitEncoders = value;
-                this.NotifyOfPropertyChange(() => this.Use64BitEncoders);
+                NotifyOfPropertyChange(() => Use64BitEncoders);
             }
         }
 
@@ -350,7 +345,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _deleteTemporaryFiles = value;
-                this.NotifyOfPropertyChange(() => this.DeleteTemporaryFiles);
+                NotifyOfPropertyChange(() => DeleteTemporaryFiles);
             }
         }
 
@@ -363,7 +358,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _deleteCompletedJobs = value;
-                this.NotifyOfPropertyChange(() => this.DeleteCompletedJobs);
+                NotifyOfPropertyChange(() => DeleteCompletedJobs);
             }
         }
 
@@ -376,7 +371,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _javaInstallPath = value;
-                this.NotifyOfPropertyChange(() => this.JavaInstallPath);
+                NotifyOfPropertyChange(() => JavaInstallPath);
             }
         }
 
@@ -389,7 +384,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _toolsPath = value;
-                this.NotifyOfPropertyChange(() => this.ToolsPath);
+                NotifyOfPropertyChange(() => ToolsPath);
             }
         }
 
@@ -402,7 +397,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _outputLocation = value;
-                this.NotifyOfPropertyChange(() => this.OutputLocation);
+                NotifyOfPropertyChange(() => OutputLocation);
             }
         }
 
@@ -415,7 +410,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _demuxLocation = value;
-                this.NotifyOfPropertyChange(() => this.DemuxLocation);
+                NotifyOfPropertyChange(() => DemuxLocation);
             }
         }
 
@@ -428,7 +423,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tvDbFallbackLanguage = value;
-                this.NotifyOfPropertyChange(() => this.TvDbFallbackLanguage);
+                NotifyOfPropertyChange(() => TvDbFallbackLanguage);
             }
         }
 
@@ -441,7 +436,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tvDbPreferredLanguage = value;
-                this.NotifyOfPropertyChange(() => this.TvDbPreferredLanguage);
+                NotifyOfPropertyChange(() => TvDbPreferredLanguage);
             }
         }
 
@@ -454,7 +449,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tvDbParseString = value;
-                this.NotifyOfPropertyChange(() => this.TvDbParseString);
+                NotifyOfPropertyChange(() => TvDbParseString);
             }
         }
 
@@ -467,7 +462,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tvDbCachePath = value;
-                this.NotifyOfPropertyChange(() => this.TvDbCachePath);
+                NotifyOfPropertyChange(() => TvDbCachePath);
             }
         }
 
@@ -480,7 +475,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbRatingSrc = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbRatingSrc);
+                NotifyOfPropertyChange(() => MovieDbRatingSrc);
             }
         }
 
@@ -493,7 +488,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbFallbackCertPrefix = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbFallbackCertPrefix);
+                NotifyOfPropertyChange(() => MovieDbFallbackCertPrefix);
             }
         }
 
@@ -506,7 +501,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbLastFallbackRatingCountry = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbLastFallbackRatingCountry);
+                NotifyOfPropertyChange(() => MovieDbLastFallbackRatingCountry);
             }
         }
 
@@ -519,7 +514,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbPreferredCertPrefix = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbPreferredCertPrefix);
+                NotifyOfPropertyChange(() => MovieDbPreferredCertPrefix);
             }
         }
 
@@ -532,7 +527,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbLastRatingCountry = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbLastRatingCountry);
+                NotifyOfPropertyChange(() => MovieDbLastRatingCountry);
             }
         }
 
@@ -545,7 +540,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbLastFallbackLanguage = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbLastFallbackLanguage);
+                NotifyOfPropertyChange(() => MovieDbLastFallbackLanguage);
             }
         }
 
@@ -558,7 +553,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _movieDbLastLanguage = value;
-                this.NotifyOfPropertyChange(() => this.MovieDbLastLanguage);
+                NotifyOfPropertyChange(() => MovieDbLastLanguage);
             }
         }
 
@@ -571,7 +566,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRAddVideoPps = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRAddVideoPps);
+                NotifyOfPropertyChange(() => TsMuxeRAddVideoPps);
             }
         }
 
@@ -584,7 +579,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRVideoTimingInfo = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRVideoTimingInfo);
+                NotifyOfPropertyChange(() => TsMuxeRVideoTimingInfo);
             }
         }
 
@@ -597,7 +592,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRBlurayAudioPes = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRBlurayAudioPes);
+                NotifyOfPropertyChange(() => TsMuxeRBlurayAudioPes);
             }
         }
 
@@ -610,7 +605,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRUseAsyncIo = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRUseAsyncIo);
+                NotifyOfPropertyChange(() => TsMuxeRUseAsyncIo);
             }
         }
 
@@ -623,7 +618,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRBottomOffset = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRBottomOffset);
+                NotifyOfPropertyChange(() => TsMuxeRBottomOffset);
             }
         }
 
@@ -636,7 +631,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxerSubtitleAdditionalBorder = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxerSubtitleAdditionalBorder);
+                NotifyOfPropertyChange(() => TsMuxerSubtitleAdditionalBorder);
             }
         }
 
@@ -649,7 +644,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRSubtitleColor = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRSubtitleColor);
+                NotifyOfPropertyChange(() => TsMuxeRSubtitleColor);
             }
         }
 
@@ -662,7 +657,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRSubtitleFontSize = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRSubtitleFontSize);
+                NotifyOfPropertyChange(() => TsMuxeRSubtitleFontSize);
             }
         }
 
@@ -675,7 +670,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _tsMuxeRSubtitleFont = value;
-                this.NotifyOfPropertyChange(() => this.TsMuxeRSubtitleFont);
+                NotifyOfPropertyChange(() => TsMuxeRSubtitleFont);
             }
         }
 
@@ -688,7 +683,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _encoderList = value;
-                this.NotifyOfPropertyChange(()=>this.EncoderList);
+                NotifyOfPropertyChange(()=>EncoderList);
             }
         }
 
@@ -701,7 +696,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _reloadButtonEnabled = value;
-                this.NotifyOfPropertyChange(() => this.ReloadButtonEnabled);
+                NotifyOfPropertyChange(() => ReloadButtonEnabled);
             }
         }
 
@@ -709,11 +704,11 @@ namespace VideoConvertWPF.ViewModels
 
         public OptionsViewModel(IShellViewModel shellViewModel, IWindowManager windowManager, IAppConfigService config)
         {
-            this._shellViewModel = shellViewModel;
-            this.WindowManager = windowManager;
-            this._configService = config;
-            this.WindowTitle = "Options";
-            this._configService.PropertyChanged += AppConfigOnSettingChanged;
+            _shellViewModel = shellViewModel;
+            WindowManager = windowManager;
+            _configService = config;
+            WindowTitle = "Options";
+            _configService.PropertyChanged += AppConfigOnSettingChanged;
         }
 
         public override void OnLoad()
@@ -728,69 +723,69 @@ namespace VideoConvertWPF.ViewModels
         protected void LoadSettings()
         {
             // General 
-            this.KeepStreamOrder = this._configService.KeepStreamOrder;
-            this.FilterLoopingPlaylists = this._configService.FilterLoopingPlaylists;
-            this.FilterShortPlaylists = this._configService.FilterShortPlaylists;
-            this.FilterShortPlaylistsValue = this._configService.FilterShortPlaylistsValue;
-            this.EnableSsifScan = this._configService.EnableSSIF;
+            KeepStreamOrder = _configService.KeepStreamOrder;
+            FilterLoopingPlaylists = _configService.FilterLoopingPlaylists;
+            FilterShortPlaylists = _configService.FilterShortPlaylists;
+            FilterShortPlaylistsValue = _configService.FilterShortPlaylistsValue;
+            EnableSsifScan = _configService.EnableSSIF;
 
             // System
-            this.ProcessPriority = this._configService.ProcessPriority;
-            this.UseHardwareRendering = this._configService.UseHardwareRendering;
-            this.ShowChangeLog = this._configService.ShowChangeLog;
+            ProcessPriority = _configService.ProcessPriority;
+            UseHardwareRendering = _configService.UseHardwareRendering;
+            ShowChangeLog = _configService.ShowChangeLog;
 
             // Autoupdate
-            this.UpdateFrequency = this._configService.UpdateFrequency;
-            this.LastUpdateRun = this._configService.LastUpdateRun;
+            UpdateFrequency = _configService.UpdateFrequency;
+            LastUpdateRun = _configService.LastUpdateRun;
 
             // Encoding
-            this.DeleteCompletedJobs = this._configService.DeleteCompletedJobs;
-            this.DeleteTemporaryFiles = this._configService.DeleteTemporaryFiles;
-            this.Use64BitEncoders = this._configService.Use64BitEncoders;
-            this.UseFfmpegScaling = this._configService.UseFfmpegScaling;
-            this.UseOptimizedEncoders = this._configService.UseOptimizedEncoders;
-            this.LimitDecoderThreads = this._configService.LimitDecoderThreads;
-            this.CreateXbmcInfoFile = this._configService.CreateXbmcInfoFile;
+            DeleteCompletedJobs = _configService.DeleteCompletedJobs;
+            DeleteTemporaryFiles = _configService.DeleteTemporaryFiles;
+            Use64BitEncoders = _configService.Use64BitEncoders;
+            UseFfmpegScaling = _configService.UseFfmpegScaling;
+            UseOptimizedEncoders = _configService.UseOptimizedEncoders;
+            LimitDecoderThreads = _configService.LimitDecoderThreads;
+            CreateXbmcInfoFile = _configService.CreateXbmcInfoFile;
 
             // Directories
-            this.DemuxLocation = this._configService.DemuxLocation;
-            this.OutputLocation = this._configService.OutputLocation;
+            DemuxLocation = _configService.DemuxLocation;
+            OutputLocation = _configService.OutputLocation;
 
             //Encoder
-            this.ToolsPath = this._configService.ToolsPath;
-            this.JavaInstallPath = this._configService.JavaInstallPath;
+            ToolsPath = _configService.ToolsPath;
+            JavaInstallPath = _configService.JavaInstallPath;
 
             // MovieDB Settings
-            this.MovieDbLastLanguage = this._configService.MovieDBLastLanguage;
-            this.MovieDbLastFallbackLanguage = this._configService.MovieDBLastFallbackLanguage;
-            this.MovieDbLastRatingCountry = this._configService.MovieDBLastRatingCountry;
-            this.MovieDbPreferredCertPrefix = this._configService.MovieDBPreferredCertPrefix;
-            this.MovieDbLastFallbackRatingCountry = this._configService.MovieDBLastFallbackRatingCountry;
-            this.MovieDbFallbackCertPrefix = this._configService.MovieDBFallbackCertPrefix;
-            this.MovieDbRatingSrc = this._configService.MovieDBRatingSrc;
+            MovieDbLastLanguage = _configService.MovieDBLastLanguage;
+            MovieDbLastFallbackLanguage = _configService.MovieDBLastFallbackLanguage;
+            MovieDbLastRatingCountry = _configService.MovieDBLastRatingCountry;
+            MovieDbPreferredCertPrefix = _configService.MovieDBPreferredCertPrefix;
+            MovieDbLastFallbackRatingCountry = _configService.MovieDBLastFallbackRatingCountry;
+            MovieDbFallbackCertPrefix = _configService.MovieDBFallbackCertPrefix;
+            MovieDbRatingSrc = _configService.MovieDBRatingSrc;
 
             // TheTVDB Settings
-            this.TvDbCachePath = this._configService.TvDBCachePath;
-            this.TvDbParseString = this._configService.TvDBParseString;
-            this.TvDbPreferredLanguage = this._configService.TvDBPreferredLanguage;
-            this.TvDbFallbackLanguage = this._configService.TvDBFallbackLanguage;
+            TvDbCachePath = _configService.TvDBCachePath;
+            TvDbParseString = _configService.TvDBParseString;
+            TvDbPreferredLanguage = _configService.TvDBPreferredLanguage;
+            TvDbFallbackLanguage = _configService.TvDBFallbackLanguage;
 
             // tsMuxeR Settings
-            this.TsMuxeRUseAsyncIo = this._configService.TSMuxeRUseAsyncIO;
-            this.TsMuxeRBlurayAudioPes = this._configService.TSMuxeRBlurayAudioPES;
-            this.TsMuxeRVideoTimingInfo = this._configService.TSMuxeRVideoTimingInfo;
-            this.TsMuxeRAddVideoPps = this._configService.TSMuxeRAddVideoPPS;
+            TsMuxeRUseAsyncIo = _configService.TSMuxeRUseAsyncIO;
+            TsMuxeRBlurayAudioPes = _configService.TSMuxeRBlurayAudioPES;
+            TsMuxeRVideoTimingInfo = _configService.TSMuxeRVideoTimingInfo;
+            TsMuxeRAddVideoPps = _configService.TSMuxeRAddVideoPPS;
 
             // Subtitles
-            this.TsMuxeRSubtitleFont = this._configService.TSMuxeRSubtitleFont;
-            this.TsMuxeRSubtitleFontSize = this._configService.TSMuxeRSubtitleFontSize;
+            TsMuxeRSubtitleFont = _configService.TSMuxeRSubtitleFont;
+            TsMuxeRSubtitleFontSize = _configService.TSMuxeRSubtitleFontSize;
 
-            var fromString = ColorConverter.ConvertFromString(this._configService.TSMuxeRSubtitleColor);
+            var fromString = ColorConverter.ConvertFromString(_configService.TSMuxeRSubtitleColor);
             if (fromString != null)
-                this.TsMuxeRSubtitleColor = (Color) fromString;
+                TsMuxeRSubtitleColor = (Color) fromString;
 
-            this.TsMuxerSubtitleAdditionalBorder = this._configService.TSMuxerSubtitleAdditionalBorder;
-            this.TsMuxeRBottomOffset = this._configService.TSMuxeRBottomOffset;
+            TsMuxerSubtitleAdditionalBorder = _configService.TSMuxerSubtitleAdditionalBorder;
+            TsMuxeRBottomOffset = _configService.TSMuxeRBottomOffset;
         }
 
         private void AppConfigOnSettingChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -799,78 +794,78 @@ namespace VideoConvertWPF.ViewModels
             {
                 case "LastUpdateRun":
                     // fix wrong date displayed after an update check
-                    this.LastUpdateRun = this._configService.LastUpdateRun;
+                    LastUpdateRun = _configService.LastUpdateRun;
                     break;
             }
         }
 
         public void Close()
         {
-            this.Save();
-            this._shellViewModel.DisplayWindow(ShellWin.MainView);
+            Save();
+            _shellViewModel.DisplayWindow(ShellWin.MainView);
         }
 
         private void Save()
         {
             // General 
-            this._configService.KeepStreamOrder = this.KeepStreamOrder;
-            this._configService.FilterLoopingPlaylists = this.FilterLoopingPlaylists;
-            this._configService.FilterShortPlaylists = this.FilterShortPlaylists;
-            this._configService.FilterShortPlaylistsValue = this.FilterShortPlaylistsValue;
-            this._configService.EnableSSIF = this.EnableSsifScan;
+            _configService.KeepStreamOrder = KeepStreamOrder;
+            _configService.FilterLoopingPlaylists = FilterLoopingPlaylists;
+            _configService.FilterShortPlaylists = FilterShortPlaylists;
+            _configService.FilterShortPlaylistsValue = FilterShortPlaylistsValue;
+            _configService.EnableSSIF = EnableSsifScan;
 
             // System
-            this._configService.ProcessPriority = this.ProcessPriority;
-            this._configService.UseHardwareRendering = this.UseHardwareRendering;
-            this._configService.ShowChangeLog = this.ShowChangeLog;
+            _configService.ProcessPriority = ProcessPriority;
+            _configService.UseHardwareRendering = UseHardwareRendering;
+            _configService.ShowChangeLog = ShowChangeLog;
 
             // Autoupdate
-            this._configService.UpdateFrequency = this.UpdateFrequency;
+            _configService.UpdateFrequency = UpdateFrequency;
 
             // Encoding
-            this._configService.DeleteCompletedJobs = this.DeleteCompletedJobs;
-            this._configService.DeleteTemporaryFiles = this.DeleteTemporaryFiles;
-            this._configService.Use64BitEncoders = this.Use64BitEncoders;
-            this._configService.UseFfmpegScaling = this.UseFfmpegScaling;
-            this._configService.UseOptimizedEncoders = this.UseOptimizedEncoders;
-            this._configService.LimitDecoderThreads = this.LimitDecoderThreads;
-            this._configService.CreateXbmcInfoFile = this.CreateXbmcInfoFile;
+            _configService.DeleteCompletedJobs = DeleteCompletedJobs;
+            _configService.DeleteTemporaryFiles = DeleteTemporaryFiles;
+            _configService.Use64BitEncoders = Use64BitEncoders;
+            _configService.UseFfmpegScaling = UseFfmpegScaling;
+            _configService.UseOptimizedEncoders = UseOptimizedEncoders;
+            _configService.LimitDecoderThreads = LimitDecoderThreads;
+            _configService.CreateXbmcInfoFile = CreateXbmcInfoFile;
 
             // Directories
-            this._configService.DemuxLocation = this.DemuxLocation;
-            this._configService.OutputLocation = this.OutputLocation;
+            _configService.DemuxLocation = DemuxLocation;
+            _configService.OutputLocation = OutputLocation;
 
             //Encoder
-            this._configService.ToolsPath = this.ToolsPath;
-            this._configService.JavaInstallPath = this.JavaInstallPath;
+            _configService.ToolsPath = ToolsPath;
+            _configService.JavaInstallPath = JavaInstallPath;
 
             // MovieDB Settings
-            this._configService.MovieDBLastLanguage = this.MovieDbLastLanguage;
-            this._configService.MovieDBLastFallbackLanguage = this.MovieDbLastFallbackLanguage;
-            this._configService.MovieDBLastRatingCountry = this.MovieDbLastRatingCountry;
-            this._configService.MovieDBPreferredCertPrefix = this.MovieDbPreferredCertPrefix;
-            this._configService.MovieDBLastFallbackRatingCountry = this.MovieDbLastFallbackRatingCountry;
-            this._configService.MovieDBFallbackCertPrefix = this.MovieDbFallbackCertPrefix;
-            this._configService.MovieDBRatingSrc = this.MovieDbRatingSrc;
+            _configService.MovieDBLastLanguage = MovieDbLastLanguage;
+            _configService.MovieDBLastFallbackLanguage = MovieDbLastFallbackLanguage;
+            _configService.MovieDBLastRatingCountry = MovieDbLastRatingCountry;
+            _configService.MovieDBPreferredCertPrefix = MovieDbPreferredCertPrefix;
+            _configService.MovieDBLastFallbackRatingCountry = MovieDbLastFallbackRatingCountry;
+            _configService.MovieDBFallbackCertPrefix = MovieDbFallbackCertPrefix;
+            _configService.MovieDBRatingSrc = MovieDbRatingSrc;
 
             // TheTVDB Settings
-            this._configService.TvDBCachePath = this.TvDbCachePath;
-            this._configService.TvDBParseString = this.TvDbParseString;
-            this._configService.TvDBPreferredLanguage = this.TvDbPreferredLanguage;
-            this._configService.TvDBFallbackLanguage = this.TvDbFallbackLanguage;
+            _configService.TvDBCachePath = TvDbCachePath;
+            _configService.TvDBParseString = TvDbParseString;
+            _configService.TvDBPreferredLanguage = TvDbPreferredLanguage;
+            _configService.TvDBFallbackLanguage = TvDbFallbackLanguage;
 
             // tsMuxeR Settings
-            this._configService.TSMuxeRUseAsyncIO = this.TsMuxeRUseAsyncIo;
-            this._configService.TSMuxeRBlurayAudioPES = this.TsMuxeRBlurayAudioPes;
-            this._configService.TSMuxeRVideoTimingInfo = this.TsMuxeRVideoTimingInfo;
-            this._configService.TSMuxeRAddVideoPPS = this.TsMuxeRAddVideoPps;
+            _configService.TSMuxeRUseAsyncIO = TsMuxeRUseAsyncIo;
+            _configService.TSMuxeRBlurayAudioPES = TsMuxeRBlurayAudioPes;
+            _configService.TSMuxeRVideoTimingInfo = TsMuxeRVideoTimingInfo;
+            _configService.TSMuxeRAddVideoPPS = TsMuxeRAddVideoPps;
 
             // Subtitles
-            this._configService.TSMuxeRSubtitleFont = this.TsMuxeRSubtitleFont;
-            this._configService.TSMuxeRSubtitleFontSize = this.TsMuxeRSubtitleFontSize;
-            this._configService.TSMuxeRSubtitleColor = this.TsMuxeRSubtitleColor.ToString();
-            this._configService.TSMuxerSubtitleAdditionalBorder = this.TsMuxerSubtitleAdditionalBorder;
-            this._configService.TSMuxeRBottomOffset = this.TsMuxeRBottomOffset;
+            _configService.TSMuxeRSubtitleFont = TsMuxeRSubtitleFont;
+            _configService.TSMuxeRSubtitleFontSize = TsMuxeRSubtitleFontSize;
+            _configService.TSMuxeRSubtitleColor = TsMuxeRSubtitleColor.ToString();
+            _configService.TSMuxerSubtitleAdditionalBorder = TsMuxerSubtitleAdditionalBorder;
+            _configService.TSMuxeRBottomOffset = TsMuxeRBottomOffset;
         }
 
         public void SelectTempLocation()
@@ -903,17 +898,17 @@ namespace VideoConvertWPF.ViewModels
 
         public async void ReloadEncoders()
         {
-            this.ReloadButtonEnabled = false;
-            this.StatusLabel = "Reloading Encoder List";
-            this.ShowStatusWindow = true;
+            ReloadButtonEnabled = false;
+            StatusLabel = "Reloading Encoder List";
+            ShowStatusWindow = true;
 
             await Task.Run(new Action(LoadEncoders));
 
             await Task.Run(new Action(CreateEncoderList));
 
-            this.ReloadButtonEnabled = true;
-            this.StatusLabel = "Ready";
-            this.ShowStatusWindow = false;
+            ReloadButtonEnabled = true;
+            StatusLabel = "Ready";
+            ShowStatusWindow = false;
         }
 
         public void LoadEncoders()
@@ -930,33 +925,33 @@ namespace VideoConvertWPF.ViewModels
             var mi = new MediaInfo();
             var miVer = mi.Option("Info_Version");
             mi.Close();
-            this.EncoderList = new Dictionary<string, string>
+            EncoderList = new Dictionary<string, string>
             {
-                {"x264", this._configService.Lastx264Ver},
-                {"x264 64bit", this._configService.Lastx26464Ver},
-                {"ffmpeg", this._configService.LastffmpegVer},
-                {"ffmpeg 64bit", this._configService.Lastffmpeg64Ver},
-                {"eac3to", this._configService.Lasteac3ToVer},
-                {"lsdvd", this._configService.LastlsdvdVer},
-                {"MkvToolnix", this._configService.LastMKVMergeVer},
-                {"mplayer", this._configService.LastMplayerVer},
-                {"tsMuxeR", this._configService.LastTSMuxerVer},
-                {"MJPEG tools", this._configService.LastMJPEGToolsVer},
-                {"DVDAuthor", this._configService.LastDVDAuthorVer},
-                {"MP4Box", this._configService.LastMp4BoxVer},
-                {"HCenc", this._configService.LastHcEncVer},
-                {"OggEnc2", this._configService.LastOggEncVer},
-                {"OggEnc2 Lancer Build", this._configService.LastOggEncLancerVer},
-                {"NeroAacEnc", this._configService.LastNeroAacEncVer},
-                {"LAME", this._configService.LastLameVer},
-                {"LAME 64bit", this._configService.LastLame64Ver},
-                {"vpxEnc", this._configService.LastVpxEncVer},
-                {"BDSup2Sub", this._configService.LastBDSup2SubVer},
-                {"BDInfo Library", string.Format("{0:g}.{1:g}.{2:g}", bdVersion.Major, bdVersion.Minor, bdVersion.Build)},
+                {"x264", _configService.Lastx264Ver},
+                {"x264 64bit", _configService.Lastx26464Ver},
+                {"ffmpeg", _configService.LastffmpegVer},
+                {"ffmpeg 64bit", _configService.Lastffmpeg64Ver},
+                {"eac3to", _configService.Lasteac3ToVer},
+                {"lsdvd", _configService.LastlsdvdVer},
+                {"MkvToolnix", _configService.LastMKVMergeVer},
+                {"mplayer", _configService.LastMplayerVer},
+                {"tsMuxeR", _configService.LastTSMuxerVer},
+                {"MJPEG tools", _configService.LastMJPEGToolsVer},
+                {"DVDAuthor", _configService.LastDVDAuthorVer},
+                {"MP4Box", _configService.LastMp4BoxVer},
+                {"HCenc", _configService.LastHcEncVer},
+                {"OggEnc2", _configService.LastOggEncVer},
+                {"OggEnc2 Lancer Build", _configService.LastOggEncLancerVer},
+                {"NeroAacEnc", _configService.LastNeroAacEncVer},
+                {"LAME", _configService.LastLameVer},
+                {"LAME 64bit", _configService.LastLame64Ver},
+                {"vpxEnc", _configService.LastVpxEncVer},
+                {"BDSup2Sub", _configService.LastBDSup2SubVer},
+                {"BDInfo Library", $"{bdVersion.Major:g}.{bdVersion.Minor:g}.{bdVersion.Build:g}"},
                 {"MediaInfo Library", miVer.Replace("MediaInfoLib - v", string.Empty)},
-                {"AviSynth", this._configService.LastAviSynthVer}
+                {"AviSynth", _configService.LastAviSynthVer}
             };
-            this.ReloadButtonEnabled = true;
+            ReloadButtonEnabled = true;
         }
 
         public void SelectJavaLocation()

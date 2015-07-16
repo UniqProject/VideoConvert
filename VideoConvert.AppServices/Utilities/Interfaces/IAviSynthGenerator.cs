@@ -9,8 +9,8 @@
 
 namespace VideoConvert.AppServices.Utilities.Interfaces
 {
-    using Interop.Model;
     using System.Drawing;
+    using VideoConvert.Interop.Model;
 
     /// <summary>
     /// The AviSynth Generator Interface
@@ -68,17 +68,5 @@ namespace VideoConvert.AppServices.Utilities.Interfaces
         string GenerateAudioScript(string inputFile, string inFormat, string inFormatProfile, 
             int inChannels, int outChannels, int inSampleRate, 
             int outSampleRate);
-
-        /// <summary>
-        /// Imports NicAudio plugin
-        /// </summary>
-        /// <returns></returns>
-        string ImportNicAudio();
-
-        /// <summary>
-        /// Imports ffmpegsource (ffms2) plugin
-        /// </summary>
-        /// <returns></returns>
-        string ImportFfmpegSource();
     }
 }

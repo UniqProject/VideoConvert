@@ -64,12 +64,11 @@ namespace VideoConvert.Interop.Model.x264
             if (oDevice != null && oDevice.ReferenceFrames > -1)
                 iDefaultSetting = Math.Min(oDevice.ReferenceFrames, iDefaultSetting);
 
-            if (iLevel > -1 && hRes > 0 && vRes > 0)
-            {
-                var iMaxRefForLevel = GetMaxRefForLevel(iLevel, hRes, vRes);
-                if (iMaxRefForLevel > -1 && iMaxRefForLevel < iDefaultSetting)
-                    iDefaultSetting = iMaxRefForLevel;
-            }
+            if (iLevel <= -1 || hRes <= 0 || vRes <= 0) return iDefaultSetting;
+
+            var iMaxRefForLevel = GetMaxRefForLevel(iLevel, hRes, vRes);
+            if (iMaxRefForLevel > -1 && iMaxRefForLevel < iDefaultSetting)
+                iDefaultSetting = iMaxRefForLevel;
 
             return iDefaultSetting;
         }
@@ -245,14 +244,14 @@ namespace VideoConvert.Interop.Model.x264
         /// <returns></returns>
         public static int GetMinLevelForRes(int hRes, int vRes, int fpsN, int fpsD, int bitrate, int encMode, int avcProfile)
         {
-            float fps = (float) fpsN / fpsD;
+            var fps = (float) fpsN / fpsD;
 
-            int mBlocksWidth = (int) Math.Ceiling((double) hRes / 16);
-            int mBlocksHeight = (int) Math.Ceiling((double) vRes / 16);
+            var mBlocksWidth = (int) Math.Ceiling((double) hRes / 16);
+            var mBlocksHeight = (int) Math.Ceiling((double) vRes / 16);
 
-            int mBlocksSec = (int) Math.Ceiling(mBlocksWidth * mBlocksHeight * fps);
+            var mBlocksSec = (int) Math.Ceiling(mBlocksWidth * mBlocksHeight * fps);
 
-            int avcLevel = 16;
+            var avcLevel = 16;
 
             if (mBlocksSec <= 1485)
                 avcLevel = 0; // avc level 1 / 1b

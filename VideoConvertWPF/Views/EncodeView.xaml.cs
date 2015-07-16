@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="EncodeView.xaml.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
+//   This file is part of the VideoConvertWPF source code - It may be used under the terms of the GNU General Public License.
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 namespace VideoConvertWPF.Views
 {
     /// <summary>
     /// Interaction logic for EncodeView.xaml
     /// </summary>
-    public partial class EncodeView : UserControl
+    public partial class EncodeView
     {
         public EncodeView()
         {

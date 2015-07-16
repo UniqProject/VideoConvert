@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Model.IMDB
 {
-    using log4net;
     using System;
     using System.IO;
     using System.Net;
     using System.Xml;
     using System.Xml.Serialization;
+    using log4net;
 
     /// <summary>
     /// IMDB client
@@ -71,9 +71,8 @@ namespace VideoConvert.Interop.Model.IMDB
         {
             ImdbMovieData result;
 
-            var request = new Uri(string.Format("/?id={0}&type=xml&plot={1}&aka={2}&release={3}", movieID,
-                                                fullPlot ? "full" : "simple", fullAka ? "full" : "simple",
-                                                fullReleaseDates ? "full" : "simple"), UriKind.Relative);
+            var request = new Uri(
+                $"/?id={movieID}&type=xml&plot={(fullPlot ? "full" : "simple")}&aka={(fullAka ? "full" : "simple")}&release={(fullReleaseDates ? "full" : "simple")}", UriKind.Relative);
 
             var data = _client.DownloadData(request);
             using (var dataStream = new MemoryStream(data))

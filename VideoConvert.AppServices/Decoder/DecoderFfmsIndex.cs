@@ -9,17 +9,17 @@
 
 namespace VideoConvert.AppServices.Decoder
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Decoder.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
 
     /// <summary>
     /// The DecoderFfmsIndex
@@ -66,7 +66,7 @@ namespace VideoConvert.AppServices.Decoder
         /// </param>
         public DecoderFfmsIndex(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -91,56 +91,56 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("ffmsindex is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.AvsPluginsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.AvsPluginsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.DecodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: ffmsindex {0}", query);
+                DecodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: ffmsindex {query}");
 
-                this.DecodeProcess.Start();
+                DecodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.DecodeProcess.OutputDataReceived += DecodeProcessDataReceived;
-                this.DecodeProcess.BeginOutputReadLine();
+                DecodeProcess.OutputDataReceived += DecodeProcessDataReceived;
+                DecodeProcess.BeginOutputReadLine();
 
-                this._decoderProcessId = this.DecodeProcess.Id;
+                _decoderProcessId = DecodeProcess.Id;
 
-                if (this._decoderProcessId != -1)
+                if (_decoderProcessId != -1)
                 {
-                    this.DecodeProcess.EnableRaisingEvents = true;
-                    this.DecodeProcess.Exited += DecodeProcessExited;
+                    DecodeProcess.EnableRaisingEvents = true;
+                    DecodeProcess.Exited += DecodeProcessExited;
                 }
 
-                this.DecodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                DecodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
 
                 
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -151,16 +151,16 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
+                if (DecodeProcess != null && !DecodeProcess.HasExited)
                 {
-                    this.DecodeProcess.Kill();
+                    DecodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -179,9 +179,9 @@ namespace VideoConvert.AppServices.Decoder
         {
             var sb = new StringBuilder();
 
-            this._inputFile = this._currentTask.VideoStream.TempFile;
+            _inputFile = _currentTask.VideoStream.TempFile;
 
-            sb.AppendFormat("-f -t -1 \"{0}\"", this._inputFile);
+            sb.Append($"-f -t -1 \"{_inputFile}\"");
 
             return sb.ToString();
         }
@@ -199,24 +199,24 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                this.DecodeProcess.CancelOutputRead();
+                DecodeProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = DecodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = DecodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                this._currentTask.FfIndexFile = this._inputFile + ".ffindex";
+                _currentTask.FfIndexFile = _inputFile + ".ffindex";
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -226,9 +226,9 @@ namespace VideoConvert.AppServices.Decoder
         /// <param name="e"></param>
         private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -236,7 +236,7 @@ namespace VideoConvert.AppServices.Decoder
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            var elapsedTime = DateTime.Now - this._startTime;
+            var elapsedTime = DateTime.Now - _startTime;
 
             var result = _regObj.Match(line);
             if (result.Success)
@@ -266,10 +266,10 @@ namespace VideoConvert.AppServices.Decoder
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
             }
             else
-                Log.InfoFormat("ffmsindex: {0}", line);
+                Log.Info($"ffmsindex: {line}");
         }
 
         #endregion

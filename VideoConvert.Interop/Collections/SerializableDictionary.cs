@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SerializableDictionary.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
-//   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
+//   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
 //   Settings Serializer
@@ -11,6 +11,8 @@ namespace VideoConvert.Interop.Collections
 {
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Xml;
+    using System.Xml.Schema;
     using System.Xml.Serialization;
 
     /// <summary>
@@ -29,7 +31,7 @@ namespace VideoConvert.Interop.Collections
         /// <returns>
         /// Nothing. We don't use this.
         /// </returns>
-        public System.Xml.Schema.XmlSchema GetSchema()
+        public XmlSchema GetSchema()
         {
             return null;
         }
@@ -40,7 +42,7 @@ namespace VideoConvert.Interop.Collections
         /// <param name="reader">
         /// The reader.
         /// </param>
-        public void ReadXml(System.Xml.XmlReader reader)
+        public void ReadXml(XmlReader reader)
         {
             var keySerializer = new XmlSerializer(typeof(TKey));
             var valueSerializer = new XmlSerializer(typeof(TValue));
@@ -51,7 +53,7 @@ namespace VideoConvert.Interop.Collections
             if (wasEmpty)
                 return;
 
-            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            while (reader.NodeType != XmlNodeType.EndElement)
             {
                 reader.ReadStartElement("item");
 
@@ -72,7 +74,7 @@ namespace VideoConvert.Interop.Collections
                 }
                 reader.ReadEndElement();
 
-                this.Add(key, value);
+                Add(key, value);
 
                 reader.ReadEndElement();
                 reader.MoveToContent();
@@ -86,12 +88,12 @@ namespace VideoConvert.Interop.Collections
         /// <param name="writer">
         /// The writer.
         /// </param>
-        public void WriteXml(System.Xml.XmlWriter writer)
+        public void WriteXml(XmlWriter writer)
         {
             var keySerializer = new XmlSerializer(typeof(TKey));
             var valueSerializer = new XmlSerializer(typeof(TValue));
 
-            foreach (var key in this.Keys)
+            foreach (var key in Keys)
             {
                 writer.WriteStartElement("item");
 

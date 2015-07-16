@@ -9,7 +9,6 @@
 
 namespace VideoConvert.Interop.Model
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -101,7 +100,7 @@ namespace VideoConvert.Interop.Model
         {
             var stream = GenerateList().Find(sf =>
                                                           {
-                                                              if (!String.IsNullOrEmpty(sf._profile))
+                                                              if (!string.IsNullOrEmpty(sf._profile))
                                                                   return sf._name.Equals(format.ToLowerInvariant()) &&
                                                                          sf._profile.Equals(
                                                                              formatProfile.ToLowerInvariant());

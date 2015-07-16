@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
-    using log4net;
-    using Model.Subtitles;
     using System;
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using log4net;
+    using VideoConvert.Interop.Model.Subtitles;
 
     /// <summary>
     /// SRT Subtitle reader class
@@ -34,7 +34,7 @@ namespace VideoConvert.Interop.Utilities.Subtitles
             var result = new TextSubtitle();
             if (!File.Exists(fileName))
             {
-                Log.DebugFormat("File \"{0}\" doesn't exist. Aborting file import", fileName);
+                Log.Debug($"File \"{fileName}\" doesn't exist. Aborting file import");
                 return result;
             }
 

@@ -165,24 +165,24 @@ namespace VideoConvert.Interop.Model
         {
             var result = string.Empty;
 
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.ID:              {0:g} {1:s}", Id, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.StreamID:        {0:g} {1:s}", StreamId, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.Format:          {0:s} {1:s}", Format, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.FormatProfile:   {0:s} {1:s}", FormatProfile, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.LangCode:        {0:s} {1:s}", LangCode,      Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.ShortLang:       {0:s} {1:s}", ShortLang,     Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.TempFile:        {0:s} {1:s}", TempFile,      Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.OriginalID:      {0:g} {1:s}", OriginalId,    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.StreamKindID:    {0:g} {1:s}", StreamKindId,  Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.Delay:           {0:g} {1:s}", Delay,         Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.Bitrate:         {0:g} {1:s}", Bitrate,       Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.DemuxStreamID:   {0:g} {1:s}", DemuxStreamId, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.SampleRate:      {0:g} {1:s}", SampleRate,    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.ChannelCount:    {0:g} {1:s}", ChannelCount,  Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.StreamSize:      {0:g} {1:s}", StreamSize,    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.Length:          {0:g} {1:s}", Length,        Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.IsHDStream:      {0:g} {1:s}", IsHdStream,    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "AudioInfo.MkvDefault:      {0:g} {1:s}", MkvDefault,    Environment.NewLine);
+            result += $"AudioInfo.ID:              {Id:0} {Environment.NewLine}";
+            result += $"AudioInfo.StreamID:        {StreamId:0} {Environment.NewLine}";
+            result += $"AudioInfo.Format:          {Format} {Environment.NewLine}";
+            result += $"AudioInfo.FormatProfile:   {FormatProfile} {Environment.NewLine}";
+            result += $"AudioInfo.LangCode:        {LangCode} {Environment.NewLine}";
+            result += $"AudioInfo.ShortLang:       {ShortLang} {Environment.NewLine}";
+            result += $"AudioInfo.TempFile:        {TempFile} {Environment.NewLine}";
+            result += $"AudioInfo.OriginalID:      {OriginalId:0} {Environment.NewLine}";
+            result += $"AudioInfo.StreamKindID:    {StreamKindId:0} {Environment.NewLine}";
+            result += $"AudioInfo.Delay:           {Delay:0} {Environment.NewLine}";
+            result += $"AudioInfo.Bitrate:         {Bitrate:0} {Environment.NewLine}";
+            result += $"AudioInfo.DemuxStreamID:   {DemuxStreamId:0} {Environment.NewLine}";
+            result += $"AudioInfo.SampleRate:      {SampleRate:0} {Environment.NewLine}";
+            result += $"AudioInfo.ChannelCount:    {ChannelCount:0} {Environment.NewLine}";
+            result += $"AudioInfo.StreamSize:      {StreamSize:0} {Environment.NewLine}";
+            result += $"AudioInfo.Length:          {Length:0.###} {Environment.NewLine}".ToString(CultureInfo.InvariantCulture);
+            result += $"AudioInfo.IsHDStream:      {IsHdStream} {Environment.NewLine}";
+            result += $"AudioInfo.MkvDefault:      {MkvDefault} {Environment.NewLine}";
 
             return result;
 

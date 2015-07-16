@@ -64,12 +64,11 @@ namespace VideoConvert.Interop.Model.TheMovieDB
             // Use awesomeness of Activator
             var tmp = Activator.CreateInstance<T>();
             var serializer = new XmlSerializer(tmp.GetType());
-            if (doc.DocumentElement != null)
-            {
-                var objectToSerialize = (T)serializer.Deserialize(new XmlNodeReader(doc.DocumentElement));
-                return objectToSerialize;
-            }
-            return default(T);
+
+            if (doc.DocumentElement == null) return default(T);
+
+            var objectToSerialize = (T)serializer.Deserialize(new XmlNodeReader(doc.DocumentElement));
+            return objectToSerialize;
         }
     }
 }

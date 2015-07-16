@@ -10,7 +10,6 @@
 namespace VideoConvert.Interop.Model
 {
     using System;
-    using System.Globalization;
 
     /// <summary>
     /// contains information for a subtitle stream
@@ -141,15 +140,15 @@ namespace VideoConvert.Interop.Model
         {
             var result = string.Empty;
 
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.ID:              {0:g} {1:s}", Id,              Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamID:        {0:g} {1:s}", StreamId,        Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.Format:          {0:s} {1:s}", Format,          Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.LangCode:        {0:s} {1:s}", LangCode,        Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.TempFile:        {0:s} {1:s}", TempFile,        Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamKindID:    {0:g} {1:s}", StreamKindId,    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.Delay:           {0:g} {1:s}", Delay,           Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.DemuxStreamID:   {0:g} {1:s}", DemuxStreamId,   Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleInfo.StreamSize:      {0:g} {1:s}", StreamSize,      Environment.NewLine);
+            result += $"SubtitleInfo.ID:              {Id:0} {Environment.NewLine}";
+            result += $"SubtitleInfo.StreamID:        {StreamId:0} {Environment.NewLine}";
+            result += $"SubtitleInfo.Format:          {Format} {Environment.NewLine}";
+            result += $"SubtitleInfo.LangCode:        {LangCode} {Environment.NewLine}";
+            result += $"SubtitleInfo.TempFile:        {TempFile} {Environment.NewLine}";
+            result += $"SubtitleInfo.StreamKindID:    {StreamKindId:0} {Environment.NewLine}";
+            result += $"SubtitleInfo.Delay:           {Delay:0} {Environment.NewLine}";
+            result += $"SubtitleInfo.DemuxStreamID:   {DemuxStreamId:0} {Environment.NewLine}";
+            result += $"SubtitleInfo.StreamSize:      {StreamSize:0} {Environment.NewLine}";
             
             return result;
         }

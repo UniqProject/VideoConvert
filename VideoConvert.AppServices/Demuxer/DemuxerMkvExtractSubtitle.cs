@@ -9,18 +9,18 @@
 
 namespace VideoConvert.AppServices.Demuxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Demuxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
     using VideoConvert.Interop.Utilities;
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// </param>
         public DemuxerMkvExtractSubtitle(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -93,9 +93,9 @@ namespace VideoConvert.AppServices.Demuxer
         /// <returns>Encoder version</returns>
         public static string GetVersionInfo(string encPath)
         {
-            string verInfo = string.Empty;
+            var verInfo = string.Empty;
 
-            string localExecutable = Path.Combine(encPath, Executable);
+            var localExecutable = Path.Combine(encPath, Executable);
 
             using (var encoder = new Process())
             {
@@ -116,15 +116,15 @@ namespace VideoConvert.AppServices.Demuxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("mkvextract exception: {0}", ex);
+                    Log.Error($"mkvextract exception: {ex}");
                 }
 
                 if (started)
                 {
-                    string output = encoder.StandardOutput.ReadToEnd();
+                    var output = encoder.StandardOutput.ReadToEnd();
                     var regObj = new Regex(@"mkvextract v([\d\.]+ \(.*\)).*$",
                         RegexOptions.Singleline | RegexOptions.Multiline);
-                    Match result = regObj.Match(output);
+                    var result = regObj.Match(output);
                     if (result.Success)
                         verInfo = result.Groups[1].Value;
 
@@ -137,7 +137,7 @@ namespace VideoConvert.AppServices.Demuxer
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("mkvextract \"{0}\" found", verInfo);
+                Log.Debug($"mkvextract \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -153,54 +153,54 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("mkvextract is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
-                string query = GenerateCommandLine();
-                string cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var query = GenerateCommandLine();
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: mkvextract {0}", query);
+                EncodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: mkvextract {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
+                EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
+                EncodeProcess.BeginOutputReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -211,16 +211,16 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -248,32 +248,32 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                this.EncodeProcess.CancelOutputRead();
+                EncodeProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode <= 1)
+            if (_currentTask.ExitCode <= 1)
             {
-                this._currentTask.ExitCode = 0;
-                this._currentTask.TempFiles.Add(this._inputFile);
-                this._subtitle.RawStream = true;
-                this._subtitle.TempFile = this._outputFile;
-                if (this._subtitle.Format == "VobSub")
+                _currentTask.ExitCode = 0;
+                _currentTask.TempFiles.Add(_inputFile);
+                _subtitle.RawStream = true;
+                _subtitle.TempFile = _outputFile;
+                if (_subtitle.Format == "VobSub")
                 {
-                    this._currentTask.TempFiles.Add(this._outputFile);
-                    this._subtitle.TempFile = Path.ChangeExtension(this._outputFile, "idx");
+                    _currentTask.TempFiles.Add(_outputFile);
+                    _subtitle.TempFile = Path.ChangeExtension(_outputFile, "idx");
                 }
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -283,9 +283,9 @@ namespace VideoConvert.AppServices.Demuxer
         /// <param name="e"></param>
         private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -293,7 +293,7 @@ namespace VideoConvert.AppServices.Demuxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Match result = _demuxRegex.Match(line);
+            var result = _demuxRegex.Match(line);
 
             if (result.Success)
             {
@@ -301,10 +301,10 @@ namespace VideoConvert.AppServices.Demuxer
                 double processingSpeed = 0f;
                 var secRemaining = 0;
                 
-                Int32.TryParse(result.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo, out progress);
-                int remaining = 100 - progress;
+                int.TryParse(result.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo, out progress);
+                var remaining = 100 - progress;
 
-                var elapsedTime = DateTime.Now.Subtract(this._startTime);
+                var elapsedTime = DateTime.Now.Subtract(_startTime);
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = progress / elapsedTime.TotalSeconds;
@@ -322,11 +322,11 @@ namespace VideoConvert.AppServices.Demuxer
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
                 
             }
             else
-                Log.InfoFormat("mkvextract: {0}", line);
+                Log.Info($"mkvextract: {line}");
         }
 
         private string GenerateCommandLine()
@@ -334,14 +334,14 @@ namespace VideoConvert.AppServices.Demuxer
             var sb = new StringBuilder();
             sb.Append(DefaultParams);
 
-            this._subtitle = this._currentTask.SubtitleStreams[this._currentTask.StreamId];
-            this._inputFile = this._subtitle.TempFile;
-            string ext = StreamFormat.GetFormatExtension(this._subtitle.Format, "", true);
-            string formattedExt = string.Format("raw.{0}", ext);
+            _subtitle = _currentTask.SubtitleStreams[_currentTask.StreamId];
+            _inputFile = _subtitle.TempFile;
+            var ext = StreamFormat.GetFormatExtension(_subtitle.Format, "", true);
+            string formattedExt = $"raw.{ext}";
 
-            this._outputFile = FileSystemHelper.CreateTempFile(this._appConfig.TempPath, this._inputFile, formattedExt);
+            _outputFile = FileSystemHelper.CreateTempFile(_appConfig.TempPath, _inputFile, formattedExt);
 
-            sb.AppendFormat("tracks \"{0}\" 0:\"{1}\" ", this._inputFile, this._outputFile);
+            sb.Append($"tracks \"{_inputFile}\" 0:\"{_outputFile}\" ");
 
             return sb.ToString();
         }

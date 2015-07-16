@@ -9,7 +9,6 @@
 
 namespace VideoConvert.Interop.DataProviders
 {
-    using Model;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -18,7 +17,8 @@ namespace VideoConvert.Interop.DataProviders
     using TvdbLib;
     using TvdbLib.Cache;
     using TvdbLib.Data;
-    using Utilities;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// TVDB Language container

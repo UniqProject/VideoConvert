@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="GeneralApplicationException.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
-//   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
+//   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
 //   General Application exception
@@ -30,9 +30,9 @@ namespace VideoConvert.Interop.Exceptions
         /// </param>
         public GeneralApplicationException(string error, string solution, Exception innerException)
         {
-            this.Error = error;
-            this.Solution = solution;
-            this.ActualException = innerException;
+            Error = error;
+            Solution = solution;
+            ActualException = innerException;
         }
 
         /// <summary>

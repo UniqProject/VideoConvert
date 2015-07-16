@@ -9,19 +9,19 @@
 
 namespace VideoConvert.AppServices.Demuxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Demuxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The DemuxerMplayer
@@ -69,7 +69,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// </param>
         public DemuxerMplayer(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -112,7 +112,7 @@ namespace VideoConvert.AppServices.Demuxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("mplayer exception: {0}", ex);
+                    Log.Error($"mplayer exception: {ex}");
                 }
 
                 if (started)
@@ -133,7 +133,7 @@ namespace VideoConvert.AppServices.Demuxer
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("mplayer \"{0}\" found", verInfo);
+                Log.Debug($"mplayer \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -149,54 +149,54 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("mplayer is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.DemuxProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: mplayer {0}", query);
+                DemuxProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: mplayer {query}");
 
-                this.DemuxProcess.Start();
+                DemuxProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.DemuxProcess.OutputDataReceived += DemuxProcessDataReceived;
-                this.DemuxProcess.BeginOutputReadLine();
+                DemuxProcess.OutputDataReceived += DemuxProcessDataReceived;
+                DemuxProcess.BeginOutputReadLine();
 
-                this._demuxerProcessId = this.DemuxProcess.Id;
+                _demuxerProcessId = DemuxProcess.Id;
 
-                if (this._demuxerProcessId != -1)
+                if (_demuxerProcessId != -1)
                 {
-                    this.DemuxProcess.EnableRaisingEvents = true;
-                    this.DemuxProcess.Exited += DemuxProcessExited;
+                    DemuxProcess.EnableRaisingEvents = true;
+                    DemuxProcess.Exited += DemuxProcessExited;
                 }
 
-                this.DemuxProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                DemuxProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -207,16 +207,16 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.DemuxProcess != null && !this.DemuxProcess.HasExited)
+                if (DemuxProcess != null && !DemuxProcess.HasExited)
                 {
-                    this.DemuxProcess.Kill();
+                    DemuxProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -244,19 +244,19 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                this.DemuxProcess.CancelOutputRead();
+                DemuxProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = DemuxProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = DemuxProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -266,9 +266,9 @@ namespace VideoConvert.AppServices.Demuxer
         /// <param name="e"></param>
         private void DemuxProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -281,8 +281,8 @@ namespace VideoConvert.AppServices.Demuxer
             if (result.Success)
             {
                 float progress;
-                Single.TryParse(result.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo, out progress);
-                var elapsedTime = DateTime.Now - this._startTime;
+                float.TryParse(result.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo, out progress);
+                var elapsedTime = DateTime.Now - _startTime;
 
                 double processingSpeed = 0f;
                 var secRemaining = 0;
@@ -303,43 +303,44 @@ namespace VideoConvert.AppServices.Demuxer
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
                 
             }
             else
-                Log.InfoFormat("mplayer: {0}", line);
+                Log.Info($"mplayer: {line}");
         }
 
         private string GenerateCommandLine()
         {
             var sb = new StringBuilder();
 
-            this._inputFile = this._currentTask.InputFile;
-            this._outputFile =
-                FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation,
-                                                string.IsNullOrEmpty(this._currentTask.TempOutput)
-                                                    ? this._currentTask.OutputFile
-                                                    : this._currentTask.TempOutput,
+            _inputFile = _currentTask.InputFile;
+            _outputFile =
+                FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
+                                                string.IsNullOrEmpty(_currentTask.TempOutput)
+                                                    ? _currentTask.OutputFile
+                                                    : _currentTask.TempOutput,
                                                 "dump.mpg");
 
-            this._currentTask.DumpOutput = this._outputFile;
+            _currentTask.DumpOutput = _outputFile;
 
             var chapterText = string.Empty;
-            if (this._currentTask.SelectedDvdChapters.Length > 0)
+            if (_currentTask.SelectedDvdChapters.Length > 0)
             {
-                var posMinus = this._currentTask.SelectedDvdChapters.IndexOf('-');
-                chapterText = string.Format(posMinus == -1 ? "-chapter {0}-{0}" : "-chapter {0}",
-                                            this._currentTask.SelectedDvdChapters);
+                var posDash = _currentTask.SelectedDvdChapters.IndexOf('-');
+
+                chapterText = $"-chapter {_currentTask.SelectedDvdChapters}";
+                if (posDash == -1)
+                    chapterText += $"-{_currentTask.SelectedDvdChapters}";
             }
 
-            if (string.IsNullOrEmpty(Path.GetDirectoryName(this._inputFile)))
+            if (string.IsNullOrEmpty(Path.GetDirectoryName(_inputFile)))
             {
-                var pos = this._inputFile.LastIndexOf(Path.DirectorySeparatorChar);
-                this._inputFile = this._inputFile.Remove(pos);
+                var pos = _inputFile.LastIndexOf(Path.DirectorySeparatorChar);
+                _inputFile = _inputFile.Remove(pos);
             }
 
-            sb.AppendFormat("-dvd-device \"{0}\" dvdnav://{1:g} {3} -nocache -dumpstream -dumpfile \"{2}\"",
-                            this._inputFile, this._currentTask.TrackId, this._outputFile, chapterText);
+            sb.Append($"-dvd-device \"{_inputFile}\" dvdnav://{_currentTask.TrackId:0} {chapterText} -nocache -dumpstream -dumpfile \"{_outputFile}\"");
 
             return sb.ToString();
         }

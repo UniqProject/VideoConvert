@@ -9,12 +9,6 @@
 
 namespace VideoConvert.AppServices.Muxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -22,6 +16,12 @@ namespace VideoConvert.AppServices.Muxer
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
     using VideoConvert.Interop.Utilities;
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace VideoConvert.AppServices.Muxer
         /// </param>
         public MuxerTsMuxeR(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -113,7 +113,7 @@ namespace VideoConvert.AppServices.Muxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("tsmuxer exception: {0}", ex);
+                    Log.Error($"tsmuxer exception: {ex}");
                 }
 
                 if (started)
@@ -134,7 +134,7 @@ namespace VideoConvert.AppServices.Muxer
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("tsmuxer \"{0}\" found", verInfo);
+                Log.Debug($"tsmuxer \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -150,51 +150,51 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                     throw new Exception("tsmuxer is already running");
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: tsmuxer {0}", query);
+                EncodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: tsmuxer {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
+                EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
+                EncodeProcess.BeginOutputReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -205,16 +205,16 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -242,28 +242,28 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                this.EncodeProcess.CancelOutputRead();
+                EncodeProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
-                foreach (var item in this._currentTask.AudioStreams)
-                    this._currentTask.TempFiles.Add(item.TempFile);
-                foreach (var item in this._currentTask.SubtitleStreams)
-                    this._currentTask.TempFiles.Add(item.TempFile);
+                _currentTask.TempFiles.Add(_currentTask.VideoStream.TempFile);
+                foreach (var item in _currentTask.AudioStreams)
+                    _currentTask.TempFiles.Add(item.TempFile);
+                foreach (var item in _currentTask.SubtitleStreams)
+                    _currentTask.TempFiles.Add(item.TempFile);
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -273,9 +273,9 @@ namespace VideoConvert.AppServices.Muxer
         /// <param name="e"></param>
         private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -288,13 +288,13 @@ namespace VideoConvert.AppServices.Muxer
             if (result.Success)
             {
                 float progress;
-                Single.TryParse(result.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo,
+                float.TryParse(result.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo,
                     out progress);
 
                 double processingSpeed = 0f;
                 var secRemaining = 0;
                 double remaining = 100 - progress;
-                var elapsedTime = DateTime.Now.Subtract(this._startTime);
+                var elapsedTime = DateTime.Now.Subtract(_startTime);
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = progress / elapsedTime.TotalSeconds;
@@ -312,10 +312,10 @@ namespace VideoConvert.AppServices.Muxer
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
             }
             else
-                Log.InfoFormat("tsmuxer: {0}", line);
+                Log.Info($"tsmuxer: {line}");
         }
 
         private string GenerateCommandLine()
@@ -323,21 +323,21 @@ namespace VideoConvert.AppServices.Muxer
             var sb = new StringBuilder();
             var meta = new StringBuilder();
 
-            this._outputFile = !string.IsNullOrEmpty(this._currentTask.TempOutput)
-                                ? this._currentTask.TempOutput
-                                : this._currentTask.OutputFile;
+            _outputFile = !string.IsNullOrEmpty(_currentTask.TempOutput)
+                                ? _currentTask.TempOutput
+                                : _currentTask.OutputFile;
 
             var vidStream = 0;
             string codec;
 
             meta.Append("MUXOPT --no-pcr-on-video-pid ");
 
-            if (this._appConfig.TSMuxeRBlurayAudioPES)
+            if (_appConfig.TSMuxeRBlurayAudioPES)
                 meta.Append("--new-audio-pes ");
 
             meta.Append("--vbr ");
 
-            switch (this._currentTask.EncodingProfile.OutFormat)
+            switch (_currentTask.EncodingProfile.OutFormat)
             {
                 case OutputType.OutputM2Ts:
                 case OutputType.OutputTs:
@@ -350,39 +350,39 @@ namespace VideoConvert.AppServices.Muxer
                     break;
             }
 
-            switch (this._currentTask.EncodingProfile.OutFormat)
+            switch (_currentTask.EncodingProfile.OutFormat)
             {
                 case OutputType.OutputBluRay:
                 case OutputType.OutputAvchd:
-                    var targetSize = VideoHelper.GetVideoDimensions(this._currentTask.VideoStream.PicSize,
-                                                                     this._currentTask.VideoStream.AspectRatio,
-                                                                     this._currentTask.EncodingProfile.OutFormat);
-                    if (this._currentTask.VideoStream.Width < targetSize.Width ||
-                        this._currentTask.VideoStream.Height < targetSize.Height)
+                    var targetSize = VideoHelper.GetVideoDimensions(_currentTask.VideoStream.PicSize,
+                                                                     _currentTask.VideoStream.AspectRatio,
+                                                                     _currentTask.EncodingProfile.OutFormat);
+                    if (_currentTask.VideoStream.Width < targetSize.Width ||
+                        _currentTask.VideoStream.Height < targetSize.Height)
                         meta.Append("--insertBlankPL ");
                     break;
             }
 
-            if (this._currentTask.Chapters.Count > 1)
+            if (_currentTask.Chapters.Count > 1)
             {
                 var chapTimes = new List<string>();
                 var actualTime = new TimeSpan();
-                var isDvd = this._currentTask.Input == InputType.InputDvd;
+                var isDvd = _currentTask.Input == InputType.InputDvd;
                 
-                foreach (var chapter in this._currentTask.Chapters)
+                foreach (var chapter in _currentTask.Chapters)
                 {
                     actualTime = isDvd ? actualTime.Add(chapter) : chapter;
                     var dt = DateTime.MinValue.Add(actualTime);
                     chapTimes.Add(dt.ToString("H:mm:ss.fff"));
                 }
 
-                meta.AppendFormat("--custom-chapters={0} ", string.Join(";", chapTimes));
+                meta.Append($"--custom-chapters={string.Join("; ", chapTimes)} ");
             }
 
             meta.AppendLine("--vbv-len=500");
 
-            var sourceVidCodec = this._currentTask.VideoStream.Format;
-            switch (this._currentTask.Input)
+            var sourceVidCodec = _currentTask.VideoStream.Format;
+            switch (_currentTask.Input)
             {
                 case InputType.InputAvi:
                 case InputType.InputMp4:
@@ -390,7 +390,7 @@ namespace VideoConvert.AppServices.Muxer
                 case InputType.InputTs:
                 case InputType.InputWm:
                 case InputType.InputFlash:
-                    vidStream = this._currentTask.VideoStream.StreamId;
+                    vidStream = _currentTask.VideoStream.StreamId;
                     break;
 
                 case InputType.InputDvd:
@@ -399,13 +399,13 @@ namespace VideoConvert.AppServices.Muxer
                 case InputType.InputBluRay:
                 case InputType.InputAvchd:
                 case InputType.InputHddvd:
-                    vidStream = this._currentTask.VideoStream.IsRawStream ? 0 : this._currentTask.VideoStream.StreamId;
+                    vidStream = _currentTask.VideoStream.IsRawStream ? 0 : _currentTask.VideoStream.StreamId;
                     break;
             }
 
-            var fps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
-                        ? this._currentTask.VideoStream.Fps * 2
-                        : this._currentTask.VideoStream.Fps;
+            var fps = _currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
+                        ? _currentTask.VideoStream.Fps * 2
+                        : _currentTask.VideoStream.Fps;
 
             switch (sourceVidCodec)
             {
@@ -417,34 +417,27 @@ namespace VideoConvert.AppServices.Muxer
                     break;
                 case "MPEG Video":
                 case "MPEG-2":
-                    codec = this._currentTask.VideoStream.FormatProfile == "Version 2" ? "V_MPEG-2" : string.Empty;
+                    codec = _currentTask.VideoStream.FormatProfile == "Version 2" ? "V_MPEG-2" : string.Empty;
                     break;
                 default:
                     codec = string.Empty;
                     break;
             }
 
-            var inFile = string.Format("\"{0}\"", this._currentTask.VideoStream.TempFile);
+            var inFile = $"\"{_currentTask.VideoStream.TempFile}\"";
 
             if (!string.IsNullOrEmpty(codec))
             {
-                if (codec != "V_MPEG-2")
-                {
-                    meta.AppendFormat(this._appConfig.CInfo, "{0}, {1}, fps={2:#.###}, insertSEI, contSPS, ", codec,
-                                        inFile,
-                                        fps);
+                meta.Append($"{codec}, {inFile}, fps={fps:#.###}, ".ToString(_appConfig.CInfo));
 
-                    meta.AppendFormat(this._appConfig.CInfo, "track={0:g}, lang={1}", vidStream, "und");
-                }
-                else
-                {
-                    meta.AppendFormat(this._appConfig.CInfo, "{0}, {1}, fps={2:#.###}, track={3:g}, lang={4}", codec,
-                                      inFile, this._currentTask.VideoStream.Fps, vidStream, "und");
-                }
+                if (codec != "V_MPEG-2")
+                    meta.Append("insertSEI, ");
+
+                meta.Append($"track={vidStream:0}, lang=und");
                 meta.AppendLine();
             }
 
-            foreach (var item in this._currentTask.AudioStreams)
+            foreach (var item in _currentTask.AudioStreams)
             {
                 var itemlang = item.LangCode;
                 if ((itemlang == "xx") || (string.IsNullOrEmpty(itemlang)))
@@ -483,15 +476,15 @@ namespace VideoConvert.AppServices.Muxer
                 var delayString = string.Empty;
 
                 if (item.Delay != 0)
-                    delayString = string.Format(this._appConfig.CInfo, "timeshift={0:#}ms,", item.Delay);
+                    delayString = $"timeshift={item.Delay:0}ms,";
 
                 inFile = item.TempFile;
 
-                meta.AppendFormat("{0}, {1}, {2} track=1, lang={3}", codec, inFile, delayString, itemlang);
+                meta.Append($"{codec}, {inFile}, {delayString} track=1, lang={itemlang}");
                 meta.AppendLine();
             }
 
-            foreach (var item in this._currentTask.SubtitleStreams)
+            foreach (var item in _currentTask.SubtitleStreams)
             {
                 if (item.HardSubIntoVideo || !File.Exists(item.TempFile)) continue;
 
@@ -517,44 +510,38 @@ namespace VideoConvert.AppServices.Muxer
 
                 if (!string.IsNullOrEmpty(item.TempFile))
                 {
-                    tempFile = string.Format("\"{0}\"", item.TempFile);
+                    tempFile = $"\"{item.TempFile}\"";
                     subId = 1;
                 }
 
                 var delayString = string.Empty;
                 if (item.Delay != int.MinValue)
-                    delayString = string.Format(this._appConfig.CInfo, "timeshift={0:#}ms,", item.Delay);
+                    delayString = $"timeshift={item.Delay:0}ms,";
+
+                meta.Append($"{codec}, {tempFile},{delayString}");
 
                 if (codec == "S_TEXT/UTF8")
-                    meta.AppendFormat(this._appConfig.CInfo,
-                        "{0}, {1},{2}font-name=\"{3}\",font-size={4:#},font-color={5},bottom-offset={6:g}," +
-                        "font-border={7:g},text-align=center,video-width={8:g},video-height={9:g},fps={10:#.###}, track={11:g}, lang={12}",
-                        codec, tempFile, delayString, this._appConfig.TSMuxeRSubtitleFont,
-                        this._appConfig.TSMuxeRSubtitleFontSize,
-                        this._appConfig.TSMuxeRSubtitleColor.Replace("#","0x"),
-                        this._appConfig.TSMuxeRBottomOffset, this._appConfig.TSMuxerSubtitleAdditionalBorder,
-                        this._currentTask.VideoStream.Width, this._currentTask.VideoStream.Height, fps, subId,
-                        itemlang);
-                else
-                    meta.AppendFormat(this._appConfig.CInfo,
-                        "{0}, {1},{2}bottom-offset={3:g},font-border={4:g},text-align=center,video-width={5:g}," +
-                        "video-height={6:g},fps={7:#.###}, track={8:g}, lang={9}", codec, tempFile, delayString,
-                        this._appConfig.TSMuxeRBottomOffset, this._appConfig.TSMuxerSubtitleAdditionalBorder,
-                        this._currentTask.VideoStream.Width, this._currentTask.VideoStream.Height, fps, subId,
-                        itemlang);
+                {
+                    meta.Append($"font-name=\"{_appConfig.TSMuxeRSubtitleFont}\",font-size={_appConfig.TSMuxeRSubtitleFontSize:0},");
+                    meta.Append($"font-color={_appConfig.TSMuxeRSubtitleColor.Replace("#", "0x")},bottom-offset={_appConfig.TSMuxeRBottomOffset:0},");
+                    meta.Append($"font-border={_appConfig.TSMuxerSubtitleAdditionalBorder:0},text-align=center,");
+                    meta.Append($"video-width={_currentTask.VideoStream.Width:0},video-height={_currentTask.VideoStream.Height:0},");
+                }
 
+                meta.Append($"fps={fps:#.###}, track={subId:0}, lang={itemlang}".ToString(_appConfig.CInfo));
+                
                 meta.AppendLine();
             }
 
-            this._inputFile = FileSystemHelper.CreateTempFile(this._appConfig.TempPath, "meta");
-            using(var sw = new StreamWriter(this._inputFile))
+            _inputFile = FileSystemHelper.CreateTempFile(_appConfig.TempPath, "meta");
+            using(var sw = new StreamWriter(_inputFile))
                 sw.WriteLine(meta.ToString());
 
-            Log.InfoFormat("tsMuxeR Meta: \r\n{0:s}", meta);
+            Log.Info($"tsMuxeR Meta: {Environment.NewLine}{meta}");
 
-            this._currentTask.TempFiles.Add(this._inputFile);
+            _currentTask.TempFiles.Add(_inputFile);
 
-            sb.AppendFormat("\"{0}\" \"{1}\"", this._inputFile, this._outputFile);
+            sb.Append($"\"{_inputFile}\" \"{_outputFile}\"");
 
             return sb.ToString();
         }

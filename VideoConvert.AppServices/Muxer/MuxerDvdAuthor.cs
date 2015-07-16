@@ -9,13 +9,6 @@
 
 namespace VideoConvert.AppServices.Muxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -24,6 +17,13 @@ namespace VideoConvert.AppServices.Muxer
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml;
+    using log4net;
+    using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The MuxerDvdAuthor
@@ -68,7 +68,7 @@ namespace VideoConvert.AppServices.Muxer
         /// </param>
         public MuxerDvdAuthor(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -111,7 +111,7 @@ namespace VideoConvert.AppServices.Muxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("dvdauthor exception: {0}", ex);
+                    Log.Error($"dvdauthor exception: {ex}");
                 }
 
                 if (started)
@@ -132,7 +132,7 @@ namespace VideoConvert.AppServices.Muxer
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("dvdauthor \"{0}\" found", verInfo);
+                Log.Debug($"dvdauthor \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -146,17 +146,17 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("dvdauthor is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
                 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
@@ -164,34 +164,34 @@ namespace VideoConvert.AppServices.Muxer
                     UseShellExecute = false,
                     RedirectStandardError = true
                 };
-                this.EncodeProcess = new Process { StartInfo = cliStart };
-                Log.InfoFormat("start parameter: dvdauthor {0}", query);
+                EncodeProcess = new Process { StartInfo = cliStart };
+                Log.Info($"start parameter: dvdauthor {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginErrorReadLine();
+                EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
+                EncodeProcess.BeginErrorReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -202,16 +202,16 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -229,34 +229,34 @@ namespace VideoConvert.AppServices.Muxer
         private string GenerateCommandLine()
         {
             var sb = new StringBuilder();
-            _outputFile = !string.IsNullOrEmpty(this._currentTask.TempOutput)
-                            ? this._currentTask.TempOutput
-                            : this._currentTask.OutputFile;
+            _outputFile = !string.IsNullOrEmpty(_currentTask.TempOutput)
+                            ? _currentTask.TempOutput
+                            : _currentTask.OutputFile;
 
             if (Directory.Exists(_outputFile))
                 Directory.Delete(_outputFile, true);
 
             _inputFile = GenerateXmlInput();
-            Log.InfoFormat("dvdauthor xml: {0}{1}", Environment.NewLine, File.ReadAllText(_inputFile));
+            Log.Info($"dvdauthor xml: {Environment.NewLine}{File.ReadAllText(_inputFile)}");
 
-            sb.AppendFormat("-x \"{0}\"", _inputFile);
+            sb.Append($"-x \"{_inputFile}\"");
 
             return sb.ToString();
         }
 
         private string GenerateXmlInput()
         {
-            var xmlFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, ".xml");
+            var xmlFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation, ".xml");
 
             var chapterString = string.Empty;
-            if (this._currentTask.Chapters.Count > 1)
+            if (_currentTask.Chapters.Count > 1)
             {
                 DateTime dt;
                 var tempChapters = new List<string>();
 
-                if (this._currentTask.Input != InputType.InputDvd)
+                if (_currentTask.Input != InputType.InputDvd)
                 {
-                    foreach (var chapter in this._currentTask.Chapters)
+                    foreach (var chapter in _currentTask.Chapters)
                     {
                         dt = DateTime.MinValue.Add(chapter);
                         tempChapters.Add(dt.ToString("H:mm:ss.fff"));
@@ -266,7 +266,7 @@ namespace VideoConvert.AppServices.Muxer
                 {
                     var actualTime = new TimeSpan();
 
-                    foreach (var chapter in this._currentTask.Chapters)
+                    foreach (var chapter in _currentTask.Chapters)
                     {
                         actualTime = actualTime.Add(chapter);
                         dt = DateTime.MinValue.Add(actualTime);
@@ -289,7 +289,7 @@ namespace VideoConvert.AppServices.Muxer
 
             writer.WriteStartDocument(true);
             writer.WriteStartElement("dvdauthor");
-            writer.WriteAttributeString("format", this._currentTask.EncodingProfile.SystemType == 0 ? "pal" : "ntsc");
+            writer.WriteAttributeString("format", _currentTask.EncodingProfile.SystemType == 0 ? "pal" : "ntsc");
             writer.WriteAttributeString("dest", _outputFile.Replace(@"\", "/"));
 
             writer.WriteStartElement("vmgm");
@@ -298,16 +298,14 @@ namespace VideoConvert.AppServices.Muxer
             writer.WriteStartElement("titleset");
             writer.WriteStartElement("titles");
 
-            foreach (var itemlang in this._currentTask.AudioStreams.Select(item => item.ShortLang))
+            foreach (var language in _currentTask.AudioStreams.Select(item => item.ShortLang).Select(itemlang => LanguageHelper.GetLanguage(string.IsNullOrEmpty(itemlang) ? "xx" : itemlang)))
             {
-                var language = LanguageHelper.GetLanguage(string.IsNullOrEmpty(itemlang) ? "xx" : itemlang);
-
                 writer.WriteStartElement("audio");
                 writer.WriteAttributeString("lang", language.Iso1Lang);
                 writer.WriteEndElement();
             }
 
-            foreach (var item in this._currentTask.SubtitleStreams)
+            foreach (var item in _currentTask.SubtitleStreams)
             {
                 var language =
                     LanguageHelper.GetLanguage(string.IsNullOrEmpty(item.LangCode) ? "xx" : item.LangCode);
@@ -321,7 +319,7 @@ namespace VideoConvert.AppServices.Muxer
 
             writer.WriteStartElement("pgc");
             writer.WriteStartElement("vob");
-            writer.WriteAttributeString("file", this._currentTask.VideoStream.TempFile);
+            writer.WriteAttributeString("file", _currentTask.VideoStream.TempFile);
             if (!string.IsNullOrEmpty(chapterString))
                 writer.WriteAttributeString("chapters", chapterString);
 
@@ -351,25 +349,25 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                this.EncodeProcess.CancelErrorRead();
+                EncodeProcess.CancelErrorRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                this._currentTask.TempFiles.Add(_inputFile);
-                this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
+                _currentTask.TempFiles.Add(_inputFile);
+                _currentTask.TempFiles.Add(_currentTask.VideoStream.TempFile);
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -379,9 +377,9 @@ namespace VideoConvert.AppServices.Muxer
         /// <param name="e"></param>
         private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -389,9 +387,9 @@ namespace VideoConvert.AppServices.Muxer
         {
             if (string.IsNullOrEmpty(line)) return;
 
-            Log.InfoFormat("dvdauthor: {0}", line);
+            Log.Info($"dvdauthor: {line}");
 
-            var elapsedTime = DateTime.Now - this._startTime;
+            var elapsedTime = DateTime.Now - _startTime;
             var remainingTime = elapsedTime + TimeSpan.FromSeconds(1);
 
 
@@ -403,7 +401,7 @@ namespace VideoConvert.AppServices.Muxer
                 PercentComplete = -1,
                 ElapsedTime = elapsedTime,
             };
-            this.InvokeEncodeStatusChanged(eventArgs);
+            InvokeEncodeStatusChanged(eventArgs);
         }
 
         #endregion

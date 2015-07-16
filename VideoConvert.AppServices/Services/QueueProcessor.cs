@@ -9,12 +9,12 @@
 
 namespace VideoConvert.AppServices.Services
 {
-    using log4net;
     using System;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using log4net;
     using VideoConvert.AppServices.Decoder.Interfaces;
     using VideoConvert.AppServices.Demuxer.Interfaces;
     using VideoConvert.AppServices.Encoder.Interfaces;
@@ -177,34 +177,34 @@ namespace VideoConvert.AppServices.Services
                               IFileWorker fileWorker, IMuxerDvdAuthor dvdAuthor, IMuxerMkvMerge mkvMerge,
                               IMuxerMp4Box mp4Box, IMuxerMplex mplex, IMuxerSpuMux spuMux, IMuxerTsMuxeR tsMuxeR)
         {
-            this._appConfig = appConfig;
-            this._processingService = processingService;
+            _appConfig = appConfig;
+            _processingService = processingService;
 
-            this._ffmpegGetCrop = ffmpegGetCrop;
-            this._ffmsIndex = ffmsIndex;
+            _ffmpegGetCrop = ffmpegGetCrop;
+            _ffmsIndex = ffmsIndex;
 
-            this._eac3To = eac3To;
-            this._ffmpegDemuxer = ffmpegDemuxer;
-            this._mplayerDemuxer = mplayerDemuxer;
-            this._mkvExtractSubtitle = mkvExtractSubtitle;
-            this._demuxerTsMuxeR = demuxerTsMuxeR;
+            _eac3To = eac3To;
+            _ffmpegDemuxer = ffmpegDemuxer;
+            _mplayerDemuxer = mplayerDemuxer;
+            _mkvExtractSubtitle = mkvExtractSubtitle;
+            _demuxerTsMuxeR = demuxerTsMuxeR;
 
-            this._bdSup2Sub = bdSup2Sub;
-            this._ffmpegAc3 = ffmpegAc3;
-            this._ffmpegDvd = ffmpegDvd;
-            this._lame = lame;
-            this._neroAac = neroAac;
-            this._oggEnc = oggEnc;
-            this._x264 = x264;
-            this._ffmpegX264 = ffmpegX264;
+            _bdSup2Sub = bdSup2Sub;
+            _ffmpegAc3 = ffmpegAc3;
+            _ffmpegDvd = ffmpegDvd;
+            _lame = lame;
+            _neroAac = neroAac;
+            _oggEnc = oggEnc;
+            _x264 = x264;
+            _ffmpegX264 = ffmpegX264;
 
-            this._fileWorker = fileWorker;
-            this._dvdAuthor = dvdAuthor;
-            this._mkvMerge = mkvMerge;
-            this._mp4Box = mp4Box;
-            this._mplex = mplex;
-            this._spuMux = spuMux;
-            this._tsMuxeR = tsMuxeR;
+            _fileWorker = fileWorker;
+            _dvdAuthor = dvdAuthor;
+            _mkvMerge = mkvMerge;
+            _mp4Box = mp4Box;
+            _mplex = mplex;
+            _spuMux = spuMux;
+            _tsMuxeR = tsMuxeR;
         }
 
         /// <summary>
@@ -215,11 +215,8 @@ namespace VideoConvert.AppServices.Services
         /// </param>
         public void InvokeQueueStatusChanged(QueueProgressEventArgs e)
         {
-            var handler = this.QueueProgressChanged;
-            if (handler != null)
-            {
-                handler(this._currentEncoder, e);
-            }
+            var handler = QueueProgressChanged;
+            handler?.Invoke(_currentEncoder, e);
         }
 
         /// <summary>
@@ -230,11 +227,8 @@ namespace VideoConvert.AppServices.Services
         /// </param>
         public void InvokeQueueCompleted(QueueCompletedEventArgs e)
         {
-            var handler = this.QueueCompleted;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            var handler = QueueCompleted;
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -245,26 +239,23 @@ namespace VideoConvert.AppServices.Services
         /// </param>
         public void InvokeQueueStarted(EventArgs e)
         {
-            var handler = this.QueueStarted;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            var handler = QueueStarted;
+            handler?.Invoke(this, e);
         }
 
         private void EncodeCompleted(object sender, EncodeCompletedEventArgs args)
         {
-            this._finishedSteps++;
+            _finishedSteps++;
 
-            this._currentEncoder.EncodeCompleted -= EncodeCompleted;
-            this._currentEncoder.EncodeStarted -= EncodeStarted;
-            this._currentEncoder.EncodeStatusChanged -= EncoderProgressStatus;
-            this._currentEncoder = null;
+            _currentEncoder.EncodeCompleted -= EncodeCompleted;
+            _currentEncoder.EncodeStarted -= EncodeStarted;
+            _currentEncoder.EncodeStatusChanged -= EncoderProgressStatus;
+            _currentEncoder = null;
 
             DeleteTempFiles();
-            if (this._currentJob != null && this._currentJob.ExitCode == 0)
+            if (_currentJob != null && _currentJob.ExitCode == 0)
             {
-                this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+                InvokeQueueStatusChanged(new QueueProgressEventArgs
                 {
                     JobName = string.Empty,
                     AverageFrameRate = 0f,
@@ -274,22 +265,22 @@ namespace VideoConvert.AppServices.Services
                     ElapsedTime = new TimeSpan(),
                     EstimatedTimeLeft = new TimeSpan(),
                     PercentComplete = 0,
-                    TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent),
+                    TotalPercentComplete = (_finishedSteps * _fullTaskPercent),
                     Pass = 0,
                 });
             
                 GetNextStep();
 
-                if (this._currentJob.NextStep == EncodingStep.Done &&
-                    this._queueList.IndexOf(this._currentJob) < this._queueList.Count - 1)
+                if (_currentJob.NextStep == EncodingStep.Done &&
+                    _queueList.IndexOf(_currentJob) < _queueList.Count - 1)
                 {
-                    this._currentJob = GetNextJob();
+                    _currentJob = GetNextJob();
                     GetNextStep();
                 }
-                else if (this._currentJob.NextStep == EncodingStep.Done &&
-                         this._queueList.IndexOf(this._currentJob) == this._queueList.Count - 1)
+                else if (_currentJob.NextStep == EncodingStep.Done &&
+                         _queueList.IndexOf(_currentJob) == _queueList.Count - 1)
                 {
-                    this.InvokeQueueCompleted(new QueueCompletedEventArgs(true,null,string.Empty));
+                    InvokeQueueCompleted(new QueueCompletedEventArgs(true,null,string.Empty));
                     return;
                 }
 
@@ -297,11 +288,11 @@ namespace VideoConvert.AppServices.Services
             }
             else
             {
-                var currentJob = this._currentJob;
+                var currentJob = _currentJob;
                 var exitCode = -1;
                 if (currentJob != null)
                     exitCode = currentJob.ExitCode;
-                this.InvokeQueueCompleted(new QueueCompletedEventArgs(false,
+                InvokeQueueCompleted(new QueueCompletedEventArgs(false,
                     new ApplicationException("Encoder exited with code " + exitCode),
                     "Encoder exited with code " + exitCode));
             }
@@ -309,10 +300,10 @@ namespace VideoConvert.AppServices.Services
 
         private void EncoderProgressStatus(object sender, EncodeProgressEventArgs args)
         {
-            double totalPercent = (this._finishedSteps * this._fullTaskPercent) +
-                                  (this._fullTaskPercent * args.PercentComplete / 100d);
+            var totalPercent = (_finishedSteps * _fullTaskPercent) +
+                                  (_fullTaskPercent * args.PercentComplete / 100d);
             
-            this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+            InvokeQueueStatusChanged(new QueueProgressEventArgs
             {
                 JobName = string.Empty,
                 AverageFrameRate = args.AverageFrameRate,
@@ -329,9 +320,9 @@ namespace VideoConvert.AppServices.Services
 
         private void EncodeStarted(object sender, EventArgs eventArgs)
         {
-            this.InvokeQueueStatusChanged(new QueueProgressEventArgs
+            InvokeQueueStatusChanged(new QueueProgressEventArgs
             {
-                JobName = this._currentJob.JobName,
+                JobName = _currentJob.JobName,
                 AverageFrameRate = 0f,
                 CurrentFrameRate = 0f,
                 CurrentFrame = 0,
@@ -339,8 +330,8 @@ namespace VideoConvert.AppServices.Services
                 ElapsedTime = new TimeSpan(),
                 EstimatedTimeLeft = new TimeSpan(),
                 PercentComplete = 0,
-                TotalPercentComplete = (this._finishedSteps * this._fullTaskPercent),
-                Pass = this._currentJob.StreamId,
+                TotalPercentComplete = (_finishedSteps * _fullTaskPercent),
+                Pass = _currentJob.StreamId,
             });
         }
 
@@ -349,10 +340,7 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public void Stop()
         {
-            if (this._currentEncoder != null)
-            {
-                this._currentEncoder.Stop();
-            }
+            _currentEncoder?.Stop();
         }
 
         /// <summary>
@@ -361,20 +349,20 @@ namespace VideoConvert.AppServices.Services
         /// <param name="queue"></param>
         public async void StartProcessing(ObservableCollection<EncodeInfo> queue)
         {
-            this.InvokeQueueStarted(EventArgs.Empty);
+            InvokeQueueStarted(EventArgs.Empty);
 
-            this._queueList = queue;
-            this._processingSteps = await Task.Run(() => CountProcessingSteps());
-            this._fullTaskPercent = 100f / this._processingSteps;
+            _queueList = queue;
+            _processingSteps = await Task.Run(() => CountProcessingSteps());
+            _fullTaskPercent = 100f / _processingSteps;
 
             try
             {
-                this._currentJob = GetNextJob();
+                _currentJob = GetNextJob();
             }
             catch (Exception ex)
             {
-                this._currentJob = null;
-                this.InvokeQueueCompleted(new QueueCompletedEventArgs(false, ex, ex.Message)); 
+                _currentJob = null;
+                InvokeQueueCompleted(new QueueCompletedEventArgs(false, ex, ex.Message)); 
                 return;
             }
 
@@ -387,9 +375,9 @@ namespace VideoConvert.AppServices.Services
 
         private int CountProcessingSteps()
         {
-            int encodingSteps = 0;
+            var encodingSteps = 0;
 
-            foreach (EncodeInfo job in this._queueList)
+            foreach (var job in _queueList)
             {
 
                 if (!string.IsNullOrEmpty(job.TempInput))
@@ -468,7 +456,7 @@ namespace VideoConvert.AppServices.Services
                 if (!string.IsNullOrEmpty(job.TempOutput))
                     encodingSteps++; // move finished file to output destination
 
-                if (this._appConfig.CreateXbmcInfoFile && (job.MovieInfo != null || job.EpisodeInfo != null))
+                if (_appConfig.CreateXbmcInfoFile && (job.MovieInfo != null || job.EpisodeInfo != null))
                     encodingSteps++; // create xbmc info files
             }   // foreach job
 
@@ -477,16 +465,16 @@ namespace VideoConvert.AppServices.Services
 
         private EncodeInfo GetNextJob()
         {
-            return this._queueList.First(info => info.NextStep == EncodingStep.NotSet);
+            return _queueList.First(info => info.NextStep == EncodingStep.NotSet);
         }
 
         private void GetNextStep()
         {
             int nextIndex;
-            switch (this._currentJob.NextStep)
+            switch (_currentJob.NextStep)
             {
                 case EncodingStep.NotSet:
-                    switch (this._currentJob.Input)
+                    switch (_currentJob.Input)
                     {
                         case InputType.InputAvi:
                         case InputType.InputMp4:
@@ -497,23 +485,23 @@ namespace VideoConvert.AppServices.Services
                         case InputType.InputMpegps:
                         case InputType.InputWebM:
                         case InputType.InputOgg:
-                            this._currentJob.NextStep = !string.IsNullOrEmpty(this._currentJob.TempInput)
+                            _currentJob.NextStep = !string.IsNullOrEmpty(_currentJob.TempInput)
                                                         ? EncodingStep.CopyTempFile
                                                         : EncodingStep.Demux;
                             break;
                         case InputType.InputDvd:
-                            this._currentJob.NextStep = EncodingStep.Dump;
+                            _currentJob.NextStep = EncodingStep.Dump;
                             break;
                         default:
-                            this._currentJob.NextStep = EncodingStep.Demux;
+                            _currentJob.NextStep = EncodingStep.Demux;
                             break;
                     }
-                    this._currentJob.ExitCode = 0;
+                    _currentJob.ExitCode = 0;
                     break;
 
                 case EncodingStep.CopyTempFile:
                 case EncodingStep.Dump:
-                    this._currentJob.NextStep = EncodingStep.Demux;
+                    _currentJob.NextStep = EncodingStep.Demux;
                     break;
 
                 case EncodingStep.Demux:
@@ -523,48 +511,48 @@ namespace VideoConvert.AppServices.Services
                     // and if there are actually some audio streams
                     //
                     // then the next step is to encode the audio streams
-                    if ((this._currentJob.AudioProfile.Type != ProfileType.Copy ||
-                         (this._currentJob.AudioProfile.Type == ProfileType.Copy &&
-                          this._currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd)) &&
-                        this._currentJob.AudioStreams.Count > 0)
+                    if ((_currentJob.AudioProfile.Type != ProfileType.Copy ||
+                         (_currentJob.AudioProfile.Type == ProfileType.Copy &&
+                          _currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd)) &&
+                        _currentJob.AudioStreams.Count > 0)
                     {
-                        this._currentJob.NextStep = EncodingStep.EncodeAudio;
-                        this._currentJob.StreamId = 0;
+                        _currentJob.NextStep = EncodingStep.EncodeAudio;
+                        _currentJob.StreamId = 0;
                     }
                     else
                         GetSubOrVideoStep();
                     break;
 
                 case EncodingStep.EncodeAudio:
-                    if (this._currentJob.AudioStreams.Count - 1 > this._currentJob.StreamId)
-                        this._currentJob.StreamId++;
+                    if (_currentJob.AudioStreams.Count - 1 > _currentJob.StreamId)
+                        _currentJob.StreamId++;
                     else
                         GetSubOrVideoStep();
                     break;
 
                 case EncodingStep.IndexVideo:
-                    if (this._currentJob.EncodingProfile.AutoCropResize &&
-                        !this._currentJob.EncodingProfile.KeepInputResolution &&
-                        this._currentJob.EncodingProfile.OutFormat != OutputType.OutputDvd)
-                        this._currentJob.NextStep = EncodingStep.GetCropRect;
+                    if (_currentJob.EncodingProfile.AutoCropResize &&
+                        !_currentJob.EncodingProfile.KeepInputResolution &&
+                        _currentJob.EncodingProfile.OutFormat != OutputType.OutputDvd)
+                        _currentJob.NextStep = EncodingStep.GetCropRect;
                     else
                     {
-                        this._currentJob.NextStep = EncodingStep.EncodeVideo;
-                        this._currentJob.StreamId = 1;
+                        _currentJob.NextStep = EncodingStep.EncodeVideo;
+                        _currentJob.StreamId = 1;
                     }
                     break;
 
                 case EncodingStep.GetCropRect:
-                    this._currentJob.NextStep = EncodingStep.EncodeVideo;
-                    this._currentJob.StreamId = 1;
+                    _currentJob.NextStep = EncodingStep.EncodeVideo;
+                    _currentJob.StreamId = 1;
                     break;
 
                 case EncodingStep.EncodeVideo:
-                    int encodingPasses = 1;
-                    switch (this._currentJob.VideoProfile.Type)
+                    var encodingPasses = 1;
+                    switch (_currentJob.VideoProfile.Type)
                     {
                         case ProfileType.X264:
-                            switch (((X264Profile)this._currentJob.VideoProfile).EncodingMode)
+                            switch (((X264Profile)_currentJob.VideoProfile).EncodingMode)
                             {
                                 case 2:
                                     encodingPasses = 2;
@@ -575,107 +563,107 @@ namespace VideoConvert.AppServices.Services
                             }
                             break;
                         case ProfileType.Vp8:
-                            encodingPasses += ((Vp8Profile)this._currentJob.VideoProfile).EncodingMode;
+                            encodingPasses += ((Vp8Profile)_currentJob.VideoProfile).EncodingMode;
                             break;
                     }
-                    if (this._currentJob.StreamId < encodingPasses)
-                        this._currentJob.StreamId++;
+                    if (_currentJob.StreamId < encodingPasses)
+                        _currentJob.StreamId++;
                     else
                         GetSubOrVideoStep();
                     break;
 
                 case EncodingStep.DemuxSubtitle:
-                    nextIndex = this._currentJob.SubtitleStreams.FindIndex(this._currentJob.StreamId, info => info.RawStream == false);
+                    nextIndex = _currentJob.SubtitleStreams.FindIndex(_currentJob.StreamId, info => info.RawStream == false);
 
-                    if (this._currentJob.SubtitleStreams.Count - 1 > this._currentJob.StreamId && nextIndex > -1)
-                        this._currentJob.StreamId = nextIndex;
+                    if (_currentJob.SubtitleStreams.Count - 1 > _currentJob.StreamId && nextIndex > -1)
+                        _currentJob.StreamId = nextIndex;
                     else
                         GetSubOrVideoStep();
                     break;
                 case EncodingStep.ProcessSubtitle:
-                    nextIndex = this._currentJob.SubtitleStreams.FindIndex(this._currentJob.StreamId, info => info.NeedConversion);
-                    if (this._currentJob.SubtitleStreams.Count - 1 > this._currentJob.StreamId &&
-                        this._appConfig.JavaInstalled && this._appConfig.BDSup2SubInstalled && nextIndex > -1)
-                        this._currentJob.StreamId = nextIndex;
+                    nextIndex = _currentJob.SubtitleStreams.FindIndex(_currentJob.StreamId, info => info.NeedConversion);
+                    if (_currentJob.SubtitleStreams.Count - 1 > _currentJob.StreamId &&
+                        _appConfig.JavaInstalled && _appConfig.BDSup2SubInstalled && nextIndex > -1)
+                        _currentJob.StreamId = nextIndex;
                     else
                         GetSubOrVideoStep();
                     break;
 
                 case EncodingStep.PreMuxResult:
-                    if (this._currentJob.SubtitleStreams.Count > 0)
+                    if (_currentJob.SubtitleStreams.Count > 0)
                     {
-                        this._currentJob.NextStep = EncodingStep.PremuxSubtitle;
-                        this._currentJob.StreamId = 0;
+                        _currentJob.NextStep = EncodingStep.PremuxSubtitle;
+                        _currentJob.StreamId = 0;
                     }
                     else
-                        this._currentJob.NextStep = EncodingStep.MuxResult;
+                        _currentJob.NextStep = EncodingStep.MuxResult;
                     break;
 
                 case EncodingStep.PremuxSubtitle:
-                    if (this._currentJob.StreamId < this._currentJob.SubtitleStreams.Count - 1)
-                        this._currentJob.StreamId++;
+                    if (_currentJob.StreamId < _currentJob.SubtitleStreams.Count - 1)
+                        _currentJob.StreamId++;
                     else
-                        this._currentJob.NextStep = EncodingStep.MuxResult;
+                        _currentJob.NextStep = EncodingStep.MuxResult;
                     break;
 
                 case EncodingStep.MuxResult:
-                    if (string.IsNullOrEmpty(this._currentJob.TempOutput))
-                        if (this._appConfig.CreateXbmcInfoFile &&
-                            (this._currentJob.MovieInfo != null || this._currentJob.EpisodeInfo != null))
-                            this._currentJob.NextStep = EncodingStep.WriteInfoFile;
+                    if (string.IsNullOrEmpty(_currentJob.TempOutput))
+                        if (_appConfig.CreateXbmcInfoFile &&
+                            (_currentJob.MovieInfo != null || _currentJob.EpisodeInfo != null))
+                            _currentJob.NextStep = EncodingStep.WriteInfoFile;
                         else
-                            this._currentJob.NextStep = EncodingStep.Done;
+                            _currentJob.NextStep = EncodingStep.Done;
                     else
-                        this._currentJob.NextStep = EncodingStep.MoveOutFile;
+                        _currentJob.NextStep = EncodingStep.MoveOutFile;
                     break;
 
                 case EncodingStep.MoveOutFile:
-                    if (this._appConfig.CreateXbmcInfoFile && (this._currentJob.MovieInfo != null || this._currentJob.EpisodeInfo != null))
-                        this._currentJob.NextStep = EncodingStep.WriteInfoFile;
+                    if (_appConfig.CreateXbmcInfoFile && (_currentJob.MovieInfo != null || _currentJob.EpisodeInfo != null))
+                        _currentJob.NextStep = EncodingStep.WriteInfoFile;
                     else
-                        this._currentJob.NextStep = EncodingStep.Done;
+                        _currentJob.NextStep = EncodingStep.Done;
                     break;
 
                 case EncodingStep.WriteInfoFile:
-                    this._currentJob.NextStep = EncodingStep.Done;
+                    _currentJob.NextStep = EncodingStep.Done;
                     break;
             }
         }
 
         private void GetSubOrVideoStep()
         {
-            if (this._currentJob.VideoStream != null)
+            if (_currentJob.VideoStream != null)
             {
-                switch (this._currentJob.CompletedStep)
+                switch (_currentJob.CompletedStep)
                 {
                     case EncodingStep.Demux:
                     case EncodingStep.EncodeAudio:
                     case EncodingStep.EncodeVideo:
                     case EncodingStep.DemuxSubtitle:
-                        var sub = this._currentJob.SubtitleStreams.FirstOrDefault(subInfo => subInfo.NeedConversion);
-                        var demuxSubtitleIndex = this._currentJob.SubtitleStreams.FindIndex(info => info.RawStream == false);
+                        var sub = _currentJob.SubtitleStreams.FirstOrDefault(subInfo => subInfo.NeedConversion);
+                        var demuxSubtitleIndex = _currentJob.SubtitleStreams.FindIndex(info => info.RawStream == false);
 
-                        if (this._currentJob.VideoProfile.Type != ProfileType.Copy && !this._currentJob.VideoStream.Encoded)
-                            this._currentJob.NextStep = EncodingStep.IndexVideo;
+                        if (_currentJob.VideoProfile.Type != ProfileType.Copy && !_currentJob.VideoStream.Encoded)
+                            _currentJob.NextStep = EncodingStep.IndexVideo;
                         else if (demuxSubtitleIndex > -1)
                         {
-                            this._currentJob.NextStep = EncodingStep.DemuxSubtitle;
-                            this._currentJob.StreamId = demuxSubtitleIndex;
+                            _currentJob.NextStep = EncodingStep.DemuxSubtitle;
+                            _currentJob.StreamId = demuxSubtitleIndex;
                         }
-                        else if (((this._appConfig.JavaInstalled && this._appConfig.BDSup2SubInstalled) ||
-                                  this._currentJob.EncodingProfile.OutFormat == OutputType.OutputMp4) && sub != null)
+                        else if (((_appConfig.JavaInstalled && _appConfig.BDSup2SubInstalled) ||
+                                  _currentJob.EncodingProfile.OutFormat == OutputType.OutputMp4) && sub != null)
                         {
-                            this._currentJob.NextStep = EncodingStep.ProcessSubtitle;
-                            this._currentJob.StreamId = this._currentJob.SubtitleStreams.IndexOf(sub);
+                            _currentJob.NextStep = EncodingStep.ProcessSubtitle;
+                            _currentJob.StreamId = _currentJob.SubtitleStreams.IndexOf(sub);
                         }
-                        else if (this._currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                            this._currentJob.NextStep = EncodingStep.PreMuxResult;
+                        else if (_currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                            _currentJob.NextStep = EncodingStep.PreMuxResult;
                         else
-                            this._currentJob.NextStep = EncodingStep.MuxResult;
+                            _currentJob.NextStep = EncodingStep.MuxResult;
                         break;
 
                     case EncodingStep.ProcessSubtitle:
-                        this._currentJob.NextStep = this._currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd
+                        _currentJob.NextStep = _currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd
                                                                                                 ? EncodingStep.PreMuxResult
                                                                                                 : EncodingStep.MuxResult;
                         break;
@@ -683,7 +671,7 @@ namespace VideoConvert.AppServices.Services
             }
             else
             {
-                this._currentJob.NextStep = this._currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd
+                _currentJob.NextStep = _currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd
                     ? EncodingStep.PreMuxResult
                     : EncodingStep.MuxResult;
             }
@@ -691,7 +679,7 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteNextStep()
         {
-            switch (this._currentJob.NextStep)
+            switch (_currentJob.NextStep)
             {
                 case EncodingStep.CopyTempFile:
                     ExecuteCopyTempFile();
@@ -736,8 +724,8 @@ namespace VideoConvert.AppServices.Services
                     ExecuteWriteInfoFile();
                     break;
                 case EncodingStep.Done:
-                    this._currentJob.TempFiles.Add(this._currentJob.TempInput);
-                    this._currentJob.TempFiles.Add(this._currentJob.TempOutput);
+                    _currentJob.TempFiles.Add(_currentJob.TempInput);
+                    _currentJob.TempFiles.Add(_currentJob.TempOutput);
                     DeleteTempFiles();
                     break;
             }
@@ -745,36 +733,36 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteGenericEncoder()
         {
-            this._currentEncoder.EncodeStarted += EncodeStarted;
-            this._currentEncoder.EncodeStatusChanged += EncoderProgressStatus;
-            this._currentEncoder.EncodeCompleted += EncodeCompleted;
-            this._currentEncoder.Start(this._currentJob);
+            _currentEncoder.EncodeStarted += EncodeStarted;
+            _currentEncoder.EncodeStatusChanged += EncoderProgressStatus;
+            _currentEncoder.EncodeCompleted += EncodeCompleted;
+            _currentEncoder.Start(_currentJob);
         }
 
         private void ExecuteCopyTempFile()
         {
-            this._currentEncoder = this._fileWorker;
+            _currentEncoder = _fileWorker;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecuteDump()
         {
-            this._currentEncoder = this._mplayerDemuxer;
+            _currentEncoder = _mplayerDemuxer;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecuteDemux()
         {
-            switch (this._currentJob.Input)
+            switch (_currentJob.Input)
             {
                 case InputType.InputBluRay:
-                    this._currentEncoder = this._demuxerTsMuxeR;
+                    _currentEncoder = _demuxerTsMuxeR;
                     break;
                 case InputType.InputAvchd:
                 case InputType.InputHddvd:
-                    this._currentEncoder = this._eac3To;
+                    _currentEncoder = _eac3To;
                     break;
                 case InputType.InputDvd:
                 case InputType.InputAvi:
@@ -786,7 +774,7 @@ namespace VideoConvert.AppServices.Services
                 case InputType.InputTs:
                 case InputType.InputOgg:
                 case InputType.InputWebM:
-                    this._currentEncoder = this._ffmpegDemuxer;
+                    _currentEncoder = _ffmpegDemuxer;
                     break;
             }
 
@@ -795,25 +783,25 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteEncodeAudio()
         {
-            switch (this._currentJob.AudioProfile.Type)
+            switch (_currentJob.AudioProfile.Type)
             {
                 case ProfileType.Ac3:
-                    this._currentEncoder = this._ffmpegAc3;
+                    _currentEncoder = _ffmpegAc3;
                     break;
                 case ProfileType.Ogg:
-                    this._currentEncoder = this._oggEnc;
+                    _currentEncoder = _oggEnc;
                     break;
                 case ProfileType.Aac:
-                    this._currentEncoder = this._neroAac;
+                    _currentEncoder = _neroAac;
                     break;
                 case ProfileType.Mp3:
-                    this._currentEncoder = this._lame;
+                    _currentEncoder = _lame;
                     break;
                 case ProfileType.Copy:
-                    if (this._currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd &&
-                        !this._processingService.CheckAudioDvdCompatible(this._currentJob.AudioStreams[this._currentJob.StreamId]))
+                    if (_currentJob.EncodingProfile.OutFormat == OutputType.OutputDvd &&
+                        !_processingService.CheckAudioDvdCompatible(_currentJob.AudioStreams[_currentJob.StreamId]))
                     {
-                        this._currentEncoder = this._ffmpegAc3;
+                        _currentEncoder = _ffmpegAc3;
                     }
                     break;
             }
@@ -823,20 +811,20 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteDemuxSubtitle()
         {
-            this._currentEncoder = this._mkvExtractSubtitle;
+            _currentEncoder = _mkvExtractSubtitle;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecuteProcessSubtitle()
         {
-            switch (this._currentJob.EncodingProfile.OutFormat)
+            switch (_currentJob.EncodingProfile.OutFormat)
             {
                 case OutputType.OutputMp4:
                     // TODO: Text Subtitle converter
                     break;
                 default:
-                    this._currentEncoder = this._bdSup2Sub;
+                    _currentEncoder = _bdSup2Sub;
                     break;
             }
 
@@ -845,29 +833,29 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteIndexVideo()
         {
-            this._currentEncoder = this._ffmsIndex;
+            _currentEncoder = _ffmsIndex;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecuteGetCropRect()
         {
-            this._currentEncoder = this._ffmpegGetCrop;
+            _currentEncoder = _ffmpegGetCrop;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecuteEncodeVideo()
         {
-            switch (this._currentJob.VideoProfile.Type)
+            switch (_currentJob.VideoProfile.Type)
             {
                 case ProfileType.X264:
                     // TODO: Switch encoder based on settings
                     //this._currentEncoder = this._x264;
-                    this._currentEncoder = this._ffmpegX264;
+                    _currentEncoder = _ffmpegX264;
                     break;
                 case ProfileType.Mpeg2Video:
-                    this._currentEncoder = this._ffmpegDvd;
+                    _currentEncoder = _ffmpegDvd;
                     break;
                 case ProfileType.Vp8:
                     // TODO: VPXEnc
@@ -879,37 +867,37 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecutePremuxResult()
         {
-            this._currentEncoder = this._mplex;
+            _currentEncoder = _mplex;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecutePremuxSubtitle()
         {
-            this._currentEncoder = this._spuMux;
+            _currentEncoder = _spuMux;
 
             ExecuteGenericEncoder();
         }
 
         private void ExecuteMuxResult()
         {
-            switch (this._currentJob.EncodingProfile.OutFormat)
+            switch (_currentJob.EncodingProfile.OutFormat)
             {
                 case OutputType.OutputMatroska:
                 case OutputType.OutputWebM:
-                    this._currentEncoder = this._mkvMerge;
+                    _currentEncoder = _mkvMerge;
                     break;
                 case OutputType.OutputMp4:
-                    this._currentEncoder = this._mp4Box;
+                    _currentEncoder = _mp4Box;
                     break;
                 case OutputType.OutputTs:
                 case OutputType.OutputM2Ts:
                 case OutputType.OutputBluRay:
                 case OutputType.OutputAvchd:
-                    this._currentEncoder = this._tsMuxeR;
+                    _currentEncoder = _tsMuxeR;
                     break;
                 case OutputType.OutputDvd:
-                    this._currentEncoder = this._dvdAuthor;
+                    _currentEncoder = _dvdAuthor;
                     break;
             }
 
@@ -918,7 +906,7 @@ namespace VideoConvert.AppServices.Services
 
         private void ExecuteMoveOutFile()
         {
-            this._currentEncoder = this._fileWorker;
+            _currentEncoder = _fileWorker;
 
             ExecuteGenericEncoder();
         }
@@ -931,11 +919,11 @@ namespace VideoConvert.AppServices.Services
 
         private void DeleteTempFiles()
         {
-            if (!this._appConfig.DeleteTemporaryFiles) return;
+            if (!_appConfig.DeleteTemporaryFiles) return;
 
-            foreach (string tempFile in this._currentJob.TempFiles)
+            foreach (var tempFile in _currentJob.TempFiles)
             {
-                if (tempFile == this._currentJob.InputFile || tempFile == this._currentJob.OutputFile ||
+                if (tempFile == _currentJob.InputFile || tempFile == _currentJob.OutputFile ||
                     string.IsNullOrEmpty(tempFile))
                     continue;
 
@@ -943,7 +931,7 @@ namespace VideoConvert.AppServices.Services
 
                 try
                 {
-                    Log.InfoFormat("Deleting \"{0:s}\"", tempFile);
+                    Log.Info($"Deleting \"{tempFile}\"");
                     if (fi == FileAttributes.Directory)
                         Directory.Delete(tempFile);
                     else
@@ -951,11 +939,10 @@ namespace VideoConvert.AppServices.Services
                 }
                 catch (Exception exc)
                 {
-                    Log.ErrorFormat("Could not delete File \"{0:s}\" -> {1:s}",
-                                    tempFile, exc.Message);
+                    Log.Error($"Could not delete File \"{tempFile}\" -> {exc.Message}");
                 }
             }
-            this._currentJob.TempFiles.Clear();
+            _currentJob.TempFiles.Clear();
         }
     }
 }

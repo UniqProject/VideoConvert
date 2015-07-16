@@ -9,11 +9,11 @@
 
 namespace VideoConvert.Interop.Utilities
 {
-    using log4net;
-    using Model;
-    using Model.MediaInfo;
-    using Model.Profiles;
     using System;
+    using log4net;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.MediaInfo;
+    using VideoConvert.Interop.Model.Profiles;
 
     /// <summary>
     /// Audio helper class

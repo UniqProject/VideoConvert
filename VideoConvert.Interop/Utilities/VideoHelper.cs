@@ -9,13 +9,13 @@
 
 namespace VideoConvert.Interop.Utilities
 {
-    using Model;
-    using Model.MediaInfo;
-    using Model.Profiles;
     using System;
     using System.Drawing;
     using System.Globalization;
     using System.Linq;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.MediaInfo;
+    using VideoConvert.Interop.Model.Profiles;
 
     /// <summary>
     /// Helper class for video streams
@@ -33,29 +33,28 @@ namespace VideoConvert.Interop.Utilities
         /// <returns></returns>
         public static VideoInfo GetStreamInfo(MediaInfoContainer mi, VideoInfo vStream, bool bluRayTarget)
         {
-            if (mi.Video.Count > 0)
-            {
-                Single.TryParse(mi.Video[0].DisplayAspectRatio, NumberStyles.Number, CInfo,
-                                out vStream.AspectRatio);
-                vStream.Bitrate = mi.Video[0].BitRate;
-                vStream.Format = mi.Video[0].Format;
-                vStream.FormatProfile = mi.Video[0].FormatProfile;
-                if (mi.Video[0].FrameRateEnumerator < vStream.FrameRateEnumerator*2 || !bluRayTarget)
-                {
-                    vStream.Fps = mi.Video[0].FrameRate;
-                    vStream.FrameCount = mi.Video[0].FrameCount;
-                    vStream.FrameRateDenominator = mi.Video[0].FrameRateDenominator;
-                    vStream.FrameRateEnumerator = mi.Video[0].FrameRateEnumerator;
+            if (mi.Video.Count <= 0) return vStream;
 
-                }
-                vStream.Height = mi.Video[0].Height;
-                vStream.Width = mi.Video[0].Width;
-                vStream.Interlaced = mi.Video[0].ScanType != "Progressive";
-                vStream.Length = mi.Video[0].DurationTime.TimeOfDay.TotalSeconds;
-                vStream.PicSize = mi.Video[0].VideoSize;
-                vStream.StreamSize = GenHelper.GetFileSize(vStream.TempFile);
-                vStream.FrameMode = mi.Video[0].FormatFrameMode;
+            float.TryParse(mi.Video[0].DisplayAspectRatio, NumberStyles.Number, CInfo,
+                out vStream.AspectRatio);
+            vStream.Bitrate = mi.Video[0].BitRate;
+            vStream.Format = mi.Video[0].Format;
+            vStream.FormatProfile = mi.Video[0].FormatProfile;
+            if (mi.Video[0].FrameRateEnumerator < vStream.FrameRateEnumerator*2 || !bluRayTarget)
+            {
+                vStream.Fps = mi.Video[0].FrameRate;
+                vStream.FrameCount = mi.Video[0].FrameCount;
+                vStream.FrameRateDenominator = mi.Video[0].FrameRateDenominator;
+                vStream.FrameRateEnumerator = mi.Video[0].FrameRateEnumerator;
+
             }
+            vStream.Height = mi.Video[0].Height;
+            vStream.Width = mi.Video[0].Width;
+            vStream.Interlaced = mi.Video[0].ScanType != "Progressive";
+            vStream.Length = mi.Video[0].DurationTime.TimeOfDay.TotalSeconds;
+            vStream.PicSize = mi.Video[0].VideoSize;
+            vStream.StreamSize = GenHelper.GetFileSize(vStream.TempFile);
+            vStream.FrameMode = mi.Video[0].FormatFrameMode;
             return vStream;
         }
 

@@ -9,17 +9,17 @@
 
 namespace VideoConvert.AppServices.Muxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
 
     /// <summary>
     /// The MuxerMplex
@@ -63,7 +63,7 @@ namespace VideoConvert.AppServices.Muxer
         /// </param>
         public MuxerMplex(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -106,7 +106,7 @@ namespace VideoConvert.AppServices.Muxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("mplex exception: {0}", ex);
+                    Log.Error($"mplex exception: {ex}");
                 }
 
                 if (started)
@@ -127,7 +127,7 @@ namespace VideoConvert.AppServices.Muxer
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("mplex \"{0}\" found", verInfo);
+                Log.Debug($"mplex \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -141,54 +141,54 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("mplex is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardError = true
                 };
-                this.EncodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: mplex {0}", query);
+                EncodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: mplex {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginErrorReadLine();
+                EncodeProcess.ErrorDataReceived += EncodeProcessDataReceived;
+                EncodeProcess.BeginErrorReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -199,16 +199,16 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -225,17 +225,17 @@ namespace VideoConvert.AppServices.Muxer
 
         private string GenerateCommandLine()
         {
-            this._outputFile = Path.ChangeExtension(this._currentTask.VideoStream.TempFile, "premuxed.mpg");
+            _outputFile = Path.ChangeExtension(_currentTask.VideoStream.TempFile, "premuxed.mpg");
 
             var sb = new StringBuilder();
 
             sb.Append("-f 8 -r 0 -V -v 1");
 
-            sb.AppendFormat(" -o \"{0}\" {1}", this._outputFile, this._currentTask.VideoStream.TempFile);
+            sb.Append($" -o \"{_outputFile}\" {_currentTask.VideoStream.TempFile}");
 
-            foreach (var stream in this._currentTask.AudioStreams)
+            foreach (var stream in _currentTask.AudioStreams)
             {
-                sb.AppendFormat(" \"{0}\"", stream.TempFile);
+                sb.Append($" \"{stream.TempFile}\"");
             }
 
             return sb.ToString();
@@ -254,30 +254,30 @@ namespace VideoConvert.AppServices.Muxer
         {
             try
             {
-                this.EncodeProcess.CancelErrorRead();
+                EncodeProcess.CancelErrorRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                this._currentTask.TempFiles.Add(this._currentTask.VideoStream.TempFile);
-                this._currentTask.VideoStream.TempFile = this._outputFile;
+                _currentTask.TempFiles.Add(_currentTask.VideoStream.TempFile);
+                _currentTask.VideoStream.TempFile = _outputFile;
 
-                foreach (var stream in this._currentTask.AudioStreams)
+                foreach (var stream in _currentTask.AudioStreams)
                 {
-                    this._currentTask.TempFiles.Add(stream.TempFile);
+                    _currentTask.TempFiles.Add(stream.TempFile);
                 }
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -287,9 +287,9 @@ namespace VideoConvert.AppServices.Muxer
         /// <param name="e"></param>
         private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -298,7 +298,7 @@ namespace VideoConvert.AppServices.Muxer
             if (string.IsNullOrEmpty(line)) return;
 
             const float progress = -1f;
-            var elapsedTime = DateTime.Now - this._startTime;
+            var elapsedTime = DateTime.Now - _startTime;
             var remainingTime = elapsedTime + TimeSpan.FromSeconds(1d);
 
             var eventArgs = new EncodeProgressEventArgs
@@ -309,9 +309,9 @@ namespace VideoConvert.AppServices.Muxer
                 PercentComplete = progress,
                 ElapsedTime = elapsedTime,
             };
-            this.InvokeEncodeStatusChanged(eventArgs);
+            InvokeEncodeStatusChanged(eventArgs);
 
-            Log.InfoFormat("mplex: {0}", line);
+            Log.Info($"mplex: {line}");
         }
 
         #endregion

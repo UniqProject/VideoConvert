@@ -9,19 +9,19 @@
 
 namespace VideoConvertWPF.Startup
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using Caliburn.Metro;
     using Caliburn.Micro;
     using Castle.Core;
     using Castle.Core.Internal;
     using Castle.MicroKernel.Registration;
     using Castle.Windsor;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using VideoConvert.AppServices;
-    using ViewModels;
-    using ViewModels.Interfaces;
+    using VideoConvertWPF.ViewModels;
+    using VideoConvertWPF.ViewModels.Interfaces;
 
     public class WinBootstrapper : CaliburnMetroCompositionBootstrapper<IShellViewModel>
     {
@@ -29,43 +29,43 @@ namespace VideoConvertWPF.Startup
 
         protected override void Configure()
         {
-            this._winContainer = new WindsorContainer();
+            _winContainer = new WindsorContainer();
             
-            this._winContainer.Register(Component.For<IWindowManager>().ImplementedBy<AppWindowManager>());
-            this._winContainer.Register(Component.For<IEventAggregator>().ImplementedBy<EventAggregator>());
+            _winContainer.Register(Component.For<IWindowManager>().ImplementedBy<AppWindowManager>());
+            _winContainer.Register(Component.For<IEventAggregator>().ImplementedBy<EventAggregator>());
 
             // Initialise the ApplicationServices IWindsorInstaller
-            this._winContainer.Register(Component.For<IWindsorInstaller>().ImplementedBy<ServicesWindsorInstaller>());
-            this._winContainer.Install(_winContainer.ResolveAll<IWindsorInstaller>());
+            _winContainer.Register(Component.For<IWindsorInstaller>().ImplementedBy<ServicesWindsorInstaller>());
+            _winContainer.Install(_winContainer.ResolveAll<IWindsorInstaller>());
 
             // Views
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IMainViewModel>().ImplementedBy<MainViewModel>().LifeStyle.Is(LifestyleType.Singleton));
 
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IShellViewModel>().ImplementedBy<ShellViewModel>().LifeStyle.Is(LifestyleType.Singleton));
 
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IStreamSelectViewModel>()
                     .ImplementedBy<StreamSelectViewModel>()
                     .LifeStyle.Is(LifestyleType.Singleton));
 
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IOptionsViewModel>()
                     .ImplementedBy<OptionsViewModel>()
                     .LifeStyle.Is(LifestyleType.Singleton));
 
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IChangeLogViewModel>()
                     .ImplementedBy<ChangeLogViewModel>()
                     .LifeStyle.Is(LifestyleType.Singleton));
 
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IEncodeViewModel>()
                 .ImplementedBy<EncodeViewModel>()
                 .LifeStyle.Is(LifestyleType.Singleton));
 
-            this._winContainer.Register(
+            _winContainer.Register(
                 Component.For<IAboutViewModel>().ImplementedBy<AboutViewModel>().LifeStyle.Is(LifestyleType.Singleton));
         }
 
@@ -88,7 +88,7 @@ namespace VideoConvertWPF.Startup
         /// </returns>
         protected override object GetInstance(Type service, string key)
         {
-            return string.IsNullOrWhiteSpace(key) ? this._winContainer.Resolve(service) : this._winContainer.Resolve<object>(key, new { });
+            return string.IsNullOrWhiteSpace(key) ? _winContainer.Resolve(service) : _winContainer.Resolve<object>(key, new { });
             
             //string contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(service) : key;
 
@@ -107,7 +107,7 @@ namespace VideoConvertWPF.Startup
         /// </returns>
         protected override IEnumerable<object> GetAllInstances(Type service)
         {
-            return this._winContainer.ResolveAll(service).Cast<object>();
+            return _winContainer.ResolveAll(service).Cast<object>();
         }
 
         /// <summary>
@@ -120,8 +120,8 @@ namespace VideoConvertWPF.Startup
         {
             instance.GetType().GetProperties()
                 .Where(property => property.CanWrite && property.PropertyType.IsPublic)
-                .Where(property => this._winContainer.Kernel.HasComponent(property.PropertyType))
-                .ForEach(property => property.SetValue(instance, this._winContainer.Resolve(property.PropertyType), null));
+                .Where(property => _winContainer.Kernel.HasComponent(property.PropertyType))
+                .ForEach(property => property.SetValue(instance, _winContainer.Resolve(property.PropertyType), null));
         }
     }
 }

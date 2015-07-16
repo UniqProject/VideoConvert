@@ -11,7 +11,7 @@ namespace VideoConvertWPF
 {
     using Caliburn.Metro.Core;
     using MahApps.Metro.Controls;
-    using Views;
+    using VideoConvertWPF.Views;
 
     public class AppWindowManager : MetroWindowManager
     {

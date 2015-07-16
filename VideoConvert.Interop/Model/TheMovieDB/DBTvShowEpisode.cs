@@ -80,10 +80,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Concatenated list of writers
         /// </summary>
-        public string WritersString
-        {
-            get { return Writers != null ? string.Join(" / ", Writers) : string.Empty; }
-        }
+        public string WritersString => Writers != null ? string.Join(" / ", Writers) : string.Empty;
 
         /// <summary>
         /// Directors
@@ -93,10 +90,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Concatenated list of directors
         /// </summary>
-        public string DirectorsString
-        {
-            get { return Directors != null ? string.Join(" / ", Directors) : string.Empty; }
-        }
+        public string DirectorsString => Directors != null ? string.Join(" / ", Directors) : string.Empty;
 
         /// <summary>
         /// Guest stars
@@ -106,10 +100,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Concatenated list of guest stars
         /// </summary>
-        public string GuestStarsString
-        {
-            get { return GuestStars != null ? string.Join(" / ", GuestStars) : string.Empty; }
-        }
+        public string GuestStarsString => GuestStars != null ? string.Join(" / ", GuestStars) : string.Empty;
 
         /// <summary>
         /// Episode plot

@@ -9,9 +9,9 @@
 
 namespace VideoConvertWPF.ViewModels
 {
-    using Caliburn.Micro;
     using System.ComponentModel;
     using System.IO;
+    using Caliburn.Micro;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvertWPF.ViewModels.Interfaces;
 
@@ -32,7 +32,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _shellViewModel.LangCode = value;
-                this.NotifyOfPropertyChange(() => this.LangCode);
+                NotifyOfPropertyChange(() => LangCode);
             }
         }
 
@@ -45,15 +45,15 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _changeLogText = value;
-                this.NotifyOfPropertyChange(() => this.ChangeLogText);
+                NotifyOfPropertyChange(() => ChangeLogText);
             }
         }
 
         public ChangeLogViewModel(IShellViewModel shellViewModel, IWindowManager windowManager)
         {
-            this._shellViewModel = shellViewModel;
-            this.WindowManager = windowManager;
-            this.PropertyChanged += OnPropertyChanged;
+            _shellViewModel = shellViewModel;
+            WindowManager = windowManager;
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -66,22 +66,22 @@ namespace VideoConvertWPF.ViewModels
 
         private void ReloadChangeLogText()
         {
-            var localizedFileName = Path.ChangeExtension("CHANGELOG", this.LangCode);
+            var localizedFileName = Path.ChangeExtension("CHANGELOG", LangCode);
             using (TextReader reader = new StreamReader(Path.Combine(ConfigService.AppPath, localizedFileName)))
             {
-                this.ChangeLogText = reader.ReadToEnd();
+                ChangeLogText = reader.ReadToEnd();
             }
         }
 
         public override void OnLoad()
         {
             base.OnLoad();
-            this.LangCode = "de-DE";
+            LangCode = "de-DE";
         }
 
         public void Close()
         {
-            this._shellViewModel.DisplayWindow(ShellWin.MainView);
+            _shellViewModel.DisplayWindow(ShellWin.MainView);
         }
     }
 }

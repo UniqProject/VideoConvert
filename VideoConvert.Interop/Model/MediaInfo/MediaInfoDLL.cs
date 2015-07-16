@@ -89,17 +89,17 @@ namespace VideoConvert.Interop.Model.MediaInfo
         [DllImport("MediaInfo.dll")]
         private static extern IntPtr MediaInfoA_Open(IntPtr Handle, IntPtr FileName);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfo_Open_Buffer_Init(IntPtr Handle, Int64 File_Size, Int64 File_Offset);
+        private static extern IntPtr MediaInfo_Open_Buffer_Init(IntPtr Handle, long File_Size, long File_Offset);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoA_Open(IntPtr Handle, Int64 File_Size, Int64 File_Offset);
+        private static extern IntPtr MediaInfoA_Open(IntPtr Handle, long File_Size, long File_Offset);
         [DllImport("MediaInfo.dll")]
         private static extern IntPtr MediaInfo_Open_Buffer_Continue(IntPtr Handle, IntPtr Buffer, IntPtr Buffer_Size);
         [DllImport("MediaInfo.dll")]
-        private static extern IntPtr MediaInfoA_Open_Buffer_Continue(IntPtr Handle, Int64 File_Size, byte[] Buffer, IntPtr Buffer_Size);
+        private static extern IntPtr MediaInfoA_Open_Buffer_Continue(IntPtr Handle, long File_Size, byte[] Buffer, IntPtr Buffer_Size);
         [DllImport("MediaInfo.dll")]
-        private static extern Int64  MediaInfo_Open_Buffer_Continue_GoTo_Get(IntPtr Handle);
+        private static extern long  MediaInfo_Open_Buffer_Continue_GoTo_Get(IntPtr Handle);
         [DllImport("MediaInfo.dll")]
-        private static extern Int64  MediaInfoA_Open_Buffer_Continue_GoTo_Get(IntPtr Handle);
+        private static extern long  MediaInfoA_Open_Buffer_Continue_GoTo_Get(IntPtr Handle);
         [DllImport("MediaInfo.dll")]
         private static extern IntPtr MediaInfo_Open_Buffer_Finalize(IntPtr Handle);
         [DllImport("MediaInfo.dll")]
@@ -135,7 +135,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
         }
 
         ~MediaInfo() { MediaInfo_Delete(Handle); }
-        public int Open(String FileName)
+        public int Open(string FileName)
         {
             if (MustUseAnsi)
             {
@@ -148,7 +148,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
             else
                 return (int)MediaInfo_Open(Handle, FileName);
         }
-        public int Open_Buffer_Init(Int64 File_Size, Int64 File_Offset)
+        public int Open_Buffer_Init(long File_Size, long File_Offset)
         {
             return (int)MediaInfo_Open_Buffer_Init(Handle, File_Size, File_Offset);
         }
@@ -156,7 +156,7 @@ namespace VideoConvert.Interop.Model.MediaInfo
         {
             return (int)MediaInfo_Open_Buffer_Continue(Handle, Buffer, Buffer_Size);
         }
-        public Int64 Open_Buffer_Continue_GoTo_Get()
+        public long Open_Buffer_Continue_GoTo_Get()
         {
             return MediaInfo_Open_Buffer_Continue_GoTo_Get(Handle);
         }
@@ -165,14 +165,12 @@ namespace VideoConvert.Interop.Model.MediaInfo
             return (int)MediaInfo_Open_Buffer_Finalize(Handle);
         }
         public void Close() { MediaInfo_Close(Handle); }
-        public String Inform()
+        public string Inform()
         {
-            if (MustUseAnsi)
-                return Marshal.PtrToStringAnsi(MediaInfoA_Inform(Handle, (IntPtr)0));
-            else
-                return Marshal.PtrToStringUni(MediaInfo_Inform(Handle, (IntPtr)0));
+            return MustUseAnsi ? Marshal.PtrToStringAnsi(MediaInfoA_Inform(Handle, (IntPtr)0)) : Marshal.PtrToStringUni(MediaInfo_Inform(Handle, (IntPtr)0));
         }
-        public String Get(StreamKind StreamKind, int StreamNumber, String Parameter, InfoKind KindOfInfo, InfoKind KindOfSearch)
+
+        public string Get(StreamKind StreamKind, int StreamNumber, string Parameter, InfoKind KindOfInfo, InfoKind KindOfSearch)
         {
             if (MustUseAnsi)
             {
@@ -184,14 +182,12 @@ namespace VideoConvert.Interop.Model.MediaInfo
             else
                 return Marshal.PtrToStringUni(MediaInfo_Get(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, Parameter, (IntPtr)KindOfInfo, (IntPtr)KindOfSearch));
         }
-        public String Get(StreamKind StreamKind, int StreamNumber, int Parameter, InfoKind KindOfInfo)
+        public string Get(StreamKind StreamKind, int StreamNumber, int Parameter, InfoKind KindOfInfo)
         {
-            if (MustUseAnsi)
-                return Marshal.PtrToStringAnsi(MediaInfoA_GetI(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, (IntPtr)Parameter, (IntPtr)KindOfInfo));
-            else
-                return Marshal.PtrToStringUni(MediaInfo_GetI(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, (IntPtr)Parameter, (IntPtr)KindOfInfo));
+            return MustUseAnsi ? Marshal.PtrToStringAnsi(MediaInfoA_GetI(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, (IntPtr)Parameter, (IntPtr)KindOfInfo)) : Marshal.PtrToStringUni(MediaInfo_GetI(Handle, (IntPtr)StreamKind, (IntPtr)StreamNumber, (IntPtr)Parameter, (IntPtr)KindOfInfo));
         }
-        public String Option(String Option, String Value)
+
+        public string Option(string Option, string Value)
         {
             if (MustUseAnsi)
             {
@@ -211,10 +207,10 @@ namespace VideoConvert.Interop.Model.MediaInfo
         private bool MustUseAnsi;
 
         //Default values, if you know how to set default values in C#, say me
-        public String Get(StreamKind StreamKind, int StreamNumber, String Parameter, InfoKind KindOfInfo) { return Get(StreamKind, StreamNumber, Parameter, KindOfInfo, InfoKind.Name); }
-        public String Get(StreamKind StreamKind, int StreamNumber, String Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text, InfoKind.Name); }
-        public String Get(StreamKind StreamKind, int StreamNumber, int Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text); }
-        public String Option(String Option_) { return Option(Option_, ""); }
+        public string Get(StreamKind StreamKind, int StreamNumber, string Parameter, InfoKind KindOfInfo) { return Get(StreamKind, StreamNumber, Parameter, KindOfInfo, InfoKind.Name); }
+        public string Get(StreamKind StreamKind, int StreamNumber, string Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text, InfoKind.Name); }
+        public string Get(StreamKind StreamKind, int StreamNumber, int Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text); }
+        public string Option(string Option_) { return Option(Option_, ""); }
         public int Count_Get(StreamKind StreamKind) { return Count_Get(StreamKind, -1); }
     }
 } //NameSpace

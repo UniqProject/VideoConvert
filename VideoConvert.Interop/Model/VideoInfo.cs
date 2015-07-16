@@ -12,7 +12,6 @@ namespace VideoConvert.Interop.Model
     using System;
     using System.Collections.Generic;
     using System.Drawing;
-    using System.Globalization;
 
     /// <summary>
     /// Video stream information container
@@ -209,46 +208,26 @@ namespace VideoConvert.Interop.Model
         {
             var result = string.Empty;
 
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.FPS:              {0:g} {1:s}", Fps,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.Format:           {0:s} {1:s}", Format,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.FormatProfile:    {0:s} {1:s}", FormatProfile,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.StreamID:         {0:g} {1:s}", StreamId,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.VTS_ID:           {0:g} {1:s}", VtsId,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.TrackID:          {0:g} {1:s}", TrackId,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.TempFile:         {0:s} {1:s}", TempFile,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.Interlaced:       {0:s} {1:s}",
-                                    Interlaced.ToString(CultureInfo.InvariantCulture), Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.PicSize:          {0:s} {1:s}", PicSize.ToString("F"),
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.DemuxStreamID:    {0:g} {1:s}", DemuxStreamId,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.DemuxStreamNames: {0:s} {1:s}",
-                                    string.Join(",", DemuxStreamNames.ToArray()), Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.DemuxPlayList:    {0:g} {1:s}", DemuxPlayList,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.Width:            {0:g} {1:s}", Width,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.Height:           {0:g} {1:s}", Height,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.FrameCount:       {0:g} {1:s}", FrameCount,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.encoded:          {0:s} {1:s}",
-                                    Encoded.ToString(CultureInfo.InvariantCulture), Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.isRawStream:      {0:s} {1:s}",
-                                    IsRawStream.ToString(CultureInfo.InvariantCulture), Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.StreamSize:       {0:g} {1:s}", StreamSize,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.Length:           {0:g} {1:s}", Length,
-                                    Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "VideoInfo.AspectRatio:      {0:g} {1:s}", AspectRatio,
-                                    Environment.NewLine);
+            result += $"VideoInfo.FPS:              {Fps:0} {Environment.NewLine}";
+            result += $"VideoInfo.Format:           {Format} {Environment.NewLine}";
+            result += $"VideoInfo.FormatProfile:    {FormatProfile} {Environment.NewLine}";
+            result += $"VideoInfo.StreamID:         {StreamId:0} {Environment.NewLine}";
+            result += $"VideoInfo.VTS_ID:           {VtsId:0} {Environment.NewLine}";
+            result += $"VideoInfo.TrackID:          {TrackId:0} {Environment.NewLine}";
+            result += $"VideoInfo.TempFile:         {TempFile} {Environment.NewLine}";
+            result += $"VideoInfo.Interlaced:       {Interlaced} {Environment.NewLine}";
+            result += $"VideoInfo.PicSize:          {PicSize:s} {Environment.NewLine}";
+            result += $"VideoInfo.DemuxStreamID:    {DemuxStreamId:0} {Environment.NewLine}";
+            result += $"VideoInfo.DemuxStreamNames: {string.Join(",", DemuxStreamNames.ToArray())} {Environment.NewLine}";
+            result += $"VideoInfo.DemuxPlayList:    {DemuxPlayList:0} {Environment.NewLine}";
+            result += $"VideoInfo.Width:            {Width:0} {Environment.NewLine}";
+            result += $"VideoInfo.Height:           {Height:0} {Environment.NewLine}";
+            result += $"VideoInfo.FrameCount:       {FrameCount:0} {Environment.NewLine}";
+            result += $"VideoInfo.encoded:          {Encoded} {Environment.NewLine}";
+            result += $"VideoInfo.isRawStream:      {IsRawStream} {Environment.NewLine}";
+            result += $"VideoInfo.StreamSize:       {StreamSize:0} {Environment.NewLine}";
+            result += $"VideoInfo.Length:           {Length:0} {Environment.NewLine}";
+            result += $"VideoInfo.AspectRatio:      {AspectRatio:0} {Environment.NewLine}";
             return result;
         }
     }

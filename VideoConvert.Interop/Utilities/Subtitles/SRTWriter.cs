@@ -9,12 +9,12 @@
 
 namespace VideoConvert.Interop.Utilities.Subtitles
 {
-    using log4net;
-    using Model.Subtitles;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
+    using log4net;
+    using VideoConvert.Interop.Model.Subtitles;
 
     /// <summary>
     /// SRT Subtitle writer class
@@ -44,18 +44,19 @@ namespace VideoConvert.Interop.Utilities.Subtitles
 
             foreach (var caption in subtitle.Captions)
             {
-                var capLine = string.Format("{1:0}{0}{2} --> {3}{0}{4}",
-                                            Environment.NewLine, capCounter,
-                                            DateTime.MinValue.Add(caption.StartTime).ToString("HH:mm:ss,fff", CInfo),
-                                            DateTime.MinValue.Add(caption.EndTime).ToString("HH:mm:ss,fff", CInfo),
-                                            caption.Text);
+                var startTime = DateTime.MinValue.Add(caption.StartTime).ToString("HH: mm:ss,fff", CInfo);
+                var endTime = DateTime.MinValue.Add(caption.EndTime).ToString("HH: mm:ss, fff", CInfo);
+
+                var capLine = $"{capCounter:0}{Environment.NewLine}{startTime} --> ";
+                capLine +=$"{endTime}{Environment.NewLine}{caption.Text}";
+
                 capLines.Add(capLine);
                 capCounter++;
             }
 
             using (var writer = new StreamWriter(fileName))
             {
-                var separator = string.Format("{0}{0}", Environment.NewLine);
+                var separator = $"{Environment.NewLine}{Environment.NewLine}";
                 writer.WriteLine(string.Join(separator, capLines));
             }
 

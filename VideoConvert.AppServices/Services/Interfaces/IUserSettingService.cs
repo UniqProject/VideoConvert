@@ -9,8 +9,8 @@
 
 namespace VideoConvert.AppServices.Services.Interfaces
 {
-    using Interop.EventArgs;
     using System.Collections.Specialized;
+    using VideoConvert.Interop.EventArgs;
 
     /// <summary>
     /// The Setting Event Handler

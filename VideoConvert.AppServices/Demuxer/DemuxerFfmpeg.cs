@@ -9,18 +9,18 @@
 
 namespace VideoConvert.AppServices.Demuxer
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using log4net;
+    using VideoConvert.AppServices.Demuxer.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The ffmpeg demuxer
@@ -69,7 +69,7 @@ namespace VideoConvert.AppServices.Demuxer
         /// </param>
         public DemuxerFfmpeg(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -115,7 +115,7 @@ namespace VideoConvert.AppServices.Demuxer
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
+                    Log.Error($"ffmpeg exception: {ex}");
                 }
 
                 if (started)
@@ -134,12 +134,12 @@ namespace VideoConvert.AppServices.Demuxer
             }
 
             // Debug info
-            if (Log.IsDebugEnabled)
-            {
-                if (use64Bit)
-                    Log.Debug("Selected 64 bit encoder");
-                Log.DebugFormat("ffmpeg \"{0}\" found", verInfo);
-            }
+            if (!Log.IsDebugEnabled) return verInfo;
+
+            if (use64Bit)
+                Log.Debug("Selected 64 bit encoder");
+            Log.Debug($"ffmpeg \"{verInfo}\" found");
+
             return verInfo;
         }
 
@@ -154,34 +154,34 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("ffmpeg is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
-                var use64BitEncoder = this._appConfig.Use64BitEncoders &&
-                                       this._appConfig.Ffmpeg64Installed &&
+                var use64BitEncoder = _appConfig.Use64BitEncoders &&
+                                       _appConfig.Ffmpeg64Installed &&
                                        Environment.Is64BitOperatingSystem;
 
-                if (this._currentTask.Input == InputType.InputDvd)
-                    _inputFile = this._currentTask.DumpOutput;
+                if (_currentTask.Input == InputType.InputDvd)
+                    _inputFile = _currentTask.DumpOutput;
                 else
-                    _inputFile = string.IsNullOrEmpty(this._currentTask.TempInput)
-                                ? this._currentTask.InputFile
-                                : this._currentTask.TempInput;
-                this._currentTask.VideoStream.TempFile = _inputFile;
+                    _inputFile = string.IsNullOrEmpty(_currentTask.TempInput)
+                                ? _currentTask.InputFile
+                                : _currentTask.TempInput;
+                _currentTask.VideoStream.TempFile = _inputFile;
 
                 try
                 {
-                    this._currentTask.MediaInfo = GenHelper.GetMediaInfo(_inputFile);
-                    if (this._currentTask.Input == InputType.InputDvd)
+                    _currentTask.MediaInfo = GenHelper.GetMediaInfo(_inputFile);
+                    if (_currentTask.Input == InputType.InputDvd)
                     {
-                        this._currentTask.VideoStream = VideoHelper.GetStreamInfo(this._currentTask.MediaInfo,
-                                                                                  this._currentTask.VideoStream,
+                        _currentTask.VideoStream = VideoHelper.GetStreamInfo(_currentTask.MediaInfo,
+                                                                                  _currentTask.VideoStream,
                                                                                   false);
                     }
                 }
@@ -191,46 +191,46 @@ namespace VideoConvert.AppServices.Demuxer
                 }
 
                 var query = GenerateCommandLine();
-                var ffmpegCliPath = Path.Combine(this._appConfig.ToolsPath,
+                var ffmpegCliPath = Path.Combine(_appConfig.ToolsPath,
                                                   use64BitEncoder ? Executable64 : Executable);
 
                 var cliStart = new ProcessStartInfo(ffmpegCliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardError = true
                 };
-                this.DemuxProcess = new Process { StartInfo = cliStart };
-                Log.InfoFormat("start parameter: ffmpeg {0}", query);
+                DemuxProcess = new Process { StartInfo = cliStart };
+                Log.Info($"start parameter: ffmpeg {query}");
 
-                this.DemuxProcess.Start();
+                DemuxProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.DemuxProcess.ErrorDataReceived += DemuxDataReceived;
-                this.DemuxProcess.BeginErrorReadLine();
+                DemuxProcess.ErrorDataReceived += DemuxDataReceived;
+                DemuxProcess.BeginErrorReadLine();
 
-                this._demuxerProcessId = this.DemuxProcess.Id;
+                _demuxerProcessId = DemuxProcess.Id;
 
                 // Set the encoder process exit trigger
-                if (this._demuxerProcessId != -1)
+                if (_demuxerProcessId != -1)
                 {
-                    this.DemuxProcess.EnableRaisingEvents = true;
-                    this.DemuxProcess.Exited += DemuxProcessExited;
+                    DemuxProcess.EnableRaisingEvents = true;
+                    DemuxProcess.Exited += DemuxProcessExited;
                 }
 
-                this.DemuxProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                DemuxProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -241,16 +241,16 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                if (this.DemuxProcess != null && !this.DemuxProcess.HasExited)
+                if (DemuxProcess != null && !DemuxProcess.HasExited)
                 {
-                    this.DemuxProcess.Kill();
+                    DemuxProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -278,27 +278,27 @@ namespace VideoConvert.AppServices.Demuxer
         {
             try
             {
-                this.DemuxProcess.CancelErrorRead();
+                DemuxProcess.CancelErrorRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = DemuxProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = DemuxProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                if (this._currentTask.Input == InputType.InputDvd)
+                if (_currentTask.Input == InputType.InputDvd)
                 {
-                    this._currentTask.TempFiles.Add(this._inputFile);
+                    _currentTask.TempFiles.Add(_inputFile);
                 }
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -308,9 +308,9 @@ namespace VideoConvert.AppServices.Demuxer
         /// <param name="e"></param>
         private void DemuxDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -329,9 +329,9 @@ namespace VideoConvert.AppServices.Demuxer
                 TimeSpan.TryParseExact(result.Groups[2].Value, @"hh\:mm\:ss\.ff", _appConfig.CInfo, out streamPosition);
                 var secDemux = streamPosition.TotalSeconds;
 
-                var remainingStreamTime = this._currentTask.VideoStream.Length - secDemux;
+                var remainingStreamTime = _currentTask.VideoStream.Length - secDemux;
                 
-                var elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - _startTime;
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = secDemux / elapsedTime.TotalSeconds;
@@ -341,7 +341,7 @@ namespace VideoConvert.AppServices.Demuxer
 
                 var remainingTime = new TimeSpan(0, 0, secRemaining);
 
-                var progress = (float) Math.Round(secDemux/this._currentTask.VideoStream.Length*100d);
+                var progress = (float) Math.Round(secDemux/_currentTask.VideoStream.Length*100d);
 
                 var eventArgs = new EncodeProgressEventArgs
                 {
@@ -351,44 +351,44 @@ namespace VideoConvert.AppServices.Demuxer
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
             }
             else
-                Log.InfoFormat("ffmpeg: {0}", line);
+                Log.Info($"ffmpeg: {line}");
         }
 
         private string GenerateCommandLine()
         {
             var sb = new StringBuilder();
 
-            if (this._currentTask.Input == InputType.InputDvd)
+            if (_currentTask.Input == InputType.InputDvd)
                 sb.Append("-probesize 2147483647 -analyzeduration 2147483647 -fflags genpts ");
 
-            sb.AppendFormat("-i \"{0}\" ", _inputFile);
+            sb.Append($"-i \"{_inputFile}\" ");
 
             string baseName;
             string ext;
 
             var formattedExt = "demuxed.video.mkv";
 
-            if (string.IsNullOrEmpty(this._currentTask.TempInput))
-                baseName = string.IsNullOrEmpty(this._currentTask.TempOutput)
-                           ? this._currentTask.BaseName
-                           : this._currentTask.TempOutput;
+            if (string.IsNullOrEmpty(_currentTask.TempInput))
+                baseName = string.IsNullOrEmpty(_currentTask.TempOutput)
+                           ? _currentTask.BaseName
+                           : _currentTask.TempOutput;
             else
-                baseName = this._currentTask.TempInput;
+                baseName = _currentTask.TempInput;
 
-            this._currentTask.VideoStream.TempFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
+            _currentTask.VideoStream.TempFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation,
                                                                                      baseName,
                                                                                      formattedExt);
 
-            var streamID = this._currentTask.Input == InputType.InputDvd
-                              ? string.Format("#0x{0:X}", this._currentTask.VideoStream.StreamId + 479)
-                              : string.Format("0:v:{0:0}", this._currentTask.VideoStream.StreamKindID);
+            var streamID = _currentTask.Input == InputType.InputDvd
+                              ? $"#0x{_currentTask.VideoStream.StreamId + 479:X}"
+                              : $"0:v:{_currentTask.VideoStream.StreamKindID:0}";
 
-            sb.AppendFormat("-map {0} -c:v copy -y \"{1}\" ", streamID, this._currentTask.VideoStream.TempFile);
+            sb.Append($"-map {streamID} -c:v copy -y \"{_currentTask.VideoStream.TempFile}\" ");
 
-            foreach (var item in this._currentTask.AudioStreams)
+            foreach (var item in _currentTask.AudioStreams)
             {
                 ext = StreamFormat.GetFormatExtension(item.Format, item.FormatProfile, false);
 
@@ -406,45 +406,45 @@ namespace VideoConvert.AppServices.Demuxer
                         break;
                 }
 
-                formattedExt = string.Format("demuxed.audio.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+                formattedExt = $"demuxed.audio.{item.StreamId:g}.{item.LangCode}.{ext}";
 
                 item.TempFile =
-                    FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, baseName, formattedExt);
+                    FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation, baseName, formattedExt);
 
-                if (this._currentTask.Input == InputType.InputDvd)
+                if (_currentTask.Input == InputType.InputDvd)
                 {
                     var dvdStreamId = item.StreamId;
-                    if (String.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg1") == 0 ||
-                        String.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg2") == 0)
+                    if (string.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg1") == 0 ||
+                        string.CompareOrdinal(item.Format.ToLowerInvariant(), "mpeg2") == 0)
                         dvdStreamId += 256;
-                    streamID = string.Format("#0x{0:X}", dvdStreamId);
+                    streamID = $"#0x{dvdStreamId:X}";
                 }
                 else
-                    streamID = string.Format("0:a:{0:0}", item.StreamKindId);
+                    streamID = $"0:a:{item.StreamKindId:0}";
 
-                sb.AppendFormat("-map {0} -c:a {1} -y \"{2}\" ", streamID, acodec, item.TempFile);
+                sb.Append($"-map {streamID} -c:a {acodec} -y \"{item.TempFile}\" ");
             }
 
-            foreach (var item in this._currentTask.SubtitleStreams)
+            foreach (var item in _currentTask.SubtitleStreams)
             {
                 ext = "mkv";
 
-                formattedExt = string.Format("demuxed.subtitle.{0:g}.{1}.{2}", item.StreamId, item.LangCode, ext);
+                formattedExt = $"demuxed.subtitle.{item.StreamId:g}.{item.LangCode}.{ext}";
 
-                item.TempFile = FileSystemHelper.CreateTempFile(this._appConfig.DemuxLocation, baseName, formattedExt);
+                item.TempFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation, baseName, formattedExt);
 
                 item.RawStream = false;
 
-                streamID = this._currentTask.Input == InputType.InputDvd
-                    ? string.Format("#0x{0:X}", item.StreamId)
-                    : string.Format("0:s:{0:0}", item.StreamKindId);
+                streamID = _currentTask.Input == InputType.InputDvd
+                    ? $"#0x{item.StreamId:X}"
+                    : $"0:s:{item.StreamKindId:0}";
 
                 var codec = "copy";
 
                 if (item.Format == "VobSub")
                     codec = "dvd_subtitle";
 
-                sb.AppendFormat("-map {0} -c:s {1} -y \"{2}\" ", streamID, codec, item.TempFile);
+                sb.Append($"-map {streamID} -c:s {codec} -y \"{item.TempFile}\" ");
             }
 
             return sb.ToString();

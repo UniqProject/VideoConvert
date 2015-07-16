@@ -10,7 +10,7 @@
 namespace VideoConvertWPF.ViewModels
 {
     using Caliburn.Micro;
-    using Interfaces;
+    using VideoConvertWPF.ViewModels.Interfaces;
 
     public class ViewModelBase : Screen, IViewModelBase
     {
@@ -22,12 +22,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._title;
+                return _title;
             }
             set
             {
-                this._title = value;
-                this.NotifyOfPropertyChange("Title");
+                _title = value;
+                NotifyOfPropertyChange(nameof(Title));
             }
         }
 
@@ -35,12 +35,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._updateAvail;
+                return _updateAvail;
             }
             set
             {
-                this._updateAvail = value;
-                this.NotifyOfPropertyChange("UpdateAvail");
+                _updateAvail = value;
+                NotifyOfPropertyChange(nameof(UpdateAvail));
             }
         }
 
@@ -48,11 +48,9 @@ namespace VideoConvertWPF.ViewModels
 
         public void Load()
         {
-            if (!this._hasLoaded)
-            {
-                this._hasLoaded = true;
-                this.OnLoad();
-            }
+            if (_hasLoaded) return;
+            _hasLoaded = true;
+            OnLoad();
         }
 
         public virtual void OnLoad()

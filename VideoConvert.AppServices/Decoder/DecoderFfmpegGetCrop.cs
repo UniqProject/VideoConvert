@@ -9,12 +9,6 @@
 
 namespace VideoConvert.AppServices.Decoder
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Drawing;
@@ -22,7 +16,13 @@ namespace VideoConvert.AppServices.Decoder
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
-    using Utilities;
+    using log4net;
+    using VideoConvert.AppServices.Decoder.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.AppServices.Utilities;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
 
     /// <summary>
     /// The DecoderFfmpegGetCrop
@@ -74,7 +74,7 @@ namespace VideoConvert.AppServices.Decoder
         /// </param>
         public DecoderFfmpegGetCrop(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -120,7 +120,7 @@ namespace VideoConvert.AppServices.Decoder
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("ffmpeg exception: {0}", ex);
+                    Log.Error($"ffmpeg exception: {ex}");
                 }
 
                 if (started)
@@ -139,12 +139,12 @@ namespace VideoConvert.AppServices.Decoder
             }
 
             // Debug info
-            if (Log.IsDebugEnabled)
-            {
-                if (use64Bit)
-                    Log.Debug("Selected 64 bit encoder");
-                Log.DebugFormat("ffmpeg \"{0}\" found", verInfo);
-            }
+            if (!Log.IsDebugEnabled) return verInfo;
+
+            if (use64Bit)
+                Log.Debug("Selected 64 bit encoder");
+            Log.Debug($"ffmpeg \"{verInfo}\" found");
+
             return verInfo;
         }
 
@@ -159,54 +159,54 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("ffmpeg is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = Path.Combine(this._appConfig.ToolsPath, Executable);
+                var cliPath = Path.Combine(_appConfig.ToolsPath, Executable);
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardError = true,
                 };
-                this.DecodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: ffmpeg {0}", query);
+                DecodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: ffmpeg {query}");
 
-                this.DecodeProcess.Start();
+                DecodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.DecodeProcess.ErrorDataReceived += DecodeProcessDataReceived;
-                this.DecodeProcess.BeginErrorReadLine();
+                DecodeProcess.ErrorDataReceived += DecodeProcessDataReceived;
+                DecodeProcess.BeginErrorReadLine();
 
-                this._decoderProcessId = this.DecodeProcess.Id;
+                _decoderProcessId = DecodeProcess.Id;
 
-                if (this._decoderProcessId != -1)
+                if (_decoderProcessId != -1)
                 {
-                    this.DecodeProcess.EnableRaisingEvents = true;
-                    this.DecodeProcess.Exited += DecodeProcessExited;
+                    DecodeProcess.EnableRaisingEvents = true;
+                    DecodeProcess.Exited += DecodeProcessExited;
                 }
 
-                this.DecodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                DecodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -217,16 +217,16 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                if (this.DecodeProcess != null && !this.DecodeProcess.HasExited)
+                if (DecodeProcess != null && !DecodeProcess.HasExited)
                 {
-                    this.DecodeProcess.Kill();
+                    DecodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -245,21 +245,18 @@ namespace VideoConvert.AppServices.Decoder
         {
             var sb = new StringBuilder();
 
-            var avs = new AviSynthGenerator(this._appConfig);
-            _inputFile = avs.GenerateCropDetect(this._currentTask.VideoStream.TempFile,
-                                                this._currentTask.VideoStream.Fps,
-                                                this._currentTask.VideoStream.Length,
-                                                new Size(this._currentTask.VideoStream.Width,
-                                                    this._currentTask.VideoStream.Height),
-                                                this._currentTask.VideoStream.AspectRatio,
+            var avs = new AviSynthGenerator(_appConfig);
+            _inputFile = avs.GenerateCropDetect(_currentTask.VideoStream.TempFile,
+                                                _currentTask.VideoStream.Fps,
+                                                _currentTask.VideoStream.Length,
+                                                new Size(_currentTask.VideoStream.Width,
+                                                    _currentTask.VideoStream.Height),
+                                                _currentTask.VideoStream.AspectRatio,
                                                 out _cropDetectFrames);
 
-            sb.AppendFormat(this._appConfig.CInfo, 
-                            "-threads {0:g} -i \"{1}\" -vf cropdetect -vcodec rawvideo -an -sn -f matroska -y NUL", 
-                            Environment.ProcessorCount + 1,
-                            _inputFile);
+            sb.Append($"-threads {Environment.ProcessorCount + 1:0} -i \"{_inputFile}\" -vf cropdetect -vcodec rawvideo -an -sn -f matroska -y NUL");
 
-            this._currentTask.VideoStream.CropRect = new Rectangle();
+            _currentTask.VideoStream.CropRect = new Rectangle();
 
             return sb.ToString();
         }
@@ -277,52 +274,52 @@ namespace VideoConvert.AppServices.Decoder
         {
             try
             {
-                this.DecodeProcess.CancelErrorRead();
+                DecodeProcess.CancelErrorRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = DecodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = DecodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                this._currentTask.TempFiles.Add(_inputFile);
+                _currentTask.TempFiles.Add(_inputFile);
             }
 
             FixCropReg();
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         private void FixCropReg()
         {
             int mod16Temp;
-            var mod16Width = Math.DivRem(this._currentTask.VideoStream.Width, 16, out mod16Temp);
+            var mod16Width = Math.DivRem(_currentTask.VideoStream.Width, 16, out mod16Temp);
             mod16Width *= 16;
 
-            var mod16Height = Math.DivRem(this._currentTask.VideoStream.Height, 16, out mod16Temp);
+            var mod16Height = Math.DivRem(_currentTask.VideoStream.Height, 16, out mod16Temp);
             mod16Height *= 16;
 
-            if (this._currentTask.VideoStream.CropRect.Width == mod16Width)
+            Point lPoint;
+            if (_currentTask.VideoStream.CropRect.Width == mod16Width)
             {
-                this._currentTask.VideoStream.CropRect.Width = this._currentTask.VideoStream.Width;
-                var lPoint = this._currentTask.VideoStream.CropRect.Location;
+                _currentTask.VideoStream.CropRect.Width = _currentTask.VideoStream.Width;
+                lPoint = _currentTask.VideoStream.CropRect.Location;
                 lPoint.X = 0;
-                this._currentTask.VideoStream.CropRect.Location = lPoint;
+                _currentTask.VideoStream.CropRect.Location = lPoint;
             }
 
-            if (this._currentTask.VideoStream.CropRect.Height == mod16Height)
-            {
-                this._currentTask.VideoStream.CropRect.Height = this._currentTask.VideoStream.Height;
-                var lPoint = this._currentTask.VideoStream.CropRect.Location;
-                lPoint.Y = 0;
-                this._currentTask.VideoStream.CropRect.Location = lPoint;
-            }
+            if (_currentTask.VideoStream.CropRect.Height != mod16Height) return;
+
+            _currentTask.VideoStream.CropRect.Height = _currentTask.VideoStream.Height;
+            lPoint = _currentTask.VideoStream.CropRect.Location;
+            lPoint.Y = 0;
+            _currentTask.VideoStream.CropRect.Location = lPoint;
         }
 
         /// <summary>
@@ -332,9 +329,9 @@ namespace VideoConvert.AppServices.Decoder
         /// <param name="e"></param>
         private void DecodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -349,35 +346,35 @@ namespace VideoConvert.AppServices.Decoder
                 var loc = new Point();
                 int tempVal;
 
-                Int32.TryParse(cropResult.Groups[3].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(cropResult.Groups[3].Value, NumberStyles.Number, _appConfig.CInfo,
                                out tempVal);
                 loc.X = tempVal;
 
-                Int32.TryParse(cropResult.Groups[4].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(cropResult.Groups[4].Value, NumberStyles.Number, _appConfig.CInfo,
                                out tempVal);
                 loc.Y = tempVal;
 
-                this._currentTask.VideoStream.CropRect.Location = loc;
+                _currentTask.VideoStream.CropRect.Location = loc;
 
-                Int32.TryParse(cropResult.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(cropResult.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo,
                                out tempVal);
-                this._currentTask.VideoStream.CropRect.Width = tempVal;
+                _currentTask.VideoStream.CropRect.Width = tempVal;
 
-                Int32.TryParse(cropResult.Groups[2].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(cropResult.Groups[2].Value, NumberStyles.Number, _appConfig.CInfo,
                                out tempVal);
-                this._currentTask.VideoStream.CropRect.Height = tempVal;
+                _currentTask.VideoStream.CropRect.Height = tempVal;
 
             }
             else if (frameResult.Success)
             {
                 int actualFrame;
 
-                Int32.TryParse(frameResult.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(frameResult.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo,
                                out actualFrame);
                 var progress = (float)actualFrame / _cropDetectFrames * 100;
                 var progressLeft = 100f - progress;
 
-                var elapsedTime = DateTime.Now - this._startTime;
+                var elapsedTime = DateTime.Now - _startTime;
 
                 var speed = 0f;
                 if (elapsedTime.TotalSeconds > 0)
@@ -401,10 +398,10 @@ namespace VideoConvert.AppServices.Decoder
                     PercentComplete = progress,
                     ElapsedTime = elapsedTime,
                 };
-                this.InvokeEncodeStatusChanged(eventArgs);
+                InvokeEncodeStatusChanged(eventArgs);
             }
             else
-                Log.InfoFormat("ffmpeg: {0}", line);
+                Log.Info($"ffmpeg: {line}");
         }
 
         #endregion

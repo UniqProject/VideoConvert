@@ -9,15 +9,6 @@
 
 namespace VideoConvert.AppServices.Services
 {
-    using Demuxer;
-    using DirectShowLib;
-    using Encoder;
-    using Interfaces;
-    using Interop.Model;
-    using Interop.Model.MediaInfo;
-    using Interop.Utilities;
-    using log4net;
-    using Muxer;
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
@@ -26,7 +17,16 @@ namespace VideoConvert.AppServices.Services
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Text;
-    using Utilities;
+    using DirectShowLib;
+    using log4net;
+    using VideoConvert.AppServices.Demuxer;
+    using VideoConvert.AppServices.Encoder;
+    using VideoConvert.AppServices.Muxer;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.AppServices.Utilities;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.MediaInfo;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The Main Processing Service
@@ -42,7 +42,7 @@ namespace VideoConvert.AppServices.Services
         /// <param name="configService"></param>
         public ProcessingService(IAppConfigService configService)
         {
-            this._configService = configService;
+            _configService = configService;
         }
 
         /// <summary>
@@ -59,13 +59,13 @@ namespace VideoConvert.AppServices.Services
 
             if (File.Exists(dvdCheck))
             {
-                Log.InfoFormat("{0} found, select input format {1}", dvdCheck, InputType.InputDvd);
+                Log.Info($"{dvdCheck} found, select input format {InputType.InputDvd}");
                 return InputType.InputDvd;
             }
 
             if (File.Exists(hddvdCheck))
             {
-                Log.InfoFormat("{0} found, select input format {1:s}", hddvdCheck, InputType.InputHddvd);
+                Log.Info($"{hddvdCheck} found, select input format {InputType.InputHddvd}");
                 return InputType.InputHddvd;
             }
 
@@ -82,21 +82,20 @@ namespace VideoConvert.AppServices.Services
                     fRead.Read(buffer, 0, 4);
                     var verString = Encoding.Default.GetString(buffer);
                     var version = Convert.ToInt32(verString);
+                    var tempLog = $"{bluRayCheck} found, playlist version {version:0}, select input format ";
                     switch (version)
                     {
                         case 100:
-                            Log.InfoFormat("{0} found, playlist version {1:g}, select input format {2}", bluRayCheck,
-                                           version, InputType.InputAvchd.ToString());
+                            Log.Info($"{tempLog}{InputType.InputAvchd}");
                             return InputType.InputAvchd;
                         case 200:
-                            Log.InfoFormat("{0} found, playlist version {1:g}, select input format {2}", bluRayCheck,
-                                           version, InputType.InputBluRay.ToString());
+                            Log.Info($"{tempLog}{InputType.InputBluRay}");
                             return InputType.InputBluRay;
                     }
                 }
             }
 
-            Log.InfoFormat("{0} is unknown folder type", pathToFile);
+            Log.Info($"{pathToFile} is unknown folder type");
             return InputType.InputUndefined;
         }
 
@@ -121,93 +120,93 @@ namespace VideoConvert.AppServices.Services
                 
             var containerFormat = mi.General.Format;
 
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.FileName:            {0:s}", mi.General.CompleteName);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.FileExtension:       {0:s}", mi.General.FileExtension);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.Format:              {0:s}", mi.General.Format);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.FormatExtensions:    {0:s}", mi.General.FormatExtensions);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.InternetMediaType:   {0:s}", mi.General.InternetMediaType);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedApplication:  {0:s}", mi.General.EncodedApplication);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedApplicationUrl:{0:s}", mi.General.EncodedApplicationUrl);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedLibrary:      {0:s}", mi.General.EncodedLibrary);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedLibraryDate:  {0:s}", mi.General.EncodedLibraryDate);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedLibraryName:  {0:s}", mi.General.EncodedLibraryName);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedLibrarySettings: {0:s}", mi.General.EncodedLibrarySettings);
-            Log.InfoFormat(CultureInfo.InvariantCulture, "General.EncodedLibraryVersion: {0:s}", mi.General.EncodedLibraryVersion);
-            Log.Info(String.Empty);
+            Log.Info($"General.FileName:                {mi.General.CompleteName}");
+            Log.Info($"General.FileExtension:           {mi.General.FileExtension}");
+            Log.Info($"General.Format:                  {mi.General.Format}");
+            Log.Info($"General.FormatExtensions:        {mi.General.FormatExtensions}");
+            Log.Info($"General.InternetMediaType:       {mi.General.InternetMediaType}");
+            Log.Info($"General.EncodedApplication:      {mi.General.EncodedApplication}");
+            Log.Info($"General.EncodedApplicationUrl:   {mi.General.EncodedApplicationUrl}");
+            Log.Info($"General.EncodedLibrary:          {mi.General.EncodedLibrary}");
+            Log.Info($"General.EncodedLibraryDate:      {mi.General.EncodedLibraryDate}");
+            Log.Info($"General.EncodedLibraryName:      {mi.General.EncodedLibraryName}");
+            Log.Info($"General.EncodedLibrarySettings:  {mi.General.EncodedLibrarySettings}");
+            Log.Info($"General.EncodedLibraryVersion:   {mi.General.EncodedLibraryVersion}");
+            Log.Info(string.Empty);
 
             foreach (var item in mi.Video)
             {
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.ID:                 {0:g}", item.ID);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.StreamKindID:       {0:g}", item.StreamKindID);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.StreamKindPos:      {0:g}", item.StreamKindPos);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.CodecID:            {0:s}", item.CodecID);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.CodecIDInfo:        {0:s}", item.CodecIDInfo);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.CodecIDURL:         {0:s}", item.CodecIDUrl);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.CodecIDDescription: {0:s}", item.CodecIDDescription);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.InternetMediaType:  {0:s}", item.InternetMediaType);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.Format:             {0:s}", item.Format);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FormatProfile:      {0:s}", item.FormatProfile);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FormatInfo:         {0:s}", item.FormatInfo);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FormatVersion:      {0:s}", item.FormatVersion);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.MultiViewBaseProfile: {0:s}", item.MultiViewBaseProfile);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.MultiViewCount:     {0:s}", item.MultiViewCount);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.DisplayAspectRatio: {0:s}", item.DisplayAspectRatio);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.PixelAspectRatio:   {0:g}", item.PixelAspectRatio);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.BitrateMode:        {0:s}", item.BitRateMode);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.Bitrate:            {0:g}", item.BitRate);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.BitrateNom:         {0:g}", item.BitRateNom);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.BitrateMin:         {0:g}", item.BitRateMin);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.BitrateMax:         {0:g}", item.BitRateMax);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.BitDepth:           {0:g}", item.BitDepth);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FrameRate:          {0:g}", item.FrameRate);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FrameRateMax:       {0:g}", item.FrameRateMax);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FrameRateMin:       {0:g}", item.FrameRateMin);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FrameRateNom:       {0:g}", item.FrameRateNom);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.FrameRateMode:      {0:s}", item.FrameRateMode);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.Height:             {0:g}", item.Height);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.Width:              {0:g}", item.Width);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.VideoSize:          {0:s}", item.VideoSize.ToString());
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.ScanType:           {0:s}", item.ScanType);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.ScanOrder:          {0:g}", item.ScanOrder);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedApplication: {0:s}", item.EncodedApplication);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedApplicationUrl: {0:s}", item.EncodedApplicationUrl);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedLibrary:     {0:s}", item.EncodedLibrary);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedLibraryDate: {0:s}", item.EncodedLibraryDate);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedLibraryName: {0:s}", item.EncodedLibraryName);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedLibrarySettings: {0:s}", item.EncodedLibrarySettings);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Video.EncodedLibraryVersion: {0:s}", item.EncodedLibraryVersion);
+                Log.Info($"Video.ID:                        {item.ID:0}");
+                Log.Info($"Video.StreamKindID:              {item.StreamKindID:0}");
+                Log.Info($"Video.StreamKindPos:             {item.StreamKindPos:0}");
+                Log.Info($"Video.CodecID:                   {item.CodecID}");
+                Log.Info($"Video.CodecIDInfo:               {item.CodecIDInfo}");
+                Log.Info($"Video.CodecIDURL:                {item.CodecIDUrl}");
+                Log.Info($"Video.CodecIDDescription:        {item.CodecIDDescription}");
+                Log.Info($"Video.InternetMediaType:         {item.InternetMediaType}");
+                Log.Info($"Video.Format:                    {item.Format}");
+                Log.Info($"Video.FormatProfile:             {item.FormatProfile}");
+                Log.Info($"Video.FormatInfo:                {item.FormatInfo}");
+                Log.Info($"Video.FormatVersion:             {item.FormatVersion}");
+                Log.Info($"Video.MultiViewBaseProfile:      {item.MultiViewBaseProfile}");
+                Log.Info($"Video.MultiViewCount:            {item.MultiViewCount}");
+                Log.Info($"Video.DisplayAspectRatio:        {item.DisplayAspectRatio}");
+                Log.Info($"Video.PixelAspectRatio:          {item.PixelAspectRatio}");
+                Log.Info($"Video.BitrateMode:               {item.BitRateMode}");
+                Log.Info($"Video.Bitrate:                   {item.BitRate:0}");
+                Log.Info($"Video.BitrateNom:                {item.BitRateNom:0}");
+                Log.Info($"Video.BitrateMin:                {item.BitRateMin:0}");
+                Log.Info($"Video.BitrateMax:                {item.BitRateMax:0}");
+                Log.Info($"Video.BitDepth:                  {item.BitDepth:0}");
+                Log.Info($"Video.FrameRate:                 {item.FrameRate:0.###}".ToString(CultureInfo.InvariantCulture));
+                Log.Info($"Video.FrameRateMax:              {item.FrameRateMax:0.###}".ToString(CultureInfo.InvariantCulture));
+                Log.Info($"Video.FrameRateMin:              {item.FrameRateMin:0.###}".ToString(CultureInfo.InvariantCulture));
+                Log.Info($"Video.FrameRateNom:              {item.FrameRateNom:0.###}".ToString(CultureInfo.InvariantCulture));
+                Log.Info($"Video.FrameRateMode:             {item.FrameRateMode}");
+                Log.Info($"Video.Height:                    {item.Height:0}");
+                Log.Info($"Video.Width:                     {item.Width:0}");
+                Log.Info($"Video.VideoSize:                 {item.VideoSize}");
+                Log.Info($"Video.ScanType:                  {item.ScanType}");
+                Log.Info($"Video.ScanOrder:                 {item.ScanOrder}");
+                Log.Info($"Video.EncodedApplication:        {item.EncodedApplication}");
+                Log.Info($"Video.EncodedApplicationUrl:     {item.EncodedApplicationUrl}");
+                Log.Info($"Video.EncodedLibrary:            {item.EncodedLibrary}");
+                Log.Info($"Video.EncodedLibraryDate:        {item.EncodedLibraryDate}");
+                Log.Info($"Video.EncodedLibraryName:        {item.EncodedLibraryName}");
+                Log.Info($"Video.EncodedLibrarySettings:    {item.EncodedLibrarySettings}");
+                Log.Info($"Video.EncodedLibraryVersion:     {item.EncodedLibraryVersion}");
             }
-            Log.Info(String.Empty);
+            Log.Info(string.Empty);
 
             foreach (var item in mi.Audio)
             {
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.ID:                 {0:g}", item.ID);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.StreamKindID:       {0:g}", item.StreamKindID);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.StreamKindPos:      {0:g}", item.StreamKindPos);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.CodecID:            {0:s}", item.CodecID);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.CodecIDInfo:        {0:s}", item.CodecIDInfo);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.CodecIDURL:         {0:s}", item.CodecIDUrl);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.CodecIDDescription: {0:s}", item.CodecIDDescription);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.Format:             {0:s}", item.Format);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.FormatProfile:      {0:s}", item.FormatProfile);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.FormatInfo:         {0:s}", item.FormatInfo);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.FormatVersion:      {0:s}", item.FormatVersion);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.Channels:           {0:g}", item.Channels);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.ChannelsString:     {0:s}", item.ChannelsString);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.BitrateMode:        {0:s}", item.BitRateMode);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.Bitrate:            {0:g}", item.BitRate);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.BitrateNom:         {0:g}", item.BitRateNom);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.BitrateMin:         {0:g}", item.BitRateMin);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.BitrateMax:         {0:g}", item.BitRateMax);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.BitDepth:           {0:g}", item.BitDepth);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.SamplingRate:       {0:g}", item.SamplingRate);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.EncodedLibrary:     {0:s}", item.EncodedLibrary);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.EncodedLibraryDate: {0:s}", item.EncodedLibraryDate);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.EncodedLibraryName: {0:s}", item.EncodedLibraryName);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.EncodedLibrarySettings: {0:s}", item.EncodedLibrarySettings);
-                Log.InfoFormat(CultureInfo.InvariantCulture, "Audio.EncodedLibraryVersion: {0:s}", item.EncodedLibraryVersion);
+                Log.Info($"Audio.ID:                        {item.ID:0}");
+                Log.Info($"Audio.StreamKindID:              {item.StreamKindID:0}");
+                Log.Info($"Audio.StreamKindPos:             {item.StreamKindPos:0}");
+                Log.Info($"Audio.CodecID:                   {item.CodecID}");
+                Log.Info($"Audio.CodecIDInfo:               {item.CodecIDInfo}");
+                Log.Info($"Audio.CodecIDURL:                {item.CodecIDUrl}");
+                Log.Info($"Audio.CodecIDDescription:        {item.CodecIDDescription}");
+                Log.Info($"Audio.Format:                    {item.Format}");
+                Log.Info($"Audio.FormatProfile:             {item.FormatProfile}");
+                Log.Info($"Audio.FormatInfo:                {item.FormatInfo}");
+                Log.Info($"Audio.FormatVersion:             {item.FormatVersion}");
+                Log.Info($"Audio.Channels:                  {item.Channels:0}");
+                Log.Info($"Audio.ChannelsString:            {item.ChannelsString}");
+                Log.Info($"Audio.BitrateMode:               {item.BitRateMode}");
+                Log.Info($"Audio.Bitrate:                   {item.BitRate:0}");
+                Log.Info($"Audio.BitrateNom:                {item.BitRateNom:0}");
+                Log.Info($"Audio.BitrateMin:                {item.BitRateMin:0}");
+                Log.Info($"Audio.BitrateMax:                {item.BitRateMax:0}");
+                Log.Info($"Audio.BitDepth:                  {item.BitDepth:0}");
+                Log.Info($"Audio.SamplingRate:              {item.SamplingRate:0}");
+                Log.Info($"Audio.EncodedLibrary:            {item.EncodedLibrary}");
+                Log.Info($"Audio.EncodedLibraryDate:        {item.EncodedLibraryDate}");
+                Log.Info($"Audio.EncodedLibraryName:        {item.EncodedLibraryName}");
+                Log.Info($"Audio.EncodedLibrarySettings:    {item.EncodedLibrarySettings}");
+                Log.Info($"Audio.EncodedLibraryVersion:     {item.EncodedLibraryVersion}");
             }
-            Log.Info(String.Empty);
+            Log.Info(string.Empty);
 
             switch (containerFormat)
             {
@@ -280,9 +279,8 @@ namespace VideoConvert.AppServices.Services
             var compat = true;
 
             Log.Info("Check if audio is compatible with DVD Spec");
-            Log.InfoFormat("Format: {0}, Profile: {1}", aud.Format, aud.FormatProfile);
-            Log.InfoFormat("Bitrate: {0:g}, Samplerate: {1:g}, Channel Count: {2:g}", aud.Bitrate, aud.SampleRate,
-                           aud.ChannelCount);
+            Log.Info($"Format: {aud.Format}, Profile: {aud.FormatProfile}");
+            Log.Info($"Bitrate: {aud.Bitrate:0}, Samplerate: {aud.SampleRate:0}, Channel Count: {aud.ChannelCount:0}");
 
             if (ext != "ac3")
             {
@@ -296,7 +294,7 @@ namespace VideoConvert.AppServices.Services
                 {
                     if (aud.Bitrate > 448000)
                     {
-                        Log.InfoFormat("Bitrate is higher than 448kbit/s");
+                        Log.Info("Bitrate is higher than 448kbit/s");
                         compat = false;
                     }
                 }
@@ -306,21 +304,17 @@ namespace VideoConvert.AppServices.Services
             {
                 if (aud.ChannelCount > 6)
                 {
-                    Log.InfoFormat("This channel configuration is not supported");
+                    Log.Info("This channel configuration is not supported");
                     compat = false;
                 }
             }
 
-            if (compat)
-            {
-                if (aud.SampleRate != 48000)
-                {
-                    Log.InfoFormat("Samplerate != 48000Hz");
-                    compat = false;
-                }
-            }
+            if (!compat) return false;
+            if (aud.SampleRate == 48000) return true;
 
-            return compat;
+            Log.Info("Samplerate != 48000Hz");
+
+            return false;
         }
 
         /// <summary>
@@ -364,9 +358,9 @@ namespace VideoConvert.AppServices.Services
         /// <param name="javaPath">Path to java.exe</param>
         public void GetAppVersions(string encPath = "", string javaPath = "")
         {
-            if (String.IsNullOrEmpty(encPath))
+            if (string.IsNullOrEmpty(encPath))
                 encPath = _configService.ToolsPath;
-            if (String.IsNullOrEmpty(javaPath))
+            if (string.IsNullOrEmpty(javaPath))
                 javaPath = _configService.JavaInstallPath;
 
             _configService.Lasteac3ToVer = DemuxerEac3To.GetVersionInfo(encPath);
@@ -381,7 +375,7 @@ namespace VideoConvert.AppServices.Services
             _configService.LastMp4BoxVer = MuxerMp4Box.GetVersionInfo(encPath);
             _configService.LastMJPEGToolsVer = MuxerMplex.GetVersionInfo(encPath);
 
-            if (!String.IsNullOrEmpty(javaPath))
+            if (!string.IsNullOrEmpty(javaPath))
                 _configService.LastBDSup2SubVer = EncoderBdSup2Sub.GetVersionInfo(encPath, javaPath);
 
             if (Environment.Is64BitOperatingSystem && _configService.Use64BitEncoders)
@@ -391,10 +385,10 @@ namespace VideoConvert.AppServices.Services
                 _configService.LastLame64Ver = EncoderLame.GetVersionInfo(encPath, true);
             }
 
-            _configService.LastOggEncVer = EncoderOggEnc.GetVersionInfo(encPath, false, this._configService);
+            _configService.LastOggEncVer = EncoderOggEnc.GetVersionInfo(encPath, false, _configService);
 
             if (_configService.UseOptimizedEncoders)
-                _configService.LastOggEncLancerVer = EncoderOggEnc.GetVersionInfo(encPath, true, this._configService);
+                _configService.LastOggEncLancerVer = EncoderOggEnc.GetVersionInfo(encPath, true, _configService);
 
             _configService.LastNeroAacEncVer = EncoderNeroAac.GetVersionInfo(encPath);
 
@@ -415,7 +409,7 @@ namespace VideoConvert.AppServices.Services
 
             #region Get AviSynth Version
 
-            var graphBuilder = (IGraphBuilder)new FilterGraph();
+            var graphBuilder = (IGraphBuilder) new FilterGraph();
 
             var avsFile = new AviSynthGenerator(_configService).GenerateTestFile();
 
@@ -436,16 +430,15 @@ namespace VideoConvert.AppServices.Services
                 }
             }
             
-            Log.DebugFormat("RenderFile Result: {0}", result);
+            Log.Debug($"RenderFile Result: {result}");
 
             if (result < 0 && !Debugger.IsAttached)
                 Log.Debug("AviSynth is not installed");
             else
             {
                 var ver = FileVersionInfo.GetVersionInfo(Path.Combine(Environment.SystemDirectory, "avisynth.dll"));
-                var appVer = String.Format("{0:g}.{1:g}.{2:g}.{3:g}", ver.FileMajorPart, ver.FileMinorPart,
-                                              ver.FileBuildPart, ver.FilePrivatePart);
-                Log.DebugFormat("Avisynth version {0} installed", appVer);
+                var appVer = $"{ver.FileMajorPart:0}.{ver.FileMinorPart:0}.{ver.FileBuildPart:0}.{ver.FilePrivatePart:0}";
+                Log.Debug($"Avisynth version {appVer} installed");
                 _configService.LastAviSynthVer = appVer;
             }
 
@@ -490,12 +483,12 @@ namespace VideoConvert.AppServices.Services
         public void GetAviSynthPluginsVer()
         {
             var verFile = Path.Combine(_configService.AvsPluginsPath, "version");
-            if (File.Exists(verFile))
+
+            if (!File.Exists(verFile)) return;
+
+            using (var str = new StreamReader(verFile))
             {
-                using (var str = new StreamReader(verFile))
-                {
-                    _configService.LastAviSynthPluginsVer = str.ReadLine();
-                }
+                _configService.LastAviSynthPluginsVer = str.ReadLine();
             }
         }
 
@@ -550,10 +543,8 @@ namespace VideoConvert.AppServices.Services
             finally
             {
                 // Centralized cleanup for all allocated resources.  
-                if (hToken != null)
-                {
-                    hToken.Close();
-                }
+                hToken?.Close();
+
                 if (pTokenElevation != IntPtr.Zero)
                 {
                     Marshal.FreeHGlobal(pTokenElevation);
@@ -577,16 +568,12 @@ namespace VideoConvert.AppServices.Services
                 case OutputType.OutputBluRay:
                 case OutputType.OutputM2Ts:
                 case OutputType.OutputTs:
-                    if (format.ToLowerInvariant() == "pgs")
-                        return false;
-                    return true;
+                    return format.ToLowerInvariant() != "pgs";
                 case OutputType.OutputMatroska:
                 case OutputType.OutputWebM:
                     return false;
                 case OutputType.OutputMp4:
-                    if (format.ToLowerInvariant() == "ssa" || format.ToLowerInvariant() == "ass")
-                        return true;
-                    return false;
+                    return format.ToLowerInvariant() == "ssa" || format.ToLowerInvariant() == "ass";
                 case OutputType.OutputDvd:
                     return true;
             }
@@ -605,9 +592,7 @@ namespace VideoConvert.AppServices.Services
             switch (outputType)
             {
                 case OutputType.OutputMp4:
-                    if (format.ToLowerInvariant() == "pgs" || format.ToLowerInvariant() == "vobsub")
-                        return false;
-                    return true;
+                    return format.ToLowerInvariant() != "pgs" && format.ToLowerInvariant() != "vobsub";
                 case OutputType.OutputMatroska:
                 case OutputType.OutputAvchd:
                 case OutputType.OutputBluRay:

@@ -9,7 +9,7 @@
 
 namespace VideoConvert.Interop.Model.Profiles
 {
-    using Utilities;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// Encoding profile for quick selection, defines the target output format. Carries information about video and audio encoding profiles
@@ -44,7 +44,7 @@ namespace VideoConvert.Interop.Model.Profiles
         /// <summary>
         /// Target output format, string value
         /// </summary>
-        public string OutFormatStr { get { return GenHelper.StringValueOf(OutFormat); } }
+        public string OutFormatStr => GenHelper.StringValueOf(OutFormat);
 
         /// <summary>
         /// Target stereoscopic format

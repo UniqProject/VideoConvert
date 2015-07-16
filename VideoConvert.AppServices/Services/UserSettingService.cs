@@ -3,21 +3,20 @@
 //   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
-//   The User Settings Service
+//   
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace VideoConvert.AppServices.Services
 {
-    using Interfaces;
-    using Interop.Collections;
-    using Interop.EventArgs;
-    using Interop.Exceptions;
     using System;
     using System.Collections.Specialized;
     using System.IO;
     using System.Linq;
     using System.Xml.Serialization;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.Collections;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Exceptions;
 
     /// <summary>
     /// The User Settings Service
@@ -44,7 +43,7 @@ namespace VideoConvert.AppServices.Services
         /// </summary>
         public UserSettingService()
         {
-            this.Load();
+            Load();
         }
 
         /// <summary>
@@ -63,10 +62,10 @@ namespace VideoConvert.AppServices.Services
         /// </param>
         public void SetUserSetting(string name, object value)
         {
-            this._userSettings[name] = value;
-            this.Save();
+            _userSettings[name] = value;
+            Save();
 
-            this.OnSettingChanged(new SettingChangedEventArgs { Key = name, Value = value });
+            OnSettingChanged(new SettingChangedEventArgs { Key = name, Value = value });
         }
 
         /// <summary>
@@ -83,9 +82,9 @@ namespace VideoConvert.AppServices.Services
         /// </returns>
         public T GetUserSetting<T>(string name)
         {
-            if (this._userSettings.ContainsKey(name))
+            if (_userSettings.ContainsKey(name))
             {
-                return (T)this._userSettings[name];
+                return (T)_userSettings[name];
             }
 
             return default(T);
@@ -102,7 +101,7 @@ namespace VideoConvert.AppServices.Services
         /// </returns>
         public StringCollection GetUserSettingStringCollection(string name)
         {
-            return (StringCollection)this._userSettings[name];
+            return (StringCollection)_userSettings[name];
         }
 
         /// <summary>
@@ -113,11 +112,8 @@ namespace VideoConvert.AppServices.Services
         /// </param>
         protected virtual void OnSettingChanged(SettingChangedEventArgs e)
         {
-            var handler = this.SettingChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            var handler = SettingChanged;
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -127,15 +123,15 @@ namespace VideoConvert.AppServices.Services
         {
             try
             {
-                var directory = Path.GetDirectoryName(this._settingsFile);
+                var directory = Path.GetDirectoryName(_settingsFile);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                using (var strm = new FileStream(this._settingsFile, FileMode.Create, FileAccess.Write))
+                using (var strm = new FileStream(_settingsFile, FileMode.Create, FileAccess.Write))
                 {
-                    _serializer.Serialize(strm, this._userSettings);
+                    _serializer.Serialize(strm, _userSettings);
                 }
             }
             catch (Exception exc)
@@ -155,37 +151,37 @@ namespace VideoConvert.AppServices.Services
             try
             {
                 // Load up the users current settings file.
-                if (File.Exists(this._settingsFile))
+                if (File.Exists(_settingsFile))
                 {
-                    using (var reader = new StreamReader(this._settingsFile))
+                    using (var reader = new StreamReader(_settingsFile))
                     {
                         var data = (SerializableDictionary<string, object>)_serializer.Deserialize(reader);
-                        this._userSettings = data;
+                        _userSettings = data;
                     }
                 }
                 else
                 {
-                    this._userSettings = new SerializableDictionary<string, object>();
+                    _userSettings = new SerializableDictionary<string, object>();
                 }
 
                 // Add any missing / new settings
-                var defaults = this.GetDefaults();
-                foreach (var item in defaults.Where(item => !this._userSettings.Keys.Contains(item.Key)))
+                var defaults = GetDefaults();
+                foreach (var item in defaults.Where(item => !_userSettings.Keys.Contains(item.Key)))
                 {
-                    this._userSettings.Add(item.Key, item.Value);
-                    this.Save();
+                    _userSettings.Add(item.Key, item.Value);
+                    Save();
                 }
             }
             catch (Exception exc)
             {
                 try
                 {
-                    this._userSettings = this.GetDefaults();
-                    if (File.Exists(this._settingsFile))
+                    _userSettings = GetDefaults();
+                    if (File.Exists(_settingsFile))
                     {
-                        File.Delete(this._settingsFile);
+                        File.Delete(_settingsFile);
                     }
-                    this.Save();
+                    Save();
 
                     throw new GeneralApplicationException("Warning, your settings have been reset!", "Your user settings file was corrupted or inaccessible. Settings have been reset to defaults.", exc);
                 }
@@ -204,14 +200,12 @@ namespace VideoConvert.AppServices.Services
         /// </returns>
         private SerializableDictionary<string, object> GetDefaults()
         {
-            if (File.Exists("defaultsettings.xml"))
+            if (!File.Exists("defaultsettings.xml")) return new SerializableDictionary<string, object>();
+
+            using (var reader = new StreamReader("defaultsettings.xml"))
             {
-                using (var reader = new StreamReader("defaultsettings.xml"))
-                {
-                    return (SerializableDictionary<string, object>)_serializer.Deserialize(reader);
-                }
+                return (SerializableDictionary<string, object>)_serializer.Deserialize(reader);
             }
-            return new SerializableDictionary<string, object>();
         }
     }
 }

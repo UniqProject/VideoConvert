@@ -9,10 +9,6 @@
 
 namespace VideoConvertWPF.ViewModels
 {
-    using Caliburn.Micro;
-    using Interfaces;
-    using Microsoft.WindowsAPICodePack.Dialogs;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -25,11 +21,15 @@ namespace VideoConvertWPF.ViewModels
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
+    using Caliburn.Micro;
+    using Microsoft.WindowsAPICodePack.Dialogs;
+    using Newtonsoft.Json;
     using UpdateCore;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;
     using VideoConvert.Interop.Utilities;
+    using VideoConvertWPF.ViewModels.Interfaces;
     using ILog = log4net.ILog;
     using LogManager = log4net.LogManager;
 
@@ -61,7 +61,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _selectedItem = value;
-                this.NotifyOfPropertyChange(()=>this.SelectedItem);
+                NotifyOfPropertyChange(()=>SelectedItem);
             }
         }
 
@@ -73,16 +73,15 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return string.IsNullOrEmpty(this._statusLabel) ? "Ready" : this._statusLabel;
+                return string.IsNullOrEmpty(_statusLabel) ? "Ready" : _statusLabel;
             }
 
             set
             {
-                if (!Equals(this._statusLabel, value))
-                {
-                    this._statusLabel = value;
-                    this.NotifyOfPropertyChange(() => this.StatusLabel);
-                }
+                if (Equals(_statusLabel, value)) return;
+
+                _statusLabel = value;
+                NotifyOfPropertyChange(() => StatusLabel);
             }
         }
 
@@ -90,23 +89,23 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showStatusWindow;
+                return _showStatusWindow;
             }
 
             set
             {
-                this._showStatusWindow = value;
-                this.NotifyOfPropertyChange(() => this.ShowStatusWindow);
+                _showStatusWindow = value;
+                NotifyOfPropertyChange(() => ShowStatusWindow);
             }
         }
 
         public void Shutdown()
         {
             var jSer = new JsonSerializer();
-            using (var sWriter = new StreamWriter(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
+            using (var sWriter = new StreamWriter(Path.Combine(_configService.AppSettingsPath, "JobQueue.json")))
             {
                 var writer = new JsonTextWriter(sWriter);
-                jSer.Serialize(writer, this.JobCollection);
+                jSer.Serialize(writer, JobCollection);
                 writer.Flush();
             }
         }
@@ -123,7 +122,7 @@ namespace VideoConvertWPF.ViewModels
                 var jSer = new JsonSerializer();
                 using (
                     var sReader =
-                        new StreamReader(Path.Combine(this._configService.AppSettingsPath, "JobQueue.json")))
+                        new StreamReader(Path.Combine(_configService.AppSettingsPath, "JobQueue.json")))
                 {
                     JsonReader reader = new JsonTextReader(sReader);
                     var importList = jSer.Deserialize<List<EncodeInfo>>(reader);
@@ -142,7 +141,7 @@ namespace VideoConvertWPF.ViewModels
 
             CheckUpdate();
 
-            this.Title = "My Title";
+            Title = "My Title";
         }
 
         public void CheckUpdate()
@@ -158,19 +157,19 @@ namespace VideoConvertWPF.ViewModels
 
             if (_updateCheckDone) return;
 
-            if (this._configService.FirstStart)
+            if (_configService.FirstStart)
             {
-                this._shellViewModel.DisplayWindow(ShellWin.OptionsView);
-                this._configService.FirstStart = false;
+                _shellViewModel.DisplayWindow(ShellWin.OptionsView);
+                _configService.FirstStart = false;
                 return;
             }
-            if (this._configService.ShowChangeLog && !_changeLogViewed && File.Exists(Path.Combine(_configService.AppPath, "updated")))
+            if (_configService.ShowChangeLog && !_changeLogViewed && File.Exists(Path.Combine(_configService.AppPath, "updated")))
             {
-                this._shellViewModel.DisplayWindow(ShellWin.ChangelogView);
+                _shellViewModel.DisplayWindow(ShellWin.ChangelogView);
                 _changeLogViewed = true;
                 return;
             }
-            if (this._configService.ReloadToolVersions)
+            if (_configService.ReloadToolVersions)
             {
                 // TODO: Make Tool version reloading work
             }
@@ -197,25 +196,25 @@ namespace VideoConvertWPF.ViewModels
             var needUpdate = false;
             var needCheck = false;
 
-            switch (this._configService.UpdateFrequency)
+            switch (_configService.UpdateFrequency)
             {
                 case 0:
                     needCheck = true;
                     break;
                 case 1:
-                    if (this._configService.LastUpdateRun.AddDays(1) < DateTime.Now)
+                    if (_configService.LastUpdateRun.AddDays(1) < DateTime.Now)
                         needCheck = true;
                     break;
                 case 2:
-                    if (this._configService.LastUpdateRun.AddDays(7) < DateTime.Now)
+                    if (_configService.LastUpdateRun.AddDays(7) < DateTime.Now)
                         needCheck = true;
                     break;
             }
 
             if (needCheck && System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                this.StatusLabel = "Checking for updates ...";
-                this.ShowStatusWindow = true;
+                StatusLabel = "Checking for updates ...";
+                ShowStatusWindow = true;
 
                 _processingService.GetUpdaterVersion();
                 _processingService.GetAviSynthPluginsVer();
@@ -247,77 +246,77 @@ namespace VideoConvertWPF.ViewModels
                     if (updateFile.Updater.PackageVersion.CompareTo(_configService.UpdaterVersion) > 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.AviSynthPlugins.PackageVersion, this._configService.LastAviSynthPluginsVer) != 0)
+                    if (string.CompareOrdinal(updateFile.AviSynthPlugins.PackageVersion, _configService.LastAviSynthPluginsVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.Profiles.PackageVersion, this._configService.LastProfilesVer) != 0)
+                    if (string.CompareOrdinal(updateFile.Profiles.PackageVersion, _configService.LastProfilesVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.X264.PackageVersion, this._configService.Lastx264Ver) != 0)
+                    if (string.CompareOrdinal(updateFile.X264.PackageVersion, _configService.Lastx264Ver) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.X26464.PackageVersion, this._configService.Lastx26464Ver) != 0 &&
+                    if (string.CompareOrdinal(updateFile.X26464.PackageVersion, _configService.Lastx26464Ver) != 0 &&
                         Environment.Is64BitOperatingSystem)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.FFMPEG.PackageVersion, this._configService.LastffmpegVer) != 0)
+                    if (string.CompareOrdinal(updateFile.FFMPEG.PackageVersion, _configService.LastffmpegVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.FFMPEG64.PackageVersion, this._configService.Lastffmpeg64Ver) != 0 &&
+                    if (string.CompareOrdinal(updateFile.FFMPEG64.PackageVersion, _configService.Lastffmpeg64Ver) != 0 &&
                         Environment.Is64BitOperatingSystem)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.Eac3To.PackageVersion, this._configService.Lasteac3ToVer) != 0)
+                    if (string.CompareOrdinal(updateFile.Eac3To.PackageVersion, _configService.Lasteac3ToVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.LsDvd.PackageVersion, this._configService.LastlsdvdVer) != 0)
+                    if (string.CompareOrdinal(updateFile.LsDvd.PackageVersion, _configService.LastlsdvdVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.MKVToolnix.PackageVersion, this._configService.LastMKVMergeVer) != 0)
+                    if (string.CompareOrdinal(updateFile.MKVToolnix.PackageVersion, _configService.LastMKVMergeVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.Mplayer.PackageVersion, this._configService.LastMplayerVer) != 0)
+                    if (string.CompareOrdinal(updateFile.Mplayer.PackageVersion, _configService.LastMplayerVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.TSMuxeR.PackageVersion, this._configService.LastTSMuxerVer) != 0)
+                    if (string.CompareOrdinal(updateFile.TSMuxeR.PackageVersion, _configService.LastTSMuxerVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.MjpegTools.PackageVersion, this._configService.LastMJPEGToolsVer) != 0)
+                    if (string.CompareOrdinal(updateFile.MjpegTools.PackageVersion, _configService.LastMJPEGToolsVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.DVDAuthor.PackageVersion, this._configService.LastDVDAuthorVer) != 0)
+                    if (string.CompareOrdinal(updateFile.DVDAuthor.PackageVersion, _configService.LastDVDAuthorVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.MP4Box.PackageVersion, this._configService.LastMp4BoxVer) != 0)
+                    if (string.CompareOrdinal(updateFile.MP4Box.PackageVersion, _configService.LastMp4BoxVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.HcEnc.PackageVersion, this._configService.LastHcEncVer) != 0)
+                    if (string.CompareOrdinal(updateFile.HcEnc.PackageVersion, _configService.LastHcEncVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.OggEnc.PackageVersion, this._configService.LastOggEncVer) != 0)
+                    if (string.CompareOrdinal(updateFile.OggEnc.PackageVersion, _configService.LastOggEncVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.OggEncLancer.PackageVersion, this._configService.LastOggEncLancerVer) != 0
-                        && this._configService.UseOptimizedEncoders)
+                    if (string.CompareOrdinal(updateFile.OggEncLancer.PackageVersion, _configService.LastOggEncLancerVer) != 0
+                        && _configService.UseOptimizedEncoders)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.Lame.PackageVersion, this._configService.LastLameVer) != 0)
+                    if (string.CompareOrdinal(updateFile.Lame.PackageVersion, _configService.LastLameVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.VpxEnc.PackageVersion, this._configService.LastVpxEncVer) != 0)
+                    if (string.CompareOrdinal(updateFile.VpxEnc.PackageVersion, _configService.LastVpxEncVer) != 0)
                         needUpdate = true;
 
-                    if (String.CompareOrdinal(updateFile.BDSup2Sub.PackageVersion, this._configService.LastBDSup2SubVer) != 0 &&
-                        this._configService.JavaInstalled)
+                    if (string.CompareOrdinal(updateFile.BDSup2Sub.PackageVersion, _configService.LastBDSup2SubVer) != 0 &&
+                        _configService.JavaInstalled)
                         needUpdate = true;
                 }
 
                 Thread.Sleep(2000);
 
-                this.StatusLabel = "Ready";
-                this.ShowStatusWindow = false;
+                StatusLabel = "Ready";
+                ShowStatusWindow = false;
 
-                this._configService.LastUpdateRun = DateTime.Now;
+                _configService.LastUpdateRun = DateTime.Now;
             }
 
             e.Result = needUpdate;
@@ -325,21 +324,21 @@ namespace VideoConvertWPF.ViewModels
 
         private void CheckUpdateRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.UpdateAvail = (bool) e.Result;
+            UpdateAvail = (bool) e.Result;
         }
 
         private void JobCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             JobCount = JobCollection.Count;
-            this.NotifyOfPropertyChange(()=> this.JobCount);
+            NotifyOfPropertyChange(()=> JobCount);
         }
 
         public MainViewModel(IShellViewModel shellViewModel, IWindowManager windowManager, IAppConfigService config,
                              IProcessingService processingService)
         {
-            this._shellViewModel = shellViewModel;
-            this.WindowManager = windowManager;
-            this._configService = config;
+            _shellViewModel = shellViewModel;
+            WindowManager = windowManager;
+            _configService = config;
             _processingService = processingService;
         }
 
@@ -392,23 +391,22 @@ namespace VideoConvertWPF.ViewModels
 
         public void RemoveItem()
         {
-            if (_selectedItem != null)
-            {
-                JobCollection.Remove(_selectedItem);
-                this.NotifyOfPropertyChange(()=>this.JobCollection);
-                SelectedItem = null;
-            }
+            if (_selectedItem == null) return;
+
+            JobCollection.Remove(_selectedItem);
+            NotifyOfPropertyChange(()=>JobCollection);
+            SelectedItem = null;
         }
 
         public void ClearList()
         {
             JobCollection.Clear();
-            this.NotifyOfPropertyChange(()=>JobCollection);
+            NotifyOfPropertyChange(()=>JobCollection);
         }
 
         public void StartEncode()
         {
-            _shellViewModel.DisplayWindow(ShellWin.EncodeView, this.JobCollection);
+            _shellViewModel.DisplayWindow(ShellWin.EncodeView, JobCollection);
         }
 
         public void ShowSettings()
@@ -418,8 +416,8 @@ namespace VideoConvertWPF.ViewModels
 
         public void ShowUpdate()
         {
-            this.StatusLabel = "Checking for Updates...";
-            this.ShowStatusWindow = true;
+            StatusLabel = "Checking for Updates...";
+            ShowStatusWindow = true;
         }
 
         #endregion
@@ -431,13 +429,13 @@ namespace VideoConvertWPF.ViewModels
 
             if ((string.IsNullOrEmpty(inJob.InputFile)) || (inJob.Input == InputType.InputUndefined)) return;
 
-            var streamSelect = new StreamSelectViewModel(this._configService, _shellViewModel,
+            var streamSelect = new StreamSelectViewModel(_configService, _shellViewModel,
                 WindowManager, _processingService)
             {
                 JobInfo = inJob,
             };
 
-            if (this.WindowManager.ShowDialog(streamSelect, settings: new Dictionary<string, object>
+            if (WindowManager.ShowDialog(streamSelect, settings: new Dictionary<string, object>
                                                             {
                                                                 {"ShowInTaskbar", false},
                                                                 {"ResizeMode", ResizeMode.CanMinimize},
@@ -463,7 +461,7 @@ namespace VideoConvertWPF.ViewModels
             try
             {
                 JobCollection.Add(inJob);
-                this.NotifyOfPropertyChange(() => this.JobCollection);
+                NotifyOfPropertyChange(() => JobCollection);
             }
             catch (Exception ex)
             {
@@ -479,7 +477,7 @@ namespace VideoConvertWPF.ViewModels
             cleanJobName = invalidChars.Aggregate(cleanJobName, (current, invalidChar) => current.Replace(invalidChar.ToString(CultureInfo.InvariantCulture), ""));
 
             input.BaseName = cleanJobName;
-            input.OutputFile = Path.Combine(this._configService.OutputLocation, input.BaseName);
+            input.OutputFile = Path.Combine(_configService.OutputLocation, input.BaseName);
 
             var inputFilePath = Path.GetDirectoryName(input.InputFile);
 
@@ -521,10 +519,10 @@ namespace VideoConvertWPF.ViewModels
                     break;
             }
 
-            Log.InfoFormat("Add Input File: {0}", input.InputFile);
-            Log.InfoFormat("Input Format {0}", input.Input);
-            Log.InfoFormat("Output File: {0}", input.OutputFile);
-            Log.InfoFormat("Output Format {0}", input.EncodingProfile.OutFormatStr);
+            Log.Info($"Add Input File: {input.InputFile}");
+            Log.Info($"Input Format {input.Input}");
+            Log.Info($"Output File: {input.OutputFile}");
+            Log.Info($"Output Format {input.EncodingProfile.OutFormatStr}");
             Log.Info("Job Details");
             Log.Info(Environment.NewLine + input);
         }
@@ -533,22 +531,22 @@ namespace VideoConvertWPF.ViewModels
         {
             var asciiFile = FileSystemHelper.GetAsciiFileName(inJob.InputFile);
             if (string.CompareOrdinal(inJob.InputFile, asciiFile) != 0)
-                inJob.TempInput = FileSystemHelper.CreateTempFile(this._configService.DemuxLocation, Path.GetExtension(inJob.InputFile));
+                inJob.TempInput = FileSystemHelper.CreateTempFile(_configService.DemuxLocation, Path.GetExtension(inJob.InputFile));
 
             asciiFile = FileSystemHelper.GetAsciiFileName(inJob.OutputFile);
-            if (string.CompareOrdinal(inJob.OutputFile, asciiFile) != 0)
-            {
-                string fExt;
-                if ((inJob.EncodingProfile.OutFormat == OutputType.OutputAvchd) ||
-                    (inJob.EncodingProfile.OutFormat == OutputType.OutputBluRay) ||
-                    (inJob.EncodingProfile.OutFormat == OutputType.OutputDvd))
-                    fExt = string.Empty;
-                else
-                    fExt = Path.GetExtension(inJob.OutputFile);
 
-                inJob.TempOutput = FileSystemHelper.CreateTempFile(this._configService.DemuxLocation,
-                    string.IsNullOrEmpty(inJob.TempInput) ? asciiFile : inJob.TempInput, fExt);
-            }
+            if (string.CompareOrdinal(inJob.OutputFile, asciiFile) == 0) return;
+
+            string fExt;
+            if ((inJob.EncodingProfile.OutFormat == OutputType.OutputAvchd) ||
+                (inJob.EncodingProfile.OutFormat == OutputType.OutputBluRay) ||
+                (inJob.EncodingProfile.OutFormat == OutputType.OutputDvd))
+                fExt = string.Empty;
+            else
+                fExt = Path.GetExtension(inJob.OutputFile);
+
+            inJob.TempOutput = FileSystemHelper.CreateTempFile(_configService.DemuxLocation,
+                string.IsNullOrEmpty(inJob.TempInput) ? asciiFile : inJob.TempInput, fExt);
         }
     }
 }

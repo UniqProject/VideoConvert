@@ -9,18 +9,18 @@
 
 namespace VideoConvert.AppServices.Utilities
 {
-    using Interfaces;
-    using Interop.Model;
-    using Interop.Model.MediaInfo;
-    using Interop.Utilities;
-    using log4net;
-    using Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Globalization;
     using System.IO;
     using System.Text;
+    using log4net;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.AppServices.Utilities.Interfaces;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.MediaInfo;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// The AviSynth Generator
@@ -80,56 +80,56 @@ namespace VideoConvert.AppServices.Utilities
                 sb.AppendLine("SetMemoryMax(512)");
             }
 
+            var pluginList = new List<string> {"ffms2.dll"};
+            var scriptList = new List<string>();
+
             //loading plugins
-            sb.AppendLine(ImportFfmpegSource());  // ffms2
 
             if (changeFps || (videoInfo.Interlaced && _appConfig.UseHQDeinterlace))
-                sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "mvtools2.dll")));
+                pluginList.Add("mvtools2.dll");
 
             if (videoInfo.Interlaced && _appConfig.UseHQDeinterlace)
             {
-                sb.AppendLine(_appConfig.LastAviSynthVer.StartsWith("2.5")
-                                  ? string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                                  Path.Combine(_appConfig.AvsPluginsPath, "mt_masktools-25.dll"))
-                                  : string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                                  Path.Combine(_appConfig.AvsPluginsPath, "mt_masktools-26.dll")));
-
-                sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "nnedi3.dll")));
-                sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "RemoveGrainSSE2.dll")));
-                sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "RepairSSE2.dll")));
-                sb.AppendLine(string.Format(CInfo, "Import(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "QTGMC-3.32.avsi")));
+                pluginList.Add(_appConfig.LastAviSynthVer.StartsWith("2.5")
+                                    ? "mt_masktools-25.dll"
+                                    : "mt_masktools-26.dll");
+                pluginList.Add("nnedi3.dll");
+                pluginList.Add("RemoveGrainSSE2.dll");
+                pluginList.Add("RepairSSE2.dll");
+                
+                scriptList.Add("QTGMC-3.32.avsi");
             }
             else if (videoInfo.Interlaced)
             {
-                sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "Decomb.dll")));
+                pluginList.Add("Decomb.dll");
             }
 
             if (useStereo)
-                sb.AppendLine(string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "H264StereoSource.dll")));
+                pluginList.Add("H264StereoSource.dll");
 
             if (!string.IsNullOrEmpty(subtitleFile) && File.Exists(subtitleFile))
             {
                 switch (Path.GetExtension(subtitleFile))
                 {
                     case "sup":
-                        sb.AppendFormat(CInfo, "LoadPlugin(\"{0:s}\")",
-                                        Path.Combine(_appConfig.AvsPluginsPath, "SupTitle.dll"));
+                        pluginList.Add("SupTitle.dll");
                         break;
                     case "ass":
                     case "ssa":
                     case "srt":
-                        sb.AppendFormat(CInfo, "LoadPlugin(\"{0:s}\")",
-                                        Path.Combine(_appConfig.AvsPluginsPath, "VSFilter.dll"));
+                        pluginList.Add("VSFilter.dll");
                         break;
                 }
-                sb.AppendLine();
+            }
+
+            // generate plugin and script loading
+            foreach (var plugin in pluginList)
+            {
+                sb.AppendLine($"LoadPlugin(\"{Path.Combine(_appConfig.AvsPluginsPath, plugin)}\")");
+            }
+            foreach (var script in scriptList)
+            {
+                sb.AppendLine($"Import(\"{Path.Combine(_appConfig.AvsPluginsPath, script)}\")");
             }
 
             //generate rest of the script
@@ -165,23 +165,21 @@ namespace VideoConvert.AppServices.Utilities
                 }
                 
             }
+            sb.Append($"FFVideoSource(\"{videoInfo.TempFile}\",");
 
             if (videoInfo.FrameRateEnumerator > 0 && videoInfo.FrameRateDenominator > 0)
-                sb.AppendLine(string.Format(CInfo,
-                    "FFVideoSource(\"{0:s}\",fpsnum={1:0},fpsden={2:0},threads={3:0})",
-                    videoInfo.TempFile, videoInfo.FrameRateEnumerator,
-                    videoInfo.FrameRateDenominator, _appConfig.LimitDecoderThreads ? 1 : 0));
-            else
-                sb.AppendLine(string.Format(CInfo, "FFVideoSource(\"{0:s}\",threads={1:0})",
-                    videoInfo.TempFile, _appConfig.LimitDecoderThreads ? 1 : 0));
+                sb.Append($"fpsnum={videoInfo.FrameRateEnumerator:0},fpsden={videoInfo.FrameRateDenominator:0},");
+
+            var threadCount = _appConfig.LimitDecoderThreads ? 1 : 0;
+            sb.Append($"threads={threadCount:0})");
+            sb.AppendLine();
 
             var stereoVar = string.Empty;
 
             if (useStereo)
             {
                 var configFile = GenerateStereoSourceConfig(stereoVideoInfo);
-                sb.AppendLine(string.Format(CInfo, "VideoRight = H264StereoSource(\"{0:s}\",{1:g})",
-                                            configFile, videoInfo.FrameCount - 50));
+                sb.AppendLine($"VideoRight = H264StereoSource(\"{configFile}\",{videoInfo.FrameCount - 50:0})");
                 StereoConfigFile = configFile;
                 stereoVar = "VideoRight";
             }
@@ -207,13 +205,13 @@ namespace VideoConvert.AppServices.Utilities
                 switch (Path.GetExtension(subtitleFile))
                 {
                     case "sup":
-                        sb.AppendFormat(CInfo, "SupTitle(\"{0}\", forcedOnly={1})", subtitleFile,
-                                                        subtitleOnlyForced ? "true" : "false");
+                        var subForced = subtitleOnlyForced ? "true" : "false";
+                        sb.Append($"SupTitle(\"{subtitleFile}\", forcedOnly={subForced})");
                         break;
                     case "ass":
                     case "ssa":
                     case "srt":
-                        sb.AppendFormat(CInfo, "TextSub(\"{0}\")", subtitleFile);
+                        sb.Append($"TextSub(\"{subtitleFile}\")");
                         break;
                 }
                 
@@ -240,19 +238,14 @@ namespace VideoConvert.AppServices.Utilities
                 if ((videoInfo.CropRect.X > 0) || (videoInfo.CropRect.Y > 0) || (videoInfo.CropRect.Width < videoInfo.Width) ||
                     (videoInfo.CropRect.Height < videoInfo.Height))
                 {
-                    sb.AppendLine(string.Format(CInfo, "Crop({0:g},{1:g},{2:g},{3:g})",
-                                                videoInfo.CropRect.Left,
-                                                videoInfo.CropRect.Top,
-                                                videoInfo.CropRect.Width,
-                                                videoInfo.CropRect.Height));
+                    sb.Append(useStereo ? "CroppedVideoRight = Crop(VideoRight," : "Crop(");
+
+                    sb.Append($"{videoInfo.CropRect.Left:0},{videoInfo.CropRect.Top:0},");
+                    sb.Append($"{videoInfo.CropRect.Width:0},{videoInfo.CropRect.Height:0})");
+                    sb.AppendLine();
+
                     if (useStereo)
                     {
-                        sb.AppendLine(string.Format(CInfo,
-                                                    "CroppedVideoRight = Crop(VideoRight,{0:g},{1:g},{2:g},{3:g})",
-                                                    videoInfo.CropRect.Left,
-                                                    videoInfo.CropRect.Top,
-                                                    videoInfo.CropRect.Width,
-                                                    videoInfo.CropRect.Height));
                         stereoVar = "CroppedVideoRight";
                     }
                 }
@@ -265,11 +258,11 @@ namespace VideoConvert.AppServices.Utilities
                 {
                     case StereoEncoding.FullSideBySideLeft:
                     case StereoEncoding.HalfSideBySideLeft:
-                        sb.AppendLine(string.Format("StackHorizontal(last,{0})", stereoVar));
+                        sb.AppendLine($"StackHorizontal(last,{stereoVar})");
                         break;
                     case StereoEncoding.FullSideBySideRight:
                     case StereoEncoding.HalfSideBySideRight:
-                        sb.AppendLine(string.Format("StackHorizontal({0},last)", stereoVar));
+                        sb.AppendLine($"StackHorizontal({stereoVar},last)");
                         break;
                 }
                 sb.AppendLine("ConvertToYV12()");
@@ -431,22 +424,17 @@ namespace VideoConvert.AppServices.Utilities
                     (stereoEncoding == StereoEncoding.HalfSideBySideLeft ||
                      stereoEncoding == StereoEncoding.HalfSideBySideRight
                      && useStereo))
-                    sb.AppendLine(string.Format(CInfo, "BicubicResize({0:g},{1:g})",
-                                                calculatedWidth,
-                                                calculatedHeight));
+                    sb.Append("BicubicResize");
                 else
-                    sb.AppendLine(string.Format(CInfo, "Lanczos4Resize({0:g},{1:g})",
-                                                calculatedWidth,
-                                                calculatedHeight));
+                    sb.Append("Lanczos4Resize");
+
+                sb.Append($"({calculatedWidth:0},{calculatedHeight:0})");
+                sb.AppendLine();
             }
 
             // add borders if needed
             if (addBorders && (borderLeft > 0 || borderRight > 0 || borderTop > 0 || borderBottom > 0) && !skipScaling)
-                sb.AppendLine(string.Format(CInfo, "AddBorders({0:g},{1:g},{2:g},{3:g})",
-                                            borderLeft,
-                                            borderTop,
-                                            borderRight,
-                                            borderBottom));
+                sb.AppendLine($"AddBorders({borderLeft:0},{borderTop:0},{borderRight:0},{borderBottom:0})");
 
             // change framerate
             if (changeFps)
@@ -485,7 +473,7 @@ namespace VideoConvert.AppServices.Utilities
                 {
                     sb.AppendLine("ConvertToYUY2()");
                     sb.AppendLine("DoubleWeave()");
-                    sb.AppendLine(string.Format(CInfo, "ConvertFPS({0:0.000})", targetFps*2));
+                    sb.AppendLine($"ConvertFPS(numerator={fpsnum * 2:0},denominator={fpsden:0})");
                     sb.AppendLine("SelectEven()");
                     sb.AppendLine("ConvertToYV12()");
                 }
@@ -495,7 +483,7 @@ namespace VideoConvert.AppServices.Utilities
                     if ((fpsnum == 30000 || fpsnum == 24000) && fpsden == 1001)
                     {
                         sb.AppendLine("ConvertToYUY2()");
-                        sb.AppendLine(string.Format(CInfo, "ConvertFPS({0:0.000}*2)", 23.976));
+                        sb.AppendLine("ConvertFPS(numerator=48000,denominator=1001");
                         if (fpsnum == 30000)
                         {
                             sb.AppendLine("AssumeFrameBased()");
@@ -519,19 +507,17 @@ namespace VideoConvert.AppServices.Utilities
                     sb.AppendLine("super = MSuper(pel=2)");
                     sb.AppendLine("backward_vec = MAnalyse(super, overlap=4, isb = true, search=3)");
                     sb.AppendLine("forward_vec = MAnalyse(super, overlap=4, isb = false, search=3)");
-                    sb.AppendFormat("MFlowFps(super, backward_vec, forward_vec, num={0:0}, den={1:0})", fpsnum,
-                                    fpsden);
+                    sb.Append($"MFlowFps(super, backward_vec, forward_vec, num={fpsnum:0}, den={fpsden:0})");
                 }
 
                 sb.AppendLine();
             }
 
             // multithreaded avisynth
-            if (_appConfig.UseAviSynthMT && mtUseful)
-            {
-                sb.AppendLine("SetMTMode(1)");
-                sb.AppendLine("GetMTMode(false) > 0 ? distributor() : last");
-            }
+            if (!_appConfig.UseAviSynthMT || !mtUseful) return WriteScript(sb.ToString());
+
+            sb.AppendLine("SetMTMode(1)");
+            sb.AppendLine("GetMTMode(false) > 0 ? distributor() : last");
 
             return WriteScript(sb.ToString());
         }
@@ -541,14 +527,12 @@ namespace VideoConvert.AppServices.Utilities
         /// </summary>
         /// <param name="stereoVideoInfo"></param>
         /// <returns></returns>
-        private string GenerateStereoSourceConfig(StereoVideoInfo stereoVideoInfo)
+        private static string GenerateStereoSourceConfig(StereoVideoInfo stereoVideoInfo)
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat(CInfo, "InputFile = \"{0:s}\"", stereoVideoInfo.LeftTempFile);
-            sb.AppendLine();
-            sb.AppendFormat(CInfo, "InputFile2 = \"{0:s}\"", stereoVideoInfo.RightTempFile);
-            sb.AppendLine();
+            sb.AppendLine($"InputFile = \"{stereoVideoInfo.LeftTempFile}\"");
+            sb.AppendLine($"InputFile2 = \"{stereoVideoInfo.RightTempFile}\"");
             sb.AppendLine("FileFormat = 0");
             sb.AppendLine("POCScale = 1");
             sb.AppendLine("DisplayDecParams = 1");
@@ -576,7 +560,7 @@ namespace VideoConvert.AppServices.Utilities
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine(ImportFfmpegSource()); // ffms2
+            sb.AppendLine($"LoadPlugin(\"{Path.Combine(_appConfig.AvsPluginsPath, "ffms2.dll")}\")");
 
             int fpsnum;
             int fpsden;
@@ -588,9 +572,7 @@ namespace VideoConvert.AppServices.Utilities
                 fpsden = (int)(Math.Round(Math.Ceiling(targetFps) - Math.Floor(targetFps)) + 1000);
             }
 
-            sb.AppendLine(string.Format(CInfo,
-                                        "inStream=FFVideoSource(\"{0:s}\",fpsnum={1:0},fpsden={2:0},threads=1)",
-                                        inputFile, fpsnum, fpsden));
+            sb.AppendLine($"inStream=FFVideoSource(\"{inputFile}\",fpsnum={fpsnum:0},fpsden={fpsden:0},threads=1)");
 
             var randomList = new List<int>();
 
@@ -606,7 +588,7 @@ namespace VideoConvert.AppServices.Utilities
             foreach (var frame in randomList)
             {
                 var endFrame = frame + (int)Math.Round(targetFps * 5f, 0);
-                sb.AppendLine(string.Format("Frame{0:0}=inStream.Trim({0:0},{1:0})", frame, endFrame));
+                sb.AppendLine($"Frame{frame:0}=inStream.Trim({frame:0},{endFrame:0})");
                 frameList.Add("Frame" + frame.ToString(CInfo));
                 frameCount += (endFrame - frame);
             }
@@ -623,10 +605,7 @@ namespace VideoConvert.AppServices.Utilities
                 videoSize.Width += temp;
             }
 
-            sb.AppendLine(string.Format(CInfo,
-                                        "BicubicResize(combined,{0:g},{1:g})",
-                                        videoSize.Width,
-                                        videoSize.Height));
+            sb.AppendLine($"BicubicResize(combined,{videoSize.Width:0},{videoSize.Height:0})");
 
             return WriteScript(sb.ToString());
         }
@@ -646,9 +625,9 @@ namespace VideoConvert.AppServices.Utilities
         /// <param name="script">Script content</param>
         /// <param name="extension">File extension of the file, default "avs"</param>
         /// <returns>Path of written file</returns>
-        private string WriteScript(string script, string extension = "avs")
+        private static string WriteScript(string script, string extension = "avs")
         {
-            Log.InfoFormat("Writing AviSynth script: {1}{0}", script, Environment.NewLine);
+            Log.Info($"Writing AviSynth script: {Environment.NewLine}{script}");
 
             var avsFile = FileSystemHelper.CreateTempFile(_appConfig.DemuxLocation, extension);
             using (var sw = new StreamWriter(avsFile, false, Encoding.ASCII))
@@ -676,37 +655,12 @@ namespace VideoConvert.AppServices.Utilities
 
             var ext = StreamFormat.GetFormatExtension(inFormat, inFormatProfile, false);
 
-            switch (ext)
-            {
-                case "ac3":
-                    sb.AppendLine(ImportNicAudio());
-                    sb.AppendFormat(CInfo, "NicAC3Source(\"{0}\")", inputFile);
-                    break;
-
-                case "dts":
-                case "dtshd":
-                    sb.AppendLine(ImportNicAudio());
-                    sb.AppendFormat(CInfo, "NicDTSSource(\"{0}\")", inputFile);
-                    break;
-
-                case "mp2":
-                case "mp3":
-                case "mpa":
-                    sb.AppendLine(ImportNicAudio());
-                    sb.AppendFormat(CInfo, "NicMPG123Source(\"{0}\")", inputFile);
-                    break;
-                default:
-                    sb.AppendLine(ImportFfmpegSource());
-                    sb.AppendFormat(CInfo, "FFAudioSource(\"{0}\")", inputFile);
-                    break;
-            }
-            sb.AppendLine();
+            sb.AppendLine($"LoadPlugin(\"{Path.Combine(_appConfig.AvsPluginsPath, "ffms2.dll")}\")");
+            sb.AppendLine($"FFAudioSource(\"{inputFile}\")");
 
             if (inChannels > outChannels && outChannels > 0)
             {
-                sb.AppendLine(string.Format(CInfo, "Import(\"{0:s}\")",
-                                            Path.Combine(_appConfig.AvsPluginsPath, "audio",
-                                                         "ChannelDownMix.avsi")));
+                sb.AppendLine($"Import(\"{Path.Combine(_appConfig.AvsPluginsPath, "audio", "ChannelDownMix.avsi")}\")");
 
                 switch (inChannels)
                 {
@@ -789,7 +743,7 @@ namespace VideoConvert.AppServices.Utilities
 
             if (inSampleRate != outSampleRate && outSampleRate > 0)
             {
-                sb.AppendFormat(CInfo, "SSRC({0},fast=False)", outSampleRate);
+                sb.Append($"SSRC({outSampleRate},fast=False)");
                 sb.AppendLine();
             }
 
@@ -798,24 +752,5 @@ namespace VideoConvert.AppServices.Utilities
             return WriteScript(sb.ToString());
         }
 
-        /// <summary>
-        /// Imports NicAudio plugin
-        /// </summary>
-        /// <returns></returns>
-        public string ImportNicAudio()
-        {
-            return string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                 Path.Combine(_appConfig.AvsPluginsPath, "audio", "NicAudio.dll"));
-        }
-
-        /// <summary>
-        /// Imports ffmpegsource (ffms2) plugin
-        /// </summary>
-        /// <returns></returns>
-        public string ImportFfmpegSource()
-        {
-            return string.Format(CInfo, "LoadPlugin(\"{0:s}\")",
-                                 Path.Combine(_appConfig.AvsPluginsPath, "ffms2.dll"));
-        }
     }
 }

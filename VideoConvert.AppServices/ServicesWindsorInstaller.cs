@@ -12,8 +12,6 @@ namespace VideoConvert.AppServices
     using Castle.MicroKernel.Registration;
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
-    using Services;
-    using Services.Interfaces;
     using VideoConvert.AppServices.Decoder;
     using VideoConvert.AppServices.Decoder.Interfaces;
     using VideoConvert.AppServices.Demuxer;
@@ -22,6 +20,8 @@ namespace VideoConvert.AppServices
     using VideoConvert.AppServices.Encoder.Interfaces;
     using VideoConvert.AppServices.Muxer;
     using VideoConvert.AppServices.Muxer.Interfaces;
+    using VideoConvert.AppServices.Services;
+    using VideoConvert.AppServices.Services.Interfaces;
 
     /// <summary>
     /// Services installer for Castle.Windsor

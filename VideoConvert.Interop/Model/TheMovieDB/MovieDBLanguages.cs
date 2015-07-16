@@ -20,7 +20,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
         /// <summary>
         /// Raw language list
         /// </summary>
-        public static List<MovieDbLanguage> LangList { get { return GenerateLangList(); } }
+        public static List<MovieDbLanguage> LangList => GenerateLangList();
 
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace VideoConvert.Interop.Model.TheMovieDB
             get
             {
                 var sList = GenerateLangList();
-                sList.Sort((language, dbLanguage) => String.Compare(language.Name, dbLanguage.Name, StringComparison.Ordinal));
+                sList.Sort((language, dbLanguage) => string.Compare(language.Name, dbLanguage.Name, StringComparison.Ordinal));
                 return sList;
             }
         }

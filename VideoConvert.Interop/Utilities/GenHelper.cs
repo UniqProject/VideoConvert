@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="GenHelper.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
-//   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
+//   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
 //   Generic Helper Class
@@ -9,10 +9,10 @@
 
 namespace VideoConvert.Interop.Utilities
 {
-    using Model.MediaInfo;
     using System;
     using System.ComponentModel;
     using System.IO;
+    using VideoConvert.Interop.Model.MediaInfo;
 
     /// <summary>
     /// Generic Helper Class
@@ -54,12 +54,12 @@ namespace VideoConvert.Interop.Utilities
         {
             MiWorkDelegate d = DoWorkHandler;
             var res = d.BeginInvoke(fileName, null, null);
+
+            if (res.IsCompleted) return d.EndInvoke(res);
+
+            res.AsyncWaitHandle.WaitOne(10000, false);
             if (res.IsCompleted == false)
-            {
-                res.AsyncWaitHandle.WaitOne(10000, false);
-                if (res.IsCompleted == false)
-                    throw new TimeoutException("Could not open media file!");
-            }
+                throw new TimeoutException("Could not open media file!");
             return d.EndInvoke(res);
         }
 

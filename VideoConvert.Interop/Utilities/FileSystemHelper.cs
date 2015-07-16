@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemHelper.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
-//   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
+//   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
 //   File system helper class
@@ -36,20 +36,23 @@ namespace VideoConvert.Interop.Utilities
         /// <param name="baseName">Base name for temp file</param>
         /// <param name="extension">File extension</param>
         /// <returns>Temp file name</returns>
-        public static string CreateTempFile(String tempPath, string baseName, string extension)
+        public static string CreateTempFile(string tempPath, string baseName, string extension)
         {
             string output;
-            if (String.IsNullOrEmpty(baseName))
+            if (string.IsNullOrEmpty(tempPath))
+                tempPath = Path.GetTempPath();
+
+            if (string.IsNullOrEmpty(baseName))
                 output = Path.ChangeExtension(Path.Combine(tempPath, Guid.NewGuid().ToString()),
                                               extension);
             else
             {
-                if (String.IsNullOrEmpty(Path.GetDirectoryName(baseName)))
-                    output = Path.Combine(tempPath, String.Format("{0}.{1}", baseName, extension));
+                if (string.IsNullOrEmpty(Path.GetDirectoryName(baseName)))
+                    output = Path.Combine(tempPath, $"{baseName}.{extension}");
                 else
                 {
                     var inFile = Path.GetFileNameWithoutExtension(baseName);
-                    output = Path.Combine(tempPath, String.Format("{0}.{1}", inFile, extension));
+                    output = Path.Combine(tempPath, $"{inFile}.{extension}");
                 }
             }
 

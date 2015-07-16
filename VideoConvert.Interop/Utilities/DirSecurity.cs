@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="DirSecurity.cs" company="JT-Soft (https://github.com/UniqProject/VideoConvert)">
-//   This file is part of the VideoConvert.AppServices source code - It may be used under the terms of the GNU General Public License.
+//   This file is part of the VideoConvert.Interop source code - It may be used under the terms of the GNU General Public License.
 // </copyright>
 // <summary>
 //   Helper class for setting correct ACL of directories
@@ -27,34 +27,33 @@ namespace VideoConvert.Interop.Utilities
             var security = new DirectorySecurity();
 
             var windowsIdentity = WindowsIdentity.GetCurrent();
-            if (windowsIdentity != null)
+
+            var identity = windowsIdentity?.User;
+
+            FileSystemAccessRule accessRule;
+            if (identity != null)
             {
-                var identity = windowsIdentity.User;
-                if (identity != null)
-                {
-                    security.SetOwner(identity);
-                    var accessRule = new FileSystemAccessRule(identity,
-                                                              FileSystemRights.FullControl,
-                                                              InheritanceFlags.ObjectInherit |
-                                                              InheritanceFlags.ContainerInherit,
-                                                              PropagationFlags.None,
-                                                              AccessControlType.Allow);
-                    security.SetAccessRule(accessRule);
-                }
+                security.SetOwner(identity);
+                accessRule = new FileSystemAccessRule(identity,
+                    FileSystemRights.FullControl,
+                    InheritanceFlags.ObjectInherit |
+                    InheritanceFlags.ContainerInherit,
+                    PropagationFlags.None,
+                    AccessControlType.Allow);
+                security.SetAccessRule(accessRule);
             }
 
-            if (securityClass == SecurityClass.Everybody)
-            {
-                var everybodyIdentity = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+            if (securityClass != SecurityClass.Everybody) return security;
 
-                var accessRule = new FileSystemAccessRule(everybodyIdentity,
-                                                          FileSystemRights.FullControl,
-                                                          InheritanceFlags.ObjectInherit |
-                                                          InheritanceFlags.ContainerInherit,
-                                                          PropagationFlags.None,
-                                                          AccessControlType.Allow);
-                security.AddAccessRule(accessRule);
-            }
+            var everybodyIdentity = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+
+            accessRule = new FileSystemAccessRule(everybodyIdentity,
+                FileSystemRights.FullControl,
+                InheritanceFlags.ObjectInherit |
+                InheritanceFlags.ContainerInherit,
+                PropagationFlags.None,
+                AccessControlType.Allow);
+            security.AddAccessRule(accessRule);
 
             return security;
         }

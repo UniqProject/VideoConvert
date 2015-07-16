@@ -9,13 +9,6 @@
 
 namespace VideoConvertWPF.ViewModels
 {
-    using Interfaces;
-    using log4net;
-    using log4net.Appender;
-    using log4net.Config;
-    using log4net.Core;
-    using log4net.Filter;
-    using log4net.Layout;
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -24,9 +17,16 @@ namespace VideoConvertWPF.ViewModels
     using System.IO;
     using System.Linq;
     using System.Text;
+    using log4net;
+    using log4net.Appender;
+    using log4net.Config;
+    using log4net.Core;
+    using log4net.Filter;
+    using log4net.Layout;
     using VideoConvert.AppServices.Services;
     using VideoConvert.AppServices.Services.Interfaces;
     using VideoConvert.Interop.Model;
+    using VideoConvertWPF.ViewModels.Interfaces;
 
     [Export(typeof(IShellViewModel))]
     class ShellViewModel: ViewModelBase, IShellViewModel
@@ -55,12 +55,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._langCode;
+                return _langCode;
             }
             set
             {
-                this._langCode = value;
-                this.NotifyOfPropertyChange(() => this.LangCode);
+                _langCode = value;
+                NotifyOfPropertyChange(() => LangCode);
             }
         }
 
@@ -68,12 +68,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showOptions;
+                return _showOptions;
             }
             set
             {
-                this._showOptions = value;
-                this.NotifyOfPropertyChange(() => this.ShowOptions);
+                _showOptions = value;
+                NotifyOfPropertyChange(() => ShowOptions);
             }
         }
 
@@ -81,12 +81,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showMainView;
+                return _showMainView;
             }
             set
             {
-                this._showMainView = value;
-                this.NotifyOfPropertyChange(() => this.ShowMainView);
+                _showMainView = value;
+                NotifyOfPropertyChange(() => ShowMainView);
             }
         }
 
@@ -94,12 +94,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showEncode;
+                return _showEncode;
             }
             set
             {
-                this._showEncode = value;
-                this.NotifyOfPropertyChange(() => this.ShowEncode);
+                _showEncode = value;
+                NotifyOfPropertyChange(() => ShowEncode);
             }
         }
 
@@ -107,12 +107,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showChangelog;
+                return _showChangelog;
             }
             set
             {
-                this._showChangelog = value;
-                this.NotifyOfPropertyChange(() => this.ShowChangelog);
+                _showChangelog = value;
+                NotifyOfPropertyChange(() => ShowChangelog);
             }
         }
 
@@ -120,12 +120,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this._showAboutView;
+                return _showAboutView;
             }
             set
             {
-                this._showAboutView = value;
-                this.NotifyOfPropertyChange(() => this.ShowAboutView);
+                _showAboutView = value;
+                NotifyOfPropertyChange(() => ShowAboutView);
             }
         }
 
@@ -133,12 +133,12 @@ namespace VideoConvertWPF.ViewModels
         {
             get
             {
-                return this.Title;
+                return Title;
             }
             set
             {
-                this.Title = value;
-                this.NotifyOfPropertyChange(() => this.Title);
+                Title = value;
+                NotifyOfPropertyChange(() => Title);
             }
         }
 
@@ -151,7 +151,7 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _lastView = value;
-                this.NotifyOfPropertyChange(() => this.LastView);
+                NotifyOfPropertyChange(() => LastView);
             }
         }
 
@@ -161,19 +161,19 @@ namespace VideoConvertWPF.ViewModels
             set
             {
                 _actualView = value;
-                this.NotifyOfPropertyChange(() => this.ActualView);
+                NotifyOfPropertyChange(() => ActualView);
             }
         }
 
         public ShellViewModel(IAppConfigService config, IProcessingService processing)
         {
-            this._configService = config;
-            this._processingService = processing;
+            _configService = config;
+            _processingService = processing;
             
             DisplayWindow(ShellWin.MainView);
-            this.Title = "Video Convert";
+            Title = "Video Convert";
 
-            this._configService.PropertyChanged += ConfigServiceOnPropertyChanged;
+            _configService.PropertyChanged += ConfigServiceOnPropertyChanged;
         }
 
         private void ConfigServiceOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -204,12 +204,12 @@ namespace VideoConvertWPF.ViewModels
         public void DisplayWindow(ShellWin window, EncodeInfo inputInfo, ObservableCollection<EncodeInfo> jobList)
         {
             if (window == ShellWin.LastView)
-                window = this.LastView;
+                window = LastView;
             else
-                if (window != this.ActualView)
-                    this.LastView = this.ActualView;
+                if (window != ActualView)
+                    LastView = ActualView;
 
-            this.ActualView = window;
+            ActualView = window;
 
             switch (window)
             {
@@ -219,10 +219,7 @@ namespace VideoConvertWPF.ViewModels
                     ShowChangelog = false;
                     ShowAboutView = false;
                     ShowEncode = false;
-                    if (this.MainViewModel != null)
-                    {
-                        this.MainViewModel.CheckUpdate();
-                    }
+                    MainViewModel?.CheckUpdate();
                     break;
                 case ShellWin.OptionsView:
                     ShowOptions = true;
@@ -251,18 +248,14 @@ namespace VideoConvertWPF.ViewModels
                     ShowChangelog = false;
                     ShowAboutView = false;
                     ShowEncode = true;
-                    if (this.EncodeViewModel != null)
-                        this.EncodeViewModel.StartEncode(jobList);
+                    EncodeViewModel?.StartEncode(jobList);
                     break;
             }
         }
 
         public bool CanClose()
         {
-            if (this.MainViewModel != null)
-            {
-                this.MainViewModel.Shutdown();
-            }
+            MainViewModel?.Shutdown();
             return true;
         }
 
@@ -324,12 +317,12 @@ namespace VideoConvertWPF.ViewModels
 
             BasicConfigurator.Configure(fileAppender);
 
-            Log.InfoFormat("Use Language: {0}", _configService.UseLanguage);
-            Log.InfoFormat("VideoConvert v{0} started", AppConfigService.GetAppVersion().ToString(4));
-            Log.InfoFormat("OS-Version: {0}", Environment.OSVersion.VersionString);
-            Log.InfoFormat("CPU-Count: {0:g}", Environment.ProcessorCount);
-            Log.InfoFormat(".NET Version: {0}", Environment.Version.ToString(4));
-            Log.InfoFormat("System Uptime: {0}", TimeSpan.FromMilliseconds(Environment.TickCount).ToString("c"));
+            Log.Info($"Use Language: {_configService.UseLanguage}");
+            Log.Info($"VideoConvert v{AppConfigService.GetAppVersion().ToString(4)} started");
+            Log.Info($"OS-Version: {Environment.OSVersion.VersionString}");
+            Log.Info($"CPU-Count: {Environment.ProcessorCount:0}");
+            Log.Info($".NET Version: {Environment.Version.ToString(4)}");
+            Log.Info($"System Uptime: {TimeSpan.FromMilliseconds(Environment.TickCount).ToString("c")}");
 
             var elevated = false;
             try
@@ -342,7 +335,7 @@ namespace VideoConvertWPF.ViewModels
             }
 
             if (Environment.OSVersion.Version.Major >= 6)
-                Log.InfoFormat("Process Elevated: {0}", elevated.ToString(_configService.CInfo));
+                Log.Info($"Process Elevated: {elevated}");
 
             Extensions supExt;
             CpuExtensions.GetExtensions(out supExt);
@@ -365,7 +358,7 @@ namespace VideoConvertWPF.ViewModels
 
         public void ShowAbout()
         {
-            this.DisplayWindow(ShellWin.AboutView);
+            DisplayWindow(ShellWin.AboutView);
         }
     }
 }

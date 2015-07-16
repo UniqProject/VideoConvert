@@ -9,15 +9,6 @@
 
 namespace VideoConvert.AppServices.Encoder
 {
-    using Interfaces;
-    using Interop.EventArgs;
-    using Interop.Model;
-    using Interop.Model.Subtitles;
-    using Interop.Utilities;
-    using Interop.Utilities.Subtitles;
-    using log4net;
-    using Services.Base;
-    using Services.Interfaces;
     using System;
     using System.Diagnostics;
     using System.Drawing;
@@ -27,6 +18,15 @@ namespace VideoConvert.AppServices.Encoder
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml;
+    using log4net;
+    using VideoConvert.AppServices.Encoder.Interfaces;
+    using VideoConvert.AppServices.Services.Base;
+    using VideoConvert.AppServices.Services.Interfaces;
+    using VideoConvert.Interop.EventArgs;
+    using VideoConvert.Interop.Model;
+    using VideoConvert.Interop.Model.Subtitles;
+    using VideoConvert.Interop.Utilities;
+    using VideoConvert.Interop.Utilities.Subtitles;
 
     /// <summary>
     /// The Encoder BdSup2Sub
@@ -78,7 +78,7 @@ namespace VideoConvert.AppServices.Encoder
         /// </param>
         public EncoderBdSup2Sub(IAppConfigService appConfig) : base(appConfig)
         {
-            this._appConfig = appConfig;
+            _appConfig = appConfig;
         }
 
         #region Properties
@@ -103,7 +103,7 @@ namespace VideoConvert.AppServices.Encoder
             var verInfo = string.Empty;
 
             var localExecutable = Path.Combine(encPath, Executable);
-            var query = string.Format("-jar \"{0}\" -V", localExecutable);
+            var query = $"-jar \"{localExecutable}\" -V";
 
             using (var encoder = new Process())
             {
@@ -124,7 +124,7 @@ namespace VideoConvert.AppServices.Encoder
                 catch (Exception ex)
                 {
                     started = false;
-                    Log.ErrorFormat("BDSup2Sub exception: {0}", ex);
+                    Log.Error($"BDSup2Sub exception: {ex}");
                 }
 
                 if (started)
@@ -145,7 +145,7 @@ namespace VideoConvert.AppServices.Encoder
             // Debug info
             if (Log.IsDebugEnabled)
             {
-                Log.DebugFormat("BDSup2Sub \"{0}\" found", verInfo);
+                Log.Debug($"BDSup2Sub \"{verInfo}\" found");
             }
             return verInfo;
         }
@@ -161,56 +161,56 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (this.IsEncoding)
+                if (IsEncoding)
                 {
                     encodeQueueTask.ExitCode = -1;
                     throw new Exception("BDSup2Sub is already running");
                 }
 
-                this.IsEncoding = true;
-                this._currentTask = encodeQueueTask;
+                IsEncoding = true;
+                _currentTask = encodeQueueTask;
 
                 var query = GenerateCommandLine();
-                var cliPath = this._appConfig.JavaInstallPath;
+                var cliPath = _appConfig.JavaInstallPath;
 
                 var cliStart = new ProcessStartInfo(cliPath, query)
                 {
-                    WorkingDirectory = this._appConfig.DemuxLocation,
+                    WorkingDirectory = _appConfig.DemuxLocation,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
 
-                this.EncodeProcess = new Process {StartInfo = cliStart};
-                Log.InfoFormat("start parameter: {0} {1}", cliPath, query);
+                EncodeProcess = new Process {StartInfo = cliStart};
+                Log.Info($"start parameter: {cliPath} {query}");
 
-                this.EncodeProcess.Start();
+                EncodeProcess.Start();
 
-                this._startTime = DateTime.Now;
+                _startTime = DateTime.Now;
 
-                this.EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
-                this.EncodeProcess.BeginOutputReadLine();
+                EncodeProcess.OutputDataReceived += EncodeProcessDataReceived;
+                EncodeProcess.BeginOutputReadLine();
 
-                this._encoderProcessId = this.EncodeProcess.Id;
+                _encoderProcessId = EncodeProcess.Id;
 
                 // Set the encoder process exit trigger
-                if (this._encoderProcessId != -1)
+                if (_encoderProcessId != -1)
                 {
-                    this.EncodeProcess.EnableRaisingEvents = true;
-                    this.EncodeProcess.Exited += EncodeProcessExited;
+                    EncodeProcess.EnableRaisingEvents = true;
+                    EncodeProcess.Exited += EncodeProcessExited;
                 }
 
-                this.EncodeProcess.PriorityClass = this._appConfig.GetProcessPriority();
+                EncodeProcess.PriorityClass = _appConfig.GetProcessPriority();
 
                 // Fire the Encode Started Event
-                this.InvokeEncodeStarted(EventArgs.Empty);
+                InvokeEncodeStarted(EventArgs.Empty);
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
-                this._currentTask.ExitCode = -1;
-                this.IsEncoding = false;
-                this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
+                _currentTask.ExitCode = -1;
+                IsEncoding = false;
+                InvokeEncodeCompleted(new EncodeCompletedEventArgs(false, exc, exc.Message));
             }
         }
 
@@ -221,16 +221,16 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                if (this.EncodeProcess != null && !this.EncodeProcess.HasExited)
+                if (EncodeProcess != null && !EncodeProcess.HasExited)
                 {
-                    this.EncodeProcess.Kill();
+                    EncodeProcess.Kill();
                 }
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
-            this.IsEncoding = false;
+            IsEncoding = false;
         }
 
         /// <summary>
@@ -258,29 +258,29 @@ namespace VideoConvert.AppServices.Encoder
         {
             try
             {
-                this.EncodeProcess.CancelOutputRead();
+                EncodeProcess.CancelOutputRead();
             }
             catch (Exception exc)
             {
                 Log.Error(exc);
             }
 
-            this._currentTask.ExitCode = EncodeProcess.ExitCode;
-            Log.InfoFormat("Exit Code: {0:g}", this._currentTask.ExitCode);
+            _currentTask.ExitCode = EncodeProcess.ExitCode;
+            Log.Info($"Exit Code: {_currentTask.ExitCode:0}");
 
-            if (this._currentTask.ExitCode == 0)
+            if (_currentTask.ExitCode == 0)
             {
-                this._currentTask.TempFiles.Add(_inputFile);
+                _currentTask.TempFiles.Add(_inputFile);
                 if (_subtitle.Format == "XML")
                 {
                     GetTempImages(_inputFile);
                 }
                 if (_subtitle.Format == "VobSub")
-                    this._currentTask.TempFiles.Add(Path.ChangeExtension(_inputFile, "sub"));
+                    _currentTask.TempFiles.Add(Path.ChangeExtension(_inputFile, "sub"));
 
-                if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                if (_currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
                 {
-                    this._currentTask.TempFiles.Add(_outputFile);
+                    _currentTask.TempFiles.Add(_outputFile);
 
                     _subtitle.TempFile = GenerateSpuMuxSubtitle(_outputFile);
                     _subtitle.Format = "SpuMux";
@@ -293,9 +293,9 @@ namespace VideoConvert.AppServices.Encoder
                 _subtitle.NeedConversion = false;
             }
 
-            this._currentTask.CompletedStep = this._currentTask.NextStep;
-            this.IsEncoding = false;
-            this.InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
+            _currentTask.CompletedStep = _currentTask.NextStep;
+            IsEncoding = false;
+            InvokeEncodeCompleted(new EncodeCompletedEventArgs(true, null, string.Empty));
         }
 
         /// <summary>
@@ -305,9 +305,9 @@ namespace VideoConvert.AppServices.Encoder
         /// <param name="e"></param>
         private void EncodeProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Data) && this.IsEncoding)
+            if (!string.IsNullOrEmpty(e.Data) && IsEncoding)
             {
-                this.ProcessLogMessage(e.Data);
+                ProcessLogMessage(e.Data);
             }
         }
 
@@ -326,7 +326,7 @@ namespace VideoConvert.AppServices.Encoder
             var resultDecodeFrames = _decodeFrames.Match(line);
             if (resultReadCaptions.Success)
             {
-                elapsedTime = DateTime.Now - this._startTime;
+                elapsedTime = DateTime.Now - _startTime;
                 progress = 0f;
                 remainingTime = elapsedTime + TimeSpan.FromSeconds(1D);
             }
@@ -334,15 +334,15 @@ namespace VideoConvert.AppServices.Encoder
             {
                 int actFrame, maxFrames;
 
-                Int32.TryParse(resultDecodeFrames.Groups[1].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(resultDecodeFrames.Groups[1].Value, NumberStyles.Number, _appConfig.CInfo,
                                out actFrame);
-                Int32.TryParse(resultDecodeFrames.Groups[2].Value, NumberStyles.Number, this._appConfig.CInfo,
+                int.TryParse(resultDecodeFrames.Groups[2].Value, NumberStyles.Number, _appConfig.CInfo,
                                out maxFrames);
 
                 var remaining = maxFrames - actFrame;
 
                 progress = actFrame / (float)maxFrames * 100f;
-                elapsedTime = DateTime.Now - this._startTime;
+                elapsedTime = DateTime.Now - _startTime;
 
                 if (elapsedTime.TotalSeconds > 0)
                     processingSpeed = actFrame / elapsedTime.TotalSeconds;
@@ -353,34 +353,33 @@ namespace VideoConvert.AppServices.Encoder
                 remainingTime = TimeSpan.FromSeconds(secRemaining);
             }
             else
-                Log.InfoFormat("BDSup2Sub: {0}", line);
+                Log.Info($"BDSup2Sub: {line}");
 
-            if (resultReadCaptions.Success || resultDecodeFrames.Success)
+            if (!resultReadCaptions.Success && !resultDecodeFrames.Success) return;
+
+            var eventArgs = new EncodeProgressEventArgs
             {
-                var eventArgs = new EncodeProgressEventArgs
-                {
-                    AverageFrameRate = 0,
-                    CurrentFrameRate = 0,
-                    EstimatedTimeLeft = remainingTime,
-                    PercentComplete = progress,
-                    ElapsedTime = elapsedTime,
-                };
-                this.InvokeEncodeStatusChanged(eventArgs);
-            }
+                AverageFrameRate = 0,
+                CurrentFrameRate = 0,
+                EstimatedTimeLeft = remainingTime,
+                PercentComplete = progress,
+                ElapsedTime = elapsedTime,
+            };
+            InvokeEncodeStatusChanged(eventArgs);
         }
 
         private string GenerateCommandLine()
         {
             var sb = new StringBuilder();
-            var localExecutable = Path.Combine(this._appConfig.ToolsPath, Executable);
-            sb.AppendFormat("-jar \"{0}\" ", localExecutable);
+            var localExecutable = Path.Combine(_appConfig.ToolsPath, Executable);
+            sb.Append($"-jar \"{localExecutable}\" ");
 
-            this._subtitle = this._currentTask.SubtitleStreams[this._currentTask.StreamId];
+            _subtitle = _currentTask.SubtitleStreams[_currentTask.StreamId];
 
             var targetRes = -1;
 
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                targetRes = this._currentTask.EncodingProfile.SystemType == 0 ? 576 : 480;
+            if (_currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                targetRes = _currentTask.EncodingProfile.SystemType == 0 ? 576 : 480;
 
             _inputFile = _subtitle.TempFile;
 
@@ -421,40 +420,39 @@ namespace VideoConvert.AppServices.Encoder
                 var xmlFile = Path.ChangeExtension(_outputFile, "xml");
                 if (BdnExport.WriteBdnXmlFile(textSub,
                                               xmlFile,
-                                              this._currentTask.VideoStream.Width,
-                                              this._currentTask.VideoStream.Height,
-                                              this._currentTask.VideoStream.Fps))
+                                              _currentTask.VideoStream.Width,
+                                              _currentTask.VideoStream.Height,
+                                              _currentTask.VideoStream.Fps))
                 {
                     _subtitle.Format = "XML";
-                    this._currentTask.TempFiles.Add(_inputFile);
+                    _currentTask.TempFiles.Add(_inputFile);
                     _subtitle.TempFile = xmlFile;
                     _inputFile = xmlFile;
                 }
             }
 
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+            if (_currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
                 _outputFile = Path.ChangeExtension(_outputFile, "processed.xml");
             else if (_subtitle.KeepOnlyForcedCaptions)
                 _outputFile = Path.ChangeExtension(_outputFile, "forced.sup");
             else if (_subtitle.Format == "XML" || _subtitle.Format == "VobSub")
                 _outputFile = Path.ChangeExtension(_outputFile, "sup");
 
-            var targetFps = this._currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
-                              ? this._currentTask.VideoStream.Fps * 2
-                              : this._currentTask.VideoStream.Fps;
+            var targetFps = _currentTask.VideoStream.FrameMode.Trim().ToLowerInvariant() == "frame doubling"
+                              ? _currentTask.VideoStream.Fps * 2
+                              : _currentTask.VideoStream.Fps;
             var fpsMode = "keep";
 
-            if (Math.Abs(targetFps - this._currentTask.VideoStream.Fps) > 0)
+            if (Math.Abs(targetFps - _currentTask.VideoStream.Fps) > 0)
                 fpsMode = targetFps.ToString("0.000", _appConfig.CInfo);
 
-            sb.AppendFormat(_appConfig.CInfo, "\"{0}\" --output \"{1}\" --fps-target {2} --palette-mode keep ",
-                            _inputFile, _outputFile, fpsMode);
+            sb.Append($"\"{_inputFile}\" --output \"{_outputFile}\" --fps-target {fpsMode} --palette-mode keep ");
 
             if (_subtitle.KeepOnlyForcedCaptions)
-                sb.AppendFormat("--forced-only ");
+                sb.Append("--forced-only ");
 
-            if (this._currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
-                sb.AppendFormat(_appConfig.CInfo, " --resolution {0:0} ", targetRes);
+            if (_currentTask.EncodingProfile.OutFormat == OutputType.OutputDvd)
+                sb.Append($" --resolution {targetRes:0} ");
 
             return sb.ToString();
         }
@@ -465,20 +463,21 @@ namespace VideoConvert.AppServices.Encoder
             inSubFile.Load(inFile);
             var spuList = inSubFile.SelectNodes("//Graphic");
 
-            if (spuList != null)
-                foreach (XmlNode spu in spuList)
-                {
-                    var fileName = spu.InnerText;
+            if (spuList == null) return;
 
-                    if (string.IsNullOrEmpty(Path.GetDirectoryName(fileName)))
-                    {
-                        var filePath = Path.GetDirectoryName(inFile);
-                        if (string.IsNullOrEmpty(filePath))
-                            filePath = string.Empty;
-                        fileName = Path.Combine(filePath, fileName);
-                    }
-                    this._currentTask.TempFiles.Add(fileName);
+            foreach (XmlNode spu in spuList)
+            {
+                var fileName = spu.InnerText;
+
+                if (string.IsNullOrEmpty(Path.GetDirectoryName(fileName)))
+                {
+                    var filePath = Path.GetDirectoryName(inFile);
+                    if (string.IsNullOrEmpty(filePath))
+                        filePath = string.Empty;
+                    fileName = Path.Combine(filePath, fileName);
                 }
+                _currentTask.TempFiles.Add(fileName);
+            }
         }
 
         // TODO: this is kinda messy stuff
@@ -508,28 +507,27 @@ namespace VideoConvert.AppServices.Encoder
                     if (Event.Attributes == null) continue;
 
                     var inTc =
-                        DateTime.ParseExact(Event.Attributes["InTC"].Value, "hh:mm:ss:ff", this._appConfig.CInfo).TimeOfDay;
+                        DateTime.ParseExact(Event.Attributes["InTC"].Value, "hh:mm:ss:ff", _appConfig.CInfo).TimeOfDay;
                     var outTc =
-                        DateTime.ParseExact(Event.Attributes["OutTC"].Value, "hh:mm:ss:ff", this._appConfig.CInfo).TimeOfDay;
-                    var forced = Boolean.Parse(Event.Attributes["Forced"].Value);
+                        DateTime.ParseExact(Event.Attributes["OutTC"].Value, "hh:mm:ss:ff", _appConfig.CInfo).TimeOfDay;
+                    var forced = bool.Parse(Event.Attributes["Forced"].Value);
 
                     var graphic = Event.SelectSingleNode("Graphic");
 
-                    if (graphic == null) continue;
-                    if (graphic.Attributes == null) continue;
+                    if (graphic?.Attributes == null) continue;
 
-                    var xOffset = Int32.Parse(graphic.Attributes["X"].Value, this._appConfig.CInfo);
-                    var yOffset = Int32.Parse(graphic.Attributes["Y"].Value, this._appConfig.CInfo);
+                    var xOffset = int.Parse(graphic.Attributes["X"].Value, _appConfig.CInfo);
+                    var yOffset = int.Parse(graphic.Attributes["Y"].Value, _appConfig.CInfo);
                     var imageFile = graphic.InnerText;
 
                     var spu = outSubFile.CreateElement("spu");
 
                     var spuStart = outSubFile.CreateAttribute("start");
-                    spuStart.Value = inTc.ToString("T", this._appConfig.CInfo);
+                    spuStart.Value = inTc.ToString("T", _appConfig.CInfo);
                     spu.Attributes.Append(spuStart);
 
                     var spuEnd = outSubFile.CreateAttribute("end");
-                    spuEnd.Value = outTc.ToString("T", this._appConfig.CInfo);
+                    spuEnd.Value = outTc.ToString("T", _appConfig.CInfo);
                     spu.Attributes.Append(spuEnd);
 
                     Color first;
@@ -541,7 +539,7 @@ namespace VideoConvert.AppServices.Encoder
                                   newBit = bit.Clone(new Rectangle(0, 0, bit.Width, bit.Height), PixelFormat.Format1bppIndexed))
                     {
                         var oldImage = Path.Combine(inPath, imageFile);
-                        this._currentTask.TempFiles.Add(oldImage);
+                        _currentTask.TempFiles.Add(oldImage);
                         imageFile = Path.ChangeExtension(oldImage, "encoded.png");
                         first = newBit.Palette.Entries[0];
 
@@ -554,7 +552,7 @@ namespace VideoConvert.AppServices.Encoder
                     spu.Attributes.Append(spuImage);
 
                     var spuTColor = outSubFile.CreateAttribute("transparent");
-                    spuTColor.Value = string.Format("#{0:X2}{1:X2}{2:X2}", first.R, first.G, first.B);
+                    spuTColor.Value = $"#{first.R:X2}{first.G:X2}{first.B:X2}";
                     spu.Attributes.Append(spuTColor);
 
                     var spuForce = outSubFile.CreateAttribute("force");
@@ -562,11 +560,11 @@ namespace VideoConvert.AppServices.Encoder
                     spu.Attributes.Append(spuForce);
 
                     var spuXOffset = outSubFile.CreateAttribute("xoffset");
-                    spuXOffset.Value = xOffset.ToString(this._appConfig.CInfo);
+                    spuXOffset.Value = xOffset.ToString(_appConfig.CInfo);
                     spu.Attributes.Append(spuXOffset);
 
                     var spuYOffset = outSubFile.CreateAttribute("yoffset");
-                    spuYOffset.Value = yOffset.ToString(this._appConfig.CInfo);
+                    spuYOffset.Value = yOffset.ToString(_appConfig.CInfo);
                     spu.Attributes.Append(spuYOffset);
 
                     stream.AppendChild(spu);

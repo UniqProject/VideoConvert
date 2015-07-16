@@ -53,7 +53,7 @@ namespace VideoConvert.Interop.Model.IMDB
         /// Release Date
         /// </summary>
         [XmlIgnore]
-        public DateTime Date { get { return new DateTime(Year, Month, Day); } }
+        public DateTime Date => new DateTime(Year, Month, Day);
 
         /// <summary>
         /// Default constructor

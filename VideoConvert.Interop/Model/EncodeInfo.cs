@@ -9,13 +9,12 @@
 
 namespace VideoConvert.Interop.Model
 {
-    using MediaInfo;
-    using Profiles;
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
-    using Utilities;
+    using VideoConvert.Interop.Model.MediaInfo;
+    using VideoConvert.Interop.Model.Profiles;
+    using VideoConvert.Interop.Utilities;
 
     /// <summary>
     /// Encode job properties class
@@ -45,7 +44,7 @@ namespace VideoConvert.Interop.Model
         /// <summary>
         /// Formatted input type for displaying only
         /// </summary>
-        public string                   FormattedInput { get { return GenHelper.StringValueOf(Input); } }
+        public string                   FormattedInput => GenHelper.StringValueOf(Input);
 
         /// <summary>
         /// Output file name
@@ -231,63 +230,46 @@ namespace VideoConvert.Interop.Model
         {
             var result = string.Empty;
 
-            result += string.Format(CultureInfo.InvariantCulture, "JobName:            {0:s} {1:s}", JobName, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "BaseName:           {0:s} {1:s}", BaseName, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "InputFile:          {0:s} {1:s}", InputFile, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "InputType:          {0:s} {1:s}", Input.ToString(),
-                Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "OutputFile:         {0:s} {1:s}", OutputFile,
-                Environment.NewLine);
+            result += $"JobName:            {JobName} {Environment.NewLine}";
+            result += $"BaseName:           {BaseName} {Environment.NewLine}";
+            result += $"InputFile:          {InputFile} {Environment.NewLine}";
+            result += $"InputType:          {Input} {Environment.NewLine}";
+            result += $"OutputFile:         {OutputFile} {Environment.NewLine}";
             result += Environment.NewLine;
 
-            result += string.Format(CultureInfo.InvariantCulture, "AudioStreams:       {0:s}", Environment.NewLine);
-
-            result = AudioStreams.Aggregate(result,
-                (current, item) =>
-                    current +
-                    string.Format(CultureInfo.InvariantCulture, "{0:s} {1:s}", item, Environment.NewLine));
-
+            result += $"AudioStreams:       {Environment.NewLine}";
+            result = AudioStreams.Aggregate(result, (current, item) => current + $"{item} {Environment.NewLine}");
             result += Environment.NewLine;
 
-            result += string.Format(CultureInfo.InvariantCulture, "SubtitleStreams:    {0:s}", Environment.NewLine);
-
-            result = SubtitleStreams.Aggregate(result,
-                (current, item) =>
-                    current +
-                    string.Format(CultureInfo.InvariantCulture, "{0:s} {1:s}", item, Environment.NewLine));
-
+            result += $"SubtitleStreams:    {Environment.NewLine}";
+            result = SubtitleStreams.Aggregate(result, (current, item) => current + $"{item} {Environment.NewLine}");
             result += Environment.NewLine;
 
-            result += string.Format(CultureInfo.InvariantCulture, "Chapters:           {0:s} {1:s}",
-                string.Join(",", (from item in Chapters
-                    let dt = new DateTime()
-                    select DateTime.MinValue.Add(item)
-                    into dt select dt.ToString("H:mm:ss.fff")).ToArray()),
-                Environment.NewLine);
+            var list = new List<string>();
+            foreach (var item in Chapters)
+            {
+                var dt = DateTime.MinValue.Add(item);
+                list.Add(dt.ToString("H:mm:ss.fff"));
+            }
+            result += $"Chapters:           {string.Join(",", list.ToArray())} {Environment.NewLine}";
 
-            result += string.Format(CultureInfo.InvariantCulture, "NextStep:           {0:s} {1:s}", NextStep.ToString(),
-                Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "CompletedStep:      {0:s} {1:s}", CompletedStep.ToString(),
-                Environment.NewLine);
+            result += $"NextStep:           {NextStep} {Environment.NewLine}";
+            result += $"CompletedStep:      {CompletedStep} {Environment.NewLine}";
             result += Environment.NewLine;
 
-            result += string.Format(CultureInfo.InvariantCulture, "VideoStream:        {0:s}", Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "{0:s} {1:s}", VideoStream, Environment.NewLine);
+            result += $"VideoStream:        {Environment.NewLine}";
+            result += $"{VideoStream} {Environment.NewLine}";
             result += Environment.NewLine;
 
-            result += string.Format(CultureInfo.InvariantCulture, "StreamID:           {0:g} {1:s}", StreamId, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "TrackID:            {0:g} {1:s}", TrackId, Environment.NewLine);
+            result += $"StreamID:           {StreamId:0} {Environment.NewLine}";
+            result += $"TrackID:            {TrackId:0} {Environment.NewLine}";
 
-            result += string.Format(CultureInfo.InvariantCulture, "TempInput:          {0:s} {1:s}", TempInput, Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "TempOutput:         {0:s} {1:s}", TempOutput,
-                Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "DumpOutput:         {0:s} {1:s}", DumpOutput,
-                Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "SelectedDVDChapters:{0:s} {1:s}", SelectedDvdChapters,
-                Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "TempFiles:          {0:s} {1:s}",
-                string.Join(",", TempFiles.ToArray()), Environment.NewLine);
-            result += string.Format(CultureInfo.InvariantCulture, "ReturnValue:        {0:g} {1:s}", ExitCode, Environment.NewLine);
+            result += $"TempInput:          {TempInput} {Environment.NewLine}";
+            result += $"TempOutput:         {TempOutput} {Environment.NewLine}";
+            result += $"DumpOutput:         {DumpOutput} {Environment.NewLine}";
+            result += $"SelectedDVDChapters:{SelectedDvdChapters} {Environment.NewLine}";
+            result += $"TempFiles:          {string.Join(",", TempFiles.ToArray())} {Environment.NewLine}";
+            result += $"ReturnValue:        {ExitCode:0} {Environment.NewLine}";
 
             return result;
         }

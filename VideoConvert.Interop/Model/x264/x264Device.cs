@@ -16,17 +16,6 @@ namespace VideoConvert.Interop.Model.x264
     /// </summary>
     public class X264Device
     {
-        private readonly string _strName;
-        private readonly int _iId;
-        private readonly int _iProfile;
-        private readonly int _iLevel;
-        private readonly int _iVbvBufsize;
-        private readonly int _iVbvMaxrate;
-        private readonly int _iBframes;
-        private readonly int _iReframes;
-        private readonly int _iMaxWidth;
-        private readonly int _iMaxHeight;
-
         /// <summary>
         /// Creates a list of supported devices
         /// </summary>
@@ -79,100 +68,70 @@ namespace VideoConvert.Interop.Model.x264
         /// <param name="iMaxHeight">Max Height</param>
         public X264Device(int iId, string strName, int iProfile, int iLevel, int iVbvBufsize, int iVbvMaxrate, int iBframes, int iReframes, int iMaxWidth, int iMaxHeight)
         {
-            this._iId = iId;
-            this._strName = strName;
-            this._iProfile = iProfile;
-            this._iLevel = iLevel;
-            this._iVbvBufsize = iVbvBufsize;
-            this._iVbvMaxrate = iVbvMaxrate;
-            this._iBframes = iBframes;
-            this._iReframes = iReframes;
-            this._iMaxWidth = iMaxWidth;
-            this._iMaxHeight = iMaxHeight;
-            this.BluRay = false;
-            this.BPyramid = -1;
-            this.MaxGop = -1;
+            ID = iId;
+            Name = strName;
+            Profile = iProfile;
+            Level = iLevel;
+            VbvBufsize = iVbvBufsize;
+            VbvMaxrate = iVbvMaxrate;
+            BFrames = iBframes;
+            ReferenceFrames = iReframes;
+            Width = iMaxWidth;
+            Height = iMaxHeight;
+            BluRay = false;
+            BPyramid = -1;
+            MaxGop = -1;
         }
 
         /// <summary>
         /// Device ID
         /// </summary>
-        public int ID
-        {
-            get { return _iId; }
-        }
+        public int ID { get; }
 
         /// <summary>
         /// Device Name
         /// </summary>
-        public string Name
-        {
-            get { return _strName; }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// AVC Profile
         /// </summary>
-        public int Profile
-        {
-            get { return _iProfile; }
-        }
+        public int Profile { get; }
 
         /// <summary>
         /// AVC Level
         /// </summary>
-        public int Level
-        {
-            get { return _iLevel; }
-        }
+        public int Level { get; }
 
         /// <summary>
         /// VBV Buffer size
         /// </summary>
-        public int VbvBufsize
-        {
-            get { return _iVbvBufsize; }
-        }
+        public int VbvBufsize { get; }
 
         /// <summary>
         /// Max VBV bitrate
         /// </summary>
-        public int VbvMaxrate
-        {
-            get { return _iVbvMaxrate; }
-        }
+        public int VbvMaxrate { get; }
 
         /// <summary>
         /// Number of B-Frames
         /// </summary>
-        public int BFrames
-        {
-            get { return _iBframes; }
-        }
+        public int BFrames { get; }
 
         /// <summary>
         /// Number of ref-frames
         /// </summary>
-        public int ReferenceFrames
-        {
-            get { return _iReframes; }
-        }
+        public int ReferenceFrames { get; }
 
         /// <summary>
         /// Max Height
         /// </summary>
-        public int Height
-        {
-            get { return _iMaxHeight; }
-        }
+        public int Height { get; }
 
         /// <summary>
         /// Max Width
         /// </summary>
-        public int Width
-        {
-            get { return _iMaxWidth; }
-        }
+        public int Width { get; }
 
         /// <summary>
         /// Max GOP size
@@ -198,7 +157,7 @@ namespace VideoConvert.Interop.Model.x264
         /// <filterpriority>2</filterpriority>
         public override string ToString()
         {
-            return _strName;
+            return Name;
         }
     }
 }
